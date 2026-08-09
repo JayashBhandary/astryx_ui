@@ -1,0 +1,17 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+# The gallery is an application, not a published library. Two relaxations
+# against the package's own rules, both deliberate:
+#
+#   * No public API docs — nothing here is public API.
+#   * Material is allowed for the gallery's own chrome (nav rail, scaffold).
+#     astryx_ui components are shown in the content area; the shell around them
+#     is not part of the design system and does not need to be built from it.
+linter:
+  rules:
+    public_member_api_docs: false
+    always_put_required_named_parameters_first: false
+
+analyzer:
+  errors:
+    specify_nonobvious_property_types: ignore

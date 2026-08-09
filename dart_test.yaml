@@ -1,0 +1,10 @@
+# Test tags for astryx_ui.
+#
+# Golden tests compare rasterised output, which is only stable for a given
+# Flutter version. CI runs them on the pinned floor version and skips them
+# elsewhere via `flutter test --exclude-tags golden`.
+#
+# Every file under test/goldens/ must declare `@Tags(<String>['golden'])`.
+tags:
+  golden:
+    description: Compares rasterised output against a checked-in image.

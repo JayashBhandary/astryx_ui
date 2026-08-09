@@ -1,0 +1,28 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "example/**"
+  errors:
+    # Property types are usually obvious from the token/theme value assigned.
+    specify_nonobvious_property_types: ignore
+    # Widget builders legitimately return non-awaited futures (e.g. showDialog).
+    discarded_futures: ignore
+
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+
+formatter:
+  trailing_commas: preserve
+
+linter:
+  rules:
+    # Public API docs are mandatory for this package — see dev/02-CONVENTIONS.md.
+    public_member_api_docs: true
+    # Theme/widget constructors read better with optional params grouped by role.
+    always_put_required_named_parameters_first: false
+    # Widget-tree cascades hurt readability more than they help.
+    cascade_invocations: false
