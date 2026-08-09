@@ -130,6 +130,49 @@ void main() {
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       handle.dispose();
     });
+
+    testWidgets('shrinks to fit an unbounded width instead of asserting', (
+      tester,
+    ) async {
+      // A card in a `Row` — as the gallery's elevation demo does — is handed
+      // an unbounded width. The slots stretch to the card, so without a bound
+      // of its own the card would hand them an infinite one and assert.
+      await pumpAstryxWidget(
+        tester,
+        const AstryxHStack(
+          gap: AstryxSpacingToken.spacing3,
+          children: <Widget>[
+            AstryxCard(child: AstryxText('none')),
+            AstryxCard(
+              elevation: AstryxElevation.low,
+              child: AstryxText('low'),
+            ),
+          ],
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      final cards = tester.widgetList(find.byType(AstryxCard)).length;
+      expect(cards, 2);
+      // Shrink-to-fit, not zero-width and not the whole surface.
+      final width = tester.getSize(find.byType(AstryxCard).first).width;
+      expect(width, greaterThan(0));
+      expect(width, lessThan(400));
+    });
+
+    testWidgets('still fills a bounded width', (tester) async {
+      // The counterpart to the test above: bounded stays block-box behaviour,
+      // which is what `IntrinsicWidth` alone would have broken.
+      await pumpAstryxWidget(
+        tester,
+        const SizedBox(
+          width: 340,
+          child: AstryxCard(child: AstryxText('Body')),
+        ),
+      );
+
+      expect(tester.getSize(find.byType(AstryxCard)).width, 340);
+    });
   });
 
   group('P10-2 — AstryxBadge', () {

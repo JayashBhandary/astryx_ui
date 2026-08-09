@@ -10,6 +10,7 @@ import 'package:astryx_ui/src/foundation/tap_target.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/utils/color_mix.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -243,6 +244,13 @@ class _AstryxCardState extends State<AstryxCard> {
 
     content = Padding(padding: EdgeInsets.all(pad), child: content);
 
+    // The `stretch` above hands the slots the card's full width, which is what
+    // a block box does — and what asserts the moment the card is handed an
+    // unbounded width, as a `Row` or a horizontal list does. Shrinking to the
+    // content in exactly that case is CSS's own rule: a block box fills a
+    // definite width and shrinks to fit an indefinite one.
+    content = _CardWidth(child: content);
+
     Widget card = AnimatedContainer(
       duration: motion.duration(AstryxDurationToken.fast),
       curve: motion.curve(),
@@ -323,4 +331,47 @@ class _AstryxCardState extends State<AstryxCard> {
       child: AstryxTapTarget(expandHorizontally: false, child: card),
     );
   }
+}
+
+/// Gives [child] the incoming width when there is one, and its own preferred
+/// width when there is not.
+///
+/// This is not [IntrinsicWidth]. That keys on whether the width is *tight*, so
+/// it also shrinks a card sitting in a merely loose parent — a `Center`, a
+/// `ConstrainedBox` — where filling is the correct block-box behaviour and what
+/// the card has always done. This keys on whether the width is *bounded*, so
+/// only the genuinely unbounded case changes, and pays for an intrinsic pass
+/// only in that case.
+class _CardWidth extends SingleChildRenderObjectWidget {
+  const _CardWidth({required Widget super.child});
+
+  @override
+  _RenderCardWidth createRenderObject(BuildContext context) =>
+      _RenderCardWidth();
+}
+
+class _RenderCardWidth extends RenderProxyBox {
+  BoxConstraints _innerConstraints(BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null || constraints.hasBoundedWidth) return constraints;
+    return constraints.tighten(
+      width: child.getMaxIntrinsicWidth(constraints.maxHeight),
+    );
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(_innerConstraints(constraints), parentUsesSize: true);
+    size = child.size;
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) =>
+      child?.getDryLayout(_innerConstraints(constraints)) ??
+      constraints.smallest;
 }
