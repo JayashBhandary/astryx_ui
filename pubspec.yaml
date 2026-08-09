@@ -4,8 +4,8 @@ description: >-
   internal tools and products. Faithful token engine, themeable components,
   built on flutter/widgets.
 version: 0.0.1-dev
-repository: https://github.com/CHANGE-ME/astryx_ui
-issue_tracker: https://github.com/CHANGE-ME/astryx_ui/issues
+repository: https://github.com/JayashBhandary/astryx_ui
+issue_tracker: https://github.com/JayashBhandary/astryx_ui/issues
 topics:
   - user-interface
   - design-system
