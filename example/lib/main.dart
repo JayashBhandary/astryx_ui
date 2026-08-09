@@ -1,3 +1,4 @@
+import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/gallery/gallery_controller.dart';
 import 'package:example/gallery/gallery_scope.dart';
 import 'package:example/gallery/gallery_shell.dart';
@@ -30,7 +31,6 @@ class _GalleryAppState extends State<GalleryApp> {
   Widget build(BuildContext context) {
     return GalleryScope(
       notifier: _controller,
-      // Phase 3 wraps this in AstryxThemeProvider, fed from _controller.
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, _) => MaterialApp(
@@ -43,7 +43,18 @@ class _GalleryAppState extends State<GalleryApp> {
           },
           theme: ThemeData(brightness: Brightness.light),
           darkTheme: ThemeData(brightness: Brightness.dark),
-          home: const GalleryShell(),
+          // The Material chrome stays Material; the content area is Astryx.
+          // `AstryxThemeProvider` inside a `MaterialApp` is the incremental
+          // adoption path, so the gallery proves it works by using it.
+          home: AstryxThemeProvider(
+            theme: _controller.theme.theme,
+            mode: _controller.brightness.colorMode,
+            density: _controller.density.density,
+            child: Directionality(
+              textDirection: _controller.textDirection,
+              child: const GalleryShell(),
+            ),
+          ),
         ),
       ),
     );

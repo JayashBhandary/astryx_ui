@@ -13,6 +13,19 @@
 library;
 
 // The theme layer is part of the full surface too.
+export 'src/app/astryx_app.dart';
+export 'src/app/astryx_theme_provider.dart';
+export 'src/components/action/action.dart';
+export 'src/components/data/data.dart';
+export 'src/components/feedback/feedback.dart';
+export 'src/components/forms/forms.dart';
+export 'src/components/layout/layout.dart';
+export 'src/components/overlay/overlay.dart';
+export 'src/components/surface/surface.dart';
+export 'src/foundation/foundation.dart';
+export 'src/icons/icon_registry.dart';
+export 'src/localizations/astryx_localizations.dart';
 export 'theme.dart';
 
-// Components are added in Phases 5–10. See dev/04-TRACKER.md.
+// Phases 5–10 shipped the whole Tier-1 component inventory: layout and
+// typography, actions, status, forms, overlays, surfaces and data display.

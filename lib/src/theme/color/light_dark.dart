@@ -1,9 +1,14 @@
-/// `light-dark()` parsing.
+/// `light-dark()` parsing, and the CSS value splitting it is built on.
 ///
 /// Ports the `splitTopLevelComma` and `parseLightDark` helpers from upstream's
 /// `packages/core/src/theme/tokens.ts`. They live in Layer 0 because they are
 /// pure string work with no theme knowledge; the resolver that follows `var()`
 /// references and evaluates `color-mix()` is Phase 2.
+///
+/// [splitTopLevelCommas] and [splitTopLevelSpaces] have no upstream
+/// counterpart. They exist because a compound token value — a shadow list —
+/// has to be taken apart the same depth-aware way, and Layer 2 should not
+/// reinvent the bracket tracking.
 library;
 
 import 'dart:math' as math;
@@ -53,6 +58,80 @@ import 'package:astryx_ui/src/theme/color/color_value.dart';
   }
 
   return null;
+}
+
+/// Splits [input] on *every* top-level comma, not just the first.
+///
+/// Bracket depth and quoting are tracked exactly as [splitTopLevelComma] does,
+/// so `0 1px 2px rgba(0, 0, 0, .1), 0 2px 8px rgba(0, 0, 0, .1)` yields the two
+/// shadows rather than six fragments. Parts are trimmed; empty ones are
+/// dropped, so a trailing comma is tolerated.
+List<String> splitTopLevelCommas(String input) {
+  final parts = <String>[];
+  var rest = input;
+
+  while (true) {
+    final split = splitTopLevelComma(rest);
+    if (split == null) break;
+    parts.add(split.before.trim());
+    rest = split.after;
+  }
+  parts.add(rest.trim());
+
+  return parts.where((p) => p.isNotEmpty).toList();
+}
+
+/// Splits [input] on runs of top-level whitespace.
+///
+/// Whitespace inside brackets or quotes does not split, so
+/// `inset 0px 0px 0px 2px light-dark(rgba(5, 54, 89, 0.15), #FFF)` yields six
+/// parts, the last being the whole `light-dark(...)` expression.
+List<String> splitTopLevelSpaces(String input) {
+  final parts = <String>[];
+  final buffer = StringBuffer();
+  var depth = 0;
+  String? quote;
+  var isEscaped = false;
+
+  void flush() {
+    if (buffer.isNotEmpty) {
+      parts.add(buffer.toString());
+      buffer.clear();
+    }
+  }
+
+  for (var i = 0; i < input.length; i++) {
+    final char = input[i];
+
+    if (quote != null) {
+      buffer.write(char);
+      if (isEscaped) {
+        isEscaped = false;
+      } else if (char == r'\') {
+        isEscaped = true;
+      } else if (char == quote) {
+        quote = null;
+      }
+      continue;
+    }
+    if (char == '"' || char == "'") {
+      quote = char;
+      buffer.write(char);
+      continue;
+    }
+    if (char == '(') {
+      depth++;
+    } else if (char == ')') {
+      depth = math.max(0, depth - 1);
+    } else if (depth == 0 && char.trim().isEmpty) {
+      flush();
+      continue;
+    }
+    buffer.write(char);
+  }
+  flush();
+
+  return parts;
 }
 
 /// Parses a CSS `light-dark(light, dark)` expression into its two sides.

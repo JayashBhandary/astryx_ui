@@ -1,8 +1,7 @@
+import 'package:astryx_ui/astryx_ui.dart';
 import 'package:flutter/widgets.dart';
 
 /// The seven themes Astryx ships upstream.
-///
-/// Ported one by one in Phase 3 — see `dev/phases/PHASE-03-theme-runtime.md`.
 enum GalleryTheme {
   neutral('Neutral'),
   matcha('Matcha'),
@@ -15,6 +14,21 @@ enum GalleryTheme {
   const GalleryTheme(this.label);
 
   final String label;
+
+  /// The resolved Astryx theme this entry selects.
+  ///
+  /// A getter rather than a constructor field: each theme runs the engine at
+  /// initialisation, so they are `final`, not `const`, and an enum value's
+  /// arguments have to be constant.
+  AstryxDefinedTheme get theme => switch (this) {
+    GalleryTheme.neutral => neutralTheme,
+    GalleryTheme.matcha => matchaTheme,
+    GalleryTheme.stone => stoneTheme,
+    GalleryTheme.gothic => gothicTheme,
+    GalleryTheme.chocolate => chocolateTheme,
+    GalleryTheme.y2k => y2kTheme,
+    GalleryTheme.butter => butterTheme,
+  };
 }
 
 /// Which brightness the gallery renders in.
@@ -32,25 +46,32 @@ enum GalleryBrightness {
     GalleryBrightness.light => Brightness.light,
     GalleryBrightness.dark => Brightness.dark,
   };
+
+  /// The equivalent `AstryxColorMode`.
+  AstryxColorMode get colorMode => switch (this) {
+    GalleryBrightness.system => AstryxColorMode.system,
+    GalleryBrightness.light => AstryxColorMode.light,
+    GalleryBrightness.dark => AstryxColorMode.dark,
+  };
 }
 
-/// Placeholder for `AstryxDensity`, which arrives in Phase 3 (`P3-4`).
-///
-/// The picker is wired now so that no component can be built without somewhere
-/// obvious to check it at both densities.
+/// Which interaction density the gallery renders at.
 enum GalleryDensity {
-  pointer('Pointer'),
-  touch('Touch');
+  pointer('Pointer', AstryxDensity.pointer),
+  touch('Touch', AstryxDensity.touch);
 
-  const GalleryDensity(this.label);
+  const GalleryDensity(this.label, this.density);
 
   final String label;
+
+  /// The `AstryxDensity` this entry selects.
+  final AstryxDensity density;
 }
 
 /// Holds everything the gallery chrome can change about how demos render.
 ///
-/// In Phase 3 this becomes the input to `AstryxThemeProvider`. Until then it
-/// only drives the pickers, so the plumbing is proven before it carries load.
+/// Feeds `AstryxThemeProvider` directly, so the gallery exercises the same
+/// path an application takes rather than a parallel one.
 class GalleryController extends ChangeNotifier {
   GalleryTheme get theme => _theme;
   GalleryTheme _theme = GalleryTheme.neutral;
