@@ -7,6 +7,15 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.0.2-dev]
+
+### Fixed
+
+- `AstryxCard` no longer asserts `BoxConstraints forces an infinite width`
+  when given an unbounded width — inside a `Row`, an `AstryxHStack`, or a
+  horizontal list. It fills a bounded width as before and shrinks to fit an
+  unbounded one, matching how a block box sizes itself in CSS.
+
 ## [0.0.1-dev]
 
 First development preview. The API is unstable and may change without a major
@@ -41,5 +50,6 @@ version bump until 0.1.0.
 - Secondary entry point `package:astryx_ui/theme.dart` for the theme layer
   without components.
 
-[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.1-dev...HEAD
+[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.2-dev...HEAD
+[0.0.2-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.1-dev...v0.0.2-dev
 [0.0.1-dev]: https://github.com/JayashBhandary/astryx_ui/releases/tag/v0.0.1-dev
