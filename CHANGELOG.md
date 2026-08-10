@@ -7,6 +7,73 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.0.5-dev]
+
+Documentation, tooling and tests only. No library code changed, so nothing here
+can break a consumer.
+
+### Added
+
+- **The page registry mirrors upstream.** Every page on `astryx.atmeta.com` now
+  has a route here — 163 placeholders alongside the 37 written pages, across
+  seventeen groups, including the ones that are entirely unwritten: Navigation,
+  App shell, Chat & AI, Command & search, Date & time, Media, Providers, Hooks
+  & controllers and Templates. Each placeholder carries a description, the
+  upstream page it will be written from, and a `DocStatus` — `ready`, `stub`
+  (ported, not written up), `planned` (not ported yet) or `notPlanned`
+  (deliberately omitted). A missing route and a widget nobody has thought about
+  are no longer indistinguishable.
+- **A sidebar that survives two hundred pages.** Groups collapse, each showing
+  how many pages it holds; the group containing the current page opens on load
+  and on every navigation; a *Written pages only* switch hides the
+  placeholders; a search expands every group so a match is never hidden in a
+  collapsed one. Placeholders carry a status badge, and say *not written yet*
+  in their accessible name, so a screen-reader user does not have to open a
+  page to find out it is empty.
+- **A sitemap parity test.** `example/test/upstream_pages.txt` is every URL in
+  upstream's `sitemap.xml`, captured 2026-08-10; the test fails when a
+  component upstream ships is claimed by no page here. The fixture lives beside
+  the test rather than in the git-ignored `scrape/`, so it is present in a
+  fresh clone.
+- **A contrast test for the documentation site's own colours.** Every
+  foreground the docs chrome paints over every background it paints it on, in
+  all eight themes and both brightnesses, against WCAG 2.1 AA — 4.5:1 for body
+  text, 3:1 for large text and control furniture. The package's existing
+  contrast tests check the engine; this checks the choices.
+- Sidebar tests covering the three behaviours the flat list did not have:
+  staying collapsed, marking empty pages, and hiding them.
+- `example/lib/docs/groups.dart` — the group names and the reference file each
+  is published to, in one place. `tool/gen_skill.dart` carried its own private
+  copy of that map, and a group added to a page file but forgotten there made
+  the generator exit 1.
+
+### Changed
+
+- The generators publish written pages only. `doc/` gets no file for a
+  placeholder; the index names it with its status instead of linking it. The
+  agent skill omits a group whose pages are all placeholders entirely — an
+  agent told about a widget the package does not export will call it, and the
+  call will not compile.
+- Inline `` `code` `` in the documentation renders as a padded, rounded chip
+  rather than text with a background colour, which put the first and last
+  character flush against the edge of the highlight.
+- `upstream:` on a page now claims every upstream sub-component it absorbs —
+  `Table / TableCell / TableHeaderCell / useTableSelection / …` — which is what
+  lets the sitemap check tell an absorbed component from a missing one. Names
+  are corrected where they were wrong, so the checkbox page ports
+  `CheckboxInput` rather than `Checkbox`.
+- Documentation spacing: more room above a heading than between paragraphs,
+  more between list items than between the lines inside one, and a bullet
+  column sized to its bullet rather than to `10.`.
+- `scrape/` is git-ignored.
+
+### Fixed
+
+- The sidebar threw *The Scrollbar's ScrollController has no ScrollPosition
+  attached* on desktop and web, where `PrimaryScrollController.shouldInherit`
+  is false and the scroll view and its scrollbar disagreed about inheriting it.
+  The sidebar owns its controller now.
+
 ## [0.0.4-dev]
 
 ### Added
@@ -116,7 +183,8 @@ version bump until 0.1.0.
 - Secondary entry point `package:astryx_ui/theme.dart` for the theme layer
   without components.
 
-[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.4-dev...HEAD
+[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.5-dev...HEAD
+[0.0.5-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.4-dev...v0.0.5-dev
 [0.0.4-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.3-dev...v0.0.4-dev
 [0.0.3-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.2-dev...v0.0.3-dev
 [0.0.2-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.1-dev...v0.0.2-dev
