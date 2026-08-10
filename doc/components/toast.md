@@ -4,7 +4,7 @@ description: A transient message in the corner, with an optional action.
 component: true
 group: Overlays
 source: lib/src/components/overlay/toast.dart
-upstream: Toast
+upstream: Toast / useToast
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

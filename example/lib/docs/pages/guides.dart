@@ -1,3 +1,4 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 import 'package:example/docs/version.g.dart';
 
@@ -12,7 +13,7 @@ final List<DocPage> guidePages = <DocPage>[
   _accessibility,
 ];
 
-const String _group = 'Getting started';
+const String _group = DocGroup.gettingStarted;
 
 const DocPage _introduction = DocPage(
   id: 'introduction',
@@ -21,6 +22,7 @@ const DocPage _introduction = DocPage(
   description:
       'An unofficial Flutter port of Astryx, Meta’s design system for '
       'internal tools.',
+  upstreamPath: '/',
   blocks: <DocBlock>[
     DocProse(
       'Astryx is a React and StyleX design system. `astryx_ui` reimplements it '
@@ -83,6 +85,7 @@ const DocPage _installation = DocPage(
   title: 'Installation',
   group: _group,
   description: 'Add the package, wrap your app once, and you are done.',
+  upstreamPath: '/docs/getting-started',
   blocks: <DocBlock>[
     DocHeading('Add the dependency'),
     DocCode(
@@ -179,6 +182,7 @@ const DocPage _theming = DocPage(
   title: 'Theming',
   group: _group,
   description: 'Seven themes, two brightnesses, and an engine for your own.',
+  upstreamPath: '/docs/theme',
   blocks: <DocBlock>[
     DocHeading('The prebuilt themes'),
     DocProse(
@@ -281,6 +285,7 @@ const DocPage _tokens = DocPage(
   title: 'Design tokens',
   group: _group,
   description: 'The values every component resolves through.',
+  upstreamPath: '/docs/tokens',
   blocks: <DocBlock>[
     DocProse(
       'No component holds a colour, a length or a duration. Every one is a '
@@ -449,8 +454,10 @@ const DocPage _rtl = DocPage(
   id: 'rtl',
   title: 'Right-to-left',
   group: _group,
-  description: 'Logical throughout, so RTL is a `Directionality` and nothing '
+  description:
+      'Logical throughout, so RTL is a `Directionality` and nothing '
       'more.',
+  upstreamPath: '/docs/internationalization',
   blocks: <DocBlock>[
     DocProse(
       'There is no RTL mode to switch on. Every component is written in '

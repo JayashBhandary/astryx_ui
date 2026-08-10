@@ -1,9 +1,10 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// Surfaces — the containers, and the labels that sit on them.
 final List<DocPage> surfacePages = <DocPage>[_card, _badge, _banner];
 
-const String _group = 'Surfaces';
+const String _group = DocGroup.surfaces;
 
 final DocPage _card = DocPage(
   id: 'card',
@@ -14,6 +15,7 @@ final DocPage _card = DocPage(
       'you give it something to do.',
   source: 'lib/src/components/surface/card.dart',
   upstream: 'Card / ClickableCard',
+  upstreamPath: '/components/Card',
   blocks: <DocBlock>[
     const DocExample('card_demo'),
     const DocHeading('Usage'),
@@ -199,6 +201,7 @@ final DocPage _badge = DocPage(
   description: 'A small label: a status, a count, a category.',
   source: 'lib/src/components/surface/badge.dart',
   upstream: 'Badge',
+  upstreamPath: '/components/Badge',
   blocks: <DocBlock>[
     const DocExample('badge_demo'),
     const DocHeading('Usage'),
@@ -271,6 +274,7 @@ final DocPage _banner = DocPage(
   description: 'An inline message with a severity, announced when it appears.',
   source: 'lib/src/components/surface/banner.dart',
   upstream: 'Banner',
+  upstreamPath: '/components/Banner',
   blocks: <DocBlock>[
     const DocExample('banner_demo', align: DocExampleAlign.stretch),
     const DocHeading('Usage'),

@@ -1,9 +1,10 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// The status indicators.
 final List<DocPage> feedbackPages = <DocPage>[_spinner, _skeleton, _progress];
 
-const String _group = 'Status';
+const String _group = DocGroup.status;
 
 final DocPage _spinner = DocPage(
   id: 'spinner',
@@ -12,6 +13,7 @@ final DocPage _spinner = DocPage(
   description: 'An indeterminate wait, in three sizes.',
   source: 'lib/src/components/feedback/spinner.dart',
   upstream: 'Spinner',
+  upstreamPath: '/components/Spinner',
   blocks: <DocBlock>[
     const DocExample('spinner_demo'),
     const DocHeading('Usage'),
@@ -84,6 +86,7 @@ final DocPage _skeleton = DocPage(
   description: 'A placeholder in the shape of the content that is coming.',
   source: 'lib/src/components/feedback/skeleton.dart',
   upstream: 'Skeleton',
+  upstreamPath: '/components/Skeleton',
   blocks: <DocBlock>[
     const DocExample('skeleton_demo'),
     const DocHeading('Usage'),
@@ -166,6 +169,7 @@ final DocPage _progress = DocPage(
   description: 'A determinate or indeterminate bar, with an announced label.',
   source: 'lib/src/components/feedback/progress_bar.dart',
   upstream: 'ProgressBar',
+  upstreamPath: '/components/ProgressBar',
   blocks: <DocBlock>[
     const DocExample('progress_demo'),
     const DocHeading('Usage'),

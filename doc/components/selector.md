@@ -4,7 +4,7 @@ description: A dropdown that picks one value, with optional search.
 component: true
 group: Forms
 source: lib/src/components/forms/selector.dart
-upstream: Selector
+upstream: Selector / SelectorOption
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

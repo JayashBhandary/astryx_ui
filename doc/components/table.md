@@ -4,7 +4,7 @@ description: A typed data table with sorting, selection, row actions and three c
 component: true
 group: Data display
 source: lib/src/components/data/table.dart
-upstream: Table
+upstream: Table / TableCell / TableHeaderCell / TableRow / useTableColumnResize / useTableColumnSettings / useTableFilterState / useTableFiltering / useTableGroupedRows / useTablePagination / useTableRowExpansion / useTableRowIndex / useTableRowStatus / useTableSelection / useTableSelectionState / useTableSortable / useTableStickyColumns / useTableTreeData / useTableTreeState
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

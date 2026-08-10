@@ -1,3 +1,4 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// Layout and typography — the primitives everything else composes from.
@@ -11,7 +12,7 @@ final List<DocPage> layoutPages = <DocPage>[
   _icon,
 ];
 
-const String _group = 'Layout & typography';
+const String _group = DocGroup.layout;
 
 final DocPage _text = DocPage(
   id: 'text',
@@ -20,6 +21,7 @@ final DocPage _text = DocPage(
   description: 'A run of text, sized and coloured from the type scale.',
   source: 'lib/src/components/layout/text.dart',
   upstream: 'Text',
+  upstreamPath: '/components/Text',
   blocks: <DocBlock>[
     const DocExample('text_demo'),
     const DocHeading('Usage'),
@@ -43,8 +45,11 @@ const AstryxText(
     const DocTable(
       headers: <String>['Type', 'For'],
       rows: <List<String>>[
-        <String>['`display1` … `display3`', 'Marketing-scale numbers and hero '
-            'text. Rarely inside a tool.'],
+        <String>[
+          '`display1` … `display3`',
+          'Marketing-scale numbers and hero '
+              'text. Rarely inside a tool.',
+        ],
         <String>['`large`', 'Body copy one step up, for emphasis.'],
         <String>['`body`', 'The default.'],
         <String>['`label`', 'Form and control labels.'],
@@ -187,6 +192,7 @@ final DocPage _heading = DocPage(
   description: 'A heading: a size from the scale, and a level in the outline.',
   source: 'lib/src/components/layout/heading.dart',
   upstream: 'Heading',
+  upstreamPath: '/components/Heading',
   blocks: <DocBlock>[
     const DocExample('heading_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
@@ -293,6 +299,7 @@ final DocPage _stack = DocPage(
   description: 'A row and a column whose gap comes from the spacing scale.',
   source: 'lib/src/components/layout/stack.dart',
   upstream: 'HStack / VStack',
+  upstreamPath: '/components/HStack',
   blocks: <DocBlock>[
     const DocExample('stack_demo', align: DocExampleAlign.stretch),
     const DocHeading('Usage'),
@@ -405,7 +412,8 @@ final DocPage _grid = DocPage(
   description:
       'A CSS-style grid: fixed tracks, or as many as the width allows.',
   source: 'lib/src/components/layout/grid.dart',
-  upstream: 'Grid',
+  upstream: 'Grid / GridSpan',
+  upstreamPath: '/components/Grid',
   blocks: <DocBlock>[
     const DocExample('grid_demo', align: DocExampleAlign.stretch),
     const DocHeading('Usage'),
@@ -497,6 +505,7 @@ final DocPage _center = DocPage(
   description: 'Centres a child, with token padding and a measure.',
   source: 'lib/src/components/layout/center.dart',
   upstream: 'Center',
+  upstreamPath: '/components/Center',
   blocks: <DocBlock>[
     const DocExample('center_demo', align: DocExampleAlign.stretch),
     const DocHeading('Usage'),
@@ -572,6 +581,7 @@ final DocPage _divider = DocPage(
   description: 'A rule between sections, optionally labelled.',
   source: 'lib/src/components/layout/divider.dart',
   upstream: 'Divider',
+  upstreamPath: '/components/Divider',
   blocks: <DocBlock>[
     const DocExample('divider_demo', align: DocExampleAlign.stretch),
     const DocHeading('Usage'),
@@ -633,6 +643,7 @@ final DocPage _icon = DocPage(
   description: 'A glyph named semantically and resolved through the theme.',
   source: 'lib/src/components/layout/icon.dart',
   upstream: 'Icon',
+  upstreamPath: '/components/Icon',
   blocks: <DocBlock>[
     const DocExample('icon_demo'),
     const DocHeading('Usage'),

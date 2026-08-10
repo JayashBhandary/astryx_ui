@@ -4,7 +4,7 @@ description: A short phrase on hover, focus, or long-press.
 component: true
 group: Overlays
 source: lib/src/components/overlay/tooltip.dart
-upstream: Tooltip
+upstream: Tooltip / useTooltip
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

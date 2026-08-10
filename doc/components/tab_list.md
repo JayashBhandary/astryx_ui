@@ -4,7 +4,7 @@ description: A strip of tabs that reports a value and owns no panel.
 component: true
 group: Data display
 source: lib/src/components/data/tab_list.dart
-upstream: TabList
+upstream: TabList / Tab
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

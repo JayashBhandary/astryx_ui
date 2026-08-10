@@ -1,9 +1,10 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// Data display — tabs and the table.
 final List<DocPage> dataPages = <DocPage>[_tabList, _table];
 
-const String _group = 'Data display';
+const String _group = DocGroup.dataDisplay;
 
 const DocPage _tabList = DocPage(
   id: 'tab_list',
@@ -11,7 +12,8 @@ const DocPage _tabList = DocPage(
   group: _group,
   description: 'A strip of tabs that reports a value and owns no panel.',
   source: 'lib/src/components/data/tab_list.dart',
-  upstream: 'TabList',
+  upstream: 'TabList / Tab',
+  upstreamPath: '/components/TabList',
   blocks: <DocBlock>[
     DocExample('tab_list_demo', align: DocExampleAlign.stretch),
     DocHeading('Usage'),
@@ -65,10 +67,16 @@ AstryxTabList<T>
     DocTable(
       headers: <String>['Key', 'Does'],
       rows: <List<String>>[
-        <String>['`Tab`', 'Enters or leaves the strip — one stop for the whole '
-            'strip.'],
-        <String>['`→` / `←`', 'Selects the next or previous enabled tab, '
-            'wrapping. Mirrored under RTL.'],
+        <String>[
+          '`Tab`',
+          'Enters or leaves the strip — one stop for the whole '
+              'strip.',
+        ],
+        <String>[
+          '`→` / `←`',
+          'Selects the next or previous enabled tab, '
+              'wrapping. Mirrored under RTL.',
+        ],
         <String>['`Home` / `End`', 'Selects the first or last enabled tab.'],
       ],
     ),
@@ -153,7 +161,12 @@ const DocPage _table = DocPage(
       'A typed data table with sorting, selection, row actions and three '
       'column-width strategies.',
   source: 'lib/src/components/data/table.dart',
-  upstream: 'Table',
+  upstream:
+      'Table / TableCell / TableHeaderCell / TableRow / '
+      'useTableColumnResize / useTableColumnSettings / useTableFilterState / useTableFiltering / useTableGroupedRows / '
+      'useTablePagination / useTableRowExpansion / useTableRowIndex / useTableRowStatus / useTableSelection / '
+      'useTableSelectionState / useTableSortable / useTableStickyColumns / useTableTreeData / useTableTreeState',
+  upstreamPath: '/components/Table',
   blocks: <DocBlock>[
     DocExample('table_demo', align: DocExampleAlign.stretch),
     DocHeading('Usage'),

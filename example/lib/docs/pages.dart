@@ -13,11 +13,23 @@ import 'package:example/docs/pages/forms.dart';
 import 'package:example/docs/pages/guides.dart';
 import 'package:example/docs/pages/layout.dart';
 import 'package:example/docs/pages/overlays.dart';
+import 'package:example/docs/pages/planned/components.dart';
+import 'package:example/docs/pages/planned/guides.dart';
+import 'package:example/docs/pages/planned/hooks.dart';
+import 'package:example/docs/pages/planned/templates.dart';
 import 'package:example/docs/pages/surfaces.dart';
 
+export 'package:example/docs/groups.dart';
 export 'package:example/docs/model.dart';
 
 /// Every page, in navigation order.
+///
+/// The written pages first, then the placeholders. Order matters twice: a
+/// group's position in [docPagesByGroup] is where its first page appears, and a
+/// page's position within its group is its position here. Appending the planned
+/// lists therefore lands each placeholder underneath the written pages of the
+/// same group, and puts the groups that are entirely unwritten — `Navigation`,
+/// `Chat & AI`, `Templates` — after the ones that are not.
 final List<DocPage> docPages = <DocPage>[
   ...guidePages,
   ...layoutPages,
@@ -27,7 +39,15 @@ final List<DocPage> docPages = <DocPage>[
   ...overlayPages,
   ...surfacePages,
   ...dataPages,
+  ...plannedGuidePages,
+  ...plannedComponentPages,
+  ...plannedHookPages,
+  ...templatePages,
 ];
+
+/// The pages with content — what `doc/` and the agent skill are built from.
+Iterable<DocPage> get writtenDocPages =>
+    docPages.where((page) => page.isWritten);
 
 /// [docPages] bucketed by group, preserving registry order.
 Map<String, List<DocPage>> get docPagesByGroup {

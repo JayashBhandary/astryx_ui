@@ -4,7 +4,7 @@ description: 'A CSS-style grid: fixed tracks, or as many as the width allows.'
 component: true
 group: Layout & typography
 source: lib/src/components/layout/grid.dart
-upstream: Grid
+upstream: Grid / GridSpan
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

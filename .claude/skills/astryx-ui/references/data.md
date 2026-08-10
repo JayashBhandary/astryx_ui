@@ -8,7 +8,7 @@
 
 ## AstryxTabList
 
-`lib/src/components/data/tab_list.dart` · upstream `TabList`
+`lib/src/components/data/tab_list.dart` · upstream `TabList / Tab`
 
 A strip of tabs that reports a value and owns no panel.
 
@@ -91,7 +91,7 @@ class _TabListDemoExampleState extends State<TabListDemoExample> {
 
 ## AstryxTable
 
-`lib/src/components/data/table.dart` · upstream `Table`
+`lib/src/components/data/table.dart` · upstream `Table / TableCell / TableHeaderCell / TableRow / useTableColumnResize / useTableColumnSettings / useTableFilterState / useTableFiltering / useTableGroupedRows / useTablePagination / useTableRowExpansion / useTableRowIndex / useTableRowStatus / useTableSelection / useTableSelectionState / useTableSortable / useTableStickyColumns / useTableTreeData / useTableTreeState`
 
 A typed data table with sorting, selection, row actions and three column-width strategies.
 

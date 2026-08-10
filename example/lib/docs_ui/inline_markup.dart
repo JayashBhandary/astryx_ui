@@ -55,22 +55,17 @@ class DocsInlineText extends StatelessWidget {
           spans.add(TextSpan(text: token.text, style: base));
         case DocsInlineKind.code:
           // Code does not nest: whatever is between the backticks is literal.
+          //
+          // A `WidgetSpan`, not a `TextSpan` with `backgroundColor`. A text
+          // span's background is painted to the glyphs' exact bounds, so the
+          // first and last character sit flush against the edge of the
+          // highlight — the chip reads as a printing error rather than a chip.
+          // A widget span can be padded and rounded.
           spans.add(
-            TextSpan(
-              text: token.text,
-              style: theme.textStyle(AstryxTypeRole.code).copyWith(
-                color: base.color,
-                // A shade stronger than `--color-background-muted`, which in a
-                // dark theme is too close to the page to register.
-                backgroundColor: Color.lerp(
-                  theme.color(AstryxColorToken.backgroundMuted),
-                  theme.color(AstryxColorToken.border),
-                  0.7,
-                ),
-                fontWeight: base.fontWeight,
-                fontStyle: base.fontStyle,
-                height: base.height,
-              ),
+            WidgetSpan(
+              alignment: PlaceholderAlignment.baseline,
+              baseline: TextBaseline.alphabetic,
+              child: _CodeChip(text: token.text, base: base),
             ),
           );
         case DocsInlineKind.bold:
@@ -178,4 +173,54 @@ List<DocsInlineToken> parseDocsInline(String text) {
   }
 
   return tokens;
+}
+
+/// One `` `code` `` span, as a padded chip.
+///
+/// Vertical padding is deliberately 1: a baseline-aligned widget span grows the
+/// line box, so a generous inset here would loosen the leading of every
+/// paragraph that mentions a symbol. Horizontal padding is where a chip needs
+/// the room anyway.
+class _CodeChip extends StatelessWidget {
+  const _CodeChip({required this.text, required this.base});
+
+  final String text;
+
+  /// The surrounding text's style, so a chip inside bold or italic prose keeps
+  /// the weight and slant of the sentence it sits in.
+  final TextStyle base;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        // A shade stronger than `--color-background-muted`, which in a dark
+        // theme is too close to the page to register.
+        color: Color.lerp(
+          theme.color(AstryxColorToken.backgroundMuted),
+          theme.color(AstryxColorToken.border),
+          0.7,
+        ),
+        borderRadius: BorderRadius.circular(
+          theme.radius(AstryxRadiusToken.inner),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+        child: Text(
+          text,
+          style: theme
+              .textStyle(AstryxTypeRole.code)
+              .copyWith(
+                color: base.color,
+                fontWeight: base.fontWeight,
+                fontStyle: base.fontStyle,
+                height: base.height,
+              ),
+        ),
+      ),
+    );
+  }
 }

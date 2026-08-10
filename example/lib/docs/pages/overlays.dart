@@ -1,3 +1,4 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// Everything that floats above the page.
@@ -9,7 +10,7 @@ final List<DocPage> overlayPages = <DocPage>[
   _toast,
 ];
 
-const String _group = 'Overlays';
+const String _group = DocGroup.overlays;
 
 /// The rows every anchored overlay shares.
 const List<List<String>> _positioningRows = <List<String>>[
@@ -31,7 +32,8 @@ const DocPage _popover = DocPage(
   group: _group,
   description: 'A floating panel anchored to a trigger, with trapped focus.',
   source: 'lib/src/components/overlay/popover.dart',
-  upstream: 'Popover',
+  upstream: 'Popover / usePopover',
+  upstreamPath: '/components/Popover',
   blocks: <DocBlock>[
     DocExample('popover_demo'),
     DocHeading('Usage'),
@@ -163,8 +165,12 @@ AstryxPopover(
         DocProp('isOpen', 'bool', 'Whether the overlay is showing.'),
         DocProp('show()', 'void', 'Shows it.'),
         DocProp('hide()', 'void', 'Hides it.'),
-        DocProp('toggle()', 'void', 'Shows it if hidden, hides it if '
-            'shown.'),
+        DocProp(
+          'toggle()',
+          'void',
+          'Shows it if hidden, hides it if '
+              'shown.',
+        ),
       ],
       description:
           'A `ChangeNotifier`. The same controller drives the popover, the '
@@ -185,7 +191,8 @@ const DocPage _tooltip = DocPage(
   group: _group,
   description: 'A short phrase on hover, focus, or long-press.',
   source: 'lib/src/components/overlay/tooltip.dart',
-  upstream: 'Tooltip',
+  upstream: 'Tooltip / useTooltip',
+  upstreamPath: '/components/Tooltip',
   blocks: <DocBlock>[
     DocExample('tooltip_demo'),
     DocHeading('Usage'),
@@ -300,10 +307,13 @@ const DocPage _dropdownMenu = DocPage(
   id: 'dropdown_menu',
   title: 'AstryxDropdownMenu',
   group: _group,
-  description: 'A list of actions, with sections, submenus and full keyboard '
+  description:
+      'A list of actions, with sections, submenus and full keyboard '
       'support.',
   source: 'lib/src/components/overlay/dropdown_menu.dart',
-  upstream: 'DropdownMenu',
+  upstream:
+      'DropdownMenu / DropdownMenuItem / DropdownMenuCheckboxItem / DropdownMenuRadioGroup / DropdownMenuRadioItem / DropdownMenuSubMenu',
+  upstreamPath: '/components/DropdownMenu',
   blocks: <DocBlock>[
     DocExample('dropdown_menu_demo'),
     DocHeading('Usage'),
@@ -362,8 +372,11 @@ AstryxDropdownMenu
         <String>['a letter', 'Jumps to the first item starting with it.'],
         <String>['`→`', 'Opens a submenu. Mirrored under RTL.'],
         <String>['`←`', 'Closes it. Mirrored under RTL.'],
-        <String>['`Enter`', 'Chooses the highlighted item; the menu closes '
-            'first, then the callback runs.'],
+        <String>[
+          '`Enter`',
+          'Chooses the highlighted item; the menu closes '
+              'first, then the callback runs.',
+        ],
         <String>['`Escape`', 'Closes the menu, not the page behind it.'],
       ],
     ),
@@ -474,7 +487,8 @@ const DocPage _dialog = DocPage(
   group: _group,
   description: 'A modal panel anchored to the viewport, with a scrolling body.',
   source: 'lib/src/components/overlay/dialog.dart',
-  upstream: 'Dialog',
+  upstream: 'Dialog / DialogHeader / useImperativeDialog',
+  upstreamPath: '/components/Dialog',
   blocks: <DocBlock>[
     DocExample('dialog_demo'),
     DocHeading('Usage'),
@@ -597,7 +611,8 @@ const DocPage _toast = DocPage(
   group: _group,
   description: 'A transient message in the corner, with an optional action.',
   source: 'lib/src/components/overlay/toast.dart',
-  upstream: 'Toast',
+  upstream: 'Toast / useToast',
+  upstreamPath: '/components/Toast',
   blocks: <DocBlock>[
     DocExample('toast_demo'),
     DocHeading('Usage'),
@@ -692,8 +707,12 @@ AstryxThemeProvider(
           'How many toasts are shown at once.',
           defaultValue: '5',
         ),
-        DocProp('visible', 'List<AstryxToast>', 'What is on screen, '
-            'oldest first.'),
+        DocProp(
+          'visible',
+          'List<AstryxToast>',
+          'What is on screen, '
+              'oldest first.',
+        ),
         DocProp(
           'show(toast)',
           'VoidCallback',

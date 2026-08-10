@@ -1,0 +1,798 @@
+/// Components upstream ships that this port has not written up yet.
+///
+/// One page per widget, not per upstream URL: a sub-component that is not a
+/// public Dart type in its own right is a section on its parent's page, and is
+/// listed in that page's `upstream:` so the parity check can see it.
+///
+/// **Pure Dart** — see the note on `model.dart`. Generated from
+/// `scrape/completesite_map.md`, then maintained by hand: a page
+/// graduates out of here when someone writes it.
+library;
+
+import 'package:example/docs/groups.dart';
+import 'package:example/docs/model.dart';
+import 'package:example/docs/pages/_stub.dart';
+
+/// Every component page that is a placeholder, in upstream nav order.
+final List<DocPage> plannedComponentPages = <DocPage>[
+  stubPage(
+    id: 'alert_dialog',
+    title: 'AlertDialog',
+    group: DocGroup.overlays,
+    description:
+        'A modal that interrupts to confirm or cancel one '
+        'consequential action.',
+    upstream: 'AlertDialog / useImperativeAlertDialog',
+    upstreamPath: '/components/AlertDialog',
+  ),
+  stubPage(
+    id: 'hover_card',
+    title: 'HoverCard',
+    group: DocGroup.overlays,
+    description:
+        'A rich card revealed on hover over a trigger, for a '
+        'preview that a tooltip is too small to hold.',
+    upstream: 'HoverCard / useHoverCard',
+    upstreamPath: '/components/HoverCard',
+  ),
+  stubPage(
+    id: 'overlay',
+    title: 'Overlay',
+    group: DocGroup.overlays,
+    description:
+        'The scrim and layer primitive the modal components are '
+        'built on.',
+    upstream: 'Overlay',
+    upstreamPath: '/components/Overlay',
+  ),
+  stubPage(
+    id: 'collapsible',
+    title: 'Collapsible',
+    group: DocGroup.overlays,
+    description:
+        'A disclosure: a header that shows and hides its own '
+        'content.',
+    upstream: 'Collapsible / useCollapsible',
+    upstreamPath: '/components/Collapsible',
+  ),
+  stubPage(
+    id: 'collapsible_group',
+    title: 'CollapsibleGroup',
+    group: DocGroup.overlays,
+    description:
+        'Several collapsibles sharing a section, optionally '
+        'one-open-at-a-time.',
+    upstream: 'CollapsibleGroup',
+    upstreamPath: '/components/CollapsibleGroup',
+  ),
+  stubPage(
+    id: 'context_menu',
+    title: 'ContextMenu',
+    group: DocGroup.overlays,
+    description: 'A menu raised by a secondary click, at the pointer.',
+    upstream: 'ContextMenu / ContextMenuItem',
+    upstreamPath: '/components/ContextMenu',
+  ),
+  stubPage(
+    id: 'app_shell',
+    title: 'AppShell',
+    group: DocGroup.appShell,
+    description:
+        'The outer frame of an application: header, navigation, '
+        'content, and the responsive behaviour joining them.',
+    upstream: 'AppShell / useAppShellMobile',
+    upstreamPath: '/components/AppShell',
+  ),
+  stubPage(
+    id: 'layout',
+    title: 'Layout',
+    group: DocGroup.appShell,
+    description:
+        'The content frame inside the shell — header, footer, panel '
+        'and scrolling body.',
+    upstream:
+        'Layout / LayoutContent / LayoutFooter / LayoutHeader / '
+        'LayoutPanel',
+    upstreamPath: '/components/Layout',
+  ),
+  stubPage(
+    id: 'section',
+    title: 'Section',
+    group: DocGroup.appShell,
+    description:
+        'A titled band of page content, with its own heading level '
+        'and spacing.',
+    upstream: 'Section',
+    upstreamPath: '/components/Section',
+  ),
+  stubPage(
+    id: 'resize_handle',
+    title: 'ResizeHandle',
+    group: DocGroup.appShell,
+    description: 'A draggable divider that resizes the panel beside it.',
+    upstream: 'ResizeHandle / useResizable',
+    upstreamPath: '/components/ResizeHandle',
+  ),
+  stubPage(
+    id: 'outline',
+    title: 'Outline',
+    group: DocGroup.appShell,
+    description:
+        "An on-this-page table of contents, tracking the reader's "
+        'position.',
+    upstream: 'Outline',
+    upstreamPath: '/components/Outline',
+  ),
+  stubPage(
+    id: 'breadcrumbs',
+    title: 'Breadcrumbs',
+    group: DocGroup.navigation,
+    description:
+        'The trail back up a hierarchy, collapsing in the middle '
+        'when it will not fit.',
+    upstream: 'Breadcrumbs / BreadcrumbItem',
+    upstreamPath: '/components/Breadcrumbs',
+  ),
+  stubPage(
+    id: 'top_nav',
+    title: 'TopNav',
+    group: DocGroup.navigation,
+    description:
+        'A horizontal application bar, with menus and an optional '
+        'mega menu.',
+    upstream:
+        'TopNav / TopNavHeading / TopNavItem / TopNavMegaMenu / '
+        'TopNavMegaMenuFeaturedCard / TopNavMegaMenuItem / '
+        'TopNavMenu',
+    upstreamPath: '/components/TopNav',
+  ),
+  stubPage(
+    id: 'side_nav',
+    title: 'SideNav',
+    group: DocGroup.navigation,
+    description:
+        'A vertical navigation rail with sections, headings, and a '
+        'collapsed state.',
+    upstream:
+        'SideNav / SideNavCollapseButton / SideNavHeading / '
+        'SideNavItem / SideNavSection',
+    upstreamPath: '/components/SideNav',
+  ),
+  stubPage(
+    id: 'mobile_nav',
+    title: 'MobileNav',
+    group: DocGroup.navigation,
+    description:
+        'The navigation drawer a narrow viewport gets instead of '
+        'the rail.',
+    upstream: 'MobileNav / MobileNavToggle',
+    upstreamPath: '/components/MobileNav',
+  ),
+  stubPage(
+    id: 'nav_icon',
+    title: 'NavIcon',
+    group: DocGroup.navigation,
+    description:
+        'The icon slot in a navigation item, sized and aligned for '
+        'the rail.',
+    upstream: 'NavIcon',
+    upstreamPath: '/components/NavIcon',
+  ),
+  stubPage(
+    id: 'nav_heading_menu',
+    title: 'NavHeadingMenu',
+    group: DocGroup.navigation,
+    description: 'A navigation heading that is itself a menu trigger.',
+    upstream: 'NavHeadingMenu',
+    upstreamPath: '/components/NavHeadingMenu',
+  ),
+  stubPage(
+    id: 'tab_menu',
+    title: 'TabMenu',
+    group: DocGroup.navigation,
+    description:
+        'A tab whose selection opens a menu rather than switching a '
+        'panel.',
+    upstream: 'TabMenu',
+    upstreamPath: '/components/TabMenu',
+  ),
+  stubPage(
+    id: 'more_menu',
+    title: 'MoreMenu',
+    group: DocGroup.navigation,
+    description:
+        'The overflow menu a toolbar or nav collapses its tail '
+        'into.',
+    upstream: 'MoreMenu',
+    upstreamPath: '/components/MoreMenu',
+  ),
+  stubPage(
+    id: 'toolbar',
+    title: 'Toolbar',
+    group: DocGroup.navigation,
+    description:
+        'A horizontal band of controls, with arrow-key traversal as '
+        'one tab stop.',
+    upstream: 'Toolbar',
+    upstreamPath: '/components/Toolbar',
+  ),
+  stubPage(
+    id: 'pagination',
+    title: 'Pagination',
+    group: DocGroup.navigation,
+    description:
+        'Page-at-a-time controls for a list or table too long to '
+        'scroll.',
+    upstream: 'Pagination',
+    upstreamPath: '/components/Pagination',
+  ),
+  stubPage(
+    id: 'segmented_control',
+    title: 'SegmentedControl',
+    group: DocGroup.navigation,
+    description:
+        'A small set of mutually exclusive views, all labels '
+        'visible at once.',
+    upstream: 'SegmentedControl / SegmentedControlItem',
+    upstreamPath: '/components/SegmentedControl',
+  ),
+  stubPage(
+    id: 'link',
+    title: 'Link',
+    group: DocGroup.navigation,
+    description:
+        'Inline navigation in running text, with the visited and '
+        'external affordances.',
+    upstream: 'Link',
+    upstreamPath: '/components/Link',
+  ),
+  stubPage(
+    id: 'checkbox_list',
+    title: 'CheckboxList',
+    group: DocGroup.forms,
+    description:
+        'A group of checkboxes sharing one label and one validation '
+        'state.',
+    upstream: 'CheckboxList / CheckboxListItem',
+    upstreamPath: '/components/CheckboxList',
+  ),
+  stubPage(
+    id: 'number_input',
+    title: 'NumberInput',
+    group: DocGroup.forms,
+    description: 'A numeric field with step controls and range clamping.',
+    upstream: 'NumberInput',
+    upstreamPath: '/components/NumberInput',
+  ),
+  stubPage(
+    id: 'file_input',
+    title: 'FileInput',
+    group: DocGroup.forms,
+    description:
+        'A file picker with a drop target and the list of what was '
+        'chosen.',
+    upstream: 'FileInput',
+    upstreamPath: '/components/FileInput',
+  ),
+  stubPage(
+    id: 'slider',
+    title: 'Slider',
+    group: DocGroup.forms,
+    description: 'A value chosen by dragging along a track.',
+    upstream: 'Slider',
+    upstreamPath: '/components/Slider',
+  ),
+  stubPage(
+    id: 'multi_selector',
+    title: 'MultiSelector',
+    group: DocGroup.forms,
+    description:
+        'A selector that keeps several choices, shown as removable '
+        'tokens.',
+    upstream: 'MultiSelector',
+    upstreamPath: '/components/MultiSelector',
+  ),
+  stubPage(
+    id: 'complex_selector',
+    title: 'ComplexSelector',
+    group: DocGroup.forms,
+    description:
+        'A selector over grouped or richly-rendered options, beyond '
+        'a flat list.',
+    upstream: 'ComplexSelector',
+    upstreamPath: '/components/ComplexSelector',
+  ),
+  stubPage(
+    id: 'input_group',
+    title: 'InputGroup',
+    group: DocGroup.forms,
+    description:
+        'Adjacent inputs and affixes joined into one bordered '
+        'container.',
+    upstream: 'InputGroup / InputGroupText',
+    upstreamPath: '/components/InputGroup',
+  ),
+  stubPage(
+    id: 'form_layout',
+    title: 'FormLayout',
+    group: DocGroup.forms,
+    description: "The column and label geometry a form's fields share.",
+    upstream: 'FormLayout',
+    upstreamPath: '/components/FormLayout',
+  ),
+  stubPage(
+    id: 'toggle_button',
+    title: 'ToggleButton',
+    group: DocGroup.actions,
+    description:
+        'A button that stays pressed, for a setting rather than an '
+        'action.',
+    upstream: 'ToggleButton',
+    upstreamPath: '/components/ToggleButton',
+  ),
+  stubPage(
+    id: 'toggle_button_group',
+    title: 'ToggleButtonGroup',
+    group: DocGroup.actions,
+    description:
+        'Toggle buttons as one control — single or multiple '
+        'selection.',
+    upstream: 'ToggleButtonGroup',
+    upstreamPath: '/components/ToggleButtonGroup',
+  ),
+  stubPage(
+    id: 'calendar',
+    title: 'Calendar',
+    group: DocGroup.dateTime,
+    description: 'A month grid for picking a date, keyboard-navigable.',
+    upstream: 'Calendar',
+    upstreamPath: '/components/Calendar',
+  ),
+  stubPage(
+    id: 'date_input',
+    title: 'DateInput',
+    group: DocGroup.dateTime,
+    description: 'A text field that parses and formats a single date.',
+    upstream: 'DateInput',
+    upstreamPath: '/components/DateInput',
+  ),
+  stubPage(
+    id: 'date_range_input',
+    title: 'DateRangeInput',
+    group: DocGroup.dateTime,
+    description:
+        'Two dates as one field, with the range validated across '
+        'them.',
+    upstream: 'DateRangeInput',
+    upstreamPath: '/components/DateRangeInput',
+  ),
+  stubPage(
+    id: 'date_time_input',
+    title: 'DateTimeInput',
+    group: DocGroup.dateTime,
+    description: 'A date and a time in one field.',
+    upstream: 'DateTimeInput',
+    upstreamPath: '/components/DateTimeInput',
+  ),
+  stubPage(
+    id: 'time_input',
+    title: 'TimeInput',
+    group: DocGroup.dateTime,
+    description: 'A text field for a time of day.',
+    upstream: 'TimeInput',
+    upstreamPath: '/components/TimeInput',
+  ),
+  stubPage(
+    id: 'timestamp',
+    title: 'Timestamp',
+    group: DocGroup.dateTime,
+    description:
+        'An absolute time rendered relative — "3 minutes ago" — and '
+        're-rendered as it ages.',
+    upstream: 'Timestamp',
+    upstreamPath: '/components/Timestamp',
+  ),
+  stubPage(
+    id: 'command_palette',
+    title: 'CommandPalette',
+    group: DocGroup.commandSearch,
+    description:
+        'The keyboard-first command surface: a query, grouped '
+        'results, and a footer of shortcuts.',
+    upstream:
+        'CommandPalette / CommandPaletteEmpty / '
+        'CommandPaletteFooter / CommandPaletteGroup / '
+        'CommandPaletteInput / CommandPaletteItem / '
+        'CommandPaletteList',
+    upstreamPath: '/components/CommandPalette',
+  ),
+  stubPage(
+    id: 'typeahead',
+    title: 'Typeahead',
+    group: DocGroup.commandSearch,
+    description: 'A text field that suggests completions as you type.',
+    upstream: 'Typeahead / TypeaheadItem',
+    upstreamPath: '/components/Typeahead',
+  ),
+  stubPage(
+    id: 'base_typeahead',
+    title: 'BaseTypeahead',
+    group: DocGroup.commandSearch,
+    description:
+        'The unstyled typeahead the other search inputs are built '
+        'from.',
+    upstream: 'BaseTypeahead',
+    upstreamPath: '/components/BaseTypeahead',
+  ),
+  stubPage(
+    id: 'power_search',
+    title: 'PowerSearch',
+    group: DocGroup.commandSearch,
+    description:
+        'A search input with structured filters alongside the free '
+        'text.',
+    upstream: 'PowerSearch',
+    upstreamPath: '/components/PowerSearch',
+  ),
+  stubPage(
+    id: 'chat_layout',
+    title: 'ChatLayout',
+    group: DocGroup.chat,
+    description:
+        'The frame of a conversation: a scrolling transcript and a '
+        'pinned composer.',
+    upstream: 'ChatLayout / ChatLayoutScrollButton',
+    upstreamPath: '/components/ChatLayout',
+  ),
+  stubPage(
+    id: 'chat_message',
+    title: 'ChatMessage',
+    group: DocGroup.chat,
+    description:
+        'One turn in a conversation — the bubble, its metadata, and '
+        'the list that holds them.',
+    upstream:
+        'ChatMessage / ChatMessageBubble / ChatMessageList / '
+        'ChatMessageMetadata',
+    upstreamPath: '/components/ChatMessage',
+  ),
+  stubPage(
+    id: 'chat_composer',
+    title: 'ChatComposer',
+    group: DocGroup.chat,
+    description:
+        'The input a message is written in, with its drawer and '
+        'inline tokens.',
+    upstream:
+        'ChatComposer / ChatComposerDrawer / ChatComposerInput / '
+        'ChatComposerTokenElement',
+    upstreamPath: '/components/ChatComposer',
+  ),
+  stubPage(
+    id: 'chat_send_button',
+    title: 'ChatSendButton',
+    group: DocGroup.chat,
+    description:
+        "The composer's submit control, reflecting sending and "
+        'stop-generating.',
+    upstream: 'ChatSendButton',
+    upstreamPath: '/components/ChatSendButton',
+  ),
+  stubPage(
+    id: 'chat_dictation_button',
+    title: 'ChatDictationButton',
+    group: DocGroup.chat,
+    description: "The composer's speech-to-text control.",
+    upstream: 'ChatDictationButton',
+    upstreamPath: '/components/ChatDictationButton',
+  ),
+  stubPage(
+    id: 'chat_system_message',
+    title: 'ChatSystemMessage',
+    group: DocGroup.chat,
+    description:
+        'A turn that came from the system rather than either '
+        'participant.',
+    upstream: 'ChatSystemMessage',
+    upstreamPath: '/components/ChatSystemMessage',
+  ),
+  stubPage(
+    id: 'chat_tokenized_text',
+    title: 'ChatTokenizedText',
+    group: DocGroup.chat,
+    description:
+        'Message text with mentions and references rendered as '
+        'tokens.',
+    upstream: 'ChatTokenizedText',
+    upstreamPath: '/components/ChatTokenizedText',
+  ),
+  stubPage(
+    id: 'chat_tool_calls',
+    title: 'ChatToolCalls',
+    group: DocGroup.chat,
+    description:
+        'The tool calls a model made, and their results, inside a '
+        'turn.',
+    upstream: 'ChatToolCalls',
+    upstreamPath: '/components/ChatToolCalls',
+  ),
+  stubPage(
+    id: 'citation',
+    title: 'Citation',
+    group: DocGroup.chat,
+    description:
+        'A numbered reference from generated text back to its '
+        'source.',
+    upstream: 'Citation',
+    upstreamPath: '/components/Citation',
+  ),
+  stubPage(
+    id: 'markdown',
+    title: 'Markdown',
+    group: DocGroup.chat,
+    description:
+        'Rendered markdown, for model output and authored prose '
+        'alike.',
+    upstream: 'Markdown',
+    upstreamPath: '/components/Markdown',
+  ),
+  stubPage(
+    id: 'token',
+    title: 'Token',
+    group: DocGroup.chat,
+    description:
+        'One inline chip standing for an entity inside a text '
+        'field.',
+    upstream: 'Token',
+    upstreamPath: '/components/Token',
+  ),
+  stubPage(
+    id: 'tokenizer',
+    title: 'Tokenizer',
+    group: DocGroup.chat,
+    description: 'The field that turns typed text into tokens.',
+    upstream: 'Tokenizer',
+    upstreamPath: '/components/Tokenizer',
+  ),
+  stubPage(
+    id: 'list',
+    title: 'List',
+    group: DocGroup.dataDisplay,
+    description:
+        'A vertical list of rows, with the separators and density '
+        'the design system expects.',
+    upstream: 'List / ListItem',
+    upstreamPath: '/components/List',
+  ),
+  stubPage(
+    id: 'tree_list',
+    title: 'TreeList',
+    group: DocGroup.dataDisplay,
+    description: 'A list of nested, expandable rows.',
+    upstream: 'TreeList',
+    upstreamPath: '/components/TreeList',
+  ),
+  stubPage(
+    id: 'overflow_list',
+    title: 'OverflowList',
+    group: DocGroup.dataDisplay,
+    description:
+        'A row of items that measures itself and moves the tail '
+        'into a menu.',
+    upstream: 'OverflowList',
+    upstreamPath: '/components/OverflowList',
+  ),
+  stubPage(
+    id: 'metadata_list',
+    title: 'MetadataList',
+    group: DocGroup.dataDisplay,
+    description: 'Label-and-value pairs, for the details panel of a record.',
+    upstream: 'MetadataList / MetadataListItem',
+    upstreamPath: '/components/MetadataList',
+  ),
+  stubPage(
+    id: 'item',
+    title: 'Item',
+    group: DocGroup.dataDisplay,
+    description:
+        'The row primitive the lists and menus share — icon, label, '
+        'description, trailing slot.',
+    upstream: 'Item',
+    upstreamPath: '/components/Item',
+  ),
+  stubPage(
+    id: 'empty_state',
+    title: 'EmptyState',
+    group: DocGroup.dataDisplay,
+    description:
+        'What a list, table or panel shows when it has nothing to '
+        'show.',
+    upstream: 'EmptyState',
+    upstreamPath: '/components/EmptyState',
+  ),
+  stubPage(
+    id: 'code',
+    title: 'Code',
+    group: DocGroup.dataDisplay,
+    description:
+        'Inline monospace, for a symbol or a value inside a '
+        'sentence.',
+    upstream: 'Code',
+    upstreamPath: '/components/Code',
+  ),
+  stubPage(
+    id: 'code_block',
+    title: 'CodeBlock',
+    group: DocGroup.dataDisplay,
+    description:
+        'A fenced block of code, with the language, copy control '
+        'and optional line numbers.',
+    upstream: 'CodeBlock',
+    upstreamPath: '/components/CodeBlock',
+  ),
+  stubPage(
+    id: 'blockquote',
+    title: 'Blockquote',
+    group: DocGroup.dataDisplay,
+    description: 'A quotation set apart from the surrounding prose.',
+    upstream: 'Blockquote',
+    upstreamPath: '/components/Blockquote',
+  ),
+  stubPage(
+    id: 'kbd',
+    title: 'Kbd',
+    group: DocGroup.dataDisplay,
+    description: 'A keyboard key or chord, rendered as a key.',
+    upstream: 'Kbd',
+    upstreamPath: '/components/Kbd',
+  ),
+  stubPage(
+    id: 'avatar',
+    title: 'Avatar',
+    group: DocGroup.media,
+    description:
+        'A person or entity as an image, initials or icon, with an '
+        'optional status dot.',
+    upstream: 'Avatar / AvatarStatusDot',
+    upstreamPath: '/components/Avatar',
+  ),
+  stubPage(
+    id: 'avatar_group',
+    title: 'AvatarGroup',
+    group: DocGroup.media,
+    description:
+        'Overlapping avatars with a count for the ones that did not '
+        'fit.',
+    upstream: 'AvatarGroup / AvatarGroupOverflow',
+    upstreamPath: '/components/AvatarGroup',
+  ),
+  stubPage(
+    id: 'thumbnail',
+    title: 'Thumbnail',
+    group: DocGroup.media,
+    description: 'A small fixed-ratio preview of an image or file.',
+    upstream: 'Thumbnail',
+    upstreamPath: '/components/Thumbnail',
+  ),
+  stubPage(
+    id: 'aspect_ratio',
+    title: 'AspectRatio',
+    group: DocGroup.media,
+    description: 'A box that keeps its width-to-height ratio as it resizes.',
+    upstream: 'AspectRatio',
+    upstreamPath: '/components/AspectRatio',
+  ),
+  stubPage(
+    id: 'carousel',
+    title: 'Carousel',
+    group: DocGroup.media,
+    description:
+        'A horizontally paged strip of items, with the controls and '
+        'keyboard traversal.',
+    upstream: 'Carousel',
+    upstreamPath: '/components/Carousel',
+  ),
+  stubPage(
+    id: 'lightbox',
+    title: 'Lightbox',
+    group: DocGroup.media,
+    description: 'A full-screen media viewer, navigable between items.',
+    upstream: 'Lightbox',
+    upstreamPath: '/components/Lightbox',
+  ),
+  stubPage(
+    id: 'media_theme',
+    title: 'MediaTheme',
+    group: DocGroup.media,
+    description:
+        'The theme overrides that apply to media surfaces — '
+        'captions and controls over an image.',
+    upstream: 'MediaTheme',
+    upstreamPath: '/components/MediaTheme',
+  ),
+  stubPage(
+    id: 'selectable_card',
+    title: 'SelectableCard',
+    group: DocGroup.surfaces,
+    description:
+        'A card that carries selection state, for a card-shaped '
+        'radio or checkbox.',
+    upstream: 'SelectableCard',
+    upstreamPath: '/components/SelectableCard',
+  ),
+  stubPage(
+    id: 'status_dot',
+    title: 'StatusDot',
+    group: DocGroup.status,
+    description:
+        'A small coloured dot standing for a state, always paired '
+        'with text.',
+    upstream: 'StatusDot',
+    upstreamPath: '/components/StatusDot',
+  ),
+  stubPage(
+    id: 'stack_item',
+    title: 'StackItem',
+    group: DocGroup.layout,
+    description: 'A stack child with its own flex, alignment and order.',
+    upstream: 'StackItem',
+    upstreamPath: '/components/StackItem',
+  ),
+  stubPage(
+    id: 'visually_hidden',
+    title: 'VisuallyHidden',
+    group: DocGroup.layout,
+    description:
+        'Content present for a screen reader and absent from the '
+        'screen.',
+    upstream: 'VisuallyHidden',
+    upstreamPath: '/components/VisuallyHidden',
+  ),
+  stubPage(
+    id: 'theme',
+    title: 'Theme',
+    group: DocGroup.providers,
+    description:
+        'The provider that puts a resolved theme in scope. Ported '
+        'as `AstryxThemeProvider`; this page records the upstream '
+        'mapping.',
+    upstream: 'Theme',
+    upstreamPath: '/components/Theme',
+  ),
+  stubPage(
+    id: 'layer_provider',
+    title: 'LayerProvider',
+    group: DocGroup.providers,
+    description: 'The stacking context overlays are raised into.',
+    upstream: 'LayerProvider',
+    upstreamPath: '/components/LayerProvider',
+  ),
+  stubPage(
+    id: 'link_provider',
+    title: 'LinkProvider',
+    group: DocGroup.providers,
+    description:
+        'How links navigate — supplied once, so components need not '
+        'know the router.',
+    upstream: 'LinkProvider',
+    upstreamPath: '/components/LinkProvider',
+  ),
+  stubPage(
+    id: 'internationalization_provider',
+    title: 'InternationalizationProvider',
+    group: DocGroup.providers,
+    description:
+        'Locale, text direction and the translator, supplied to the '
+        'tree.',
+    upstream: 'InternationalizationProvider',
+    upstreamPath: '/components/InternationalizationProvider',
+  ),
+  stubPage(
+    id: 'syntax_theme',
+    title: 'SyntaxTheme',
+    group: DocGroup.providers,
+    description: 'The token colours a code block highlights with.',
+    upstream: 'SyntaxTheme',
+    upstreamPath: '/components/SyntaxTheme',
+  ),
+];

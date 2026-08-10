@@ -4,7 +4,7 @@ description: A two-state or three-state checkbox with a required label.
 component: true
 group: Forms
 source: lib/src/components/forms/checkbox.dart
-upstream: Checkbox
+upstream: CheckboxInput
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

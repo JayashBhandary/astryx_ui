@@ -8,7 +8,7 @@
 
 ## AstryxField
 
-`lib/src/components/forms/field.dart` · upstream `Field`
+`lib/src/components/forms/field.dart` · upstream `Field / FieldLabel / FieldStatus`
 
 Gives any control a label, a description, a required marker and a validation message.
 
@@ -201,7 +201,7 @@ class TextAreaDemoExample extends StatelessWidget {
 
 ## AstryxCheckbox
 
-`lib/src/components/forms/checkbox.dart` · upstream `Checkbox`
+`lib/src/components/forms/checkbox.dart` · upstream `CheckboxInput`
 
 A two-state or three-state checkbox with a required label.
 
@@ -265,7 +265,7 @@ class _CheckboxDemoExampleState extends State<CheckboxDemoExample> {
 
 ## AstryxRadioList
 
-`lib/src/components/forms/radio_list.dart` · upstream `RadioList`
+`lib/src/components/forms/radio_list.dart` · upstream `RadioList / RadioListItem`
 
 One choice out of several, as an ARIA radio group.
 
@@ -412,7 +412,7 @@ class _SwitchDemoExampleState extends State<SwitchDemoExample> {
 
 ## AstryxSelector
 
-`lib/src/components/forms/selector.dart` · upstream `Selector`
+`lib/src/components/forms/selector.dart` · upstream `Selector / SelectorOption`
 
 A dropdown that picks one value, with optional search.
 

@@ -4,7 +4,7 @@ description: Gives any control a label, a description, a required marker and a v
 component: true
 group: Forms
 source: lib/src/components/forms/field.dart
-upstream: Field
+upstream: Field / FieldLabel / FieldStatus
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

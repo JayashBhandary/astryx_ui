@@ -37,19 +37,12 @@ const String _packageLib = '../lib/src';
 const String _pluginManifest = '../.claude-plugin/plugin.json';
 
 /// The group that documents the package rather than a component.
-const String _guideGroup = 'Getting started';
+const String _guideGroup = DocGroup.gettingStarted;
 
 /// The reference file each group is written to.
-const Map<String, String> _groupFiles = <String, String>{
-  'Getting started': 'guides.md',
-  'Layout & typography': 'layout.md',
-  'Actions': 'actions.md',
-  'Forms': 'forms.md',
-  'Status': 'status.md',
-  'Overlays': 'overlays.md',
-  'Surfaces': 'surfaces.md',
-  'Data display': 'data.md',
-};
+///
+/// From `lib/docs/groups.dart`, so adding a group cannot leave this behind.
+const Map<String, String> _groupFiles = docGroupFiles;
 
 void main() {
   if (!Directory('lib/docs').existsSync()) {
@@ -61,21 +54,30 @@ void main() {
 
   File('$_root/SKILL.md').writeAsStringSync(_skill());
 
+  var groups = 0;
   for (final entry in docPagesByGroup.entries) {
     final file = _groupFiles[entry.key];
     if (file == null) {
       stderr.writeln('No reference file mapped for group "${entry.key}".');
       exit(1);
     }
+
+    // Written pages only: an agent told about a widget the package does not
+    // export yet will call it, and the call will not compile. A group whose
+    // pages are all placeholders gets no reference file at all.
+    final pages = entry.value.where((page) => page.isWritten).toList();
+    if (pages.isEmpty) continue;
+
     File(
       '$_root/references/$file',
-    ).writeAsStringSync(_reference(entry.key, entry.value));
+    ).writeAsStringSync(_reference(entry.key, pages));
+    groups++;
   }
 
   File('$_root/references/enums.md').writeAsStringSync(_enums());
   File('$_root/references/patterns.md').writeAsStringSync(_patterns());
 
-  print('Wrote SKILL.md and ${_groupFiles.length + 2} references to $_root/.');
+  print('Wrote SKILL.md and ${groups + 2} references to $_root/.');
 
   _syncPluginVersion();
 }
@@ -148,7 +150,7 @@ String _skill() {
     ..writeln('| Component | For | Reference |')
     ..writeln('| --- | --- | --- |');
 
-  for (final page in docPages) {
+  for (final page in writtenDocPages) {
     if (page.group == _guideGroup) continue;
     out.writeln(
       '| `${page.title}` | ${_plain(page.description)} '
@@ -163,7 +165,7 @@ String _skill() {
     ..writeln('| Topic | Covers | Reference |')
     ..writeln('| --- | --- | --- |');
 
-  for (final page in docPages.where((p) => p.group == _guideGroup)) {
+  for (final page in writtenDocPages.where((p) => p.group == _guideGroup)) {
     out.writeln(
       '| ${page.title} | ${_plain(page.description)} '
       '| `references/guides.md` |',
@@ -184,8 +186,12 @@ String _skill() {
       'with row actions, a destructive flow, a settings list.',
     );
 
-  for (final entry in _groupFiles.entries) {
-    out.writeln('- `references/${entry.value}` — ${entry.key}.');
+  // Only the groups that actually have pages: `_groupFiles` covers every group
+  // the site may grow into, and pointing an agent at a file that was never
+  // written is worse than not mentioning it.
+  for (final entry in docPagesByGroup.entries) {
+    if (!entry.value.any((page) => page.isWritten)) continue;
+    out.writeln('- `references/${_groupFiles[entry.key]}` — ${entry.key}.');
   }
 
   out

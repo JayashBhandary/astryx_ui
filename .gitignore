@@ -30,6 +30,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Scape + data inside of this.
+/scrape/*
+
 # Local-only notes. RUNBOOK.local.md holds the release, generation and deploy
 # procedures, plus the Hosting config below verbatim so it can be restored.
 # Keeping the pattern rather than the filename means a second local document

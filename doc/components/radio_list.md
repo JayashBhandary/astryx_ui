@@ -4,7 +4,7 @@ description: One choice out of several, as an ARIA radio group.
 component: true
 group: Forms
 source: lib/src/components/forms/radio_list.dart
-upstream: RadioList
+upstream: RadioList / RadioListItem
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

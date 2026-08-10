@@ -45,9 +45,12 @@ class DocsPageView extends StatelessWidget {
     AstryxThemeData theme,
     DocBlock block,
   ) => switch (block) {
+    // More space above a heading than the stack's own gap, so a new section
+    // reads as a break rather than as another paragraph. Nothing below it: a
+    // heading belongs to what follows, and the gap supplies that already.
     DocHeading() => Padding(
       padding: EdgeInsets.only(
-        top: theme.spacing(AstryxSpacingToken.spacing2),
+        top: theme.spacing(AstryxSpacingToken.spacing5),
       ),
       child: AstryxHeading(block.text, level: block.level + 1),
     ),
@@ -74,7 +77,7 @@ class _Masthead extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AstryxVStack(
-      gap: AstryxSpacingToken.spacing2,
+      gap: AstryxSpacingToken.spacing3,
       align: AstryxStackAlign.stretch,
       children: <Widget>[
         AstryxText(
@@ -124,7 +127,9 @@ class _List extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AstryxVStack(
-      gap: AstryxSpacingToken.spacing2,
+      // A list item is often two lines long, so items need more between them
+      // than the lines inside one item, or the list reads as a single block.
+      gap: AstryxSpacingToken.spacing3,
       align: AstryxStackAlign.stretch,
       children: <Widget>[
         for (var i = 0; i < block.items.length; i++)
@@ -132,8 +137,10 @@ class _List extends StatelessWidget {
             gap: AstryxSpacingToken.spacing2,
             align: AstryxStackAlign.start,
             children: <Widget>[
+              // Wide enough for `10.`, and no wider: a 20-pixel column left the
+              // bullet stranded a third of an inch from the text it marks.
               SizedBox(
-                width: 20,
+                width: block.ordered ? 20 : 10,
                 child: AstryxText(
                   block.ordered ? '${i + 1}.' : '•',
                   color: AstryxTextColor.secondary,

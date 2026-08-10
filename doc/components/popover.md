@@ -4,7 +4,7 @@ description: A floating panel anchored to a trigger, with trapped focus.
 component: true
 group: Overlays
 source: lib/src/components/overlay/popover.dart
-upstream: Popover
+upstream: Popover / usePopover
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

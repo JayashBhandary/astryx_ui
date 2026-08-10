@@ -178,7 +178,7 @@ class StackDemoExample extends StatelessWidget {
 
 ## AstryxGrid
 
-`lib/src/components/layout/grid.dart` · upstream `Grid`
+`lib/src/components/layout/grid.dart` · upstream `Grid / GridSpan`
 
 A CSS-style grid: fixed tracks, or as many as the width allows.
 

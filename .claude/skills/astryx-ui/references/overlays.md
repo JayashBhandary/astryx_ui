@@ -8,7 +8,7 @@
 
 ## AstryxPopover
 
-`lib/src/components/overlay/popover.dart` · upstream `Popover`
+`lib/src/components/overlay/popover.dart` · upstream `Popover / usePopover`
 
 A floating panel anchored to a trigger, with trapped focus.
 
@@ -83,7 +83,7 @@ class PopoverDemoExample extends StatelessWidget {
 
 ## AstryxTooltip
 
-`lib/src/components/overlay/tooltip.dart` · upstream `Tooltip`
+`lib/src/components/overlay/tooltip.dart` · upstream `Tooltip / useTooltip`
 
 A short phrase on hover, focus, or long-press.
 
@@ -129,7 +129,7 @@ class TooltipDemoExample extends StatelessWidget {
 
 ## AstryxDropdownMenu
 
-`lib/src/components/overlay/dropdown_menu.dart` · upstream `DropdownMenu`
+`lib/src/components/overlay/dropdown_menu.dart` · upstream `DropdownMenu / DropdownMenuItem / DropdownMenuCheckboxItem / DropdownMenuRadioGroup / DropdownMenuRadioItem / DropdownMenuSubMenu`
 
 A list of actions, with sections, submenus and full keyboard support.
 
@@ -233,7 +233,7 @@ class _DropdownMenuDemoExampleState extends State<DropdownMenuDemoExample> {
 
 ## AstryxDialog
 
-`lib/src/components/overlay/dialog.dart` · upstream `Dialog`
+`lib/src/components/overlay/dialog.dart` · upstream `Dialog / DialogHeader / useImperativeDialog`
 
 A modal panel anchored to the viewport, with a scrolling body.
 
@@ -326,7 +326,7 @@ class _DialogDemoExampleState extends State<DialogDemoExample> {
 
 ## AstryxToast
 
-`lib/src/components/overlay/toast.dart` · upstream `Toast`
+`lib/src/components/overlay/toast.dart` · upstream `Toast / useToast`
 
 A transient message in the corner, with an optional action.
 

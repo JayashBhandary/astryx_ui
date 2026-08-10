@@ -29,7 +29,7 @@ import 'package:example/docs/snippets.g.dart';
 const String _root = '../doc';
 
 /// The group that is documentation *about* the package rather than a component.
-const String _guideGroup = 'Getting started';
+const String _guideGroup = DocGroup.gettingStarted;
 
 void main() {
   if (!Directory('lib/docs').existsSync()) {
@@ -40,14 +40,32 @@ void main() {
   Directory('$_root/components').createSync(recursive: true);
   Directory('$_root/guides').createSync(recursive: true);
 
-  for (final page in docPages) {
+  // Written pages only. The site also carries placeholders for everything
+  // upstream ships (see `lib/docs/pages/planned/`); publishing an empty file
+  // for each would fill `doc/` with pages that say nothing and would let the
+  // index claim coverage the package does not have. The index lists them, with
+  // their status, which is the honest version of the same information.
+  final written = writtenDocPages.toList();
+  for (final page in written) {
     File('$_root/${_pathOf(page)}').writeAsStringSync(_render(page));
   }
 
   File('$_root/README.md').writeAsStringSync(_index());
 
-  print('Wrote ${docPages.length} pages and an index to $_root/.');
+  final planned = docPages.length - written.length;
+  print(
+    'Wrote ${written.length} pages and an index to $_root/ '
+    '($planned placeholders skipped).',
+  );
 }
+
+/// How an unwritten page's state reads in the index.
+String _statusLabel(DocStatus status) => switch (status) {
+  DocStatus.ready => 'written',
+  DocStatus.stub => 'ported, not written up',
+  DocStatus.planned => 'not ported yet',
+  DocStatus.notPlanned => 'not planned',
+};
 
 /// The file a page is written to, relative to [_root].
 String _pathOf(DocPage page) => '${_dirOf(page)}/${page.id}.md';
@@ -232,8 +250,13 @@ String _index() {
       ..writeln('## ${entry.key}')
       ..writeln();
     for (final page in entry.value) {
+      // A placeholder has no file to link to, so it is named but not linked,
+      // and says why.
       out.writeln(
-        '- [${page.title}](${_pathOf(page)}) — ${page.description}',
+        page.isWritten
+            ? '- [${page.title}](${_pathOf(page)}) — ${page.description}'
+            : '- ${page.title} — ${page.description} '
+                  '*(${_statusLabel(page.status)})*',
       );
     }
     out.writeln();

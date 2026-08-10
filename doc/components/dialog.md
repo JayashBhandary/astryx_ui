@@ -4,7 +4,7 @@ description: A modal panel anchored to the viewport, with a scrolling body.
 component: true
 group: Overlays
 source: lib/src/components/overlay/dialog.dart
-upstream: Dialog
+upstream: Dialog / DialogHeader / useImperativeDialog
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

@@ -9,6 +9,25 @@
 /// renderers.
 library;
 
+/// How far along a page is.
+///
+/// The generators in `tool/` read this: a page that is not [ready] is not
+/// written to `doc/` and not offered to the agent skill, so neither can claim
+/// coverage the site does not have.
+enum DocStatus {
+  /// Written: prose, live examples, an API table.
+  ready,
+
+  /// The widget is ported and the route resolves, but the page is empty.
+  stub,
+
+  /// Upstream has it; this port does not, yet.
+  planned,
+
+  /// Deliberately not ported — React-only, or replaced by a Flutter idiom.
+  notPlanned,
+}
+
 /// One documentation page.
 class DocPage {
   /// Creates a page.
@@ -18,9 +37,11 @@ class DocPage {
     required this.group,
     required this.description,
     required this.blocks,
+    this.status = DocStatus.ready,
     this.since,
     this.source,
     this.upstream,
+    this.upstreamPath,
   });
 
   /// The route segment and markdown file name — `card`, `button`.
@@ -38,6 +59,9 @@ class DocPage {
   /// The page body, in order.
   final List<DocBlock> blocks;
 
+  /// How far along the page is. Defaults to [DocStatus.ready].
+  final DocStatus status;
+
   /// The package version this component first shipped in.
   final String? since;
 
@@ -45,7 +69,20 @@ class DocPage {
   final String? source;
 
   /// The upstream Astryx component this ports, if any.
+  ///
+  /// Slash-separated when one page documents several — `Card / ClickableCard`.
+  /// A page also claims every upstream sub-component it absorbs, so
+  /// `scrape/completesite_map.md` can be checked against the registry.
   final String? upstream;
+
+  /// The upstream page this ports, as a path — `/components/AlertDialog`.
+  ///
+  /// Where to read when writing the page. Null for pages with no upstream
+  /// counterpart.
+  final String? upstreamPath;
+
+  /// Whether the page has content worth publishing.
+  bool get isWritten => status == DocStatus.ready;
 }
 
 /// A block of page content.

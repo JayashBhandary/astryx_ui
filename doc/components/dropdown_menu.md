@@ -4,7 +4,7 @@ description: A list of actions, with sections, submenus and full keyboard suppor
 component: true
 group: Overlays
 source: lib/src/components/overlay/dropdown_menu.dart
-upstream: DropdownMenu
+upstream: DropdownMenu / DropdownMenuItem / DropdownMenuCheckboxItem / DropdownMenuRadioGroup / DropdownMenuRadioItem / DropdownMenuSubMenu
 ---
 
 <!-- GENERATED FILE — DO NOT EDIT.

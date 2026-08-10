@@ -1,3 +1,4 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// The action components: the two buttons and the group that joins them.
@@ -7,7 +8,7 @@ final List<DocPage> actionPages = <DocPage>[
   _buttonGroup,
 ];
 
-const String _group = 'Actions';
+const String _group = DocGroup.actions;
 
 final DocPage _button = DocPage(
   id: 'button',
@@ -16,6 +17,7 @@ final DocPage _button = DocPage(
   description: 'A labelled action, in four levels of prominence.',
   source: 'lib/src/components/action/button.dart',
   upstream: 'Button',
+  upstreamPath: '/components/Button',
   blocks: <DocBlock>[
     const DocExample('button_demo'),
     const DocHeading('Usage'),
@@ -238,6 +240,7 @@ final DocPage _iconButton = DocPage(
   description: 'A square button holding a glyph instead of words.',
   source: 'lib/src/components/action/icon_button.dart',
   upstream: 'IconButton',
+  upstreamPath: '/components/IconButton',
   blocks: <DocBlock>[
     const DocExample('icon_button_demo'),
     const DocHeading('Usage'),
@@ -360,6 +363,7 @@ final DocPage _buttonGroup = DocPage(
       'Joins related actions into one control, or spaces them as a set.',
   source: 'lib/src/components/action/button_group.dart',
   upstream: 'ButtonGroup',
+  upstreamPath: '/components/ButtonGroup',
   blocks: <DocBlock>[
     const DocExample('button_group_demo'),
     const DocHeading('Usage'),

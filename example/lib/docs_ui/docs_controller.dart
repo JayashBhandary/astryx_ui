@@ -42,6 +42,12 @@ enum DocsTheme {
 /// It feeds `AstryxThemeProvider` directly, so the docs exercise the same path
 /// an application takes rather than a parallel one.
 class DocsController extends ChangeNotifier {
+  /// Opens the group holding whichever page the URL asked for.
+  DocsController() {
+    final page = docPageOrNull(_pageId);
+    if (page != null) _openGroups.add(page.group);
+  }
+
   DocsTheme get theme => _theme;
   DocsTheme _theme = DocsTheme.neutral;
   set theme(DocsTheme value) => _set(() => _theme = value, _theme == value);
@@ -70,6 +76,10 @@ class DocsController extends ChangeNotifier {
   String _pageId = _pageFromUrl();
   set pageId(String value) => _set(() {
     _pageId = value;
+    // Keep the sidebar showing where you are, whether you arrived by clicking
+    // the item, by the previous/next footer, or by a link inside the prose.
+    final page = docPageOrNull(value);
+    if (page != null) _openGroups.add(page.group);
     // Keeps the address bar in step on the web — `/card`, because the app
     // installs the path URL strategy. A no-op elsewhere, and nothing depends on
     // the platform having answered.
@@ -106,6 +116,33 @@ class DocsController extends ChangeNotifier {
   String get query => _query;
   String _query = '';
   set query(String value) => _set(() => _query = value, _query == value);
+
+  /// Whether the sidebar hides the pages that are only placeholders.
+  ///
+  /// Most of the site is a placeholder — the registry mirrors every component
+  /// upstream ships, and most are not written up. Someone looking for
+  /// documentation wants this on; someone auditing the port against upstream
+  /// wants it off.
+  bool get writtenOnly => _writtenOnly;
+  bool _writtenOnly = false;
+  set writtenOnly(bool value) =>
+      _set(() => _writtenOnly = value, _writtenOnly == value);
+
+  /// The sidebar groups that are expanded.
+  ///
+  /// Collapsed by default, because seventeen groups of two hundred pages is not
+  /// a list anyone reads. The group holding the current page starts open, and
+  /// opens again whenever the page changes, so navigating never leaves the
+  /// sidebar pointing at nothing.
+  final Set<String> _openGroups = <String>{};
+
+  /// Whether [group] is expanded.
+  bool isGroupOpen(String group) => _openGroups.contains(group);
+
+  /// Expands [group] if it is collapsed, and the reverse.
+  void toggleGroup(String group) => _set(() {
+    if (!_openGroups.remove(group)) _openGroups.add(group);
+  }, false);
 
   /// The page currently showing.
   DocPageRef get page => docPageRef(_pageId);

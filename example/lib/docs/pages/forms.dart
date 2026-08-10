@@ -1,3 +1,4 @@
+import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// The form controls, and the field wrapper they share.
@@ -11,7 +12,7 @@ final List<DocPage> formPages = <DocPage>[
   _selector,
 ];
 
-const String _group = 'Forms';
+const String _group = DocGroup.forms;
 
 /// Every form control takes these. Repeated per page rather than cross-linked,
 /// because a reference table you have to leave to read is not a reference.
@@ -68,7 +69,8 @@ const DocPage _field = DocPage(
       'Gives any control a label, a description, a required marker and a '
       'validation message.',
   source: 'lib/src/components/forms/field.dart',
-  upstream: 'Field',
+  upstream: 'Field / FieldLabel / FieldStatus',
+  upstreamPath: '/components/Field',
   blocks: <DocBlock>[
     DocExample('field_demo'),
     DocHeading('Usage'),
@@ -198,6 +200,7 @@ final DocPage _textInput = DocPage(
   description: 'A single-line or multi-line text field, with validation.',
   source: 'lib/src/components/forms/text_input.dart',
   upstream: 'TextInput',
+  upstreamPath: '/components/TextInput',
   blocks: <DocBlock>[
     const DocExample('text_input_demo'),
     const DocHeading('Usage'),
@@ -363,6 +366,7 @@ final DocPage _textArea = DocPage(
   description: 'A multi-line text field that grows with its content.',
   source: 'lib/src/components/forms/text_input.dart',
   upstream: 'TextArea',
+  upstreamPath: '/components/TextArea',
   blocks: <DocBlock>[
     const DocExample('text_area_demo'),
     const DocHeading('Usage'),
@@ -437,7 +441,8 @@ const DocPage _checkbox = DocPage(
   group: _group,
   description: 'A two-state or three-state checkbox with a required label.',
   source: 'lib/src/components/forms/checkbox.dart',
-  upstream: 'Checkbox',
+  upstream: 'CheckboxInput',
+  upstreamPath: '/components/CheckboxInput',
   blocks: <DocBlock>[
     DocExample('checkbox_demo'),
     DocHeading('Usage'),
@@ -567,7 +572,8 @@ final DocPage _radioList = DocPage(
   group: _group,
   description: 'One choice out of several, as an ARIA radio group.',
   source: 'lib/src/components/forms/radio_list.dart',
-  upstream: 'RadioList',
+  upstream: 'RadioList / RadioListItem',
+  upstreamPath: '/components/RadioList',
   blocks: <DocBlock>[
     const DocExample('radio_list_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
@@ -609,11 +615,17 @@ AstryxRadioList<Plan>(
     const DocTable(
       headers: <String>['Key', 'Does'],
       rows: <List<String>>[
-        <String>['`Tab`', 'Enters the group, or leaves it — one stop, not one '
-            'per option.'],
+        <String>[
+          '`Tab`',
+          'Enters the group, or leaves it — one stop, not one '
+              'per option.',
+        ],
         <String>['`↓` / `→`', 'Selects the next enabled option, wrapping.'],
-        <String>['`↑` / `←`', 'Selects the previous one, wrapping. Mirrored '
-            'under RTL.'],
+        <String>[
+          '`↑` / `←`',
+          'Selects the previous one, wrapping. Mirrored '
+              'under RTL.',
+        ],
         <String>['`Space`', 'Selects the focused option.'],
       ],
     ),
@@ -697,6 +709,7 @@ const DocPage _switch = DocPage(
   description: 'A setting that takes effect the moment it is flipped.',
   source: 'lib/src/components/forms/switch.dart',
   upstream: 'Switch',
+  upstreamPath: '/components/Switch',
   blocks: <DocBlock>[
     DocExample('switch_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
@@ -815,7 +828,8 @@ final DocPage _selector = DocPage(
   group: _group,
   description: 'A dropdown that picks one value, with optional search.',
   source: 'lib/src/components/forms/selector.dart',
-  upstream: 'Selector',
+  upstream: 'Selector / SelectorOption',
+  upstreamPath: '/components/Selector',
   blocks: <DocBlock>[
     const DocExample('selector_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
