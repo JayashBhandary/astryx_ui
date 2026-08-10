@@ -7,7 +7,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.3-dev"
+    version: "0.0.4-dev"
   async:
     dependency: transitive
     description:
@@ -63,6 +63,11 @@ packages:
     version: "0.0.0"
   flutter_test:
     dependency: "direct dev"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
+  flutter_web_plugins:
+    dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"

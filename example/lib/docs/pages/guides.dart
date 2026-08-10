@@ -1,4 +1,5 @@
 import 'package:example/docs/model.dart';
+import 'package:example/docs/version.g.dart';
 
 /// The pages that are not about one component.
 final List<DocPage> guidePages = <DocPage>[
@@ -84,25 +85,27 @@ const DocPage _installation = DocPage(
   description: 'Add the package, wrap your app once, and you are done.',
   blocks: <DocBlock>[
     DocHeading('Add the dependency'),
-    DocProse(
-      'Not yet published to pub.dev. Until then, depend on it by path or by '
-      'git.',
-    ),
     DocCode(
       '''
 dependencies:
-  astryx_ui:
-    path: ../astryx_ui''',
+  astryx_ui: ^$astryxVersion''',
       language: 'yaml',
       title: 'pubspec.yaml',
     ),
+    DocProse(
+      'This is a **pre-release**, and a bare `flutter pub add` will not select '
+      'one — name the version:',
+    ),
+    DocCode(
+      'flutter pub add astryx_ui:^$astryxVersion',
+      language: 'bash',
+    ),
+    DocProse('To track the repository rather than a release:'),
     DocCode(
       '''
 dependencies:
   astryx_ui:
-    git:
-      url: https://github.com/JayashBhandary/astryx_ui.git
-      path: astryx_ui''',
+    git: https://github.com/JayashBhandary/astryx_ui.git''',
       language: 'yaml',
       title: 'pubspec.yaml — from git',
     ),

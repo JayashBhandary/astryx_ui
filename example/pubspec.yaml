@@ -1,5 +1,5 @@
 name: example
-description: Gallery app for astryx_ui — every component, every theme, every density.
+description: The astryx_ui documentation site — every component, live, in eight themes.
 publish_to: none
 version: 1.0.0+1
 
@@ -11,6 +11,9 @@ dependencies:
   astryx_ui:
     path: ../
   flutter:
+    sdk: flutter
+  # The web URL strategy, so pages are /tokens rather than /#/tokens.
+  flutter_web_plugins:
     sdk: flutter
 
 dev_dependencies:

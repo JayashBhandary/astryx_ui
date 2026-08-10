@@ -1,10 +1,18 @@
 # astryx_ui
 
+[![pub package](https://img.shields.io/pub/v/astryx_ui.svg?include_prereleases&label=pub)](https://pub.dev/packages/astryx_ui)
+[![docs](https://img.shields.io/badge/docs-astryxui.web.app-blue)](https://astryxui.web.app/)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 An unofficial Flutter port of [Astryx](https://github.com/facebook/astryx), Meta's
 design system for building internal tools and products.
 
-> **Status: pre-alpha.** Nothing is published yet and the API is unstable. See
-> [`dev/04-TRACKER.md`](../dev/04-TRACKER.md) for what is built and what is not.
+**Documentation: [astryxui.web.app](https://astryxui.web.app/)** — every
+component, live, in eight themes.
+
+> **Status: pre-alpha.** Published as a development preview; the API is unstable
+> and may change without a major version bump until 0.1.0. See the
+> [changelog](CHANGELOG.md) for what each release contains.
 
 ## What this is
 
@@ -25,18 +33,29 @@ Flutter:
 ## What this is not
 
 - Not affiliated with, endorsed by, or supported by Meta Platforms, Inc.
-- Not a 1:1 port of all ~100 Astryx components. See
-  [`dev/reference/COMPONENT-INVENTORY.md`](../dev/reference/COMPONENT-INVENTORY.md)
-  for the scope of 1.0 and what is deferred.
+- Not a 1:1 port of all ~100 Astryx components. Roughly 30 are in scope for
+  1.0 — the ones listed at [astryxui.web.app](https://astryxui.web.app/).
 
 ## Installation
 
-Not yet published to pub.dev. Until then, depend on it by path or by git:
+```yaml
+dependencies:
+  astryx_ui: ^0.0.4-dev
+```
+
+Pre-release versions are not selected by a bare `flutter pub add`, so name the
+version — or run:
+
+```sh
+flutter pub add astryx_ui:^0.0.4-dev
+```
+
+To track the repository instead of a release:
 
 ```yaml
 dependencies:
   astryx_ui:
-    path: ../astryx_ui
+    git: https://github.com/JayashBhandary/astryx_ui.git
 ```
 
 ## Setup
@@ -145,8 +164,8 @@ Stated up front rather than discovered:
 - **The status icons are stroked, not solid.** Upstream fills them for
   legibility at small sizes; Lucide ships no filled variants. Swap the icon
   registry if this matters to you.
-- Roughly 70 of upstream's ~100 components are out of scope for 1.0. See
-  [`dev/reference/COMPONENT-INVENTORY.md`](../dev/reference/COMPONENT-INVENTORY.md).
+- Roughly 70 of upstream's ~100 components are out of scope for 1.0. What *is*
+  in scope is exactly what [the documentation](https://astryxui.web.app/) lists.
 
 Each widget's own limitations are stated in its doc comment too, so you do not
 have to come back here.
@@ -157,9 +176,16 @@ have to come back here.
 composes, every variant, the keyboard map, the accessibility rules, and a full
 API reference.
 
-The same content is a live site in [`example/`](example/README.md) — built with
-`astryx_ui` itself, with theme, brightness, density and text-direction pickers,
-and a `Preview` / `Code` tab on every example. It builds for web.
+The same content is a live site at **[astryxui.web.app](https://astryxui.web.app)**,
+built from [`example/`](example/README.md) with `astryx_ui` itself: theme,
+brightness, density and text-direction pickers, and a `Preview` / `Code` tab on
+every example. Any page is linkable — `astryxui.web.app/card`.
+
+```sh
+firebase deploy --only hosting:astryxui
+```
+
+Run it locally:
 
 ```sh
 cd example && flutter run -d chrome
@@ -175,14 +201,33 @@ not do. See [`example/README.md`](example/README.md) for how that works.
 documentation shaped for an agent rather than a reader: the rules the widget set
 enforces, a component index, per-group API references, every public enum's
 values scraped from the source, and the mistakes a generator makes without them.
-Claude Code picks it up automatically in this repository; copy the directory into
-your own project's `.claude/skills/` to get it there.
+
+This repository is also a Claude Code plugin marketplace, so the skill installs
+in one step:
+
+```
+/plugin marketplace add JayashBhandary/astryx_ui
+/plugin install astryx-ui@astryx-ui
+```
+
+Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.3-dev` — and
+pick up later ones with `/plugin marketplace update`. Claude Code loads the skill
+automatically inside this repository whether or not the plugin is installed.
+
+Not using Claude Code? Copy `.claude/skills/astryx-ui/` into your own project's
+`.claude/skills/`, or point your agent at [`doc/`](doc/README.md), which is the
+same content in plain markdown.
 
 ## Contributing
 
-The full development process — architecture, conventions, porting rules, phase
-plans, and the session tracker — lives in the [`dev/`](../dev/) directory at the
-repository root. Start with [`dev/README.md`](../dev/README.md).
+Issues and pull requests: [github.com/JayashBhandary/astryx_ui](https://github.com/JayashBhandary/astryx_ui).
+
+Two things worth reading first. [`example/README.md`](example/README.md) explains
+how the documentation is built — every example is a compiling widget, and the
+snippets, the markdown in [`doc/`](doc/README.md) and the agent skill are all
+generated from it, so a documentation change starts there. And every widget's own
+doc comment states its limitations and the upstream decision it ports, which is
+usually the answer to "why is it like this".
 
 ## License
 

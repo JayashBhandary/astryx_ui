@@ -11,24 +11,27 @@ group: Getting started
 
 ## Add the dependency
 
-Not yet published to pub.dev. Until then, depend on it by path or by git.
-
 *pubspec.yaml*
 
 ```yaml
 dependencies:
-  astryx_ui:
-    path: ../astryx_ui
+  astryx_ui: ^0.0.4-dev
 ```
+
+This is a **pre-release**, and a bare `flutter pub add` will not select one — name the version:
+
+```bash
+flutter pub add astryx_ui:^0.0.4-dev
+```
+
+To track the repository rather than a release:
 
 *pubspec.yaml — from git*
 
 ```yaml
 dependencies:
   astryx_ui:
-    git:
-      url: https://github.com/JayashBhandary/astryx_ui.git
-      path: astryx_ui
+    git: https://github.com/JayashBhandary/astryx_ui.git
 ```
 
 ## Wrap your app

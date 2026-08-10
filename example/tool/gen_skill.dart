@@ -33,6 +33,9 @@ const String _root = '../.claude/skills/astryx-ui';
 /// The package source, for scraping enum values.
 const String _packageLib = '../lib/src';
 
+/// The plugin manifest, whose version tracks the package's.
+const String _pluginManifest = '../.claude-plugin/plugin.json';
+
 /// The group that documents the package rather than a component.
 const String _guideGroup = 'Getting started';
 
@@ -73,6 +76,47 @@ void main() {
   File('$_root/references/patterns.md').writeAsStringSync(_patterns());
 
   print('Wrote SKILL.md and ${_groupFiles.length + 2} references to $_root/.');
+
+  _syncPluginVersion();
+}
+
+/// Copies the package version into the plugin manifest.
+///
+/// The skill is released as a Claude Code plugin, and a plugin's `version`
+/// is what decides whether installed users are offered an update. Deriving it
+/// from `pubspec.yaml` means a release cannot ship a new skill under the old
+/// version by accident.
+void _syncPluginVersion() {
+  final manifest = File(_pluginManifest);
+  if (!manifest.existsSync()) {
+    stderr.writeln('No $_pluginManifest — skipping the version sync.');
+    return;
+  }
+
+  final pubspec = File('../pubspec.yaml').readAsStringSync();
+  final version = RegExp(
+    r'^version:\s*(\S+)\s*$',
+    multiLine: true,
+  ).firstMatch(pubspec)?.group(1);
+
+  if (version == null) {
+    stderr.writeln('No version in ../pubspec.yaml — skipping the sync.');
+    return;
+  }
+
+  final source = manifest.readAsStringSync();
+  final updated = source.replaceFirst(
+    RegExp('"version": "[^"]*"'),
+    '"version": "$version"',
+  );
+
+  if (updated == source) {
+    print('Plugin version already $version.');
+    return;
+  }
+
+  manifest.writeAsStringSync(updated);
+  print('Set the plugin version to $version.');
 }
 
 // ---------------------------------------------------------------------------

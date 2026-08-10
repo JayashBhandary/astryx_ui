@@ -29,3 +29,19 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
+
+# Local-only notes. RUNBOOK.local.md holds the release, generation and deploy
+# procedures, plus the Hosting config below verbatim so it can be restored.
+# Keeping the pattern rather than the filename means a second local document
+# needs no change here — and none of them reach the published pub archive.
+*.local.md
+
+# Firebase. The docs site is deployed from example/build/web, and its Hosting
+# configuration is kept out of version control — which also keeps it out of the
+# published pub archive. `firebase init hosting` recreates it: site `astryxui`
+# in project `svt-b3a6c`. The deploy command is in example/README.md.
+# (firebase-debug.log and friends are already covered by `*.log` above.)
+.firebase/
+.firebaserc
+firebase.json
+.firebase-cache/

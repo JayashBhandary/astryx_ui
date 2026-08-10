@@ -5,6 +5,8 @@ with prose, live examples, the source that produced them, and an API reference �
 viewable in any of the eight themes, either brightness, both densities and both
 text directions.
 
+Live at **[astryxui.web.app](https://astryxui.web.app)**. Locally:
+
 ```sh
 flutter run -d chrome     # or any other device
 ```
@@ -69,6 +71,24 @@ enum names in this documentation were caught.
 The curated half of that skill (the rules, the mistakes) lives in
 `tool/gen_skill.dart`; everything else comes from the page model.
 
+### Releasing it
+
+The repository root is a Claude Code plugin marketplace —
+`../.claude-plugin/marketplace.json` lists one plugin whose source is the
+repository itself, and `../.claude-plugin/plugin.json` points its `skills` field
+at `.claude/skills/`. So releasing the skill is releasing the repository:
+
+1. Bump `version` in `../pubspec.yaml`.
+2. Run `dart run tool/gen_skill.dart`. It regenerates the skill **and copies the
+   package version into `plugin.json`** — that version is what decides whether
+   installed users are offered an update, so it must not go stale.
+3. `claude plugin validate ..` — checks both manifests.
+4. Commit, push, and tag (`v0.0.3-dev`), so users can pin a release.
+
+Users then run `/plugin marketplace add JayashBhandary/astryx_ui` and
+`/plugin install astryx-ui@astryx-ui`, and `/plugin marketplace update` for
+later versions.
+
 ## Layout
 
 ```text
@@ -100,6 +120,35 @@ After changing any page or example, all three:
 dart run tool/gen_snippets.dart && \
   dart run tool/gen_docs_md.dart && \
   dart run tool/gen_skill.dart
+```
+
+## Hosting
+
+The site is deployed to Firebase Hosting at
+[astryxui.web.app](https://astryxui.web.app) — site `astryxui`, project
+`svt-b3a6c`.
+
+The Hosting configuration is **not in version control** (`.gitignore` covers
+`firebase.json`, `.firebaserc` and `.firebase/`), which also keeps it out of the
+published pub archive. Recreate it with `firebase init hosting` from the
+repository root, answering:
+
+- public directory: `example/build/web`
+- single-page app rewrite: yes
+- site: `astryxui`
+
+Worth adding by hand afterwards: a predeploy hook that builds the bundle, so a
+deploy can never ship a stale one, and `no-cache` headers on `/`,
+`**/index.html`, `flutter_bootstrap.js`, `flutter_service_worker.js`,
+`main.dart.js`, `version.json` and `manifest.json`, so a redeploy is visible at
+once. Leave everything else on Hosting's default hour — Flutter web asset URLs
+are not content-hashed, so a long immutable TTL would serve stale asset
+manifests after a deploy.
+
+Then, from the repository root:
+
+```sh
+firebase deploy --only hosting:astryxui
 ```
 
 ## Tests

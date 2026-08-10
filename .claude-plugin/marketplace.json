@@ -1,0 +1,24 @@
+{
+  "name": "astryx-ui",
+  "description": "The astryx_ui skill for AI coding agents, released from the package repository it documents.",
+  "owner": {
+    "name": "Jayash Bhandary",
+    "url": "https://github.com/JayashBhandary"
+  },
+  "plugins": [
+    {
+      "name": "astryx-ui",
+      "source": "./",
+      "description": "Write and review Flutter UI built with the astryx_ui design system: all 30 components, the token system, density, RTL and the accessibility rules the widget set enforces.",
+      "category": "frameworks",
+      "tags": ["flutter", "dart", "design-system", "ui", "accessibility"],
+      "author": {
+        "name": "Jayash Bhandary",
+        "url": "https://github.com/JayashBhandary"
+      },
+      "license": "MIT",
+      "homepage": "https://github.com/JayashBhandary/astryx_ui/blob/main/doc/README.md",
+      "repository": "https://github.com/JayashBhandary/astryx_ui"
+    }
+  ]
+}

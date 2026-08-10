@@ -64,20 +64,43 @@ class DocsController extends ChangeNotifier {
 
   /// Which page is showing.
   ///
-  /// Seeded from the URL fragment, so `…/#card` opens the card page and a link
-  /// to a page can be shared.
+  /// Seeded from the URL, so `/card` opens the card page and any page can be
+  /// linked to.
   String get pageId => _pageId;
-  String _pageId = docPageOrNull(Uri.base.fragment) == null
-      ? docPages.first.id
-      : Uri.base.fragment;
+  String _pageId = _pageFromUrl();
   set pageId(String value) => _set(() {
     _pageId = value;
-    // Keeps the address bar in step on the web. A no-op elsewhere, and
-    // nothing depends on the platform having answered.
+    // Keeps the address bar in step on the web — `/card`, because the app
+    // installs the path URL strategy. A no-op elsewhere, and nothing depends on
+    // the platform having answered.
+    //
+    // `replace: true` deliberately: nothing here listens for the platform
+    // pushing a route back, so pushing history entries would give a Back button
+    // that changes the URL and leaves the page where it was. Replacing keeps
+    // the address bar and the content in agreement, at the cost of in-site
+    // Back.
     unawaited(
-      SystemNavigator.routeInformationUpdated(uri: Uri(fragment: value)),
+      SystemNavigator.routeInformationUpdated(
+        uri: Uri(path: '/$value'),
+        replace: true,
+      ),
     );
   }, _pageId == value);
+
+  /// The page the current URL asks for, or the first page.
+  ///
+  /// Reads the path first and the fragment second: `/#card` links were shared
+  /// before the switch to path URLs, and breaking them would be rude.
+  static String _pageFromUrl() {
+    final segments = Uri.base.pathSegments.where((s) => s.isNotEmpty).toList();
+    final path = segments.isEmpty ? '' : segments.last;
+    if (docPageOrNull(path) != null) return path;
+
+    final fragment = Uri.base.fragment.replaceAll('/', '');
+    if (docPageOrNull(fragment) != null) return fragment;
+
+    return docPages.first.id;
+  }
 
   /// The sidebar filter.
   String get query => _query;

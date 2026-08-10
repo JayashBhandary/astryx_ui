@@ -120,8 +120,33 @@ void main() {
 
   File('lib/docs/snippets.g.dart').writeAsStringSync(_snippets(regions));
   File('lib/docs/previews.g.dart').writeAsStringSync(_previews(regions));
+  File('lib/docs/version.g.dart').writeAsStringSync(_version());
 
   print('Wrote ${regions.length} snippets from ${files.length} files.');
+}
+
+/// Publishes the package version to the pages.
+///
+/// The installation page quotes a version constraint, and a documented
+/// constraint that has fallen behind the release is worse than none. Reading it
+/// from `pubspec.yaml` means it cannot.
+String _version() {
+  final pubspec = File('../pubspec.yaml').readAsStringSync();
+  final version = RegExp(
+    r'^version:\s*(\S+)\s*$',
+    multiLine: true,
+  ).firstMatch(pubspec)?.group(1);
+
+  if (version == null) _fail('No version in ../pubspec.yaml.');
+
+  return '''
+${_header('The package version, so the pages can quote it.')}
+/// The package version, read from `pubspec.yaml`.
+library;
+
+/// The version this documentation was generated from.
+const String astryxVersion = '$version';
+''';
 }
 
 Never _fail(String message) {
@@ -141,9 +166,10 @@ String _header(String description) =>
 ''';
 
 String _snippets(List<_Region> regions) {
-  final out = StringBuffer(
-    _header('The source of every documented example, extracted verbatim.'),
-  )..writeln('''
+  final out =
+      StringBuffer(
+        _header('The source of every documented example, extracted verbatim.'),
+      )..writeln('''
 /// The source of each documented example, keyed by region id.
 ///
 /// Extracted from `lib/examples/` by `tool/gen_snippets.dart`, so a code block
@@ -171,10 +197,10 @@ const Map<String, String> docSnippets = <String, String>{''');
 String _previews(List<_Region> regions) {
   final libraries = regions.map((r) => r.library).toSet().toList()..sort();
 
-  final out = StringBuffer(
-    _header('A builder for every documented example, by region id.'),
-  )
-    ..writeln('''
+  final out =
+      StringBuffer(
+        _header('A builder for every documented example, by region id.'),
+      )..writeln('''
 /// A builder for each documented example, keyed by region id.
 ///
 /// The counterpart to `snippets.g.dart`: the same region supplies both the
@@ -216,7 +242,5 @@ List<String> _trim(List<String> lines) {
 }
 
 /// Escapes [line] for a single-quoted Dart literal.
-String _escape(String line) => line
-    .replaceAll(r'\', r'\\')
-    .replaceAll(r'$', r'\$')
-    .replaceAll("'", r"\'");
+String _escape(String line) =>
+    line.replaceAll(r'\', r'\\').replaceAll(r'$', r'\$').replaceAll("'", r"\'");

@@ -279,11 +279,12 @@ class _Sidebar extends StatelessWidget {
                           theme.spacing(AstryxSpacingToken.spacing2),
                           theme.spacing(AstryxSpacingToken.spacing1),
                         ),
-                        child: AstryxText(
-                          entry.key.toUpperCase(),
-                          type: AstryxTextType.supporting,
-                          color: AstryxTextColor.secondary,
-                        ),
+                        // A heading, not styled text: it gives the group the
+                        // heading family and weight, which is what separates it
+                        // from the items below — and it is announced as a
+                        // level-6 heading, so a screen reader gets the
+                        // sidebar's structure rather than a flat list.
+                        child: AstryxHeading(entry.key, level: 6),
                       ),
                       for (final page in entry.value)
                         _NavItem(

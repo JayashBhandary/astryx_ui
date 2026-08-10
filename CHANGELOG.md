@@ -7,6 +7,35 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.0.4-dev]
+
+### Added
+
+- Package metadata for pub.dev: `homepage` and `documentation` now point at
+  <https://astryxui.web.app>, where the documentation site is hosted.
+- Installation instructions for the published package, in the README and on the
+  site's installation page. The version constraint they quote is generated from
+  `pubspec.yaml`, so a released constraint cannot fall behind the release.
+- **The repository is a Claude Code plugin marketplace**, so the agent skill
+  installs with `/plugin marketplace add JayashBhandary/astryx_ui` followed by
+  `/plugin install astryx-ui@astryx-ui`. The plugin's version is copied from
+  `pubspec.yaml` when the skill is generated, so it cannot fall behind a
+  release either.
+
+### Changed
+
+- The documentation site is deployed to Firebase Hosting at
+  <https://astryxui.web.app>. The Hosting configuration is deliberately not in
+  version control, and so is absent from the published archive; the deploy
+  command and the target it needs are documented in `example/README.md`.
+
+### Fixed
+
+- The README linked a `dev/` directory that is not part of this repository, so
+  five links 404'd on GitHub and on pub.dev. They now point at the
+  documentation, the changelog, or the issue tracker.
+- The README and the installation page still said the package was unpublished.
+
 ## [0.0.3-dev]
 
 Documentation only. No library code changed, so nothing here can break a
@@ -87,7 +116,8 @@ version bump until 0.1.0.
 - Secondary entry point `package:astryx_ui/theme.dart` for the theme layer
   without components.
 
-[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.3-dev...HEAD
+[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.4-dev...HEAD
+[0.0.4-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.3-dev...v0.0.4-dev
 [0.0.3-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.2-dev...v0.0.3-dev
 [0.0.2-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.1-dev...v0.0.2-dev
 [0.0.1-dev]: https://github.com/JayashBhandary/astryx_ui/releases/tag/v0.0.1-dev
