@@ -10,4 +10,4 @@
 library;
 
 /// The version this documentation was generated from.
-const String astryxVersion = '0.0.4-dev';
+const String astryxVersion = '0.0.6-dev';

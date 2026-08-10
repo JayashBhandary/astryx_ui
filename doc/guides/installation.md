@@ -15,13 +15,13 @@ group: Getting started
 
 ```yaml
 dependencies:
-  astryx_ui: ^0.0.4-dev
+  astryx_ui: ^0.0.6-dev
 ```
 
 This is a **pre-release**, and a bare `flutter pub add` will not select one — name the version:
 
 ```bash
-flutter pub add astryx_ui:^0.0.4-dev
+flutter pub add astryx_ui:^0.0.6-dev
 ```
 
 To track the repository rather than a release:

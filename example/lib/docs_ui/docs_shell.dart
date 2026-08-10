@@ -2,6 +2,7 @@ import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs/pages.dart';
 import 'package:example/docs_ui/doc_page_view.dart';
 import 'package:example/docs_ui/docs_controller.dart';
+import 'package:example/docs_ui/segmented.dart';
 import 'package:flutter/widgets.dart';
 
 /// The chrome around the documentation: navigation, the view controls, and the
@@ -110,13 +111,15 @@ class _TopBar extends StatelessWidget {
                     ),
                 ],
               ),
-              _Segmented<AstryxColorMode>(
+              DocsSegmented<AstryxColorMode>(
+                label: 'Brightness',
                 values: AstryxColorMode.values,
                 selected: controller.mode,
                 labelOf: (value) => value.name,
                 onSelected: (value) => controller.mode = value,
               ),
-              _Segmented<AstryxDensity?>(
+              DocsSegmented<AstryxDensity?>(
+                label: 'Density',
                 values: const <AstryxDensity?>[
                   null,
                   AstryxDensity.pointer,
@@ -126,7 +129,8 @@ class _TopBar extends StatelessWidget {
                 labelOf: (value) => value?.name ?? 'auto',
                 onSelected: (value) => controller.density = value,
               ),
-              _Segmented<TextDirection>(
+              DocsSegmented<TextDirection>(
+                label: 'Text direction',
                 values: TextDirection.values,
                 selected: controller.textDirection,
                 labelOf: (value) => value.name.toUpperCase(),
@@ -136,39 +140,6 @@ class _TopBar extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// A segmented control: a button group whose selected child takes the louder
-/// variant. The group itself holds no selection — that stays with the caller.
-class _Segmented<T> extends StatelessWidget {
-  const _Segmented({
-    required this.values,
-    required this.selected,
-    required this.labelOf,
-    required this.onSelected,
-  });
-
-  final List<T> values;
-  final T selected;
-  final String Function(T value) labelOf;
-  final ValueChanged<T> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return AstryxButtonGroup(
-      size: AstryxButtonSize.sm,
-      children: <Widget>[
-        for (final value in values)
-          AstryxButton(
-            label: labelOf(value),
-            variant: value == selected
-                ? AstryxButtonVariant.primary
-                : AstryxButtonVariant.secondary,
-            onPressed: () => onSelected(value),
-          ),
-      ],
     );
   }
 }

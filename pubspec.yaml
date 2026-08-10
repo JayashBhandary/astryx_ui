@@ -3,7 +3,7 @@ description: >-
   An unofficial Flutter port of Astryx, Meta's design system for building
   internal tools and products. Faithful token engine, themeable components,
   built on flutter/widgets.
-version: 0.0.5-dev
+version: 0.0.6-dev
 homepage: https://astryxui.web.app/
 repository: https://github.com/JayashBhandary/astryx_ui
 issue_tracker: https://github.com/JayashBhandary/astryx_ui/issues

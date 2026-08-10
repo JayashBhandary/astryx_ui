@@ -15,6 +15,11 @@ dependencies:
   # The web URL strategy, so pages are /tokens rather than /#/tokens.
   flutter_web_plugins:
     sdk: flutter
+  # The chrome needs two glyphs the package's registry does not name — a
+  # monitor and a phone. `AstryxIconName` is a transcription of upstream's
+  # `IconName` union and should stay one, so the docs app reaches for the same
+  # icon family the registry resolves to rather than widening the enum.
+  lucide_icons_flutter: ">=3.0.0 <4.0.0"
 
 dev_dependencies:
   flutter_test:

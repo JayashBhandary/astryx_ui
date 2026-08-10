@@ -18,6 +18,7 @@ import 'package:example/docs/pages/planned/guides.dart';
 import 'package:example/docs/pages/planned/hooks.dart';
 import 'package:example/docs/pages/planned/templates.dart';
 import 'package:example/docs/pages/surfaces.dart';
+import 'package:example/docs/pages/templates.dart';
 
 export 'package:example/docs/groups.dart';
 export 'package:example/docs/model.dart';
@@ -39,10 +40,11 @@ final List<DocPage> docPages = <DocPage>[
   ...overlayPages,
   ...surfacePages,
   ...dataPages,
+  ...templatePages,
   ...plannedGuidePages,
   ...plannedComponentPages,
   ...plannedHookPages,
-  ...templatePages,
+  ...plannedTemplatePages,
 ];
 
 /// The pages with content — what `doc/` and the agent skill are built from.

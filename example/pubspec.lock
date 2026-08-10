@@ -96,7 +96,7 @@ packages:
     source: hosted
     version: "3.0.2"
   lucide_icons_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: lucide_icons_flutter
       sha256: "234155b10641b8ef7bab8a077b93ea6c92fe849c06740cf89dcd86dcf350934f"

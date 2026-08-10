@@ -40,14 +40,14 @@ Flutter:
 
 ```yaml
 dependencies:
-  astryx_ui: ^0.0.4-dev
+  astryx_ui: ^0.0.6-dev
 ```
 
 Pre-release versions are not selected by a bare `flutter pub add`, so name the
 version — or run:
 
 ```sh
-flutter pub add astryx_ui:^0.0.4-dev
+flutter pub add astryx_ui:^0.0.6-dev
 ```
 
 To track the repository instead of a release:
@@ -178,8 +178,9 @@ API reference.
 
 The same content is a live site at **[astryxui.web.app](https://astryxui.web.app)**,
 built from [`example/`](example/README.md) with `astryx_ui` itself: theme,
-brightness, density and text-direction pickers, and a `Preview` / `Code` tab on
-every example. Any page is linkable — `astryxui.web.app/card`.
+brightness, density and text-direction pickers, a `Preview` / `Code` tab on
+every example, and a monitor/phone switch that re-runs every preview at a
+phone's width. Any page is linkable — `astryxui.web.app/card`.
 
 ```sh
 firebase deploy --only hosting:astryxui

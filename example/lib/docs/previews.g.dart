@@ -37,6 +37,10 @@ import 'package:example/examples/stack_examples.dart';
 import 'package:example/examples/switch_examples.dart';
 import 'package:example/examples/tab_list_examples.dart';
 import 'package:example/examples/table_examples.dart';
+import 'package:example/examples/template_form_examples.dart';
+import 'package:example/examples/template_login_examples.dart';
+import 'package:example/examples/template_screen_examples.dart';
+import 'package:example/examples/template_settings_examples.dart';
 import 'package:example/examples/text_area_examples.dart';
 import 'package:example/examples/text_examples.dart';
 import 'package:example/examples/text_input_examples.dart';
@@ -168,6 +172,20 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'table_density': (_) => const TableDensityExample(),
   'table_widths': (_) => const TableWidthsExample(),
   'table_empty': (_) => const TableEmptyExample(),
+  'template_contact_form': (_) => const ContactFormTemplate(),
+  'template_form_two_column': (_) => const FormTwoColumnTemplate(),
+  'template_payment_form': (_) => const PaymentFormTemplate(),
+  'template_login': (_) => const LoginTemplate(),
+  'template_login_card': (_) => const LoginCardTemplate(),
+  'template_login_sso': (_) => const LoginSsoTemplate(),
+  'template_login_split': (_) => const LoginSplitTemplate(),
+  'template_centered_hero': (_) => const CenteredHeroTemplate(),
+  'template_detail_page': (_) => const DetailPageTemplate(),
+  'template_dashboard': (_) => const DashboardTemplate(),
+  'template_table': (_) => const TableTemplate(),
+  'template_theme_showcase': (_) => const ThemeShowcaseTemplate(),
+  'template_settings': (_) => const SettingsTemplate(),
+  'template_settings_dialog': (_) => const SettingsDialogTemplate(),
   'text_area_demo': (_) => const TextAreaDemoExample(),
   'text_area_lines': (_) => const TextAreaLinesExample(),
   'text_area_counted': (_) => const TextAreaCountedExample(),

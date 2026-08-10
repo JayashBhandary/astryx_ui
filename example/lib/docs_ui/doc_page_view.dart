@@ -208,30 +208,52 @@ class _Footer extends StatelessWidget {
   final DocPage? next;
   final ValueChanged<String> onNavigate;
 
+  /// Below this the two page titles cannot sit side by side.
+  ///
+  /// Some of them are long — `InternationalizationProvider` — so the pair
+  /// stacks rather than being squeezed or, as it was, overflowing.
+  static const double _minRowWidth = 520;
+
   @override
   Widget build(BuildContext context) {
-    return AstryxHStack(
-      gap: AstryxSpacingToken.spacing3,
-      justify: AstryxStackJustify.between,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        if (previous case final page?)
-          AstryxButton(
-            label: page.title,
-            leading: const AstryxIcon(AstryxIconName.chevronLeft),
-            onPressed: () => onNavigate(page.id),
-          )
-        else
-          const SizedBox.shrink(),
-        if (next case final page?)
-          AstryxButton(
-            label: page.title,
-            trailing: const AstryxIcon(AstryxIconName.chevronRight),
-            onPressed: () => onNavigate(page.id),
-          )
-        else
-          const SizedBox.shrink(),
-      ],
+    final back = previous;
+    final forward = next;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final backButton = back == null
+            ? null
+            : AstryxButton(
+                label: back.title,
+                leading: const AstryxIcon(AstryxIconName.chevronLeft),
+                onPressed: () => onNavigate(back.id),
+              );
+        final forwardButton = forward == null
+            ? null
+            : AstryxButton(
+                label: forward.title,
+                trailing: const AstryxIcon(AstryxIconName.chevronRight),
+                onPressed: () => onNavigate(forward.id),
+              );
+
+        if (constraints.maxWidth < _minRowWidth) {
+          return AstryxVStack(
+            gap: AstryxSpacingToken.spacing2,
+            align: AstryxStackAlign.stretch,
+            children: <Widget>[?backButton, ?forwardButton],
+          );
+        }
+
+        return AstryxHStack(
+          gap: AstryxSpacingToken.spacing3,
+          justify: AstryxStackJustify.between,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            backButton ?? const SizedBox.shrink(),
+            forwardButton ?? const SizedBox.shrink(),
+          ],
+        );
+      },
     );
   }
 }

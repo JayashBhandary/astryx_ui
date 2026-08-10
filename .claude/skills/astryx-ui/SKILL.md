@@ -220,6 +220,20 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxBanner` | An inline message with a severity, announced when it appears. | `references/surfaces.md` |
 | `AstryxTabList` | A strip of tabs that reports a value and owns no panel. | `references/data.md` |
 | `AstryxTable` | A typed data table with sorting, selection, row actions and three column-width strategies. | `references/data.md` |
+| `Login` | A centred sign-in form, with the validation, error and loading states a real one has. | `references/templates.md` |
+| `Login card` | Sign-in inside a bordered card, using all three card slots. | `references/templates.md` |
+| `SSO login` | Sign-in through identity providers, with an email link as the fallback. | `references/templates.md` |
+| `Split login` | Sign-in beside a full-height panel. | `references/templates.md` |
+| `Contact form` | A single-column form with validation, an in-flight state and a success state that replaces it. | `references/templates.md` |
+| `Two-column form` | A long form split into labelled sections, with the section heading beside its fields. | `references/templates.md` |
+| `Payment form` | Card details, a billing address, and the summary beside them. | `references/templates.md` |
+| `Settings` | Grouped preference rows with inline controls, each applying the moment it changes. | `references/templates.md` |
+| `Settings dialog` | Settings inside a modal, with its own navigation. | `references/templates.md` |
+| `Centred hero` | A headline, a supporting line, and one action. | `references/templates.md` |
+| `Detail page` | One record: header, status, tabs, metadata and actions. | `references/templates.md` |
+| `Dashboard` | Summary tiles above a table of what needs attention. | `references/templates.md` |
+| `Table` | A data table as a screen: a toolbar, filtering, sorting, selection and row actions. | `references/templates.md` |
+| `Theme showcase` | One of everything on one screen, for judging a theme rather than imagining it. | `references/templates.md` |
 
 ## Guides
 
@@ -245,5 +259,6 @@ Open the reference before writing a component you have not written before. Each 
 - `references/overlays.md` — Overlays.
 - `references/surfaces.md` — Surfaces.
 - `references/data.md` — Data display.
+- `references/templates.md` — Templates.
 
 The prose versions of these pages, for a human, are in `doc/` at the repository root. The live site is `example/`.

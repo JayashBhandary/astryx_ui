@@ -116,6 +116,51 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - Blockquote — A quotation set apart from the surrounding prose. *(not ported yet)*
 - Kbd — A keyboard key or chord, rendered as a key. *(not ported yet)*
 
+## Templates
+
+- [Login](components/login.md) — A centred sign-in form, with the validation, error and loading states a real one has.
+- [Login card](components/login_card.md) — Sign-in inside a bordered card, using all three card slots.
+- [SSO login](components/login_sso.md) — Sign-in through identity providers, with an email link as the fallback.
+- [Split login](components/login_split.md) — Sign-in beside a full-height panel.
+- [Contact form](components/contact_form.md) — A single-column form with validation, an in-flight state and a success state that replaces it.
+- [Two-column form](components/form_two_column.md) — A long form split into labelled sections, with the section heading beside its fields.
+- [Payment form](components/payment_form.md) — Card details, a billing address, and the summary beside them.
+- [Settings](components/settings.md) — Grouped preference rows with inline controls, each applying the moment it changes.
+- [Settings dialog](components/settings_dialog.md) — Settings inside a modal, with its own navigation.
+- [Centred hero](components/centered_hero.md) — A headline, a supporting line, and one action.
+- [Detail page](components/detail_page.md) — One record: header, status, tabs, metadata and actions.
+- [Dashboard](components/dashboard.md) — Summary tiles above a table of what needs attention.
+- [Table](components/table_template.md) — A data table as a screen: a toolbar, filtering, sorting, selection and row actions.
+- [Theme showcase](components/theme_showcase.md) — One of everything on one screen, for judging a theme rather than imagining it.
+- AI chat — A full conversation screen: transcript, composer, and the empty state before the first turn. *(not ported yet)*
+- AI chat landing — The pre-conversation screen: prompt suggestions and a centred composer. *(not ported yet)*
+- Classic gallery — A uniform grid of media cards. *(not ported yet)*
+- Portfolio dashboard — A dashboard built around a chart and a holdings table. *(not ported yet)*
+- Documentation — A docs page: side navigation, content column, and an on-this-page outline. *(not ported yet)*
+- Design documentation — A docs page for a design topic, heavy on specimens. *(not ported yet)*
+- Technical documentation — A docs page for an API, heavy on code and property tables. *(not ported yet)*
+- Editor — A document editor: toolbar, canvas, and an inspector panel. *(not ported yet)*
+- File explorer — A tree of folders beside a list of files. *(not ported yet)*
+- Gallery hero — A hero whose supporting content is a media grid. *(not ported yet)*
+- IDE — A code workspace: file tree, tabbed editors, and a panel. *(not ported yet)*
+- Incident console — A live operations view: severity, timeline, and the current on-call. *(not ported yet)*
+- Kanban board — Columns of draggable cards. *(not ported yet)*
+- Library — A browsable collection with filters beside the results. *(not ported yet)*
+- Messaging shell — A conversation list beside the open conversation. *(not ported yet)*
+- Mixed gallery — A gallery of items at mixed sizes. *(not ported yet)*
+- Product detail — Gallery, price, options, and the add-to-cart action. *(not ported yet)*
+- Product gallery — A filterable grid of products. *(not ported yet)*
+- Settings with sidebar — Settings sections reached from a sidebar. *(not ported yet)*
+- Shell navigation — The application shell with both bars in place. *(not ported yet)*
+- Shell with side nav — The shell with a vertical rail only. *(not ported yet)*
+- Shell with top nav — The shell with a horizontal bar only. *(not ported yet)*
+- Side gallery — A gallery with the selected item beside the strip. *(not ported yet)*
+- Grouped table — A table whose rows are grouped under collapsible headers. *(not ported yet)*
+- Table page — A table as a whole screen: filters, table, pagination. *(not ported yet)*
+- Table page with chart — A table screen with a summary chart above it. *(not ported yet)*
+- Table page with heatmap — A table screen whose cells carry heatmap and status colouring. *(not ported yet)*
+- Retail heatmap table — The heatmap table screen with a retail data set. *(not ported yet)*
+
 ## App shell
 
 - AppShell — The outer frame of an application: header, navigation, content, and the responsive behaviour joining them. *(not ported yet)*
@@ -209,49 +254,4 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - useImageMode — Choosing the light or dark variant of an image. *(not ported yet)*
 - useStreamingText — Rendering text as it arrives token by token. *(not ported yet)*
 - useTranslator — Looking up a translated string. *(not ported yet)*
-
-## Templates
-
-- AI chat — A full conversation screen: transcript, composer, and the empty state before the first turn. *(not ported yet)*
-- AI chat landing — The pre-conversation screen: prompt suggestions and a centred composer. *(not ported yet)*
-- Centred hero — A marketing hero: headline, supporting line, and one action. *(not ported yet)*
-- Classic gallery — A uniform grid of media cards. *(not ported yet)*
-- Contact form — A single-column form with validation and a success state. *(not ported yet)*
-- Dashboard — Summary tiles above a table, inside the application shell. *(not ported yet)*
-- Portfolio dashboard — A dashboard built around a chart and a holdings table. *(not ported yet)*
-- Detail page — One record: header, metadata list, tabs, and actions. *(not ported yet)*
-- Documentation — A docs page: side navigation, content column, and an on-this-page outline. *(not ported yet)*
-- Design documentation — A docs page for a design topic, heavy on specimens. *(not ported yet)*
-- Technical documentation — A docs page for an API, heavy on code and property tables. *(not ported yet)*
-- Editor — A document editor: toolbar, canvas, and an inspector panel. *(not ported yet)*
-- File explorer — A tree of folders beside a list of files. *(not ported yet)*
-- Two-column form — A long form split into labelled sections across two columns. *(not ported yet)*
-- Gallery hero — A hero whose supporting content is a media grid. *(not ported yet)*
-- IDE — A code workspace: file tree, tabbed editors, and a panel. *(not ported yet)*
-- Incident console — A live operations view: severity, timeline, and the current on-call. *(not ported yet)*
-- Kanban board — Columns of draggable cards. *(not ported yet)*
-- Library — A browsable collection with filters beside the results. *(not ported yet)*
-- Login — A centred sign-in form, with the error and loading states. *(not ported yet)*
-- Login card — Sign-in inside a bordered card. *(not ported yet)*
-- Split login — Sign-in beside a full-height image. *(not ported yet)*
-- SSO login — Sign-in through identity providers, with an email fallback. *(not ported yet)*
-- Messaging shell — A conversation list beside the open conversation. *(not ported yet)*
-- Mixed gallery — A gallery of items at mixed sizes. *(not ported yet)*
-- Payment form — Card details, billing address, and an order summary. *(not ported yet)*
-- Product detail — Gallery, price, options, and the add-to-cart action. *(not ported yet)*
-- Product gallery — A filterable grid of products. *(not ported yet)*
-- Settings — Grouped preference rows with inline controls. *(not ported yet)*
-- Settings dialog — Settings inside a modal, with its own navigation. *(not ported yet)*
-- Settings with sidebar — Settings sections reached from a sidebar. *(not ported yet)*
-- Shell navigation — The application shell with both bars in place. *(not ported yet)*
-- Shell with side nav — The shell with a vertical rail only. *(not ported yet)*
-- Shell with top nav — The shell with a horizontal bar only. *(not ported yet)*
-- Side gallery — A gallery with the selected item beside the strip. *(not ported yet)*
-- Table — A data table with selection, sorting and row actions. *(not ported yet)*
-- Grouped table — A table whose rows are grouped under collapsible headers. *(not ported yet)*
-- Table page — A table as a whole screen: filters, table, pagination. *(not ported yet)*
-- Table page with chart — A table screen with a summary chart above it. *(not ported yet)*
-- Table page with heatmap — A table screen whose cells carry heatmap and status colouring. *(not ported yet)*
-- Retail heatmap table — The heatmap table screen with a retail data set. *(not ported yet)*
-- Theme showcase — Every component at once, for comparing themes side by side. *(not ported yet)*
 

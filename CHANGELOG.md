@@ -7,6 +7,57 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.0.6-dev]
+
+Documentation and tooling only. No library code changed, so nothing here can
+break a consumer.
+
+### Added
+
+- **Fourteen template pages.** Whole screens, assembled only from what the
+  package exports and extracted from compiling widgets in
+  `example/lib/examples/template_*.dart`: four sign-in screens (bare, carded,
+  SSO, split), three forms (contact, two-column, payment), settings as a page
+  and as a dialog, a centred hero, a record detail page, a dashboard, a table
+  screen, and a theme showcase holding one of every component. Each page states
+  what it is made of and why each control was chosen over the one next to it.
+- **A monitor / phone switch on every preview.** The phone pins the example to
+  390 logical pixels and draws the frame's edge, which is the only way to watch
+  a `LayoutBuilder` reflow — a two-column form becoming one, a tile row
+  restacking. Width only: touch density is a separate axis with its own picker.
+  It is not drawn when the viewport is already about phone-width, and the frame
+  gives way rather than overflowing if the window is narrowed after the fact.
+  The choice sits on `DocsController` with the other pickers, so it is made once
+  for every example on the page and survives navigation.
+  The glyphs are Lucide's, reached directly by the documentation app:
+  `AstryxIconName` names neither a monitor nor a phone, and it stays a
+  transcription of upstream's `IconName` union rather than growing to suit this
+  site.
+- `example/lib/docs_ui/segmented.dart` — the button-group picker the top bar and
+  the new width switch share, instead of the private copy the top bar had. It
+  also names the group to a screen reader, so "Mobile" is a choice *about*
+  something.
+
+### Fixed
+
+- The previous/next page footer overflowed below about 520 logical pixels: some
+  page titles are long — `InternationalizationProvider` — and two of them will
+  not sit side by side on a phone. The pair now stacks.
+- `example/lib/docs/version.g.dart` had fallen a release behind `pubspec.yaml`;
+  regenerating the snippets brings it back to the package version.
+
+### Known limitations, now documented
+
+Three layout traps found while building the templates, all of them the same
+root cause — a widget that measures its children intrinsically cannot measure
+the touch-target wrapper or a `LayoutBuilder` inside them, so they assert in
+touch density:
+
+- `AstryxText(truncateTooltip: true)` cannot be used inside an `AstryxTable`
+  cell.
+- An `AstryxGrid` cell cannot hold a wrapped row of interactive widgets, or an
+  `AstryxTable`. Cells of text, badges and figures are fine.
+
 ## [0.0.5-dev]
 
 Documentation, tooling and tests only. No library code changed, so nothing here
@@ -183,7 +234,8 @@ version bump until 0.1.0.
 - Secondary entry point `package:astryx_ui/theme.dart` for the theme layer
   without components.
 
-[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.5-dev...HEAD
+[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.6-dev...HEAD
+[0.0.6-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.5-dev...v0.0.6-dev
 [0.0.5-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.4-dev...v0.0.5-dev
 [0.0.4-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.3-dev...v0.0.4-dev
 [0.0.3-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.2-dev...v0.0.3-dev

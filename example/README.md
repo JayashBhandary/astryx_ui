@@ -2,8 +2,8 @@
 
 A documentation site for `astryx_ui`, built with `astryx_ui`. Every component,
 with prose, live examples, the source that produced them, and an API reference —
-viewable in any of the eight themes, either brightness, both densities and both
-text directions.
+viewable in any of the eight themes, either brightness, both densities, both
+text directions, and at either a desktop's width or a phone's.
 
 Live at **[astryxui.web.app](https://astryxui.web.app)**. Locally:
 
@@ -12,9 +12,34 @@ flutter run -d chrome     # or any other device
 ```
 
 There is no Material here. The navigation is a column of pressable cards, the
-example frames are cards, the Preview/Code switch is a tab list, the API
-references are `AstryxTable`s. That is the point: if a widget is awkward to
-build a real application with, this is where it shows.
+example frames are cards, the Preview/Code switch is a tab list, the width
+switch is a button group of icon buttons, the API references are `AstryxTable`s.
+That is the point: if a widget is awkward to build a real application with, this
+is where it shows.
+
+## Seeing a preview respond
+
+Every preview carries a **monitor / phone** switch. The phone pins the example
+to 390 logical pixels and draws the edge of that frame, which is the only way to
+watch a `LayoutBuilder` do its job — the [templates](../doc/README.md) reflow,
+the two-column form becomes one, the dashboard's tiles restack. It constrains
+the width and nothing else: touch density is a separate axis, and the top bar
+already has a picker for it. The switch is not drawn when the page is already
+about phone-width, because there it would offer no difference.
+
+The choice is **remembered**: it lives on `DocsController` beside the theme,
+brightness, density and text-direction pickers, so choosing the phone once
+switches every example on the page and stays chosen as you navigate. Like those
+pickers it is in-memory, so a reload starts at desktop again — none of the
+chrome's settings are persisted to storage, and one that was would be the odd
+one out.
+
+The two glyphs are Lucide's `monitor` and `smartphone`, reached directly rather
+than through `AstryxIconName` — that enum is a transcription of upstream's
+`IconName` union, and widening it so the documentation chrome can draw a phone
+would make the package's icon set a catalogue of whatever this site needed. The
+buttons still carry `label` and `tooltip`, so nothing about them lives in the
+picture alone.
 
 ## The one rule
 
@@ -103,7 +128,8 @@ lib/
 ├── docs_ui/               the chrome, built from astryx_ui
 │   ├── docs_shell.dart    sidebar, top bar, page area
 │   ├── doc_page_view.dart renders a DocPage
-│   ├── example_block.dart the Preview / Code card
+│   ├── example_block.dart the Preview / Code card, and the width switch
+│   ├── segmented.dart     the button-group picker both of those use
 │   ├── code_block.dart    Dart highlighting, from theme tokens
 │   ├── api_table.dart     the property tables
 │   └── inline_markup.dart `code`, **bold**, [links](introduction)
@@ -157,17 +183,23 @@ firebase deploy --only hosting:astryxui
 flutter test
 ```
 
-Six checks, and they are cheap insurance rather than ceremony:
+Cheap insurance rather than ceremony:
 
 - the app boots;
 - every example a page references exists in both generated maps;
 - every extracted example is documented somewhere — no orphans;
 - page ids are unique;
 - **every page renders in the wide layout** without a layout error;
-- **every one of the examples builds** without a layout error.
+- **every one of the examples builds** without a layout error;
+- the width switch pins a preview to a phone width, belongs to the preview
+  rather than the code, names itself and its glyphs to a screen reader, is not
+  offered where it would make no difference, is remembered across every example
+  and across navigation, and gives way rather than overflowing if the window is
+  narrowed after it has been used.
 
-The last two are what catch an overflowing row in an example nobody has looked
-at lately.
+The layout ones are what catch an overflowing row in an example nobody has
+looked at lately — including at phone width, which is where the page footer was
+found overflowing.
 
 ## Adding a component page
 

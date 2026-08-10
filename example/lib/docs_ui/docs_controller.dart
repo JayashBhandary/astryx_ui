@@ -5,6 +5,7 @@ import 'package:example/docs/pages.dart';
 import 'package:example/examples/theming_examples.dart' show acmeTheme;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// The themes the docs site can be viewed in: the seven Astryx ships, plus one
 /// defined in `lib/examples/theming_examples.dart` to prove the engine works.
@@ -34,6 +35,34 @@ enum DocsTheme {
     DocsTheme.butter => butterTheme,
     DocsTheme.acme => acmeTheme,
   };
+}
+
+/// The width an example is previewed at.
+///
+/// Not an emulator: it constrains the width and nothing else. That is enough
+/// for what it demonstrates, because every responsive decision in this package
+/// comes from a `LayoutBuilder` reading its constraints. Touch density is a
+/// separate axis with its own picker.
+enum DocsPreviewWidth {
+  /// However wide the page is. The default.
+  desktop('Desktop', LucideIcons.monitor, null),
+
+  /// Pinned to a phone: 390 logical pixels, with the frame's edge drawn.
+  mobile('Mobile', LucideIcons.smartphone, 390);
+
+  const DocsPreviewWidth(this.label, this.icon, this.width);
+
+  /// The accessible name, and the tooltip. Not drawn — a monitor and a phone
+  /// carry two choices without words.
+  final String label;
+
+  /// The glyph. Lucide, which is what the icon registry resolves to as well:
+  /// `AstryxIconName` names neither of these, being a transcription of
+  /// upstream's `IconName` union rather than a catalogue.
+  final IconData icon;
+
+  /// The width to pin to, or null to take the page's own.
+  final double? width;
 }
 
 /// Everything the docs chrome can change about how the pages render, plus which
@@ -67,6 +96,17 @@ class DocsController extends ChangeNotifier {
   TextDirection _textDirection = TextDirection.ltr;
   set textDirection(TextDirection value) =>
       _set(() => _textDirection = value, _textDirection == value);
+
+  /// The width every example previews at.
+  ///
+  /// On the controller rather than on each example block, so the choice is made
+  /// once: every preview on the page follows it, and it survives navigating to
+  /// another page. A reader comparing how two components behave on a phone
+  /// should not have to ask twice.
+  DocsPreviewWidth get previewWidth => _previewWidth;
+  DocsPreviewWidth _previewWidth = DocsPreviewWidth.desktop;
+  set previewWidth(DocsPreviewWidth value) =>
+      _set(() => _previewWidth = value, _previewWidth == value);
 
   /// Which page is showing.
   ///
@@ -163,10 +203,16 @@ class DocsScope extends InheritedNotifier<DocsController> {
   });
 
   static DocsController of(BuildContext context) {
-    final controller = context
-        .dependOnInheritedWidgetOfExactType<DocsScope>()
-        ?.notifier;
+    final controller = maybeOf(context);
     assert(controller != null, 'No DocsScope above this context.');
     return controller!;
   }
+
+  /// The controller in scope, or null when there is none.
+  ///
+  /// An example lifted out of the site — into `DocsPreviewHarness`, or into a
+  /// scratch app — has no chrome above it. That is not an error; it just means
+  /// there is nothing site-wide to read a preference from.
+  static DocsController? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<DocsScope>()?.notifier;
 }

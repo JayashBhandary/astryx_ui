@@ -7,6 +7,29 @@
 /// **Pure Dart** — see the note on `model.dart`. Generated from
 /// `scrape/completesite_map.md`, then maintained by hand: a page
 /// graduates out of here when someone writes it.
+///
+/// The fourteen written ones are in `pages/templates.dart`. What is left is
+/// here because it is *blocked*, not because nobody got to it — each of these
+/// screens needs a component this port does not have yet:
+///
+/// - **`AppShell` / `SideNav` / `TopNav` / `Outline`** — `shell_nav`,
+///   `shell_side_nav`, `shell_top_nav`, `settings_sidebar`, `documentation`,
+///   `documentation_design`, `documentation_technical`, `library`,
+///   `incident_console`.
+/// - **The chat components** — `ai_chat`, `ai_chat_landing`,
+///   `messaging_shell`.
+/// - **`Avatar` / `Thumbnail` / `AspectRatio` / `Carousel` / `Lightbox`** —
+///   `classic_gallery`, `mixed_gallery`, `side_gallery`, `gallery_hero`,
+///   `product_gallery`, `product_detail`.
+/// - **`Pagination`** — `table_page`, and the three screens built on it.
+/// - **`TreeList` and grouped table rows** — `file_explorer`, `ide`,
+///   `editor`, `kanban_board`, `table_grouped`.
+/// - **A charting widget**, which the package does not intend to ship —
+///   `dashboard_portfolio`, `table_page_chart`.
+///
+/// Writing one of these before its components land would mean either faking
+/// the missing widget or documenting a screen nobody can build, and a template
+/// that does not compile from the exported API is worse than a placeholder.
 library;
 
 import 'package:example/docs/groups.dart';
@@ -14,7 +37,7 @@ import 'package:example/docs/model.dart';
 import 'package:example/docs/pages/_stub.dart';
 
 /// Every page template, alphabetical by upstream slug.
-final List<DocPage> templatePages = <DocPage>[
+final List<DocPage> plannedTemplatePages = <DocPage>[
   stubPage(
     id: 'ai_chat',
     title: 'AI chat',
@@ -34,15 +57,6 @@ final List<DocPage> templatePages = <DocPage>[
     upstreamPath: '/templates/ai-chat-landing',
   ),
   stubPage(
-    id: 'centered_hero',
-    title: 'Centred hero',
-    group: DocGroup.templates,
-    description:
-        'A marketing hero: headline, supporting line, and one '
-        'action.',
-    upstreamPath: '/templates/centered-hero',
-  ),
-  stubPage(
     id: 'classic_gallery',
     title: 'Classic gallery',
     group: DocGroup.templates,
@@ -50,32 +64,11 @@ final List<DocPage> templatePages = <DocPage>[
     upstreamPath: '/templates/classic-gallery',
   ),
   stubPage(
-    id: 'contact_form',
-    title: 'Contact form',
-    group: DocGroup.templates,
-    description: 'A single-column form with validation and a success state.',
-    upstreamPath: '/templates/contact-form',
-  ),
-  stubPage(
-    id: 'dashboard',
-    title: 'Dashboard',
-    group: DocGroup.templates,
-    description: 'Summary tiles above a table, inside the application shell.',
-    upstreamPath: '/templates/dashboard',
-  ),
-  stubPage(
     id: 'dashboard_portfolio',
     title: 'Portfolio dashboard',
     group: DocGroup.templates,
     description: 'A dashboard built around a chart and a holdings table.',
     upstreamPath: '/templates/dashboard-portfolio',
-  ),
-  stubPage(
-    id: 'detail_page',
-    title: 'Detail page',
-    group: DocGroup.templates,
-    description: 'One record: header, metadata list, tabs, and actions.',
-    upstreamPath: '/templates/detail-page',
   ),
   stubPage(
     id: 'documentation',
@@ -117,15 +110,6 @@ final List<DocPage> templatePages = <DocPage>[
     upstreamPath: '/templates/file-explorer',
   ),
   stubPage(
-    id: 'form_two_column',
-    title: 'Two-column form',
-    group: DocGroup.templates,
-    description:
-        'A long form split into labelled sections across two '
-        'columns.',
-    upstreamPath: '/templates/form-two-column',
-  ),
-  stubPage(
     id: 'gallery_hero',
     title: 'Gallery hero',
     group: DocGroup.templates,
@@ -163,36 +147,6 @@ final List<DocPage> templatePages = <DocPage>[
     upstreamPath: '/templates/library',
   ),
   stubPage(
-    id: 'login',
-    title: 'Login',
-    group: DocGroup.templates,
-    description: 'A centred sign-in form, with the error and loading states.',
-    upstreamPath: '/templates/login',
-  ),
-  stubPage(
-    id: 'login_card',
-    title: 'Login card',
-    group: DocGroup.templates,
-    description: 'Sign-in inside a bordered card.',
-    upstreamPath: '/templates/login-card',
-  ),
-  stubPage(
-    id: 'login_split',
-    title: 'Split login',
-    group: DocGroup.templates,
-    description: 'Sign-in beside a full-height image.',
-    upstreamPath: '/templates/login-split',
-  ),
-  stubPage(
-    id: 'login_sso',
-    title: 'SSO login',
-    group: DocGroup.templates,
-    description:
-        'Sign-in through identity providers, with an email '
-        'fallback.',
-    upstreamPath: '/templates/login-sso',
-  ),
-  stubPage(
     id: 'messaging_shell',
     title: 'Messaging shell',
     group: DocGroup.templates,
@@ -207,13 +161,6 @@ final List<DocPage> templatePages = <DocPage>[
     upstreamPath: '/templates/mixed-gallery',
   ),
   stubPage(
-    id: 'payment_form',
-    title: 'Payment form',
-    group: DocGroup.templates,
-    description: 'Card details, billing address, and an order summary.',
-    upstreamPath: '/templates/payment-form',
-  ),
-  stubPage(
     id: 'product_detail',
     title: 'Product detail',
     group: DocGroup.templates,
@@ -226,20 +173,6 @@ final List<DocPage> templatePages = <DocPage>[
     group: DocGroup.templates,
     description: 'A filterable grid of products.',
     upstreamPath: '/templates/product-gallery',
-  ),
-  stubPage(
-    id: 'settings',
-    title: 'Settings',
-    group: DocGroup.templates,
-    description: 'Grouped preference rows with inline controls.',
-    upstreamPath: '/templates/settings',
-  ),
-  stubPage(
-    id: 'settings_dialog',
-    title: 'Settings dialog',
-    group: DocGroup.templates,
-    description: 'Settings inside a modal, with its own navigation.',
-    upstreamPath: '/templates/settings-dialog',
   ),
   stubPage(
     id: 'settings_sidebar',
@@ -277,13 +210,6 @@ final List<DocPage> templatePages = <DocPage>[
     upstreamPath: '/templates/side-gallery',
   ),
   stubPage(
-    id: 'table_template',
-    title: 'Table',
-    group: DocGroup.templates,
-    description: 'A data table with selection, sorting and row actions.',
-    upstreamPath: '/templates/table',
-  ),
-  stubPage(
     id: 'table_grouped',
     title: 'Grouped table',
     group: DocGroup.templates,
@@ -319,14 +245,5 @@ final List<DocPage> templatePages = <DocPage>[
     group: DocGroup.templates,
     description: 'The heatmap table screen with a retail data set.',
     upstreamPath: '/templates/table-page-shoe-store-heatmap',
-  ),
-  stubPage(
-    id: 'theme_showcase',
-    title: 'Theme showcase',
-    group: DocGroup.templates,
-    description:
-        'Every component at once, for comparing themes side by '
-        'side.',
-    upstreamPath: '/templates/theme-showcase',
   ),
 ];
