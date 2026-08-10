@@ -36,6 +36,7 @@ Every example is a real widget in `example/lib/examples/`, and the code under ea
 ## Start here
 
 - [Installation](installation.md) — add the package and wrap your app.
+- [Principles](principles.md) — what it optimises for, and what follows.
 - [Theming](theming.md) — the seven themes, and defining your own.
 - [Design tokens](tokens.md) — the values everything resolves to.
 - [Density](density.md) — how pointer and touch differ.

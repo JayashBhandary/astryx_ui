@@ -42,7 +42,7 @@ These are not aspirations. Each one is enforced by the components themselves, an
 ## Colour is never the only signal
 
 - Every status carries an icon as well as a fill.
-- The nine categorical palettes are for *categories*, never severity: a colour-blind user tells error from success by icon and position.
+- The ten categorical palettes are for *categories*, never severity: a colour-blind user tells error from success by icon and position.
 - The `subtle` divider is roughly 1.1:1 and therefore decoration — never a control’s only visible boundary.
 
 ## Motion

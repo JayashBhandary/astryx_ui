@@ -241,8 +241,21 @@ Open the reference before writing a component you have not written before. Each 
 | --- | --- | --- |
 | astryx_ui | An unofficial Flutter port of Astryx, Meta’s design system for internal tools. | `references/guides.md` |
 | Installation | Add the package, wrap your app once, and you are done. | `references/guides.md` |
+| Principles | What the design system optimises for, and the decisions that follow from it. | `references/guides.md` |
 | Theming | Seven themes, two brightnesses, and an engine for your own. | `references/guides.md` |
 | Design tokens | The values every component resolves through. | `references/guides.md` |
+| Colour | The colour system: the families, the semantic roles, and which one to reach for. | `references/guides.md` |
+| Typography | The type scale, the roles, and how a heading level maps onto them. | `references/guides.md` |
+| Spacing | The spacing scale, and the rule that gaps come from tokens rather than magic numbers. | `references/guides.md` |
+| Shape | Corner radii and how they compose when surfaces nest. | `references/guides.md` |
+| Elevation | The elevation levels, what each is for, and how they read in dark mode. | `references/guides.md` |
+| Motion | Durations, easings, and what must not move when motion is reduced. | `references/guides.md` |
+| Layout | Page structure: the shell, the content column, and the breakpoints between them. | `references/guides.md` |
+| Icons | The icon registry, the Lucide mapping, and how to supply your own set. | `references/guides.md` |
+| Illustrations | The upstream illustration set, and what a Flutter port would need to carry it. | `references/guides.md` |
+| Styling | Extending a component's appearance without leaving the token system. | `references/guides.md` |
+| The token engine | How a theme definition becomes resolved tokens, and where the resolution happens. | `references/guides.md` |
+| Platform support | Which Flutter platforms are exercised, and where behaviour differs. The Flutter counterpart of upstream's browser-support page. | `references/guides.md` |
 | Density | One widget set that is honest on a mouse and on a thumb. | `references/guides.md` |
 | Right-to-left | Logical throughout, so RTL is a `Directionality` and nothing more. | `references/guides.md` |
 | Accessibility | The rules the whole widget set is built to, in one place. | `references/guides.md` |

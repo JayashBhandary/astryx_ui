@@ -63,7 +63,7 @@ class BadgeVariantsExample extends StatelessWidget {
 ```
 
 
-Plus the nine categorical families.
+Plus the ten categorical families.
 
 ```dart
 class BadgePalettesExample extends StatelessWidget {

@@ -8,24 +8,24 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 
 - [astryx_ui](guides/introduction.md) — An unofficial Flutter port of Astryx, Meta’s design system for internal tools.
 - [Installation](guides/installation.md) — Add the package, wrap your app once, and you are done.
+- [Principles](guides/principles.md) — What the design system optimises for, and the decisions that follow from it.
 - [Theming](guides/theming.md) — Seven themes, two brightnesses, and an engine for your own.
 - [Design tokens](guides/tokens.md) — The values every component resolves through.
+- [Colour](guides/color.md) — The colour system: the families, the semantic roles, and which one to reach for.
+- [Typography](guides/typography.md) — The type scale, the roles, and how a heading level maps onto them.
+- [Spacing](guides/spacing.md) — The spacing scale, and the rule that gaps come from tokens rather than magic numbers.
+- [Shape](guides/shape.md) — Corner radii and how they compose when surfaces nest.
+- [Elevation](guides/elevation.md) — The elevation levels, what each is for, and how they read in dark mode.
+- [Motion](guides/motion.md) — Durations, easings, and what must not move when motion is reduced.
+- [Layout](guides/layout_guide.md) — Page structure: the shell, the content column, and the breakpoints between them.
+- [Icons](guides/icons.md) — The icon registry, the Lucide mapping, and how to supply your own set.
+- [Illustrations](guides/illustrations.md) — The upstream illustration set, and what a Flutter port would need to carry it.
+- [Styling](guides/styling.md) — Extending a component's appearance without leaving the token system.
+- [The token engine](guides/core.md) — How a theme definition becomes resolved tokens, and where the resolution happens.
+- [Platform support](guides/platform_support.md) — Which Flutter platforms are exercised, and where behaviour differs. The Flutter counterpart of upstream's browser-support page.
 - [Density](guides/density.md) — One widget set that is honest on a mouse and on a thumb.
 - [Right-to-left](guides/rtl.md) — Logical throughout, so RTL is a `Directionality` and nothing more.
 - [Accessibility](guides/accessibility.md) — The rules the whole widget set is built to, in one place.
-- Principles — What the design system optimises for, and the decisions that follow from it. *(not ported yet)*
-- Colour — The colour system: the families, the semantic roles, and which one to reach for. *(not ported yet)*
-- Typography — The type scale, the roles, and how a heading level maps onto them. *(not ported yet)*
-- Spacing — The spacing scale, and the rule that gaps come from tokens rather than magic numbers. *(not ported yet)*
-- Shape — Corner radii and how they compose when surfaces nest. *(not ported yet)*
-- Elevation — The elevation levels, what each is for, and how they read in dark mode. *(not ported yet)*
-- Motion — Durations, easings, and what must not move when motion is reduced. *(not ported yet)*
-- Layout — Page structure: the shell, the content column, and the breakpoints between them. *(not ported yet)*
-- Icons — The icon registry, the Lucide mapping, and how to supply your own set. *(not ported yet)*
-- Illustrations — The upstream illustration set, and what a Flutter port would need to carry it. *(not ported yet)*
-- Styling — Extending a component's appearance without leaving the token system. *(not ported yet)*
-- The token engine — How a theme definition becomes resolved tokens, and where the resolution happens. *(not ported yet)*
-- Platform support — Which Flutter platforms are exercised, and where behaviour differs. The Flutter counterpart of upstream's browser-support page. *(not ported yet)*
 - Migration — Coming from Material or Cupertino: what maps, what does not, and what to stop doing. *(not ported yet)*
 - Working with AI — The generated agent skill, what it contains, and how to keep it current. *(not ported yet)*
 - Styling libraries — Upstream covers integrating StyleX with other CSS-in-JS libraries. There is no Flutter counterpart. *(not planned)*

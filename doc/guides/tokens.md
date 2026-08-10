@@ -29,7 +29,7 @@ No component holds a colour, a length or a duration. Every one is a token, resol
 
 ## Colour
 
-Roughly 100 colour tokens: the semantic set, the `--color-on-*` foregrounds that guarantee contrast against them, and four tokens for each of the nine categorical families. A sample:
+Seventy-nine colour tokens: the semantic set, the `--color-on-*` foregrounds that guarantee contrast against them, and four tokens for each of the ten categorical families. A sample, and [Colour](color.md) for the rest:
 
 ```dart
 class ThemingTokensExample extends StatelessWidget {

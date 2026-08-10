@@ -46,7 +46,7 @@ AstryxCard
     ),
     const DocExample('card_variants', align: DocExampleAlign.stretch),
     const DocProse(
-      'Plus the nine categorical families, through '
+      'Plus the ten categorical families, through '
       '`AstryxCardVariant.palette`.',
     ),
     const DocExample('card_palettes', align: DocExampleAlign.stretch),
@@ -190,7 +190,7 @@ final List<DocProp> _cardVariantProps = <DocProp>[
   const DocProp(
     'palette',
     'AstryxCardVariant.palette(AstryxPalette)',
-    'One of the nine categorical families.',
+    'One of the ten categorical families.',
   ),
 ];
 
@@ -211,7 +211,7 @@ final DocPage _badge = DocPage(
     const DocHeading('Variants'),
     const DocProse('Five semantic fills.'),
     const DocExample('badge_variants'),
-    const DocProse('Plus the nine categorical families.'),
+    const DocProse('Plus the ten categorical families.'),
     const DocExample('badge_palettes'),
     const DocHeading('Icons'),
     const DocProse(

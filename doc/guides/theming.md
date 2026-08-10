@@ -160,7 +160,7 @@ final acmeDense = defineTheme(
     name: 'acme-dense',
     extendsTheme: acmeTheme,
     tokens: <String, AstryxTokenValue>{
-      '--spacing-4': AstryxTokenValue.length('12px'),
+      '--spacing-4': AstryxTokenValue('12px'),
     },
   ),
 );
@@ -189,10 +189,12 @@ The registry maps semantic names to glyphs — Lucide by default, matching upstr
 
 ```dart
 AstryxThemeProvider(
-  icons: AstryxIconRegistry(<AstryxIconName, IconData>{
-    AstryxIconName.search: MyIcons.search,
-    // …the rest fall back to the default registry.
-  }),
+  // From `defaults`, so the names you do not list still resolve.
+  icons: AstryxIconRegistry.defaults.copyWith(
+    const <AstryxIconName, IconData>{
+      AstryxIconName.search: MyIcons.search,
+    },
+  ),
   child: const HomePage(),
 )
 ```
@@ -200,5 +202,6 @@ AstryxThemeProvider(
 ## Related
 
 - [Design tokens](tokens.md) — what a theme resolves to.
-- [AstryxIcon](../components/icon.md) — the names the registry knows.
+- [Icons](icons.md) — the registry, and the rule above.
+- [Styling](styling.md) — the narrower escape hatches.
 

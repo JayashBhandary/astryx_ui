@@ -19,21 +19,31 @@ import 'package:example/examples/button_group_examples.dart';
 import 'package:example/examples/card_examples.dart';
 import 'package:example/examples/center_examples.dart';
 import 'package:example/examples/checkbox_examples.dart';
+import 'package:example/examples/color_examples.dart';
+import 'package:example/examples/core_examples.dart';
 import 'package:example/examples/dialog_examples.dart';
 import 'package:example/examples/divider_examples.dart';
 import 'package:example/examples/dropdown_menu_examples.dart';
+import 'package:example/examples/elevation_examples.dart';
 import 'package:example/examples/field_examples.dart';
 import 'package:example/examples/grid_examples.dart';
 import 'package:example/examples/heading_examples.dart';
 import 'package:example/examples/icon_button_examples.dart';
 import 'package:example/examples/icon_examples.dart';
+import 'package:example/examples/icons_examples.dart';
+import 'package:example/examples/layout_examples.dart';
+import 'package:example/examples/motion_examples.dart';
+import 'package:example/examples/platform_examples.dart';
 import 'package:example/examples/popover_examples.dart';
 import 'package:example/examples/progress_bar_examples.dart';
 import 'package:example/examples/radio_list_examples.dart';
 import 'package:example/examples/selector_examples.dart';
+import 'package:example/examples/shape_examples.dart';
 import 'package:example/examples/skeleton_examples.dart';
+import 'package:example/examples/spacing_examples.dart';
 import 'package:example/examples/spinner_examples.dart';
 import 'package:example/examples/stack_examples.dart';
+import 'package:example/examples/styling_examples.dart';
 import 'package:example/examples/switch_examples.dart';
 import 'package:example/examples/tab_list_examples.dart';
 import 'package:example/examples/table_examples.dart';
@@ -47,6 +57,7 @@ import 'package:example/examples/text_input_examples.dart';
 import 'package:example/examples/theming_examples.dart';
 import 'package:example/examples/toast_examples.dart';
 import 'package:example/examples/tooltip_examples.dart';
+import 'package:example/examples/typography_examples.dart';
 
 /// Every example's widget, keyed by its region id.
 final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
@@ -88,6 +99,10 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'checkbox_tristate': (_) => const CheckboxTristateExample(),
   'checkbox_sizes': (_) => const CheckboxSizesExample(),
   'checkbox_states': (_) => const CheckboxStatesExample(),
+  'color_roles': (_) => const ColorRolesExample(),
+  'color_on_pairs': (_) => const ColorOnPairsExample(),
+  'color_palettes': (_) => const ColorPalettesExample(),
+  'core_pipeline': (_) => const CorePipelineExample(),
   'dialog_demo': (_) => const DialogDemoExample(),
   'dialog_form': (_) => const DialogFormExample(),
   'dialog_scrolling': (_) => const DialogScrollingExample(),
@@ -101,6 +116,8 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'dropdown_menu_submenu': (_) => const DropdownMenuSubmenuExample(),
   'dropdown_menu_trailing': (_) => const DropdownMenuTrailingExample(),
   'dropdown_menu_placement': (_) => const DropdownMenuPlacementExample(),
+  'elevation_shadows': (_) => const ElevationShadowsExample(),
+  'elevation_button': (_) => const ElevationButtonExample(),
   'field_demo': (_) => const FieldDemoExample(),
   'field_scope': (_) => const FieldScopeExample(),
   'field_markers': (_) => const FieldMarkersExample(),
@@ -123,6 +140,11 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'icon_colors': (_) => const IconColorsExample(),
   'icon_registry': (_) => const IconRegistryExample(),
   'icon_labelled': (_) => const IconLabelledExample(),
+  'icons_registry_swap': (_) => const IconsRegistrySwapExample(),
+  'icons_mirroring': (_) => const IconsMirroringExample(),
+  'layout_page': (_) => const LayoutPageExample(),
+  'motion_durations': (_) => const MotionDurationsExample(),
+  'platform_targets': (_) => const PlatformTargetsExample(),
   'popover_demo': (_) => const PopoverDemoExample(),
   'popover_sides': (_) => const PopoverSidesExample(),
   'popover_align': (_) => const PopoverAlignExample(),
@@ -143,10 +165,13 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'selector_search': (_) => const SelectorSearchExample(),
   'selector_icons': (_) => const SelectorIconsExample(),
   'selector_states': (_) => const SelectorStatesExample(),
+  'shape_scale': (_) => const ShapeScaleExample(),
+  'shape_nesting': (_) => const ShapeNestingExample(),
   'skeleton_demo': (_) => const SkeletonDemoExample(),
   'skeleton_shapes': (_) => const SkeletonShapesExample(),
   'skeleton_card': (_) => const SkeletonCardExample(),
   'skeleton_delay': (_) => const SkeletonDelayExample(),
+  'spacing_gap': (_) => const SpacingGapExample(),
   'spinner_demo': (_) => const SpinnerDemoExample(),
   'spinner_sizes': (_) => const SpinnerSizesExample(),
   'spinner_shades': (_) => const SpinnerShadesExample(),
@@ -156,6 +181,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'stack_align': (_) => const StackAlignExample(),
   'stack_wrap': (_) => const StackWrapExample(),
   'stack_nested': (_) => const StackNestedExample(),
+  'styling_scopes': (_) => const StylingScopesExample(),
   'switch_demo': (_) => const SwitchDemoExample(),
   'switch_settings_list': (_) => const SwitchSettingsListExample(),
   'switch_sizes': (_) => const SwitchSizesExample(),
@@ -220,4 +246,6 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'tooltip_timing': (_) => const TooltipTimingExample(),
   'tooltip_semantics': (_) => const TooltipSemanticsExample(),
   'tooltip_wrapping': (_) => const TooltipWrappingExample(),
+  'typography_roles': (_) => const TypographyRolesExample(),
+  'typography_in_context': (_) => const TypographyInContextExample(),
 };

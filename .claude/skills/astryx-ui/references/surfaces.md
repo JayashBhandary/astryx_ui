@@ -130,7 +130,7 @@ class _CardDemoExampleState extends State<CardDemoExample> {
 | `standard` | `AstryxCardVariant` | — | `--color-background-card`. The default. |
 | `muted` | `AstryxCardVariant` | — | `--color-background-muted`, for a de-emphasised card. |
 | `transparent` | `AstryxCardVariant` | — | No fill at all. |
-| `palette` | `AstryxCardVariant.palette(AstryxPalette)` | — | One of the nine categorical families. |
+| `palette` | `AstryxCardVariant.palette(AstryxPalette)` | — | One of the ten categorical families. |
 
 ---
 
