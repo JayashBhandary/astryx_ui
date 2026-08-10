@@ -1,0 +1,249 @@
+---
+name: astryx-ui
+description: >-
+  Use when writing or reviewing Flutter UI built with the astryx_ui
+  package — screens, forms, tables, dialogs, menus, toasts or custom
+  themes using AstryxButton, AstryxCard, AstryxTable and the rest of
+  the widget set. Covers all 30 components, the token system (never a
+  raw colour or pixel value), pointer/touch density, right-to-left
+  support, and the accessibility rules the widget set enforces —
+  required labels, focus behaviour, and never putting anything behind
+  hover alone. Also use when asked to theme an app, pick between two
+  similar components, or explain why an astryx_ui widget behaves as it
+  does.
+---
+
+<!-- GENERATED FILE — DO NOT EDIT.
+     Curated half:  example/tool/gen_skill.dart
+     Generated half: example/lib/docs/pages/
+     Regenerate: cd example && dart run tool/gen_skill.dart
+-->
+
+# astryx_ui
+
+An unofficial Flutter port of Astryx, Meta's design system for internal tools.
+Built on `flutter/widgets`, **not Material**. Roughly 30 components, all
+themeable through one token layer.
+
+## Setup
+
+```dart
+import 'package:astryx_ui/astryx_ui.dart';
+
+void main() => runApp(
+  AstryxApp(
+    title: 'My internal tool',
+    home: const HomePage(),
+  ),
+);
+```
+
+Inside an existing `MaterialApp` or `CupertinoApp`, wrap a subtree instead —
+this is the incremental adoption path and behaves identically:
+
+```dart
+MaterialApp(
+  home: AstryxThemeProvider(
+    theme: matchaTheme,          // optional. Defaults to neutralTheme
+    mode: AstryxColorMode.system,
+    child: const HomePage(),
+  ),
+)
+```
+
+Either one installs the theme, the icon registry, the localisations, the
+focus-visible scope and the toast host. Nothing else to wire: toasts, tooltips,
+dialogs and focus rings work from here.
+
+For tokens without widgets — a chart, a custom painter, a test — import
+`package:astryx_ui/theme.dart` instead.
+
+## Hard rules
+
+Break these and the result compiles, looks fine, and is wrong.
+
+1. **No raw values.** Never a `Color`, a padding number, a radius, a duration or
+   a `TextStyle` literal. Read the token:
+
+   ```dart
+   final theme = AstryxTheme.of(context);
+   theme.color(AstryxColorToken.accent);
+   theme.spacing(AstryxSpacingToken.spacing3);
+   theme.borderRadius(AstryxRadiusToken.container);
+   theme.textStyle(AstryxTypeRole.body);
+   ```
+
+   Widget parameters take tokens directly — `gap:`, `padding:`, `variant:`.
+   Reach for `AstryxTheme.of` only when building something the design system
+   has no widget for.
+
+2. **Everything interactive has an accessible name.** `AstryxButton.label`,
+   `AstryxIconButton.label` (required even though nothing is painted),
+   `AstryxCheckbox.label`, `AstryxCard.semanticsLabel` when pressable,
+   `AstryxTable.label` and `rowLabelOf`, `AstryxTabList.label`, an overlay's
+   `label`. Use `labelHidden: true` to hide a label from sight — never to skip
+   one.
+
+3. **Nothing lives behind hover.** No hover-only actions, no information that
+   appears only in a tooltip. Touch has no hover, and the density system
+   actively suppresses hover styling there. Gate any hover styling you write
+   yourself on `AstryxTheme.densityOf(context).supportsHover`.
+
+4. **Colour is never the only signal.** Pair every status with an icon or text.
+   The nine `AstryxPalette` families are *categorical* — "the Red team" — never
+   severity.
+
+5. **Composite controls are one tab stop.** `AstryxRadioList`, `AstryxTabList`,
+   `AstryxDropdownMenu` and `AstryxSelector` handle their own arrow-key
+   navigation. Do not wrap their children in `Focus` or `InkWell`.
+
+6. **Overlays take a `triggerBuilder`, not a child.** A button consumes its own
+   taps, so the overlay hands you a controller:
+
+   ```dart
+   AstryxPopover(
+     content: panel,
+     triggerBuilder: (context, controller) =>
+         AstryxButton(label: 'Filters', onPressed: controller.toggle),
+   )
+   ```
+
+   `AstryxDialog` is the exception: it is a widget in the tree driven by an
+   `AstryxDialogController`, not a `showDialog` call. Put it next to whatever
+   opens it and dispose the controller with your state.
+
+7. **`AstryxHStack` and `AstryxVStack` default to `MainAxisSize.min`**, unlike
+   Flutter's `Row` and `Column`. `justify` appears to do nothing until you ask
+   for `MainAxisSize.max`. In a spreading row, wrap text in `Flexible` or it
+   will overflow.
+
+8. **There is one card.** No `ClickableCard`: a non-null `onPressed` makes
+   `AstryxCard` a button, with hover, press, a focus ring, `Semantics(button:
+   true)` and tap-target enforcement.
+
+9. **Logical directions only.** `start`/`end`, `paddingInline`,
+   `EdgeInsetsDirectional`. Never `left`/`right`. RTL is then a
+   `Directionality` and nothing else.
+
+10. **A switch applies immediately; a checkbox applies on submit.** Do not put
+    an `AstryxSwitch` in a form with a Save button.
+
+11. **`AstryxSelector` picks a value; `AstryxDropdownMenu` performs actions.**
+    A menu reports nothing and shows no current selection.
+
+## Choosing a widget
+
+| Want | Use |
+| --- | --- |
+| An action with words | `AstryxButton` |
+| An action with a glyph | `AstryxIconButton` (still needs `label`) |
+| A related set of actions | `AstryxButtonGroup(attached: false)` |
+| A segmented control | `AstryxButtonGroup`, selected child takes a louder `variant` |
+| One choice, ≤7 options, all visible | `AstryxRadioList` |
+| One choice, many options | `AstryxSelector` |
+| A boolean that applies now | `AstryxSwitch` |
+| A boolean that applies on submit | `AstryxCheckbox` |
+| A label + validation around your own control | `AstryxField` |
+| A message tied to the page | `AstryxBanner` |
+| A message about something that just happened | toast via `AstryxToastScope.of(context).show(...)` |
+| A status word or count | `AstryxBadge` |
+| A container, maybe pressable | `AstryxCard` |
+| A floating panel | `AstryxPopover` |
+| A list of actions | `AstryxDropdownMenu` |
+| Something that must be dealt with | `AstryxDialog` |
+| A phrase on hover | `AstryxTooltip` (never the only source of the fact) |
+| Rows of data | `AstryxTable` (does **not** virtualise — hundreds, not thousands) |
+| Switching views | `AstryxTabList` |
+| A wait with no known extent | `AstryxSpinner` |
+| A wait with a known extent | `AstryxProgressBar` |
+| A wait whose result has a known shape | `AstryxSkeleton` |
+| Row/column with token spacing | `AstryxHStack` / `AstryxVStack` |
+| A responsive tile wall | `AstryxGrid(minWidth: …)` |
+| An empty state | `AstryxCenter(minHeight: …)` |
+
+## Common mistakes
+
+| Wrong | Right |
+| --- | --- |
+| `AstryxButton(child: Text('Save'))` | `AstryxButton(label: 'Save')` — there is no `child` |
+| `AstryxIconButton(icon: …, onPressed: …)` | add `label:` — it is required |
+| `padding: EdgeInsets.all(16)` | `padding: AstryxSpacingToken.spacing4` |
+| `SizedBox(height: 12)` between children | `gap:` on the enclosing stack |
+| `Color(0xFF0F62FE)` | `theme.color(AstryxColorToken.accent)` |
+| `TextStyle(fontSize: 14)` | `AstryxText(…, type: AstryxTextType.supporting)` |
+| `Text('Hello')` | `AstryxText('Hello')` |
+| `ClickableCard(…)` | `AstryxCard(onPressed: …, semanticsLabel: …)` |
+| `showDialog(context: context, …)` | an `AstryxDialog` in the tree + `AstryxDialogController` |
+| `AstryxPopover(child: button)` | `triggerBuilder: (context, controller) => …` |
+| `onChanged` omitted "because it is read-only" | `readOnly: true` — a null `onChanged` is silently inert |
+| `enabled: false` for a value shown but not editable | `readOnly: true`; `enabled: false` dims it |
+| `EdgeInsets.only(left: 8)` | `EdgeInsetsDirectional.only(start: 8)` |
+| Row actions revealed on hover | always visible — `rowActionsBuilder` |
+| `AstryxHStack(justify: …)` and nothing moves | add `mainAxisSize: MainAxisSize.max` |
+| Long text in a spreading row | wrap it in `Flexible` |
+| `AstryxTable` fed 10,000 rows | paginate; it does not virtualise |
+| Sorting wired to `onSortChanged` only | a column is sortable only if it has `compare` |
+
+## Components
+
+Open the reference before writing a component you have not written before. Each entry there has a canonical snippet, the rules that apply, and the full property table.
+
+| Component | For | Reference |
+| --- | --- | --- |
+| `AstryxText` | A run of text, sized and coloured from the type scale. | `references/layout.md` |
+| `AstryxHeading` | A heading: a size from the scale, and a level in the outline. | `references/layout.md` |
+| `AstryxHStack & AstryxVStack` | A row and a column whose gap comes from the spacing scale. | `references/layout.md` |
+| `AstryxGrid` | A CSS-style grid: fixed tracks, or as many as the width allows. | `references/layout.md` |
+| `AstryxCenter` | Centres a child, with token padding and a measure. | `references/layout.md` |
+| `AstryxDivider` | A rule between sections, optionally labelled. | `references/layout.md` |
+| `AstryxIcon` | A glyph named semantically and resolved through the theme. | `references/layout.md` |
+| `AstryxButton` | A labelled action, in four levels of prominence. | `references/actions.md` |
+| `AstryxIconButton` | A square button holding a glyph instead of words. | `references/actions.md` |
+| `AstryxButtonGroup` | Joins related actions into one control, or spaces them as a set. | `references/actions.md` |
+| `AstryxField` | Gives any control a label, a description, a required marker and a validation message. | `references/forms.md` |
+| `AstryxTextInput` | A single-line or multi-line text field, with validation. | `references/forms.md` |
+| `AstryxTextArea` | A multi-line text field that grows with its content. | `references/forms.md` |
+| `AstryxCheckbox` | A two-state or three-state checkbox with a required label. | `references/forms.md` |
+| `AstryxRadioList` | One choice out of several, as an ARIA radio group. | `references/forms.md` |
+| `AstryxSwitch` | A setting that takes effect the moment it is flipped. | `references/forms.md` |
+| `AstryxSelector` | A dropdown that picks one value, with optional search. | `references/forms.md` |
+| `AstryxSpinner` | An indeterminate wait, in three sizes. | `references/status.md` |
+| `AstryxSkeleton` | A placeholder in the shape of the content that is coming. | `references/status.md` |
+| `AstryxProgressBar` | A determinate or indeterminate bar, with an announced label. | `references/status.md` |
+| `AstryxPopover` | A floating panel anchored to a trigger, with trapped focus. | `references/overlays.md` |
+| `AstryxTooltip` | A short phrase on hover, focus, or long-press. | `references/overlays.md` |
+| `AstryxDropdownMenu` | A list of actions, with sections, submenus and full keyboard support. | `references/overlays.md` |
+| `AstryxDialog` | A modal panel anchored to the viewport, with a scrolling body. | `references/overlays.md` |
+| `AstryxToast` | A transient message in the corner, with an optional action. | `references/overlays.md` |
+| `AstryxCard` | A bordered surface with a header, a body and a footer — pressable when you give it something to do. | `references/surfaces.md` |
+| `AstryxBadge` | A small label: a status, a count, a category. | `references/surfaces.md` |
+| `AstryxBanner` | An inline message with a severity, announced when it appears. | `references/surfaces.md` |
+| `AstryxTabList` | A strip of tabs that reports a value and owns no panel. | `references/data.md` |
+| `AstryxTable` | A typed data table with sorting, selection, row actions and three column-width strategies. | `references/data.md` |
+
+## Guides
+
+| Topic | Covers | Reference |
+| --- | --- | --- |
+| astryx_ui | An unofficial Flutter port of Astryx, Meta’s design system for internal tools. | `references/guides.md` |
+| Installation | Add the package, wrap your app once, and you are done. | `references/guides.md` |
+| Theming | Seven themes, two brightnesses, and an engine for your own. | `references/guides.md` |
+| Design tokens | The values every component resolves through. | `references/guides.md` |
+| Density | One widget set that is honest on a mouse and on a thumb. | `references/guides.md` |
+| Right-to-left | Logical throughout, so RTL is a `Directionality` and nothing more. | `references/guides.md` |
+| Accessibility | The rules the whole widget set is built to, in one place. | `references/guides.md` |
+
+## All references
+
+- `references/enums.md` — **every public enum and its values.** Check here before naming a variant, a size or a token; the names are not always the obvious ones.
+- `references/patterns.md` — whole screens: a form in a card, a table with row actions, a destructive flow, a settings list.
+- `references/guides.md` — Getting started.
+- `references/layout.md` — Layout & typography.
+- `references/actions.md` — Actions.
+- `references/forms.md` — Forms.
+- `references/status.md` — Status.
+- `references/overlays.md` — Overlays.
+- `references/surfaces.md` — Surfaces.
+- `references/data.md` — Data display.
+
+The prose versions of these pages, for a human, are in `doc/` at the repository root. The live site is `example/`.

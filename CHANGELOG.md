@@ -7,6 +7,43 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.0.3-dev]
+
+Documentation only. No library code changed, so nothing here can break a
+consumer.
+
+### Added
+
+- **A documentation site**, in `example/`. Every component with prose, live
+  examples, the source that produced them, and an API reference — viewable in
+  any of the eight themes, either brightness, both densities and both text
+  directions. Built from `astryx_ui` itself, with no Material anywhere: the
+  navigation is a column of pressable cards, the example frames are cards, the
+  Preview/Code switch is an `AstryxTabList`, the API references are
+  `AstryxTable`s. Pages are addressable by URL fragment on the web.
+- **`doc/`** — the same content as markdown: 30 component pages under
+  `components/`, seven guides under `guides/` (installation, theming, design
+  tokens, density, right-to-left, accessibility), and an index. Generated from
+  the page model by `example/tool/gen_docs_md.dart`.
+- **A skill for AI coding agents**, in `.claude/skills/astryx-ui/`. The rules
+  the widget set is built to, a component index, per-group API references, every
+  public enum's values, and the mistakes a generator makes without them.
+  Generated from the same source by `example/tool/gen_skill.dart`.
+- **Snippet extraction.** Every code block in the site, the markdown and the
+  skill is lifted from a real, compiling widget in `example/lib/examples/` by
+  `example/tool/gen_snippets.dart`. A snippet cannot describe something the
+  package does not do, because the preview and the code come from the same
+  lines.
+- Example tests that render every page and build all 156 examples, so a layout
+  error in a documented example fails the suite rather than being found by a
+  reader.
+
+### Changed
+
+- `example/` is the documentation site rather than a gallery of demo pages. The
+  theme, brightness, density and direction pickers survive; the demo and gallery
+  scaffolding they lived in does not.
+
 ## [0.0.2-dev]
 
 ### Fixed
@@ -50,6 +87,7 @@ version bump until 0.1.0.
 - Secondary entry point `package:astryx_ui/theme.dart` for the theme layer
   without components.
 
-[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.2-dev...HEAD
+[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.3-dev...HEAD
+[0.0.3-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.2-dev...v0.0.3-dev
 [0.0.2-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.1-dev...v0.0.2-dev
 [0.0.1-dev]: https://github.com/JayashBhandary/astryx_ui/releases/tag/v0.0.1-dev

@@ -1,25 +1,29 @@
 import 'package:astryx_ui/astryx_ui.dart';
-import 'package:example/gallery/gallery_controller.dart';
-import 'package:example/gallery/gallery_scope.dart';
-import 'package:example/gallery/gallery_shell.dart';
-import 'package:flutter/material.dart';
+import 'package:example/docs_ui/docs_controller.dart';
+import 'package:example/docs_ui/docs_shell.dart';
+import 'package:flutter/widgets.dart';
 
-void main() => runApp(const GalleryApp());
+void main() => runApp(const DocsApp());
 
-/// Gallery for `astryx_ui`.
+/// The `astryx_ui` documentation site.
 ///
-/// Every component, every theme, at both densities, in both brightnesses, in
-/// both text directions. If a widget cannot be exercised from here, it is not
-/// finished.
-class GalleryApp extends StatefulWidget {
-  const GalleryApp({super.key});
+/// Every component, with prose, live examples, the source that produced them,
+/// and an API reference — in any of the eight themes, either brightness, both
+/// densities and both text directions.
+///
+/// The site is built from `astryx_ui` itself. There is no Material here: the
+/// navigation is a column of ghost buttons, the example frames are cards, the
+/// Preview/Code switch is a tab list, the API references are tables. If a
+/// widget is awkward to build a real application with, this is where it shows.
+class DocsApp extends StatefulWidget {
+  const DocsApp({super.key});
 
   @override
-  State<GalleryApp> createState() => _GalleryAppState();
+  State<DocsApp> createState() => _DocsAppState();
 }
 
-class _GalleryAppState extends State<GalleryApp> {
-  final GalleryController _controller = GalleryController();
+class _DocsAppState extends State<DocsApp> {
+  final DocsController _controller = DocsController();
 
   @override
   void dispose() {
@@ -29,31 +33,46 @@ class _GalleryAppState extends State<GalleryApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GalleryScope(
+    return DocsScope(
       notifier: _controller,
       child: AnimatedBuilder(
         animation: _controller,
-        builder: (context, _) => MaterialApp(
-          title: 'astryx_ui gallery',
+        builder: (context, _) => AstryxApp(
+          title: 'astryx_ui — documentation',
+          theme: _controller.theme.theme,
+          mode: _controller.mode,
+          density: _controller.density,
           debugShowCheckedModeBanner: false,
-          themeMode: switch (_controller.brightness) {
-            GalleryBrightness.system => ThemeMode.system,
-            GalleryBrightness.light => ThemeMode.light,
-            GalleryBrightness.dark => ThemeMode.dark,
-          },
-          theme: ThemeData(brightness: Brightness.light),
-          darkTheme: ThemeData(brightness: Brightness.dark),
-          // The Material chrome stays Material; the content area is Astryx.
-          // `AstryxThemeProvider` inside a `MaterialApp` is the incremental
-          // adoption path, so the gallery proves it works by using it.
-          home: AstryxThemeProvider(
-            theme: _controller.theme.theme,
-            mode: _controller.brightness.colorMode,
-            density: _controller.density.density,
-            child: Directionality(
-              textDirection: _controller.textDirection,
-              child: const GalleryShell(),
-            ),
+          home: Directionality(
+            textDirection: _controller.textDirection,
+            child: const DocsShell(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The smallest tree an example needs to render.
+///
+/// Used by `test/widget_test.dart` to pump all 150-odd previews, and by anyone
+/// wanting to lift one example out of the docs into a scratch app.
+class DocsPreviewHarness extends StatelessWidget {
+  const DocsPreviewHarness({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxApp(
+      home: Builder(
+        builder: (context) => ColoredBox(
+          color: AstryxTheme.of(
+            context,
+          ).color(AstryxColorToken.backgroundBody),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: SingleChildScrollView(child: child),
           ),
         ),
       ),

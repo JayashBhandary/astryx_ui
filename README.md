@@ -151,14 +151,32 @@ Stated up front rather than discovered:
 Each widget's own limitations are stated in its doc comment too, so you do not
 have to come back here.
 
-## Example gallery
+## Documentation
 
-`example/` is a live gallery: every widget, every variant, with theme, mode,
-density and text-direction pickers. It builds for web.
+[`doc/`](doc/README.md) documents every component: what it is for, how it
+composes, every variant, the keyboard map, the accessibility rules, and a full
+API reference.
+
+The same content is a live site in [`example/`](example/README.md) — built with
+`astryx_ui` itself, with theme, brightness, density and text-direction pickers,
+and a `Preview` / `Code` tab on every example. It builds for web.
 
 ```sh
 cd example && flutter run -d chrome
 ```
+
+Every code block in both is extracted from a real, compiling widget in
+`example/lib/examples/`, so a snippet cannot describe something the package does
+not do. See [`example/README.md`](example/README.md) for how that works.
+
+### For AI coding agents
+
+[`.claude/skills/astryx-ui/`](.claude/skills/astryx-ui/SKILL.md) is the same
+documentation shaped for an agent rather than a reader: the rules the widget set
+enforces, a component index, per-group API references, every public enum's
+values scraped from the source, and the mistakes a generator makes without them.
+Claude Code picks it up automatically in this repository; copy the directory into
+your own project's `.claude/skills/` to get it there.
 
 ## Contributing
 
