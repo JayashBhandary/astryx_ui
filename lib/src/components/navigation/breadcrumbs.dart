@@ -3,10 +3,9 @@ library;
 
 import 'package:astryx_ui/src/components/action/button.dart';
 import 'package:astryx_ui/src/components/action/button_style.dart';
-import 'package:astryx_ui/src/components/action/icon_button.dart';
 import 'package:astryx_ui/src/components/layout/icon.dart';
 import 'package:astryx_ui/src/components/layout/text.dart';
-import 'package:astryx_ui/src/components/overlay/dropdown_menu.dart';
+import 'package:astryx_ui/src/components/navigation/more_menu.dart';
 import 'package:astryx_ui/src/components/overlay/menu_entry.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
@@ -218,9 +217,11 @@ class _CollapsedCrumbs extends StatelessWidget {
       spacing: theme.spacing(AstryxSpacingToken.spacing2),
       children: <Widget>[
         ExcludeSemantics(child: separator),
-        AstryxDropdownMenu(
+        // The same overflow menu a toolbar uses, which is what stops the
+        // trail's "…" from being a button assembled by hand and named
+        // differently from every other one in the package.
+        AstryxMoreMenu(
           label: label,
-          matchTriggerWidth: false,
           entries: <AstryxMenuEntry>[
             for (final item in items)
               AstryxMenuItem(
@@ -230,16 +231,6 @@ class _CollapsedCrumbs extends StatelessWidget {
                 onSelected: item.onPressed,
               ),
           ],
-          // The label says how many steps are behind it, because "…" spoken
-          // aloud is not an offer anybody can act on.
-          triggerBuilder: (context, controller) => AstryxIconButton(
-            icon: AstryxIconName.moreHorizontal,
-            label: label,
-            tooltip: label,
-            variant: AstryxButtonVariant.ghost,
-            size: AstryxButtonSize.sm,
-            onPressed: controller.toggle,
-          ),
         ),
       ],
     );

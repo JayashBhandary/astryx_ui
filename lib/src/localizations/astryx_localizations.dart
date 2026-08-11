@@ -285,6 +285,30 @@ class AstryxLocalizations {
   /// will do, and "…" does not.
   String breadcrumbsMore(int count) =>
       count == 1 ? 'Show 1 hidden step' : 'Show $count hidden steps';
+
+  /// Said after a link that leaves the application.
+  ///
+  /// In the name rather than only in the glyph: a user who cannot see the
+  /// glyph is the one most disrupted by a window they did not expect.
+  String get linkExternal => 'opens in a new window';
+
+  /// The fallback accessible name for a toolbar.
+  String get toolbarLabel => 'Toolbar';
+
+  /// The fallback accessible name for an overflow menu.
+  String get moreMenuLabel => 'More actions';
+
+  /// The fallback accessible name for a pagination control.
+  String get paginationLabel => 'Pagination';
+
+  /// Goes back one page.
+  String get paginationPrevious => 'Previous page';
+
+  /// Goes forward one page.
+  String get paginationNext => 'Next page';
+
+  /// Goes to page [page] of [count].
+  String paginationPage(int page, int count) => 'Page $page of $count';
 }
 
 /// Makes an [AstryxLocalizations] available to the widgets beneath it.
