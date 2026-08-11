@@ -1,14 +1,19 @@
 {
-    "name": "example",
-    "short_name": "example",
+    "name": "astryx_ui — documentation",
+    "short_name": "astryx_ui",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#f1f1f1",
+    "theme_color": "#f1f1f1",
+    "description": "Documentation for astryx_ui — an unofficial Flutter port of Astryx, Meta's design system for internal tools. Every component, live, in eight themes.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        },
         {
             "src": "icons/Icon-192.png",
             "sizes": "192x192",

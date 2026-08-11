@@ -1,46 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
+    Replaced by the value of `flutter build`'s `--base-href`. It has to start
+    and end with a slash. Firebase Hosting serves this app from the root, so
+    the default is right; a subdirectory deploy needs the flag.
   -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Documentation for astryx_ui — an unofficial Flutter port of Astryx, Meta's design system for internal tools. Every component, live, in eight themes.">
+
+  <!--
+    The colour the browser paints its own chrome and the page before any of ours
+    loads. `--color-background-body` from the neutral theme, both halves of its
+    light-dark() pair, so the first thing on screen is already the right colour
+    and there is nothing to flash away from.
+  -->
+  <meta name="theme-color" content="#f1f1f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="example">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="astryx_ui">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <!--
+    The SVG first: it is the mark itself rather than a rasterisation of it, so
+    it stays sharp at every tab size and in a pinned tab. The PNG is the
+    fallback for the browsers that ignore an SVG icon.
+  -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" href="favicon.png">
 
-  <title>example</title>
+  <title>astryx_ui — documentation</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    /*
+      The splash. A Flutter web app paints nothing until its engine has loaded,
+      compiled and rendered a first frame, and on a cold cache that is long
+      enough for a blank page to read as a broken one. This fills that gap, and
+      removes itself the moment Flutter has something to show.
+
+      Deliberately plain CSS with the theme's own hex values inlined: it has to
+      be painted before any Dart runs, so it cannot ask the theme for anything.
+      If the neutral theme's `--color-background-body` ever changes, this is the
+      one place that has to be told.
+    */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #f1f1f1;
+    }
+
+    #splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background-color: #f1f1f1;
+      /* Above the canvas Flutter is about to attach, until it is removed. */
+      z-index: 1;
+      /* The fade is on the way *out* only; see `#splash.leaving` below. */
+      transition: opacity 200ms ease-out;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+      color: #525252;
+    }
+
+    #splash.leaving {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #splash svg {
+      width: 56px;
+      height: 56px;
+      /*
+        The mark breathes rather than spins: a spinner promises progress it
+        cannot report, and the engine gives no percentage to show.
+      */
+      animation: splash-pulse 1.6s ease-in-out infinite;
+    }
+
+    #splash p {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+    }
+
+    @keyframes splash-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+
+    /*
+      Reduced motion stops the pulse and leaves the mark at full opacity — the
+      same rule the widget set follows for its spinner and its status dot: the
+      thing stays legible without the movement.
+    */
+    @media (prefers-reduced-motion: reduce) {
+      #splash svg { animation: none; }
+      #splash { transition: none; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html, body { background-color: #1b1b1b; }
+      #splash { background-color: #1b1b1b; color: #a3a3a3; }
+    }
+  </style>
 </head>
 <body>
   <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
+    Inline rather than an <img>: one fewer request on the critical path, and a
+    request that fails leaves a splash with a hole in it.
   -->
+  <div id="splash" role="status" aria-live="polite">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 96 96" aria-hidden="true">
+      <path fill="#225bff" d="M26.88 0c8.483 0 15.36 6.877 15.36 15.36v13.92a4.8 4.8 0 0 0 4.8 4.8h1.92a4.8 4.8 0 0 0 4.8-4.8V15.36C53.76 6.877 60.637 0 69.12 0h21.12A5.76 5.76 0 0 1 96 5.76v21.12c0 8.483-6.877 15.36-15.36 15.36H66.72a4.8 4.8 0 0 0-4.8 4.8v1.92a4.8 4.8 0 0 0 4.8 4.8h13.92c8.483 0 15.36 6.877 15.36 15.36v21.12A5.76 5.76 0 0 1 90.24 96H69.12c-8.483 0-15.36-6.877-15.36-15.36V66.72a4.8 4.8 0 0 0-4.8-4.8h-1.92a4.8 4.8 0 0 0-4.8 4.8v13.92c0 8.483-6.877 15.36-15.36 15.36H5.76A5.76 5.76 0 0 1 0 90.24V69.12c0-8.483 6.877-15.36 15.36-15.36h13.92a4.8 4.8 0 0 0 4.8-4.8v-1.92a4.8 4.8 0 0 0-4.8-4.8H15.36C6.877 42.24 0 35.363 0 26.88V5.76A5.76 5.76 0 0 1 5.76 0h21.12Z"/>
+    </svg>
+    <p>Loading the documentation…</p>
+  </div>
+
+  <script>
+    // Flutter fires this on the document once it has painted a first frame, so
+    // it is the earliest moment at which removing the splash cannot leave a
+    // blank page behind. Nothing here waits on a timer: a slow connection gets
+    // a splash for as long as it needs one.
+    window.addEventListener('flutter-first-frame', function () {
+      var splash = document.getElementById('splash');
+      if (splash === null) return;
+
+      splash.classList.add('leaving');
+      // Removed rather than left at zero opacity: an invisible fixed overlay
+      // still swallows every click underneath it.
+      splash.addEventListener('transitionend', function () {
+        splash.remove();
+      });
+      // Reduced motion cancels the transition, so there is no `transitionend`
+      // to wait for.
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        splash.remove();
+      }
+    });
+  </script>
+
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
