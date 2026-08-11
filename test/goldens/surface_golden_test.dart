@@ -441,6 +441,67 @@ void main() {
     );
   });
 
+  testWidgets('the navigation controls', (tester) async {
+    await expectAstryxGolden(
+      tester,
+      AstryxVStack(
+        gap: AstryxSpacingToken.spacing4,
+        children: <Widget>[
+          AstryxSegmentedControl<String>(
+            label: 'Range',
+            value: 'week',
+            onChanged: (_) {},
+            segments: const <AstryxSegment<String>>[
+              AstryxSegment(value: 'day', label: 'Day'),
+              AstryxSegment(value: 'week', label: 'Week'),
+              AstryxSegment(value: 'month', label: 'Month', enabled: false),
+            ],
+          ),
+          AstryxToolbar(
+            label: 'Formatting',
+            children: <Widget>[
+              AstryxToggleButton(
+                label: 'Bold',
+                pressed: true,
+                size: AstryxButtonSize.sm,
+                onChanged: (_) {},
+              ),
+              AstryxToggleButton(
+                label: 'Italic',
+                size: AstryxButtonSize.sm,
+                onChanged: (_) {},
+              ),
+              const AstryxToolbarDivider(),
+              const AstryxMoreMenu(entries: <AstryxMenuEntry>[]),
+            ],
+          ),
+          AstryxPagination(page: 3, pageCount: 20, onPageChanged: (_) {}),
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing4,
+            children: <Widget>[
+              AstryxLink('A link', onPressed: () {}),
+              AstryxLink('External', external: true, onPressed: () {}),
+              const AstryxTabMenu(
+                label: 'Reports',
+                selected: true,
+                entries: <AstryxMenuEntry>[],
+              ),
+            ],
+          ),
+        ],
+      ),
+      name: 'navigation_controls',
+      surfaceSize: const Size(440, 300),
+      // The pagination arrows, the toolbar rule and the link glyph all sit on
+      // a reading edge.
+      directions: const <TextDirection>{
+        TextDirection.ltr,
+        TextDirection.rtl,
+      },
+      disableAnimations: true,
+    );
+  });
+
   testWidgets('every badge variant', (tester) async {
     await expectAstryxGolden(
       tester,

@@ -21,9 +21,21 @@ The format is [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the 
 
 ## Unreleased
 
-Thirty-eight new components, and the documentation for them. Two existing widgets changed — both fixes, both in **Fixed**.
+Forty-four new components, and the documentation for them. **Navigation is complete**: every component upstream ships in that group is ported. Two existing widgets changed — both fixes, both in **Fixed**.
 
 ### Added
+
+- **`AstryxLink`**, with `AstryxLinkUnderline` — text that goes somewhere. An `href` is handed to the `AstryxLinkDelegate` and this package never decides what following means; an `onPressed` is called directly. `AstryxLink.span` puts one inside a sentence, the same wall `AstryxCode` runs into.
+- An external link says so **in its accessible name**, not only in its glyph: the user who cannot see the glyph is the one most disrupted by a window they did not expect. The underline is on by default for a related reason — in running text colour alone separates a link from an emphasised word, and for a colour-blind reader it separates nothing.
+- `visited` is the caller's to track. A browser knows a link's history and Flutter does not, so there is nothing here to read it from.
+- **`AstryxSegmentedControl`**, with `AstryxSegment` — one choice out of a few, every label visible. **Keyboarded as an ARIA radiogroup**: one tab stop, the arrows move *and* choose, they wrap at both ends, both axes work, and the inline pair mirrors under RTL. It is not `AstryxTabList` (which switches what a page shows) and not `AstryxToggleButtonGroup` (settings that sit together), and it announces itself as the radio group it is.
+- **`AstryxToolbar`** and `AstryxToolbarDivider` — a band of controls that is **one tab stop**. A formatting bar of twelve buttons is twelve presses to walk past otherwise, which is why the ARIA toolbar pattern exists.
+- The children stay ordinary traversable widgets, which is how Tab *enters* on the first one. What makes the band a single stop is that Tab pressed inside it leaves: the toolbar steps focus to its edge and lets Flutter's own traversal carry past. Nothing is asked of the children, so anything focusable can go in.
+- **`AstryxMoreMenu`** — the "…" trigger and its menu as one widget, because that composition is the one people get subtly wrong: an unnamed trigger, or one opening a menu with no name of its own. One `label` is the trigger's name, its tooltip and the menu's. `AstryxBreadcrumbs` now uses it for its collapsed steps rather than assembling the same button by hand.
+- **`AstryxTabMenu`** — a tab that opens a menu. Drawn as a tab, indicator and all, so a reader looking at a report still sees something in the strip claiming it; **announced as a menu button**, because telling a screen-reader user this is a tab and then opening a menu is a promise the widget cannot keep.
+- **`AstryxPagination`** — page-at-a-time controls, **one-based** as they are to the person reading them. The ends are always shown and the middle gaps; a gap of exactly one page is drawn as the page, since "1 … 3" hides nothing and costs a press. The gap is not a button — it stands for a range, and a control that cannot say where it would take you is not worth offering.
+- The arrows **disable at the ends rather than disappearing**: a control that vanishes moves everything beside it. `AstryxPagination.pagesFor` is the arithmetic on its own, static and pure, so what a reader sees can be tested without a widget tree.
+- `AstryxLocalizations.linkExternal`, `toolbarLabel`, `moreMenuLabel`, `paginationLabel`, `paginationPrevious`, `paginationNext` and `paginationPage`.
 
 - **The navigation set**, on one shared model: `AstryxNavEntry` with `AstryxNavItem`, `AstryxNavSection` and `AstryxNavDivider`. The rail, the bar and the drawer take the *same* list, so a navigation written once can be shown three ways — which is what stops an application from having a rail and a drawer that disagree about where its pages are.
 - **`AstryxSideNav`** — upstream's `SideNav`, `SideNavSection`, `SideNavHeading`, `SideNavItem` and `SideNavCollapseButton` as one widget, three entry types and a button that appears the moment `onCollapsedChanged` is passed. The rows scroll and the `footer` does not, so a rail of forty destinations cannot push the account row off the bottom of the window.

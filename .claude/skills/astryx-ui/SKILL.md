@@ -94,8 +94,9 @@ Break these and the result compiles, looks fine, and is wrong.
    severity.
 
 5. **Composite controls are one tab stop.** `AstryxRadioList`, `AstryxTabList`,
-   `AstryxTreeList`, `AstryxDropdownMenu` and `AstryxSelector` handle their own
-   arrow-key navigation. Do not wrap their children in `Focus` or `InkWell`.
+   `AstryxTreeList`, `AstryxSegmentedControl`, `AstryxToolbar`,
+   `AstryxDropdownMenu` and `AstryxSelector` handle their own arrow-key
+   navigation. Do not wrap their children in `Focus` or `InkWell`.
 
 6. **Overlays take a `triggerBuilder`, not a child.** A button consumes its own
    taps, so the overlay hands you a controller:
@@ -140,7 +141,7 @@ Break these and the result compiles, looks fine, and is wrong.
 | An action with words | `AstryxButton` |
 | An action with a glyph | `AstryxIconButton` (still needs `label`) |
 | A related set of actions | `AstryxButtonGroup(attached: false)` |
-| A segmented control | `AstryxButtonGroup`, selected child takes a louder `variant` |
+| A segmented control | `AstryxSegmentedControl` |
 | One choice, ≤7 options, all visible | `AstryxRadioList` |
 | One choice, many options | `AstryxSelector` |
 | One choice, options needing a price or a badge | `AstryxSelectableCard` |
@@ -168,6 +169,11 @@ Break these and the result compiles, looks fine, and is wrong.
 | The icon slot in a nav row | `AstryxNavIcon` |
 | A workspace switcher | `AstryxNavHeadingMenu` |
 | The trail back up a hierarchy | `AstryxBreadcrumbs` |
+| A band of controls, one tab stop | `AstryxToolbar` |
+| The tail of a toolbar or a row | `AstryxMoreMenu` |
+| Page-at-a-time controls | `AstryxPagination` |
+| A tab that opens a menu | `AstryxTabMenu` |
+| Text that goes somewhere | `AstryxLink` (`AstryxLink.span` in `Text.rich`) |
 | A page inside that frame | `AstryxLayout` (pinned header and footer) |
 | A titled band of a page | `AstryxSection` (works out its own heading level) |
 | A draggable panel edge | `AstryxResizeHandle` |
@@ -276,6 +282,12 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxNavHeadingMenu` | A navigation heading that is itself a menu trigger. | `references/navigation.md` |
 | `AstryxNavIcon` | The icon slot in a navigation item, sized and aligned for the rail. | `references/navigation.md` |
 | `AstryxBreadcrumbs` | The trail back up a hierarchy, collapsing in the middle when it will not fit. | `references/navigation.md` |
+| `AstryxLink` | Inline navigation in running text, with the visited and external affordances. | `references/navigation.md` |
+| `AstryxSegmentedControl` | A small set of mutually exclusive views, all labels visible at once. | `references/navigation.md` |
+| `AstryxToolbar` | A horizontal band of controls, with arrow-key traversal as one tab stop. | `references/navigation.md` |
+| `AstryxMoreMenu` | The overflow menu a toolbar or nav collapses its tail into. | `references/navigation.md` |
+| `AstryxTabMenu` | A tab whose selection opens a menu rather than switching a panel. | `references/navigation.md` |
+| `AstryxPagination` | Page-at-a-time controls for a list or table too long to scroll. | `references/navigation.md` |
 | `AstryxAppShell` | The outer frame of an application: header, navigation, content, and the responsive behaviour joining them. | `references/app_shell.md` |
 | `AstryxLayout` | The content frame inside the shell — header, footer, panel and scrolling body. | `references/app_shell.md` |
 | `AstryxSection` | A titled band of page content, with its own heading level and spacing. | `references/app_shell.md` |

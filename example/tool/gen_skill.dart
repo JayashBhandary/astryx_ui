@@ -319,8 +319,9 @@ Break these and the result compiles, looks fine, and is wrong.
    severity.
 
 5. **Composite controls are one tab stop.** `AstryxRadioList`, `AstryxTabList`,
-   `AstryxTreeList`, `AstryxDropdownMenu` and `AstryxSelector` handle their own
-   arrow-key navigation. Do not wrap their children in `Focus` or `InkWell`.
+   `AstryxTreeList`, `AstryxSegmentedControl`, `AstryxToolbar`,
+   `AstryxDropdownMenu` and `AstryxSelector` handle their own arrow-key
+   navigation. Do not wrap their children in `Focus` or `InkWell`.
 
 6. **Overlays take a `triggerBuilder`, not a child.** A button consumes its own
    taps, so the overlay hands you a controller:
@@ -367,7 +368,7 @@ const String _choosing = '''
 | An action with words | `AstryxButton` |
 | An action with a glyph | `AstryxIconButton` (still needs `label`) |
 | A related set of actions | `AstryxButtonGroup(attached: false)` |
-| A segmented control | `AstryxButtonGroup`, selected child takes a louder `variant` |
+| A segmented control | `AstryxSegmentedControl` |
 | One choice, ≤7 options, all visible | `AstryxRadioList` |
 | One choice, many options | `AstryxSelector` |
 | One choice, options needing a price or a badge | `AstryxSelectableCard` |
@@ -395,6 +396,11 @@ const String _choosing = '''
 | The icon slot in a nav row | `AstryxNavIcon` |
 | A workspace switcher | `AstryxNavHeadingMenu` |
 | The trail back up a hierarchy | `AstryxBreadcrumbs` |
+| A band of controls, one tab stop | `AstryxToolbar` |
+| The tail of a toolbar or a row | `AstryxMoreMenu` |
+| Page-at-a-time controls | `AstryxPagination` |
+| A tab that opens a menu | `AstryxTabMenu` |
+| Text that goes somewhere | `AstryxLink` (`AstryxLink.span` in `Text.rich`) |
 | A page inside that frame | `AstryxLayout` (pinned header and footer) |
 | A titled band of a page | `AstryxSection` (works out its own heading level) |
 | A draggable panel edge | `AstryxResizeHandle` |

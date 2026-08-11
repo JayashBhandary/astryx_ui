@@ -47,6 +47,7 @@ import 'package:example/examples/layout_examples.dart';
 import 'package:example/examples/list_examples.dart';
 import 'package:example/examples/metadata_list_examples.dart';
 import 'package:example/examples/motion_examples.dart';
+import 'package:example/examples/navigation_controls_examples.dart';
 import 'package:example/examples/navigation_examples.dart';
 import 'package:example/examples/overflow_list_examples.dart';
 import 'package:example/examples/overlay_examples.dart';
@@ -141,8 +142,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'collapsible_rich': (_) => const CollapsibleRichExample(),
   'collapsible_controlled': (_) => const CollapsibleControlledExample(),
   'collapsible_group_demo': (_) => const CollapsibleGroupDemoExample(),
-  'collapsible_group_exclusive': (_) =>
-      const CollapsibleGroupExclusiveExample(),
+  'collapsible_group_exclusive': (_) => const CollapsibleGroupExclusiveExample(),
   'color_roles': (_) => const ColorRolesExample(),
   'color_on_pairs': (_) => const ColorOnPairsExample(),
   'color_palettes': (_) => const ColorPalettesExample(),
@@ -193,8 +193,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'heading_demo': (_) => const HeadingDemoExample(),
   'heading_levels': (_) => const HeadingLevelsExample(),
   'heading_display': (_) => const HeadingDisplayExample(),
-  'heading_accessibility_level': (_) =>
-      const HeadingAccessibilityLevelExample(),
+  'heading_accessibility_level': (_) => const HeadingAccessibilityLevelExample(),
   'hover_card_demo': (_) => const HoverCardDemoExample(),
   'hover_card_timing': (_) => const HoverCardTimingExample(),
   'hover_card_sides': (_) => const HoverCardSidesExample(),
@@ -219,6 +218,11 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'metadata_list_demo': (_) => const MetadataListDemoExample(),
   'metadata_list_inline': (_) => const MetadataListInlineExample(),
   'motion_durations': (_) => const MotionDurationsExample(),
+  'link_demo': (_) => const LinkDemoExample(),
+  'segmented_control_demo': (_) => const SegmentedControlDemoExample(),
+  'toolbar_demo': (_) => const ToolbarDemoExample(),
+  'tab_menu_demo': (_) => const TabMenuDemoExample(),
+  'pagination_demo': (_) => const PaginationDemoExample(),
   'side_nav_demo': (_) => const SideNavDemoExample(),
   'top_nav_demo': (_) => const TopNavDemoExample(),
   'mobile_nav_demo': (_) => const MobileNavDemoExample(),
@@ -341,10 +345,8 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'toggle_button_demo': (_) => const ToggleButtonDemoExample(),
   'toggle_button_icon_only': (_) => const ToggleButtonIconOnlyExample(),
   'toggle_button_group_single': (_) => const ToggleButtonGroupSingleExample(),
-  'toggle_button_group_multiple': (_) =>
-      const ToggleButtonGroupMultipleExample(),
-  'toggle_button_group_vertical': (_) =>
-      const ToggleButtonGroupVerticalExample(),
+  'toggle_button_group_multiple': (_) => const ToggleButtonGroupMultipleExample(),
+  'toggle_button_group_vertical': (_) => const ToggleButtonGroupVerticalExample(),
   'toggle_button_states': (_) => const ToggleButtonStatesExample(),
   'tooltip_demo': (_) => const TooltipDemoExample(),
   'tooltip_sides': (_) => const TooltipSidesExample(),

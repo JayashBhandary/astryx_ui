@@ -6,7 +6,7 @@
      Regenerate: cd example && dart run tool/gen_skill.dart
 -->
 
-Scraped from the package source, so this is what the analyser will accept. 76 public enums.
+Scraped from the package source, so this is what the analyser will accept. 77 public enums.
 
 | Enum | Values |
 | --- | --- |
@@ -43,6 +43,7 @@ Scraped from the package source, so this is what the analyser will accept. 76 pu
 | `AstryxItemDensity` | `compact`, `balanced` |
 | `AstryxKbdSize` | `sm`, `md` |
 | `AstryxLayoutPanelSide` | `start`, `end` |
+| `AstryxLinkUnderline` | `always`, `hover`, `never` |
 | `AstryxMetadataListDirection` | `stacked`, `inline` |
 | `AstryxMultiSelectorTriggerDisplay` | `badges`, `count` |
 | `AstryxNeutralStyle` | `warm`, `cool`, `neutral` |

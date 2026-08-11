@@ -124,12 +124,12 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxNavHeadingMenu](components/nav_heading_menu.md) — A navigation heading that is itself a menu trigger.
 - [AstryxNavIcon](components/nav_icon.md) — The icon slot in a navigation item, sized and aligned for the rail.
 - [AstryxBreadcrumbs](components/breadcrumbs.md) — The trail back up a hierarchy, collapsing in the middle when it will not fit.
-- TabMenu — A tab whose selection opens a menu rather than switching a panel. *(not ported yet)*
-- MoreMenu — The overflow menu a toolbar or nav collapses its tail into. *(not ported yet)*
-- Toolbar — A horizontal band of controls, with arrow-key traversal as one tab stop. *(not ported yet)*
-- Pagination — Page-at-a-time controls for a list or table too long to scroll. *(not ported yet)*
-- SegmentedControl — A small set of mutually exclusive views, all labels visible at once. *(not ported yet)*
-- Link — Inline navigation in running text, with the visited and external affordances. *(not ported yet)*
+- [AstryxLink](components/link.md) — Inline navigation in running text, with the visited and external affordances.
+- [AstryxSegmentedControl](components/segmented_control.md) — A small set of mutually exclusive views, all labels visible at once.
+- [AstryxToolbar](components/toolbar.md) — A horizontal band of controls, with arrow-key traversal as one tab stop.
+- [AstryxMoreMenu](components/more_menu.md) — The overflow menu a toolbar or nav collapses its tail into.
+- [AstryxTabMenu](components/tab_menu.md) — A tab whose selection opens a menu rather than switching a panel.
+- [AstryxPagination](components/pagination.md) — Page-at-a-time controls for a list or table too long to scroll.
 
 ## App shell
 

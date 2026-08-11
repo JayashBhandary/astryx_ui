@@ -16,66 +16,6 @@ import 'package:example/docs/pages/_stub.dart';
 /// Every component page that is a placeholder, in upstream nav order.
 final List<DocPage> plannedComponentPages = <DocPage>[
   stubPage(
-    id: 'tab_menu',
-    title: 'TabMenu',
-    group: DocGroup.navigation,
-    description:
-        'A tab whose selection opens a menu rather than switching a '
-        'panel.',
-    upstream: 'TabMenu',
-    upstreamPath: '/components/TabMenu',
-  ),
-  stubPage(
-    id: 'more_menu',
-    title: 'MoreMenu',
-    group: DocGroup.navigation,
-    description:
-        'The overflow menu a toolbar or nav collapses its tail '
-        'into.',
-    upstream: 'MoreMenu',
-    upstreamPath: '/components/MoreMenu',
-  ),
-  stubPage(
-    id: 'toolbar',
-    title: 'Toolbar',
-    group: DocGroup.navigation,
-    description:
-        'A horizontal band of controls, with arrow-key traversal as '
-        'one tab stop.',
-    upstream: 'Toolbar',
-    upstreamPath: '/components/Toolbar',
-  ),
-  stubPage(
-    id: 'pagination',
-    title: 'Pagination',
-    group: DocGroup.navigation,
-    description:
-        'Page-at-a-time controls for a list or table too long to '
-        'scroll.',
-    upstream: 'Pagination',
-    upstreamPath: '/components/Pagination',
-  ),
-  stubPage(
-    id: 'segmented_control',
-    title: 'SegmentedControl',
-    group: DocGroup.navigation,
-    description:
-        'A small set of mutually exclusive views, all labels '
-        'visible at once.',
-    upstream: 'SegmentedControl / SegmentedControlItem',
-    upstreamPath: '/components/SegmentedControl',
-  ),
-  stubPage(
-    id: 'link',
-    title: 'Link',
-    group: DocGroup.navigation,
-    description:
-        'Inline navigation in running text, with the visited and '
-        'external affordances.',
-    upstream: 'Link',
-    upstreamPath: '/components/Link',
-  ),
-  stubPage(
     id: 'calendar',
     title: 'Calendar',
     group: DocGroup.dateTime,

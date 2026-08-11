@@ -481,3 +481,467 @@ class BreadcrumbsDemoExample extends StatelessWidget {
 
 ---
 
+## AstryxLink
+
+`lib/src/components/navigation/link.dart` · upstream `Link`
+
+Inline navigation in running text, with the visited and external affordances.
+
+```dart
+class LinkDemoExample extends StatelessWidget {
+  const LinkDemoExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Flutter has no inline element, so `AstryxLink.span` is how one sits in a
+    // sentence. An external link says so in its accessible name as well as in
+    // its glyph: the user who cannot see the glyph is the one most disrupted
+    // by a window they did not expect.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        Text.rich(
+          TextSpan(
+            style: AstryxTheme.of(context).textStyle(AstryxTypeRole.body),
+            children: <InlineSpan>[
+              const TextSpan(text: 'Start with the '),
+              AstryxLink.span('installation guide', onPressed: () {}),
+              const TextSpan(text: ', then read about '),
+              AstryxLink.span('theming', onPressed: () {}),
+              const TextSpan(text: '.'),
+            ],
+          ),
+        ),
+        AstryxLink('The Flutter docs', external: true, onPressed: () {}),
+        AstryxLink('Already read', visited: true, onPressed: () {}),
+        const AstryxLink('Unavailable', enabled: false),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** An external link says so **in its accessible name**, not only in its glyph: the user who cannot see the glyph is exactly the one most disrupted by a window they did not expect. The underline is on by default for the same kind of reason — in running text, colour alone is the only thing telling a link from an emphasised word, and for a colour-blind reader it tells them nothing.
+- **Note:** `visited` is yours to track. A browser knows a link’s history and Flutter does not, so there is nothing here to read it from — pass it if your application keeps the answer, and leave it alone if it does not.
+
+### AstryxLink
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `label` **(required)** | `String` | — | The text. The positional first argument. |
+| `onPressed` | `VoidCallback?` | — | Called when it is followed. |
+| `href` | `Uri?` | — | A destination for the `AstryxLinkDelegate`. |
+| `external` | `bool` | `false` | Whether following it leaves the application. Adds the glyph *and* the announcement. |
+| `visited` | `bool` | `false` | Whether it has been followed. Yours to track. |
+| `underline` | `AstryxLinkUnderline` | `AstryxLinkUnderline.always` | When the underline is drawn. |
+| `type` | `AstryxTextType` | `AstryxTextType.body` | The type role the text takes, so a link matches the copy around it. |
+| `enabled` | `bool` | `true` | Whether it can be followed. |
+| `semanticsLabel` | `String?` | — | Overrides what a screen reader announces. |
+| `focusNode` | `FocusNode?` | — | The focus node. |
+
+### AstryxLinkUnderline
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `always` | `AstryxLinkUnderline` | — | The default, and what running text needs. |
+| `hover` | `AstryxLinkUnderline` | — | On hover and focus only, for a link that is obviously one from its position — a row in a list, a name in a cell. |
+| `never` | `AstryxLinkUnderline` | — | For a link inside something already visibly interactive. |
+
+---
+
+## AstryxSegmentedControl
+
+`lib/src/components/navigation/segmented_control.dart` · upstream `SegmentedControl / SegmentedControlItem`
+
+A small set of mutually exclusive views, all labels visible at once.
+
+```dart
+class SegmentedControlDemoExample extends StatefulWidget {
+  const SegmentedControlDemoExample({super.key});
+
+  @override
+  State<SegmentedControlDemoExample> createState() =>
+      _SegmentedControlDemoExampleState();
+}
+
+class _SegmentedControlDemoExampleState
+    extends State<SegmentedControlDemoExample> {
+  String _range = 'week';
+  String _density = 'balanced';
+
+  @override
+  Widget build(BuildContext context) {
+    // One tab stop; the arrows move *and* choose, and wrap at both ends. It
+    // announces itself as a radio group, which is what it is.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing4,
+      children: <Widget>[
+        AstryxSegmentedControl<String>(
+          label: 'Range',
+          value: _range,
+          onChanged: (value) => setState(() => _range = value),
+          segments: const <AstryxSegment<String>>[
+            AstryxSegment(value: 'day', label: 'Day'),
+            AstryxSegment(value: 'week', label: 'Week'),
+            AstryxSegment(value: 'month', label: 'Month'),
+            AstryxSegment(value: 'year', label: 'Year', enabled: false),
+          ],
+        ),
+        AstryxSegmentedControl<String>(
+          label: 'Density',
+          value: _density,
+          onChanged: (value) => setState(() => _density = value),
+          segments: const <AstryxSegment<String>>[
+            AstryxSegment(
+              value: 'compact',
+              label: 'Compact',
+              labelHidden: true,
+              icon: AstryxIcon(AstryxIconName.menu),
+            ),
+            AstryxSegment(
+              value: 'balanced',
+              label: 'Balanced',
+              labelHidden: true,
+              icon: AstryxIcon(AstryxIconName.viewColumns),
+            ),
+          ],
+        ),
+        AstryxText(
+          'Showing $_range, $_density',
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** **Keyboarded as an ARIA radiogroup**: one tab stop, the arrows move *and choose*, and they wrap at both ends so nobody has to reverse out of the end. Both axes work, because a user who does not know which way the control runs will try either, and the inline arrows mirror under RTL.
+
+| Use | When |
+| --- | --- |
+| `AstryxSegmentedControl` | One choice out of a few — a range, a filter, a density. Announced as a radio group. |
+| AstryxTabList (references/data.md) | Switching what a page *shows*, at the top of the thing it switches. Announced as tabs. |
+| AstryxToggleButtonGroup (references/actions.md) | Settings that happen to sit together. Announced as pressed or not. |
+| AstryxRadioList (references/forms.md) | The same choice with more than about five options, or labels longer than a word or two. |
+
+### AstryxSegmentedControl
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `segments` **(required)** | `List<AstryxSegment<T>>` | — | The choices, in the order they are shown and traversed. |
+| `value` **(required)** | `T?` | — | The chosen value. |
+| `onChanged` | `ValueChanged<T>?` | — | Called with the newly chosen value. Null makes the control read-only. |
+| `label` | `String?` | — | The control’s accessible name. |
+| `size` | `AstryxButtonSize` | `AstryxButtonSize.md` | The control’s size. |
+| `expand` | `bool` | `false` | Whether the segments share the width equally. False hugs the labels. |
+| `focusNode` | `FocusNode?` | — | The focus node for the control. |
+| `autofocus` | `bool` | `false` | Whether to take focus when first built. |
+
+### AstryxSegment
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `value` **(required)** | `T` | — | What choosing this segment produces. |
+| `label` **(required)** | `String` | — | The visible text, and this segment’s accessible name. |
+| `icon` | `Widget?` | — | An icon before the label. |
+| `enabled` | `bool` | `true` | Whether this segment can be chosen. |
+| `labelHidden` | `bool` | `false` | Whether the label is a name for a screen reader only. Requires `icon`. |
+
+---
+
+## AstryxToolbar
+
+`lib/src/components/navigation/toolbar.dart` · upstream `Toolbar`
+
+A horizontal band of controls, with arrow-key traversal as one tab stop.
+
+```dart
+class ToolbarDemoExample extends StatefulWidget {
+  const ToolbarDemoExample({super.key});
+
+  @override
+  State<ToolbarDemoExample> createState() => _ToolbarDemoExampleState();
+}
+
+class _ToolbarDemoExampleState extends State<ToolbarDemoExample> {
+  final Set<String> _marks = <String>{'bold'};
+
+  @override
+  Widget build(BuildContext context) {
+    // Tab reaches the band once and leaves it once, however many controls sit
+    // between; the arrows move inside it. A formatting bar of twelve buttons
+    // is twelve presses to walk past otherwise.
+    return AstryxCard(
+      padding: AstryxSpacingToken.spacing1,
+      child: AstryxToolbar(
+        label: 'Formatting',
+        children: <Widget>[
+          for (final mark in const <List<String>>[
+            <String>['bold', 'Bold'],
+            <String>['italic', 'Italic'],
+            <String>['code', 'Code'],
+          ])
+            AstryxToggleButton(
+              label: mark[1],
+              pressed: _marks.contains(mark[0]),
+              size: AstryxButtonSize.sm,
+              onChanged: (on) => setState(() {
+                on ? _marks.add(mark[0]) : _marks.remove(mark[0]);
+              }),
+            ),
+          const AstryxToolbarDivider(),
+          AstryxMoreMenu(
+            label: 'More formatting',
+            entries: <AstryxMenuEntry>[
+              AstryxMenuItem(label: 'Strikethrough', onSelected: () {}),
+              AstryxMenuItem(label: 'Superscript', onSelected: () {}),
+              const AstryxMenuDivider(),
+              AstryxMenuItem(
+                label: 'Clear formatting',
+                destructive: true,
+                onSelected: () => setState(_marks.clear),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Note:** `AstryxToolbarDivider` is its own widget because a bare AstryxDivider (references/layout.md) in a row has no height to take, and because a rule between groups of controls is a thing worth naming.
+
+### AstryxToolbar
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `children` **(required)** | `List<Widget>` | — | The controls, in the order they are traversed. |
+| `label` | `String?` | — | The toolbar’s accessible name. |
+| `gap` | `AstryxSpacingToken` | `AstryxSpacingToken.spacing1` | The space between controls. |
+| `padding` | `AstryxSpacingToken` | `AstryxSpacingToken.spacing1` | The inset around them. |
+
+---
+
+## AstryxMoreMenu
+
+`lib/src/components/navigation/more_menu.dart` · upstream `MoreMenu`
+
+The overflow menu a toolbar or nav collapses its tail into.
+
+```dart
+class ToolbarDemoExample extends StatefulWidget {
+  const ToolbarDemoExample({super.key});
+
+  @override
+  State<ToolbarDemoExample> createState() => _ToolbarDemoExampleState();
+}
+
+class _ToolbarDemoExampleState extends State<ToolbarDemoExample> {
+  final Set<String> _marks = <String>{'bold'};
+
+  @override
+  Widget build(BuildContext context) {
+    // Tab reaches the band once and leaves it once, however many controls sit
+    // between; the arrows move inside it. A formatting bar of twelve buttons
+    // is twelve presses to walk past otherwise.
+    return AstryxCard(
+      padding: AstryxSpacingToken.spacing1,
+      child: AstryxToolbar(
+        label: 'Formatting',
+        children: <Widget>[
+          for (final mark in const <List<String>>[
+            <String>['bold', 'Bold'],
+            <String>['italic', 'Italic'],
+            <String>['code', 'Code'],
+          ])
+            AstryxToggleButton(
+              label: mark[1],
+              pressed: _marks.contains(mark[0]),
+              size: AstryxButtonSize.sm,
+              onChanged: (on) => setState(() {
+                on ? _marks.add(mark[0]) : _marks.remove(mark[0]);
+              }),
+            ),
+          const AstryxToolbarDivider(),
+          AstryxMoreMenu(
+            label: 'More formatting',
+            entries: <AstryxMenuEntry>[
+              AstryxMenuItem(label: 'Strikethrough', onSelected: () {}),
+              AstryxMenuItem(label: 'Superscript', onSelected: () {}),
+              const AstryxMenuDivider(),
+              AstryxMenuItem(
+                label: 'Clear formatting',
+                destructive: true,
+                onSelected: () => setState(_marks.clear),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** `label` is the trigger’s name, its tooltip **and** the menu’s name — one string, because they are one answer to one question: what is behind this button? AstryxBreadcrumbs (references/navigation.md) uses this widget for its collapsed steps, which is why that trigger is named "Show 3 hidden steps" rather than "…".
+
+### AstryxMoreMenu
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `entries` **(required)** | `List<AstryxMenuEntry>` | — | The rows, in order. |
+| `label` | `String?` | — | The trigger’s name, its tooltip, and the menu’s name. |
+| `icon` | `AstryxIconName` | `AstryxIconName.moreHorizontal` | The glyph on the trigger. |
+| `size` | `AstryxButtonSize` | `AstryxButtonSize.sm` | The trigger’s size. |
+| `variant` | `AstryxButtonVariant` | `AstryxButtonVariant.ghost` | The trigger’s variant. |
+| `enabled` | `bool` | `true` | Whether the menu opens. |
+| `controller` | `AstryxOverlayController?` | — | Drives the menu from outside. |
+
+---
+
+## AstryxTabMenu
+
+`lib/src/components/navigation/tab_menu.dart` · upstream `TabMenu`
+
+A tab whose selection opens a menu rather than switching a panel.
+
+```dart
+class TabMenuDemoExample extends StatefulWidget {
+  const TabMenuDemoExample({super.key});
+
+  @override
+  State<TabMenuDemoExample> createState() => _TabMenuDemoExampleState();
+}
+
+class _TabMenuDemoExampleState extends State<TabMenuDemoExample> {
+  String _view = 'overview';
+
+  static const Set<String> _reports = <String>{'usage', 'billing'};
+
+  @override
+  Widget build(BuildContext context) {
+    // Most tabs are views; this one is a *set* of them. It is drawn as a tab so
+    // it reads as one, and announced as a menu button so nobody is told it is
+    // a tab and then handed a menu.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxHStack(
+          children: <Widget>[
+            AstryxTabList<String>(
+              label: 'Views',
+              value: _reports.contains(_view) ? null : _view,
+              onChanged: (value) => setState(() => _view = value),
+              tabs: const <AstryxTab<String>>[
+                AstryxTab(value: 'overview', label: 'Overview'),
+                AstryxTab(value: 'activity', label: 'Activity'),
+              ],
+            ),
+            AstryxTabMenu(
+              label: 'Reports',
+              selected: _reports.contains(_view),
+              entries: <AstryxMenuEntry>[
+                for (final report in _reports)
+                  AstryxMenuItem(
+                    label: report,
+                    onSelected: () => setState(() => _view = report),
+                  ),
+              ],
+            ),
+          ],
+        ),
+        AstryxText('Showing $_view'),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** It announces itself as a **menu button**, not a tab. Telling a screen-reader user this is a tab and then opening a menu is a promise the widget cannot keep — `selected` still reports which entry the page came from.
+
+### AstryxTabMenu
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `label` **(required)** | `String` | — | The visible text, and the trigger’s accessible name. |
+| `entries` **(required)** | `List<AstryxMenuEntry>` | — | The rows the menu shows. |
+| `icon` | `Widget?` | — | An icon before the label. |
+| `selected` | `bool` | `false` | Whether the view currently showing came from this menu. Draws the tab’s indicator. |
+| `enabled` | `bool` | `true` | Whether the menu opens. |
+| `menuLabel` | `String?` | — | A name for the menu surface. |
+| `controller` | `AstryxOverlayController?` | — | Drives the menu from outside. |
+
+---
+
+## AstryxPagination
+
+`lib/src/components/navigation/pagination.dart` · upstream `Pagination`
+
+Page-at-a-time controls for a list or table too long to scroll.
+
+```dart
+class PaginationDemoExample extends StatefulWidget {
+  const PaginationDemoExample({super.key});
+
+  @override
+  State<PaginationDemoExample> createState() => _PaginationDemoExampleState();
+}
+
+class _PaginationDemoExampleState extends State<PaginationDemoExample> {
+  int _page = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    // Pages are one-based, as they are to the person reading them. The ends
+    // are always shown, the middle gaps, and the arrows disable rather than
+    // disappear — a control that vanishes moves everything beside it.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxPagination(
+          page: _page,
+          pageCount: 20,
+          onPageChanged: (page) => setState(() => _page = page),
+        ),
+        AstryxText(
+          'Page $_page of 20',
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Careful:** **Pages are one-based**, as they are to the person reading them: "page 1 of 20" is what the control says, so it is what the control counts in. An off-by-one here is an off-by-one the user sees.
+- **Accessibility:** The arrows **disable at the ends rather than disappearing**: a control that vanishes moves everything beside it, and the reader loses their place in a row they were about to press again. The whole control announces "Page 3 of 20", so someone landing on it is told where they are before they hear a single number.
+
+### AstryxPagination
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `page` **(required)** | `int` | — | The current page, from 1 to `pageCount`. |
+| `pageCount` **(required)** | `int` | — | How many pages there are. |
+| `onPageChanged` | `ValueChanged<int>?` | — | Called with the page the user chose. Null makes the control read-only. |
+| `siblings` | `int` | `1` | How many page numbers to show each side of the current one. |
+| `showEdges` | `bool` | `true` | Whether the first and last pages are always shown. |
+| `label` | `String?` | — | The control’s accessible name. |
+
+---
+

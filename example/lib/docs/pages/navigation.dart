@@ -9,6 +9,12 @@ final List<DocPage> navigationPages = <DocPage>[
   _navHeadingMenu,
   _navIcon,
   _breadcrumbs,
+  _link,
+  _segmentedControl,
+  _toolbar,
+  _moreMenu,
+  _tabMenu,
+  _pagination,
 ];
 
 const String _group = DocGroup.navigation;
@@ -722,4 +728,610 @@ final List<DocProp> _crumbProps = <DocProp>[
     'Goes there. Null makes the step a label rather than a link.',
   ),
   const DocProp('icon', 'Widget?', 'An icon before the label.'),
+];
+
+// -----------------------------------------------------------------------------
+// AstryxLink
+// -----------------------------------------------------------------------------
+
+final DocPage _link = DocPage(
+  id: 'link',
+  title: 'AstryxLink',
+  group: _group,
+  description:
+      'Inline navigation in running text, with the visited and external '
+      'affordances.',
+  source: 'lib/src/components/navigation/link.dart',
+  upstream: 'Link',
+  upstreamPath: '/components/Link',
+  blocks: <DocBlock>[
+    const DocExample('link_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode("AstryxLink('Read the guide', onPressed: open)"),
+    const DocHeading('Inside a sentence'),
+    const DocProse(
+      'Flutter has no inline element, so a widget cannot sit inside a string — '
+      'the same wall [AstryxCode](code) runs into. `AstryxLink.span` is the '
+      'bridge: a `WidgetSpan` aligned to the text baseline, for `Text.rich`.',
+    ),
+    const DocCode('''
+Text.rich(
+  TextSpan(
+    children: <InlineSpan>[
+      const TextSpan(text: 'See the '),
+      AstryxLink.span('installation guide', onPressed: open),
+      const TextSpan(text: ' to begin.'),
+    ],
+  ),
+)'''),
+    const DocHeading('Where it goes'),
+    const DocProse(
+      'Navigation is the application’s concern, so an `href` is handed to the '
+      '`AstryxLinkDelegate` and this package never decides what following '
+      'means. An `onPressed` is called directly. A link with both does both — '
+      'the callback is yours, the delegate is your router’s.',
+    ),
+    const DocCallout.accessibility(
+      'An external link says so **in its accessible name**, not only in its '
+      'glyph: the user who cannot see the glyph is exactly the one most '
+      'disrupted by a window they did not expect. The underline is on by '
+      'default for the same kind of reason — in running text, colour alone is '
+      'the only thing telling a link from an emphasised word, and for a '
+      'colour-blind reader it tells them nothing.',
+    ),
+    const DocCallout.note(
+      '`visited` is yours to track. A browser knows a link’s history and '
+      'Flutter does not, so there is nothing here to read it from — pass it if '
+      'your application keeps the answer, and leave it alone if it does not.',
+    ),
+    DocApi('AstryxLink', _linkProps),
+    DocApi('AstryxLinkUnderline', _underlineProps),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[AstryxButton](button) — for an action. A link goes somewhere; a button '
+          'does something, and the two are different promises.',
+      '[AstryxCode](code) — the other widget with a `span`.',
+    ]),
+  ],
+);
+
+final List<DocProp> _linkProps = <DocProp>[
+  const DocProp(
+    'label',
+    'String',
+    'The text. The positional first argument.',
+    required: true,
+  ),
+  const DocProp('onPressed', 'VoidCallback?', 'Called when it is followed.'),
+  const DocProp('href', 'Uri?', 'A destination for the `AstryxLinkDelegate`.'),
+  const DocProp(
+    'external',
+    'bool',
+    'Whether following it leaves the application. Adds the glyph *and* the '
+        'announcement.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'visited',
+    'bool',
+    'Whether it has been followed. Yours to track.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'underline',
+    'AstryxLinkUnderline',
+    'When the underline is drawn.',
+    defaultValue: 'AstryxLinkUnderline.always',
+  ),
+  const DocProp(
+    'type',
+    'AstryxTextType',
+    'The type role the text takes, so a link matches the copy around it.',
+    defaultValue: 'AstryxTextType.body',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether it can be followed.',
+    defaultValue: 'true',
+  ),
+  const DocProp(
+    'semanticsLabel',
+    'String?',
+    'Overrides what a screen reader announces.',
+  ),
+  const DocProp('focusNode', 'FocusNode?', 'The focus node.'),
+];
+
+final List<DocProp> _underlineProps = <DocProp>[
+  const DocProp(
+    'always',
+    'AstryxLinkUnderline',
+    'The default, and what running text needs.',
+  ),
+  const DocProp(
+    'hover',
+    'AstryxLinkUnderline',
+    'On hover and focus only, for a link that is obviously one from its '
+        'position — a row in a list, a name in a cell.',
+  ),
+  const DocProp(
+    'never',
+    'AstryxLinkUnderline',
+    'For a link inside something already visibly interactive.',
+  ),
+];
+
+// -----------------------------------------------------------------------------
+// AstryxSegmentedControl
+// -----------------------------------------------------------------------------
+
+final DocPage _segmentedControl = DocPage(
+  id: 'segmented_control',
+  title: 'AstryxSegmentedControl',
+  group: _group,
+  description:
+      'A small set of mutually exclusive views, all labels visible at once.',
+  source: 'lib/src/components/navigation/segmented_control.dart',
+  upstream: 'SegmentedControl / SegmentedControlItem',
+  upstreamPath: '/components/SegmentedControl',
+  blocks: <DocBlock>[
+    const DocExample('segmented_control_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode('''
+AstryxSegmentedControl<Range>(
+  label: 'Range',
+  value: _range,
+  onChanged: (range) => setState(() => _range = range),
+  segments: const <AstryxSegment<Range>>[
+    AstryxSegment(value: Range.day, label: 'Day'),
+    AstryxSegment(value: Range.week, label: 'Week'),
+  ],
+)'''),
+    const DocHeading('Which of the four this is'),
+    const DocTable(
+      headers: <String>['Use', 'When'],
+      rows: <List<String>>[
+        <String>[
+          '`AstryxSegmentedControl`',
+          'One choice out of a few — a range, a filter, a density. Announced '
+              'as a radio group.',
+        ],
+        <String>[
+          '[AstryxTabList](tab_list)',
+          'Switching what a page *shows*, at the top of the thing it '
+              'switches. Announced as tabs.',
+        ],
+        <String>[
+          '[AstryxToggleButtonGroup](toggle_button)',
+          'Settings that happen to sit together. Announced as pressed or not.',
+        ],
+        <String>[
+          '[AstryxRadioList](radio_list)',
+          'The same choice with more than about five options, or labels longer '
+              'than a word or two.',
+        ],
+      ],
+    ),
+    const DocCallout.accessibility(
+      '**Keyboarded as an ARIA radiogroup**: one tab stop, the arrows move '
+      '*and choose*, and they wrap at both ends so nobody has to reverse out '
+      'of the end. Both axes work, because a user who does not know which way '
+      'the control runs will try either, and the inline arrows mirror under '
+      'RTL.',
+    ),
+    const DocProse(
+      '`labelHidden` gives an icon-only segment — a list-or-grid switch — its '
+      'name without painting it. It needs an `icon`: a segment with neither is '
+      'a segment nobody can see.',
+    ),
+    DocApi('AstryxSegmentedControl', _segmentedProps),
+    DocApi('AstryxSegment', _segmentProps),
+  ],
+);
+
+final List<DocProp> _segmentedProps = <DocProp>[
+  const DocProp(
+    'segments',
+    'List<AstryxSegment<T>>',
+    'The choices, in the order they are shown and traversed.',
+    required: true,
+  ),
+  const DocProp('value', 'T?', 'The chosen value.', required: true),
+  const DocProp(
+    'onChanged',
+    'ValueChanged<T>?',
+    'Called with the newly chosen value. Null makes the control read-only.',
+  ),
+  const DocProp('label', 'String?', 'The control’s accessible name.'),
+  const DocProp(
+    'size',
+    'AstryxButtonSize',
+    'The control’s size.',
+    defaultValue: 'AstryxButtonSize.md',
+  ),
+  const DocProp(
+    'expand',
+    'bool',
+    'Whether the segments share the width equally. False hugs the labels.',
+    defaultValue: 'false',
+  ),
+  const DocProp('focusNode', 'FocusNode?', 'The focus node for the control.'),
+  const DocProp(
+    'autofocus',
+    'bool',
+    'Whether to take focus when first built.',
+    defaultValue: 'false',
+  ),
+];
+
+final List<DocProp> _segmentProps = <DocProp>[
+  const DocProp(
+    'value',
+    'T',
+    'What choosing this segment produces.',
+    required: true,
+  ),
+  const DocProp(
+    'label',
+    'String',
+    'The visible text, and this segment’s accessible name.',
+    required: true,
+  ),
+  const DocProp('icon', 'Widget?', 'An icon before the label.'),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether this segment can be chosen.',
+    defaultValue: 'true',
+  ),
+  const DocProp(
+    'labelHidden',
+    'bool',
+    'Whether the label is a name for a screen reader only. Requires `icon`.',
+    defaultValue: 'false',
+  ),
+];
+
+// -----------------------------------------------------------------------------
+// AstryxToolbar
+// -----------------------------------------------------------------------------
+
+final DocPage _toolbar = DocPage(
+  id: 'toolbar',
+  title: 'AstryxToolbar',
+  group: _group,
+  description:
+      'A horizontal band of controls, with arrow-key traversal as one tab '
+      'stop.',
+  source: 'lib/src/components/navigation/toolbar.dart',
+  upstream: 'Toolbar',
+  upstreamPath: '/components/Toolbar',
+  blocks: <DocBlock>[
+    const DocExample('toolbar_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode('''
+AstryxToolbar(
+  label: 'Formatting',
+  children: <Widget>[
+    AstryxToggleButton(label: 'Bold', pressed: bold, onChanged: setBold),
+    const AstryxToolbarDivider(),
+    AstryxMoreMenu(entries: more),
+  ],
+)'''),
+    const DocHeading('One tab stop'),
+    const DocProse(
+      '**Tab reaches the toolbar, not each button in it.** A formatting bar of '
+      'twelve buttons is twelve presses to walk past otherwise, which is why '
+      'the ARIA toolbar pattern exists. Inside, the arrows move between the '
+      'controls and wrap; Home and End go to the ends.',
+    ),
+    const DocProse(
+      'The children stay ordinary, traversable widgets — that is how Tab '
+      '*enters* on the first one. What makes the band a single stop is that '
+      'Tab pressed **inside** it leaves instead of walking on: the toolbar '
+      'steps focus to its edge and lets Flutter’s own traversal carry past. '
+      'Nothing is asked of the children, so anything focusable can go in.',
+    ),
+    const DocCallout.note(
+      '`AstryxToolbarDivider` is its own widget because a bare '
+      '[AstryxDivider](divider) in a row has no height to take, and because a '
+      'rule between groups of controls is a thing worth naming.',
+    ),
+    DocApi('AstryxToolbar', _toolbarProps),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[AstryxMoreMenu](more_menu) — for the tail that will not fit.',
+      '[AstryxOverflowList](overflow_list) — which measures the row and '
+          'decides what that tail is.',
+      '[AstryxButtonGroup](button_group) — buttons joined into one visual '
+          'control, which is a different thing: a group is *drawn* together, a '
+          'toolbar is *operated* together.',
+    ]),
+  ],
+);
+
+final List<DocProp> _toolbarProps = <DocProp>[
+  const DocProp(
+    'children',
+    'List<Widget>',
+    'The controls, in the order they are traversed.',
+    required: true,
+  ),
+  const DocProp('label', 'String?', 'The toolbar’s accessible name.'),
+  const DocProp(
+    'gap',
+    'AstryxSpacingToken',
+    'The space between controls.',
+    defaultValue: 'AstryxSpacingToken.spacing1',
+  ),
+  const DocProp(
+    'padding',
+    'AstryxSpacingToken',
+    'The inset around them.',
+    defaultValue: 'AstryxSpacingToken.spacing1',
+  ),
+];
+
+// -----------------------------------------------------------------------------
+// AstryxMoreMenu
+// -----------------------------------------------------------------------------
+
+final DocPage _moreMenu = DocPage(
+  id: 'more_menu',
+  title: 'AstryxMoreMenu',
+  group: _group,
+  description: 'The overflow menu a toolbar or nav collapses its tail into.',
+  source: 'lib/src/components/navigation/more_menu.dart',
+  upstream: 'MoreMenu',
+  upstreamPath: '/components/MoreMenu',
+  blocks: <DocBlock>[
+    const DocExample('toolbar_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode('''
+AstryxMoreMenu(
+  entries: <AstryxMenuEntry>[
+    AstryxMenuItem(label: 'Rename', onSelected: rename),
+    const AstryxMenuDivider(),
+    AstryxMenuItem(label: 'Delete', destructive: true, onSelected: remove),
+  ],
+)'''),
+    const DocProse(
+      'One widget rather than an [AstryxIconButton](icon_button) plus an '
+      '[AstryxDropdownMenu](dropdown_menu) written out at every call site — '
+      'which is what a toolbar, a navigation and a table row each need at '
+      'their end, and which is exactly the composition people get subtly '
+      'wrong: an unnamed trigger, or one that opens a menu with no name of its '
+      'own.',
+    ),
+    const DocCallout.accessibility(
+      '`label` is the trigger’s name, its tooltip **and** the menu’s name — '
+      'one string, because they are one answer to one question: what is behind '
+      'this button? [AstryxBreadcrumbs](breadcrumbs) uses this widget for its '
+      'collapsed steps, which is why that trigger is named "Show 3 hidden '
+      'steps" rather than "…".',
+    ),
+    DocApi('AstryxMoreMenu', _moreMenuProps),
+  ],
+);
+
+final List<DocProp> _moreMenuProps = <DocProp>[
+  const DocProp(
+    'entries',
+    'List<AstryxMenuEntry>',
+    'The rows, in order.',
+    required: true,
+  ),
+  const DocProp(
+    'label',
+    'String?',
+    'The trigger’s name, its tooltip, and the menu’s name.',
+  ),
+  const DocProp(
+    'icon',
+    'AstryxIconName',
+    'The glyph on the trigger.',
+    defaultValue: 'AstryxIconName.moreHorizontal',
+  ),
+  const DocProp(
+    'size',
+    'AstryxButtonSize',
+    'The trigger’s size.',
+    defaultValue: 'AstryxButtonSize.sm',
+  ),
+  const DocProp(
+    'variant',
+    'AstryxButtonVariant',
+    'The trigger’s variant.',
+    defaultValue: 'AstryxButtonVariant.ghost',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether the menu opens.',
+    defaultValue: 'true',
+  ),
+  const DocProp(
+    'controller',
+    'AstryxOverlayController?',
+    'Drives the menu from outside.',
+  ),
+];
+
+// -----------------------------------------------------------------------------
+// AstryxTabMenu
+// -----------------------------------------------------------------------------
+
+final DocPage _tabMenu = DocPage(
+  id: 'tab_menu',
+  title: 'AstryxTabMenu',
+  group: _group,
+  description:
+      'A tab whose selection opens a menu rather than switching a '
+      'panel.',
+  source: 'lib/src/components/navigation/tab_menu.dart',
+  upstream: 'TabMenu',
+  upstreamPath: '/components/TabMenu',
+  blocks: <DocBlock>[
+    const DocExample('tab_menu_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode('''
+AstryxTabMenu(
+  label: 'Reports',
+  selected: view.isReport,
+  entries: <AstryxMenuEntry>[
+    AstryxMenuItem(label: 'Usage', onSelected: () => select(usage)),
+  ],
+)'''),
+    const DocProse(
+      'For the strip where most tabs are views and one is a *set* of them — '
+      '"More reports", a saved-view picker, the tail of a strip too long for '
+      'the bar. It sits beside an [AstryxTabList](tab_list) and is drawn to '
+      'match, indicator and all, so a reader looking at a report still sees '
+      'something in the strip claiming it.',
+    ),
+    const DocCallout.accessibility(
+      'It announces itself as a **menu button**, not a tab. Telling a '
+      'screen-reader user this is a tab and then opening a menu is a promise '
+      'the widget cannot keep — `selected` still reports which entry the page '
+      'came from.',
+    ),
+    DocApi('AstryxTabMenu', _tabMenuProps),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[AstryxTabList](tab_list) — the tabs that do switch a panel.',
+      '[AstryxMoreMenu](more_menu) — when it does not need to look like a tab.',
+    ]),
+  ],
+);
+
+final List<DocProp> _tabMenuProps = <DocProp>[
+  const DocProp(
+    'label',
+    'String',
+    'The visible text, and the trigger’s accessible name.',
+    required: true,
+  ),
+  const DocProp(
+    'entries',
+    'List<AstryxMenuEntry>',
+    'The rows the menu shows.',
+    required: true,
+  ),
+  const DocProp('icon', 'Widget?', 'An icon before the label.'),
+  const DocProp(
+    'selected',
+    'bool',
+    'Whether the view currently showing came from this menu. Draws the tab’s '
+        'indicator.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether the menu opens.',
+    defaultValue: 'true',
+  ),
+  const DocProp('menuLabel', 'String?', 'A name for the menu surface.'),
+  const DocProp(
+    'controller',
+    'AstryxOverlayController?',
+    'Drives the menu from outside.',
+  ),
+];
+
+// -----------------------------------------------------------------------------
+// AstryxPagination
+// -----------------------------------------------------------------------------
+
+final DocPage _pagination = DocPage(
+  id: 'pagination',
+  title: 'AstryxPagination',
+  group: _group,
+  description:
+      'Page-at-a-time controls for a list or table too long to '
+      'scroll.',
+  source: 'lib/src/components/navigation/pagination.dart',
+  upstream: 'Pagination',
+  upstreamPath: '/components/Pagination',
+  blocks: <DocBlock>[
+    const DocExample('pagination_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode('''
+AstryxPagination(
+  page: _page,
+  pageCount: (total / pageSize).ceil(),
+  onPageChanged: (page) => setState(() => _page = page),
+)'''),
+    const DocCallout.warning(
+      '**Pages are one-based**, as they are to the person reading them: "page '
+      '1 of 20" is what the control says, so it is what the control counts in. '
+      'An off-by-one here is an off-by-one the user sees.',
+    ),
+    const DocHeading('What it shows'),
+    const DocProse(
+      'The first and last pages, `siblings` on each side of the current one, '
+      'and a gap where the rest were left out. The ends are the two a reader '
+      'jumps to most and the two that say how much there is — a trail of '
+      'numbers with no end in sight says less than "… 20".',
+    ),
+    const DocProse(
+      'The gap is not a button: it stands for a range rather than a page, and '
+      'a control that cannot say where it would take you is not worth '
+      'offering. A gap of exactly one page is drawn as the page instead, '
+      'because "1 … 3" hides nothing and costs a press.',
+    ),
+    const DocProse(
+      '`AstryxPagination.pagesFor` is that arithmetic on its own, static and '
+      'pure — so what a reader sees can be read, and tested, without a widget '
+      'tree.',
+    ),
+    const DocCallout.accessibility(
+      'The arrows **disable at the ends rather than disappearing**: a control '
+      'that vanishes moves everything beside it, and the reader loses their '
+      'place in a row they were about to press again. The whole control '
+      'announces "Page 3 of 20", so someone landing on it is told where they '
+      'are before they hear a single number.',
+    ),
+    DocApi('AstryxPagination', _paginationProps),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[AstryxTable](table) — which does not virtualise; this is how a long '
+          'one is made readable.',
+      '[AstryxList](list) — same limit, same answer.',
+    ]),
+  ],
+);
+
+final List<DocProp> _paginationProps = <DocProp>[
+  const DocProp(
+    'page',
+    'int',
+    'The current page, from 1 to `pageCount`.',
+    required: true,
+  ),
+  const DocProp(
+    'pageCount',
+    'int',
+    'How many pages there are.',
+    required: true,
+  ),
+  const DocProp(
+    'onPageChanged',
+    'ValueChanged<int>?',
+    'Called with the page the user chose. Null makes the control read-only.',
+  ),
+  const DocProp(
+    'siblings',
+    'int',
+    'How many page numbers to show each side of the current one.',
+    defaultValue: '1',
+  ),
+  const DocProp(
+    'showEdges',
+    'bool',
+    'Whether the first and last pages are always shown.',
+    defaultValue: 'true',
+  ),
+  const DocProp('label', 'String?', 'The control’s accessible name.'),
 ];
