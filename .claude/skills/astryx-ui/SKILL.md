@@ -221,6 +221,7 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxSpinner` | An indeterminate wait, in three sizes. | `references/status.md` |
 | `AstryxSkeleton` | A placeholder in the shape of the content that is coming. | `references/status.md` |
 | `AstryxProgressBar` | A determinate or indeterminate bar, with an announced label. | `references/status.md` |
+| `AstryxStatusDot` | A small coloured dot standing for a state, always paired with text. | `references/status.md` |
 | `AstryxPopover` | A floating panel anchored to a trigger, with trapped focus. | `references/overlays.md` |
 | `AstryxTooltip` | A short phrase on hover, focus, or long-press. | `references/overlays.md` |
 | `AstryxDropdownMenu` | A list of actions, with sections, submenus and full keyboard support. | `references/overlays.md` |

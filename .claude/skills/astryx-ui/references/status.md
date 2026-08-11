@@ -131,3 +131,64 @@ class ProgressDemoExample extends StatelessWidget {
 
 ---
 
+## AstryxStatusDot
+
+`lib/src/components/feedback/status_dot.dart` · upstream `StatusDot`
+
+A small coloured dot standing for a state, always paired with text.
+
+```dart
+class StatusDotDemoExample extends StatelessWidget {
+  const StatusDotDemoExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // The dot is never the whole message: the words beside it are what a
+    // reader who cannot tell green from amber relies on.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        for (final (variant, label) in const <(AstryxStatusDotVariant, String)>[
+          (AstryxStatusDotVariant.success, 'Healthy'),
+          (AstryxStatusDotVariant.warning, 'Degraded'),
+          (AstryxStatusDotVariant.error, 'Unreachable'),
+          (AstryxStatusDotVariant.accent, 'Deploying'),
+          (AstryxStatusDotVariant.neutral, 'Not configured'),
+        ])
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing2,
+            children: <Widget>[
+              AstryxStatusDot(variant, label: label),
+              AstryxText(label),
+            ],
+          ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** Never the only thing that says what the state is. Upstream's own description of this component is "always paired with text", and that is the whole rule: colour alone excludes anybody who cannot tell green from amber, and a dot is too small to carry a shape or an icon as well. `label` is required and keeps the state readable to a screen reader — but a sighted reader who cannot see the hue needs the words on the screen. See Colour (references/guides.md).
+- **Note:** Upstream's `neutral` theme nudges this component's success, warning and error fills through a per-component style override, and it is transcribed in `lib/src/theme/themes/neutral.dart`. Nothing in this port reads those maps yet — every widget resolves the plain token — so the dot is a shade off upstream in that one theme. It is the same gap for `badge`, `banner`, `switch` and `progressbar`.
+
+| Variant | Token | For |
+| --- | --- | --- |
+| `success` | `--color-success` | Healthy, online, passing. |
+| `warning` | `--color-warning` | Degraded, nearly out — needs attention but is not down. |
+| `error` | `--color-error` | Down, failed, rejected. |
+| `accent` | `--color-accent` | In progress, or "this one" — a state the accent describes better than a status colour does. |
+| `neutral` | `--color-icon-secondary` | Off, idle, unknown. Deliberately not the disabled grey: an unknown state is a state. |
+
+### AstryxStatusDot
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `variant` **(required)** | `AstryxStatusDotVariant` | — | What the dot means, and therefore its colour. Positional. |
+| `label` **(required)** | `String` | — | What the state is, in words. The dot's accessible name. |
+| `pulsing` | `bool` | `false` | Whether the dot breathes, to say the state is live. Honours reduced motion. |
+| `tooltip` | `String?` | — | Hover text explaining the state. |
+
+---
+

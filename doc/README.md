@@ -78,7 +78,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxSpinner](components/spinner.md) — An indeterminate wait, in three sizes.
 - [AstryxSkeleton](components/skeleton.md) — A placeholder in the shape of the content that is coming.
 - [AstryxProgressBar](components/progress_bar.md) — A determinate or indeterminate bar, with an announced label.
-- StatusDot — A small coloured dot standing for a state, always paired with text. *(not ported yet)*
+- [AstryxStatusDot](components/status_dot.md) — A small coloured dot standing for a state, always paired with text.
 
 ## Overlays
 
