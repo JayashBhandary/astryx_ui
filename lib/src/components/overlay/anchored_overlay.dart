@@ -81,6 +81,7 @@ class AstryxAnchoredOverlay extends StatefulWidget {
     super.key,
     this.side = AstryxOverlaySide.bottom,
     this.align = AstryxOverlayAlign.center,
+    this.anchorRect,
     this.gap,
     this.viewportPadding,
     this.allowFlip = true,
@@ -114,6 +115,13 @@ class AstryxAnchoredOverlay extends StatefulWidget {
 
   /// Alignment along the anchor's edge.
   final AstryxOverlayAlign align;
+
+  /// A rect to position against instead of [child]'s own bounds.
+  ///
+  /// In the same global coordinates the measured anchor uses. A context menu
+  /// passes a zero-sized rect at the pointer, which is the one case where the
+  /// thing the overlay belongs to is a *point* rather than a widget.
+  final Rect? anchorRect;
 
   /// The gap between the anchor and the overlay. Defaults to `--spacing-1`.
   final double? gap;
@@ -300,9 +308,12 @@ class _AstryxAnchoredOverlayState extends State<AstryxAnchoredOverlay>
     final theme = AstryxTheme.of(context);
     final anchorBox =
         _anchorKey.currentContext?.findRenderObject() as RenderBox?;
-    if (anchorBox == null || !anchorBox.hasSize) return const SizedBox.shrink();
 
-    final anchor = anchorBox.localToGlobal(Offset.zero) & anchorBox.size;
+    final measured = anchorBox != null && anchorBox.hasSize
+        ? anchorBox.localToGlobal(Offset.zero) & anchorBox.size
+        : null;
+    final anchor = widget.anchorRect ?? measured;
+    if (anchor == null) return const SizedBox.shrink();
 
     final media = MediaQuery.of(overlayContext);
     // The safe area, not the raw window. An overlay that flips up into the

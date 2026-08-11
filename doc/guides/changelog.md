@@ -21,7 +21,7 @@ The format is [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the 
 
 ## Unreleased
 
-Ten new components, and the documentation for them. Two existing widgets changed — both fixes, both in **Fixed**.
+Sixteen new components, and the documentation for them. Two existing widgets changed — both fixes, both in **Fixed**.
 
 ### Added
 
@@ -60,8 +60,18 @@ Ten new components, and the documentation for them. Two existing widgets changed
 - Four examples in `example/lib/examples/themes_examples.dart`: all eight themes side by side, each in both brightnesses, six colour tokens sampled from inside each one, and the same four controls rendered eight times.
 - **Links that leave the site now open.** Every page carries them — the upstream page it ports, the repository, the issue tracker — and until now they were painted, underlined and inert, which reads as a failed click. The documentation app installs an `AstryxLinkDelegate`, so they go through the same seam an `AstryxButton(destination:)` uses; the web half is a conditional import in the shape of `url_strategy.dart`, and off the web it declines rather than guessing.
 
+- **`AstryxOverlay`** — the scrim-and-layer primitive, ported from upstream's `Overlay`. The modal contract with no opinion about what is on the layer: scrim, focus trap with restore, Escape closing one layer rather than the stack, and an entry that honours reduced motion. `alignment` is what makes a sheet a sheet, so there is no separate component for one.
+- **`AstryxAlertDialog`** — a dialog with the answers built in, and three deliberate differences from one: the barrier does not dismiss, there is no close button, and focus starts on **cancel** so an Enter pressed out of habit deletes nothing. `description` is required, because a confirmation whose consequence is left to the title cannot be consented to. `showCancel: false` makes it an acknowledgement.
+- **`AstryxHoverCard`** — the preview a tooltip is too small to hold. It stays open while the pointer is *on the card*, which is the whole component: that is what lets the content hold a link or a button. `waitDuration` filters a mouse passing through, `exitDuration` is the grace period for crossing the gap. A long-press reaches it on touch, and that path alone arms a dismissing barrier since touch has no pointer-exit.
+- **`AstryxContextMenu`** — the same `AstryxMenuEntry` rows as `AstryxDropdownMenu`, with the same keyboard model, raised by a secondary click at the pointer or by a long-press on touch. `maxWidth` bounds it because a menu anchored to a point has nothing else to bound it. Documented with what it cannot fix: a right-click is undiscoverable and has no keyboard equivalent, so nothing may live only there.
+- **`AstryxCollapsible`**, with `AstryxCollapsibleController` — a disclosure whose **whole header** is the button, carrying `expanded` in its semantics rather than leaving a rotated chevron to say it. Collapsed content is not in the tree at all: no layout, no semantics, no focus stops behind a closed section.
+- **`AstryxCollapsibleGroup`** — sections as one block, and `exclusive: true` for an accordion, where the group owns which one is open. Not the default, and documented as such: it saves space by removing the one thing a set of sections is good for.
+- `AstryxLocalizations.alertDialogCancel` — "Cancel". Separate from `dialogClose`, which is the same gesture but not the same sentence.
+
 ### Changed
 
+- **`AstryxDialog` is now `AstryxOverlay` plus a panel.** The portal, the dismissal stack, the focus trap, the barrier and the animation moved into the primitive, so the two cannot drift; `AstryxDialogController` extends `AstryxOverlayController` and gains `toggle()`. No behaviour changed — the Phase 9 dialog tests pass untouched.
+- The menu surface and the row vocabulary moved out of `dropdown_menu.dart` into `menu_surface.dart` (internal) and `menu_entry.dart`, so the dropdown and the context menu render the same rows and arrow the same way. The public names are unchanged.
 - `AstryxButtonSurface` takes an optional `selected`, which the toggle button passes and the other two buttons do not. Absent rather than false on a plain action, so nothing announces "not selected" about a Save button. Upstream spells it `aria-pressed`; Flutter's `toggled` flag is the switch's on/off, so `selected` carries it — the mapping `SegmentedButton` uses in the framework itself. Internal: `AstryxButtonSurface` is `@internal` and no call site outside the package can pass it.
 - `gen_skill.dart` publishes every written page except `changelog` and `community`. An agent gains nothing from the release history or from how to file an issue, and the changelog alone would put every bullet of every release into the reference file it opens to learn what a token is.
 - `sidebar_test.dart` picks a `planned` page rather than merely an unwritten one for its badge count. `Getting started` no longer has a `planned` page, and the old expression could open a group with nothing to count.

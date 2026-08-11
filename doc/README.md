@@ -84,15 +84,15 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 
 - [AstryxPopover](components/popover.md) — A floating panel anchored to a trigger, with trapped focus.
 - [AstryxTooltip](components/tooltip.md) — A short phrase on hover, focus, or long-press.
+- [AstryxHoverCard](components/hover_card.md) — A rich preview on hover, that stays open when you reach it.
 - [AstryxDropdownMenu](components/dropdown_menu.md) — A list of actions, with sections, submenus and full keyboard support.
+- [AstryxContextMenu](components/context_menu.md) — A menu raised by a secondary click, at the pointer.
 - [AstryxDialog](components/dialog.md) — A modal panel anchored to the viewport, with a scrolling body.
+- [AstryxAlertDialog](components/alert_dialog.md) — A modal that interrupts to confirm one consequential action.
+- [AstryxOverlay](components/overlay.md) — The scrim-and-layer primitive the modals are built on.
 - [AstryxToast](components/toast.md) — A transient message in the corner, with an optional action.
-- AlertDialog — A modal that interrupts to confirm or cancel one consequential action. *(not ported yet)*
-- HoverCard — A rich card revealed on hover over a trigger, for a preview that a tooltip is too small to hold. *(not ported yet)*
-- Overlay — The scrim and layer primitive the modal components are built on. *(not ported yet)*
-- Collapsible — A disclosure: a header that shows and hides its own content. *(not ported yet)*
-- CollapsibleGroup — Several collapsibles sharing a section, optionally one-open-at-a-time. *(not ported yet)*
-- ContextMenu — A menu raised by a secondary click, at the pointer. *(not ported yet)*
+- [AstryxCollapsible](components/collapsible.md) — A disclosure: a header that shows and hides its own content.
+- [AstryxCollapsibleGroup](components/collapsible_group.md) — Several collapsibles as one section, optionally an accordion.
 
 ## Surfaces
 

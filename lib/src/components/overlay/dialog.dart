@@ -5,23 +5,20 @@ import 'package:astryx_ui/src/components/action/button_style.dart';
 import 'package:astryx_ui/src/components/action/icon_button.dart';
 import 'package:astryx_ui/src/components/layout/heading.dart';
 import 'package:astryx_ui/src/components/layout/text.dart';
+import 'package:astryx_ui/src/components/overlay/anchored_overlay.dart';
+import 'package:astryx_ui/src/components/overlay/overlay_layer.dart';
 import 'package:astryx_ui/src/components/overlay/overlay_surface.dart';
-import 'package:astryx_ui/src/foundation/focus_trap.dart';
-import 'package:astryx_ui/src/foundation/motion.dart';
-import 'package:astryx_ui/src/foundation/overlay_stack.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 /// A modal panel.
 ///
-/// Unlike the other overlays this one is **not anchored** — it centres in the
-/// viewport, so the positioner has nothing to do. What it needs instead is the
-/// full modal contract:
+/// Unlike the anchored overlays this one is **not anchored** — it centres in
+/// the viewport, so the positioner has nothing to do. What it needs instead is
+/// the full modal contract, which it gets from [AstryxOverlay]:
 ///
 ///  * focus trapped inside while open, and **restored to whatever opened it**;
 ///  * Escape closes it — and only it, never a layer beneath;
@@ -50,7 +47,12 @@ import 'package:flutter/widgets.dart';
 ///
 /// The widget renders nothing until [controller] opens it, so it can sit in a
 /// build method next to whatever opens it.
-class AstryxDialog extends StatefulWidget {
+///
+/// See also:
+///
+///  * `AstryxAlertDialog`, for a decision that must be made before anything
+///    else can happen.
+class AstryxDialog extends StatelessWidget {
   /// Creates a dialog.
   const AstryxDialog({
     required this.controller,
@@ -98,220 +100,38 @@ class AstryxDialog extends StatefulWidget {
   /// Called when the dialog dismisses itself.
   final VoidCallback? onDismiss;
 
+  void _dismiss() {
+    controller.hide();
+    onDismiss?.call();
+  }
+
   @override
-  State<AstryxDialog> createState() => _AstryxDialogState();
+  Widget build(BuildContext context) => AstryxOverlay(
+    controller: controller,
+    label: title,
+    debugLabel: 'AstryxDialog',
+    barrierDismissible: barrierDismissible,
+    escapeDismissible: escapeDismissible,
+    onDismiss: onDismiss,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: width),
+      child: _DialogPanel(
+        title: title,
+        description: description,
+        footer: footer,
+        showCloseButton: showCloseButton,
+        onClose: _dismiss,
+        child: child,
+      ),
+    ),
+  );
 }
 
 /// Drives an [AstryxDialog].
-class AstryxDialogController extends ChangeNotifier {
-  bool _open = false;
-
-  /// Whether the dialog is showing.
-  bool get isOpen => _open;
-
-  /// Shows the dialog.
-  void show() {
-    if (_open) return;
-    _open = true;
-    notifyListeners();
-  }
-
-  /// Hides the dialog.
-  void hide() {
-    if (!_open) return;
-    _open = false;
-    notifyListeners();
-  }
-}
-
-class _AstryxDialogState extends State<AstryxDialog>
-    with SingleTickerProviderStateMixin {
-  final OverlayPortalController _portal = OverlayPortalController();
-
-  late final AnimationController _animation = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 200),
-  );
-
-  late final AstryxDismissible _dismissEntry = _dismiss;
-
-  bool _registered = false;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_handleControllerChange);
-    _animation.addStatusListener(_handleAnimationStatus);
-    if (widget.controller.isOpen) _open();
-  }
-
-  @override
-  void didUpdateWidget(AstryxDialog oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(_handleControllerChange);
-      widget.controller.addListener(_handleControllerChange);
-    }
-  }
-
-  @override
-  void dispose() {
-    _unregister();
-    widget.controller.removeListener(_handleControllerChange);
-    _animation.dispose();
-    super.dispose();
-  }
-
-  void _handleControllerChange() {
-    if (!mounted) return;
-    widget.controller.isOpen ? _open() : _close();
-  }
-
-  void _open() {
-    if (SchedulerBinding.instance.schedulerPhase ==
-        SchedulerPhase.persistentCallbacks) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && widget.controller.isOpen) _open();
-      });
-      return;
-    }
-    _portal.show();
-    if (widget.escapeDismissible && !_registered) {
-      AstryxOverlayStack.push(_dismissEntry);
-      _registered = true;
-    }
-    _animation
-      ..duration = AstryxMotion.of(
-        context,
-      ).duration(AstryxDurationToken.mediumMax)
-      ..forward();
-  }
-
-  void _close() {
-    _unregister();
-    _animation.reverse();
-  }
-
-  void _unregister() {
-    if (!_registered) return;
-    AstryxOverlayStack.remove(_dismissEntry);
-    _registered = false;
-  }
-
-  void _handleAnimationStatus(AnimationStatus status) {
-    if (status == AnimationStatus.dismissed && _portal.isShowing) {
-      _portal.hide();
-    }
-  }
-
-  void _dismiss() {
-    widget.controller.hide();
-    widget.onDismiss?.call();
-  }
-
-  KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent) return KeyEventResult.ignored;
-    if (event.logicalKey != LogicalKeyboardKey.escape) {
-      return KeyEventResult.ignored;
-    }
-    if (!widget.escapeDismissible || !widget.controller.isOpen) {
-      return KeyEventResult.ignored;
-    }
-    if (!AstryxOverlayStack.isTopmost(_dismissEntry)) {
-      return KeyEventResult.ignored;
-    }
-    _dismiss();
-    return KeyEventResult.handled;
-  }
-
-  @override
-  Widget build(BuildContext context) => OverlayPortal(
-    controller: _portal,
-    overlayChildBuilder: _buildOverlay,
-    child: const SizedBox.shrink(),
-  );
-
-  Widget _buildOverlay(BuildContext overlayContext) {
-    final theme = AstryxTheme.of(context);
-    final animate = AstryxMotionAccess.animate(context);
-
-    final curved = CurvedAnimation(
-      parent: _animation,
-      curve: AstryxMotion.of(context).curve(),
-    );
-
-    Widget panel = _DialogPanel(
-      title: widget.title,
-      description: widget.description,
-      footer: widget.footer,
-      showCloseButton: widget.showCloseButton,
-      onClose: _dismiss,
-      child: widget.child,
-    );
-
-    panel = ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: widget.width),
-      child: panel,
-    );
-
-    if (animate) {
-      panel = FadeTransition(
-        opacity: curved,
-        child: ScaleTransition(
-          scale: Tween<double>(begin: 0.96, end: 1).animate(curved),
-          child: panel,
-        ),
-      );
-    }
-
-    return Focus(
-      autofocus: true,
-      canRequestFocus: false,
-      skipTraversal: true,
-      onKeyEvent: _handleKey,
-      child: Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: widget.barrierDismissible ? _dismiss : null,
-              child: animate
-                  ? FadeTransition(
-                      opacity: curved,
-                      child: ColoredBox(
-                        color: theme.color(AstryxColorToken.overlay),
-                      ),
-                    )
-                  : ColoredBox(color: theme.color(AstryxColorToken.overlay)),
-            ),
-          ),
-          Positioned.fill(
-            child: Padding(
-              padding: EdgeInsets.all(
-                theme.spacing(AstryxSpacingToken.spacing4),
-              ),
-              child: Center(
-                child: AstryxFocusTrap(
-                  debugLabel: 'AstryxDialog',
-                  child: Semantics(
-                    // `scopesRoute` is what tells a screen reader the rest of
-                    // the page is inert; `namesRoute` makes the title the
-                    // dialog's name rather than just its first line of text.
-                    scopesRoute: true,
-                    namesRoute: true,
-                    explicitChildNodes: true,
-                    label: widget.title,
-                    child: panel,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+///
+/// An [AstryxOverlayController] under a name that says what it drives, so a
+/// dialog's open state reads as a dialog's open state at the call site.
+class AstryxDialogController extends AstryxOverlayController {}
 
 /// The panel: header, scrolling body, pinned footer.
 class _DialogPanel extends StatelessWidget {

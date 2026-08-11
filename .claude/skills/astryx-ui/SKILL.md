@@ -224,9 +224,15 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxStatusDot` | A small coloured dot standing for a state, always paired with text. | `references/status.md` |
 | `AstryxPopover` | A floating panel anchored to a trigger, with trapped focus. | `references/overlays.md` |
 | `AstryxTooltip` | A short phrase on hover, focus, or long-press. | `references/overlays.md` |
+| `AstryxHoverCard` | A rich preview on hover, that stays open when you reach it. | `references/overlays.md` |
 | `AstryxDropdownMenu` | A list of actions, with sections, submenus and full keyboard support. | `references/overlays.md` |
+| `AstryxContextMenu` | A menu raised by a secondary click, at the pointer. | `references/overlays.md` |
 | `AstryxDialog` | A modal panel anchored to the viewport, with a scrolling body. | `references/overlays.md` |
+| `AstryxAlertDialog` | A modal that interrupts to confirm one consequential action. | `references/overlays.md` |
+| `AstryxOverlay` | The scrim-and-layer primitive the modals are built on. | `references/overlays.md` |
 | `AstryxToast` | A transient message in the corner, with an optional action. | `references/overlays.md` |
+| `AstryxCollapsible` | A disclosure: a header that shows and hides its own content. | `references/overlays.md` |
+| `AstryxCollapsibleGroup` | Several collapsibles as one section, optionally an accordion. | `references/overlays.md` |
 | `AstryxCard` | A bordered surface with a header, a body and a footer — pressable when you give it something to do. | `references/surfaces.md` |
 | `AstryxBadge` | A small label: a status, a count, a category. | `references/surfaces.md` |
 | `AstryxBanner` | An inline message with a severity, announced when it appears. | `references/surfaces.md` |

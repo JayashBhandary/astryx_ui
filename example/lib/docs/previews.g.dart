@@ -12,6 +12,7 @@
 library;
 
 import 'package:flutter/widgets.dart';
+import 'package:example/examples/alert_dialog_examples.dart';
 import 'package:example/examples/badge_examples.dart';
 import 'package:example/examples/banner_examples.dart';
 import 'package:example/examples/button_examples.dart';
@@ -19,7 +20,10 @@ import 'package:example/examples/button_group_examples.dart';
 import 'package:example/examples/card_examples.dart';
 import 'package:example/examples/center_examples.dart';
 import 'package:example/examples/checkbox_examples.dart';
+import 'package:example/examples/collapsible_examples.dart';
+import 'package:example/examples/collapsible_group_examples.dart';
 import 'package:example/examples/color_examples.dart';
+import 'package:example/examples/context_menu_examples.dart';
 import 'package:example/examples/core_examples.dart';
 import 'package:example/examples/dialog_examples.dart';
 import 'package:example/examples/divider_examples.dart';
@@ -30,11 +34,13 @@ import 'package:example/examples/forms_advanced_examples.dart';
 import 'package:example/examples/forms_group_examples.dart';
 import 'package:example/examples/grid_examples.dart';
 import 'package:example/examples/heading_examples.dart';
+import 'package:example/examples/hover_card_examples.dart';
 import 'package:example/examples/icon_button_examples.dart';
 import 'package:example/examples/icon_examples.dart';
 import 'package:example/examples/icons_examples.dart';
 import 'package:example/examples/layout_examples.dart';
 import 'package:example/examples/motion_examples.dart';
+import 'package:example/examples/overlay_examples.dart';
 import 'package:example/examples/platform_examples.dart';
 import 'package:example/examples/popover_examples.dart';
 import 'package:example/examples/progress_bar_examples.dart';
@@ -67,6 +73,9 @@ import 'package:example/examples/visually_hidden_examples.dart';
 
 /// Every example's widget, keyed by its region id.
 final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
+  'alert_dialog_demo': (_) => const AlertDialogDemoExample(),
+  'alert_dialog_acknowledge': (_) => const AlertDialogAcknowledgeExample(),
+  'alert_dialog_extra': (_) => const AlertDialogExtraExample(),
   'badge_demo': (_) => const BadgeDemoExample(),
   'badge_variants': (_) => const BadgeVariantsExample(),
   'badge_palettes': (_) => const BadgePalettesExample(),
@@ -105,9 +114,16 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'checkbox_tristate': (_) => const CheckboxTristateExample(),
   'checkbox_sizes': (_) => const CheckboxSizesExample(),
   'checkbox_states': (_) => const CheckboxStatesExample(),
+  'collapsible_demo': (_) => const CollapsibleDemoExample(),
+  'collapsible_rich': (_) => const CollapsibleRichExample(),
+  'collapsible_controlled': (_) => const CollapsibleControlledExample(),
+  'collapsible_group_demo': (_) => const CollapsibleGroupDemoExample(),
+  'collapsible_group_exclusive': (_) => const CollapsibleGroupExclusiveExample(),
   'color_roles': (_) => const ColorRolesExample(),
   'color_on_pairs': (_) => const ColorOnPairsExample(),
   'color_palettes': (_) => const ColorPalettesExample(),
+  'context_menu_demo': (_) => const ContextMenuDemoExample(),
+  'context_menu_sections': (_) => const ContextMenuSectionsExample(),
   'core_pipeline': (_) => const CorePipelineExample(),
   'dialog_demo': (_) => const DialogDemoExample(),
   'dialog_form': (_) => const DialogFormExample(),
@@ -152,6 +168,9 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'heading_levels': (_) => const HeadingLevelsExample(),
   'heading_display': (_) => const HeadingDisplayExample(),
   'heading_accessibility_level': (_) => const HeadingAccessibilityLevelExample(),
+  'hover_card_demo': (_) => const HoverCardDemoExample(),
+  'hover_card_timing': (_) => const HoverCardTimingExample(),
+  'hover_card_sides': (_) => const HoverCardSidesExample(),
   'icon_button_demo': (_) => const IconButtonDemoExample(),
   'icon_button_variants': (_) => const IconButtonVariantsExample(),
   'icon_button_sizes': (_) => const IconButtonSizesExample(),
@@ -166,6 +185,8 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'icons_mirroring': (_) => const IconsMirroringExample(),
   'layout_page': (_) => const LayoutPageExample(),
   'motion_durations': (_) => const MotionDurationsExample(),
+  'overlay_demo': (_) => const OverlayDemoExample(),
+  'overlay_placement': (_) => const OverlayPlacementExample(),
   'platform_targets': (_) => const PlatformTargetsExample(),
   'popover_demo': (_) => const PopoverDemoExample(),
   'popover_sides': (_) => const PopoverSidesExample(),

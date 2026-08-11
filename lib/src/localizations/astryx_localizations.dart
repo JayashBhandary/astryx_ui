@@ -48,6 +48,13 @@ class AstryxLocalizations {
   /// Closes a popover. Screen-reader label on its close button.
   String get popoverClose => 'Close popover';
 
+  /// Declines the action an alert dialog is asking about.
+  ///
+  /// Deliberately not [dialogClose]: closing a dialog and declining a
+  /// consequential action are the same gesture but not the same sentence, and
+  /// they translate differently.
+  String get alertDialogCancel => 'Cancel';
+
   /// Dismisses a banner. Label and tooltip on its close button.
   ///
   /// Distinct from [toastDismiss]: a banner is persistent, a toast transient.

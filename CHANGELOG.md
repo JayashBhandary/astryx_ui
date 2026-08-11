@@ -7,7 +7,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-Ten new components, and the documentation for them. Two existing widgets
+Sixteen new components, and the documentation for them. Two existing widgets
 changed — both fixes, both in **Fixed**.
 
 ### Added
@@ -191,8 +191,52 @@ changed — both fixes, both in **Fixed**.
   import in the shape of `url_strategy.dart`, and off the web it declines
   rather than guessing.
 
+- **`AstryxOverlay`** — the scrim-and-layer primitive, ported from upstream's
+  `Overlay`. The modal contract with no opinion about what is on the layer:
+  scrim, focus trap with restore, Escape closing one layer rather than the
+  stack, and an entry that honours reduced motion. `alignment` is what makes a
+  sheet a sheet, so there is no separate component for one.
+- **`AstryxAlertDialog`** — a dialog with the answers built in, and three
+  deliberate differences from one: the barrier does not dismiss, there is no
+  close button, and focus starts on **cancel** so an Enter pressed out of habit
+  deletes nothing. `description` is required, because a confirmation whose
+  consequence is left to the title cannot be consented to. `showCancel: false`
+  makes it an acknowledgement.
+- **`AstryxHoverCard`** — the preview a tooltip is too small to hold. It stays
+  open while the pointer is *on the card*, which is the whole component: that is
+  what lets the content hold a link or a button. `waitDuration` filters a mouse
+  passing through, `exitDuration` is the grace period for crossing the gap. A
+  long-press reaches it on touch, and that path alone arms a dismissing barrier
+  since touch has no pointer-exit.
+- **`AstryxContextMenu`** — the same `AstryxMenuEntry` rows as
+  `AstryxDropdownMenu`, with the same keyboard model, raised by a secondary
+  click at the pointer or by a long-press on touch. `maxWidth` bounds it because
+  a menu anchored to a point has nothing else to bound it. Documented with what
+  it cannot fix: a right-click is undiscoverable and has no keyboard
+  equivalent, so nothing may live only there.
+- **`AstryxCollapsible`**, with `AstryxCollapsibleController` — a disclosure
+  whose **whole header** is the button, carrying `expanded` in its semantics
+  rather than leaving a rotated chevron to say it. Collapsed content is not in
+  the tree at all: no layout, no semantics, no focus stops behind a closed
+  section.
+- **`AstryxCollapsibleGroup`** — sections as one block, and `exclusive: true`
+  for an accordion, where the group owns which one is open. Not the default, and
+  documented as such: it saves space by removing the one thing a set of sections
+  is good for.
+- `AstryxLocalizations.alertDialogCancel` — "Cancel". Separate from
+  `dialogClose`, which is the same gesture but not the same sentence.
+
 ### Changed
 
+- **`AstryxDialog` is now `AstryxOverlay` plus a panel.** The portal, the
+  dismissal stack, the focus trap, the barrier and the animation moved into the
+  primitive, so the two cannot drift; `AstryxDialogController` extends
+  `AstryxOverlayController` and gains `toggle()`. No behaviour changed — the
+  Phase 9 dialog tests pass untouched.
+- The menu surface and the row vocabulary moved out of `dropdown_menu.dart`
+  into `menu_surface.dart` (internal) and `menu_entry.dart`, so the dropdown
+  and the context menu render the same rows and arrow the same way. The public
+  names are unchanged.
 - `AstryxButtonSurface` takes an optional `selected`, which the toggle button
   passes and the other two buttons do not. Absent rather than false on a plain
   action, so nothing announces "not selected" about a Save button. Upstream

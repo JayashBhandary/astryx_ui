@@ -127,6 +127,86 @@ class TooltipDemoExample extends StatelessWidget {
 
 ---
 
+## AstryxHoverCard
+
+`lib/src/components/overlay/hover_card.dart` · upstream `HoverCard / useHoverCard`
+
+A rich preview on hover, that stays open when you reach it.
+
+```dart
+class HoverCardDemoExample extends StatelessWidget {
+  const HoverCardDemoExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Hover the mention. The card stays open while the pointer is on it, so
+    // what is inside can be read, selected and pressed.
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing1,
+      children: <Widget>[
+        const AstryxText('Assigned to'),
+        AstryxHoverCard(
+          label: 'Ada Lovelace',
+          content: AstryxVStack(
+            gap: AstryxSpacingToken.spacing2,
+            children: <Widget>[
+              const AstryxHeading(
+                'Ada Lovelace',
+                type: AstryxHeadingType.display3,
+              ),
+              const AstryxText(
+                'Platform team · Cambridge',
+                type: AstryxTextType.supporting,
+                color: AstryxTextColor.secondary,
+              ),
+              const AstryxText('Owns the scheduler and the retry engine.'),
+              AstryxButton(label: 'View profile', onPressed: () {}),
+            ],
+          ),
+          child: const AstryxText('@ada', color: AstryxTextColor.accent),
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Careful:** Nothing may live **only** in a hover card. It needs a pointer or a deliberate long-press, it is gone as soon as attention moves, and a screen-reader user meets it only if they happen to focus the trigger. Treat it as a shortcut to something reachable by going there.
+- **Accessibility:** Focus on the trigger opens the card immediately, with no wait — the delay exists to filter passing pointers, and a keyboard user did not pass through by accident. Focus is never trapped: the page behind it is still live.
+
+|   | Tooltip | Hover card | Popover |
+| --- | --- | --- | --- |
+| Opens on | hover, focus, long-press | the same | a press |
+| Content | one phrase | a panel | a panel |
+| Interactive | no | yes | yes |
+| Traps focus | no | no | yes, by default |
+
+| Property | Does |
+| --- | --- |
+| `side` | The **preferred** side. The positioner flips to the opposite one when there is no room. |
+| `align` | Alignment along the anchor’s edge: `start`, `center` or `end`. The overlay shifts along that edge to stay on screen. |
+
+### AstryxHoverCard
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `child` **(required)** | `Widget` | — | The trigger. |
+| `content` **(required)** | `Widget` | — | The card’s content. |
+| `controller` | `AstryxOverlayController?` | — | Drives the card from outside. Null makes it uncontrolled. |
+| `label` | `String?` | — | An accessible name for the card. |
+| `side` | `AstryxOverlaySide` | `AstryxOverlaySide.bottom` | The preferred side. |
+| `align` | `AstryxOverlayAlign` | `AstryxOverlayAlign.start` | Alignment along the trigger’s edge. |
+| `width` | `double?` | `300` | The card’s width. Null sizes to the content. |
+| `waitDuration` | `Duration` | `Duration(milliseconds: 300)` | How long a pointer must rest on the trigger first. |
+| `exitDuration` | `Duration` | `Duration(milliseconds: 200)` | The grace period after the pointer leaves both the trigger and the card. |
+| `showArrow` | `bool` | `false` | Whether to draw a pointer at the trigger. |
+| `enabled` | `bool` | `true` | Whether the card responds at all. |
+| `onOpenChange` | `ValueChanged<bool>?` | — | Called whenever the card opens or closes. |
+
+---
+
 ## AstryxDropdownMenu
 
 `lib/src/components/overlay/dropdown_menu.dart` · upstream `DropdownMenu / DropdownMenuItem / DropdownMenuCheckboxItem / DropdownMenuRadioGroup / DropdownMenuRadioItem / DropdownMenuSubMenu`
@@ -231,6 +311,111 @@ class _DropdownMenuDemoExampleState extends State<DropdownMenuDemoExample> {
 
 ---
 
+## AstryxContextMenu
+
+`lib/src/components/overlay/context_menu.dart` · upstream `ContextMenu / ContextMenuItem`
+
+A menu raised by a secondary click, at the pointer.
+
+```dart
+class ContextMenuDemoExample extends StatefulWidget {
+  const ContextMenuDemoExample({super.key});
+
+  @override
+  State<ContextMenuDemoExample> createState() => _ContextMenuDemoExampleState();
+}
+
+class _ContextMenuDemoExampleState extends State<ContextMenuDemoExample> {
+  String _last = '—';
+
+  @override
+  Widget build(BuildContext context) {
+    // Secondary-click the card — or long-press it on a touch screen. The menu
+    // opens where the pointer is, not against the card's edge.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxContextMenu(
+          label: 'Request actions',
+          entries: <AstryxMenuEntry>[
+            AstryxMenuItem(
+              label: 'Open in new tab',
+              onSelected: () => setState(() => _last = 'opened'),
+            ),
+            AstryxMenuItem(
+              label: 'Duplicate',
+              onSelected: () => setState(() => _last = 'duplicated'),
+            ),
+            const AstryxMenuDivider(),
+            AstryxMenuItem(
+              label: 'Delete',
+              destructive: true,
+              onSelected: () => setState(() => _last = 'deleted'),
+            ),
+          ],
+          child: const AstryxCard(
+            width: 300,
+            child: AstryxVStack(
+              gap: AstryxSpacingToken.spacing1,
+              children: <Widget>[
+                AstryxText('GET /v1/projects/atlas'),
+                AstryxText(
+                  'Last run 14:02 · 204 ms',
+                  type: AstryxTextType.supporting,
+                  color: AstryxTextColor.secondary,
+                ),
+              ],
+            ),
+          ),
+        ),
+        AstryxText(
+          'Last action: $_last',
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Careful:** Because it is not discoverable, **nothing may live only here**. A right-click has no keyboard equivalent and no visible affordance: a user who never tries it never learns the actions exist. Give each entry second home — a toolbar, a row menu, a details panel — and let this be the shortcut for people who already know.
+- **Accessibility:** The menu takes focus when it opens, so the arrows have somewhere to land, and gives it back when it closes. Every row is announced as a button; sections and dividers are skipped.
+
+|   | Dropdown menu | Context menu |
+| --- | --- | --- |
+| Opened by | a press on its trigger | a secondary click |
+| On touch | the same press | a long-press |
+| Anchored to | the trigger’s edge | the pointer |
+| Discoverable | yes — it is a control | **no** |
+
+| Key | Does |
+| --- | --- |
+| `↑` / `↓` | Moves the highlight, wrapping. |
+| `Home` / `End` | Jumps to the first or last item. |
+| a letter | Jumps to the first item starting with it. |
+| `→` / `←` | Opens and closes a submenu. Mirrored under RTL. |
+| `Enter` | Chooses the highlighted item; the menu closes first, then the callback runs. |
+| `Escape` | Closes the menu, not the page behind it. |
+
+### AstryxContextMenu
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `entries` **(required)** | `List<AstryxMenuEntry>` | — | The rows, in order. Shared with `AstryxDropdownMenu`. |
+| `child` **(required)** | `Widget` | — | The region a secondary click opens the menu over. |
+| `label` | `String?` | — | An accessible name for the surface. |
+| `enabled` | `bool` | `true` | Whether the menu can be opened. |
+| `width` | `double?` | — | A fixed width. Null sizes the menu up to `maxWidth`. |
+| `maxWidth` | `double` | `280` | The widest the menu may become. |
+| `maxHeight` | `double` | `300` | The tallest the menu may be before it scrolls. |
+| `longPressOnTouch` | `bool` | `true` | Whether a long-press opens it in touch density. |
+| `onOpenChange` | `ValueChanged<bool>?` | — | Called whenever the menu opens or closes. |
+
+---
+
 ## AstryxDialog
 
 `lib/src/components/overlay/dialog.dart` · upstream `Dialog / DialogHeader / useImperativeDialog`
@@ -324,6 +509,180 @@ class _DialogDemoExampleState extends State<DialogDemoExample> {
 
 ---
 
+## AstryxAlertDialog
+
+`lib/src/components/overlay/alert_dialog.dart` · upstream `AlertDialog / useImperativeAlertDialog`
+
+A modal that interrupts to confirm one consequential action.
+
+```dart
+class AlertDialogDemoExample extends StatefulWidget {
+  const AlertDialogDemoExample({super.key});
+
+  @override
+  State<AlertDialogDemoExample> createState() => _AlertDialogDemoExampleState();
+}
+
+class _AlertDialogDemoExampleState extends State<AlertDialogDemoExample> {
+  final AstryxDialogController _controller = AstryxDialogController();
+  String _outcome = '—';
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // The barrier does not dismiss, there is no close button, and focus starts
+    // on Cancel. All three exist so the question cannot be answered by
+    // accident.
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxButton(
+          label: 'Delete project',
+          variant: AstryxButtonVariant.destructive,
+          onPressed: _controller.show,
+        ),
+        AstryxText(
+          'Last answer: $_outcome',
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+        AstryxAlertDialog(
+          controller: _controller,
+          title: 'Delete Atlas?',
+          description:
+              'Atlas and its 4,102 saved requests will be removed for everyone '
+              'in the workspace. This cannot be undone.',
+          confirmLabel: 'Delete project',
+          destructive: true,
+          onConfirm: () => setState(() => _outcome = 'deleted'),
+          onCancel: () => setState(() => _outcome = 'kept'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Note:** Use a dialog (references/overlays.md) whenever the user is *doing* something rather than confirming something. An alert dialog spent on ordinary work trains people to dismiss the one that matters.
+- **Accessibility:** Focus is trapped while it is open and returns to whatever opened it. `title` is the accessible name, and the confirming button should name the action — "Delete project", not "OK", because that button is read on its own by anyone tabbing to it.
+
+|   | Dialog | Alert dialog |
+| --- | --- | --- |
+| Barrier press | closes it | **does nothing** |
+| Close button | yes | no — the buttons are the way out |
+| Escape | closes it | cancels |
+| Focus on open | the first control | **cancel** |
+| Body | anything | a consequence, then anything |
+
+### AstryxAlertDialog
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `controller` **(required)** | `AstryxDialogController` | — | The open/closed state. |
+| `title` **(required)** | `String` | — | The question, as a statement. Also the accessible name. |
+| `description` **(required)** | `String` | — | What confirming will do. |
+| `confirmLabel` **(required)** | `String` | — | The label on the confirming button. Name the action. |
+| `onConfirm` | `VoidCallback?` | — | Called after the dialog closes on confirm. |
+| `cancelLabel` | `String?` | — | The label on the cancelling button. Defaults to the localised "Cancel". |
+| `onCancel` | `VoidCallback?` | — | Called on cancel — by the button, by Escape, or by the barrier where it is dismissible. |
+| `destructive` | `bool` | `false` | Whether confirming is irreversible, which colours that button with `--color-error`. |
+| `width` | `double` | `420` | The dialog’s width. |
+| `showCancel` | `bool` | `true` | Whether to offer a cancelling button at all. |
+| `barrierDismissible` | `bool` | `false` | Whether a press on the barrier cancels. |
+| `escapeDismissible` | `bool` | `true` | Whether Escape cancels. |
+| `child` | `Widget?` | — | Extra content below the description. |
+
+---
+
+## AstryxOverlay
+
+`lib/src/components/overlay/overlay_layer.dart` · upstream `Overlay`
+
+The scrim-and-layer primitive the modals are built on.
+
+```dart
+class OverlayDemoExample extends StatefulWidget {
+  const OverlayDemoExample({super.key});
+
+  @override
+  State<OverlayDemoExample> createState() => _OverlayDemoExampleState();
+}
+
+class _OverlayDemoExampleState extends State<OverlayDemoExample> {
+  final AstryxOverlayController _controller = AstryxOverlayController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // The modal contract with nothing on top of it: scrim, focus trap, Escape,
+    // barrier dismissal. What sits on the layer is entirely yours.
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxButton(label: 'Open preview', onPressed: _controller.show),
+        AstryxOverlay(
+          controller: _controller,
+          label: 'Preview',
+          child: AstryxCard(
+            width: 320,
+            child: AstryxVStack(
+              gap: AstryxSpacingToken.spacing3,
+              children: <Widget>[
+                const AstryxHeading(
+                  'atlas-scheduler.png',
+                  type: AstryxHeadingType.display3,
+                ),
+                const AstryxSkeleton(height: 120),
+                AstryxButton(label: 'Close', onPressed: _controller.hide),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Note:** Turning `showScrim` off leaves focus trapped unless `trapFocus` is off too. A layer that looks non-modal while behaving modally is worse than either one on its own.
+- **Accessibility:** `scopesRoute` is what tells a screen reader the rest of the page is inert, and `label` is what names the layer. Set `scopesRoute: false` for something merely floating — announcing a page as unavailable when it is not is worse than saying nothing.
+
+### AstryxOverlay
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `controller` **(required)** | `AstryxOverlayController` | — | The open/closed state. |
+| `child` **(required)** | `Widget` | — | What sits on the layer. |
+| `alignment` | `AlignmentGeometry` | `Alignment.center` | Where the child sits in the viewport. |
+| `padding` | `EdgeInsetsGeometry?` | `--spacing-4` | The inset from the viewport edge. |
+| `showScrim` | `bool` | `true` | Whether to dim the page behind it. |
+| `scrimColor` | `AstryxColorToken?` | `AstryxColorToken.overlay` | The scrim’s colour. |
+| `barrierDismissible` | `bool` | `true` | Whether a press on the scrim closes it. |
+| `escapeDismissible` | `bool` | `true` | Whether Escape closes it. |
+| `trapFocus` | `bool` | `true` | Whether focus is trapped inside while open. |
+| `restoreFocus` | `bool` | `true` | Whether focus returns to whatever opened it. |
+| `transition` | `AstryxOverlayTransition` | `AstryxOverlayTransition.scale` | How it enters and leaves. `slide` has no anchor here and fades. |
+| `duration` | `AstryxDurationToken` | `AstryxDurationToken.mediumMax` | How long the entry and exit take. |
+| `label` | `String?` | — | The layer’s accessible name. |
+| `scopesRoute` | `bool` | `true` | Whether the page behind it is announced as inert. |
+| `onDismiss` | `VoidCallback?` | — | Called when the layer dismisses itself. |
+
+---
+
 ## AstryxToast
 
 `lib/src/components/overlay/toast.dart` · upstream `Toast / useToast`
@@ -371,6 +730,125 @@ class ToastDemoExample extends StatelessWidget {
 | `visible` | `List<AstryxToast>` | — | What is on screen, oldest first. |
 | `show(toast)` | `VoidCallback` | — | Queues a toast and returns a handle that dismisses it. |
 | `clear()` | `void` | — | Removes everything. |
+
+---
+
+## AstryxCollapsible
+
+`lib/src/components/overlay/collapsible.dart` · upstream `Collapsible / useCollapsible`
+
+A disclosure: a header that shows and hides its own content.
+
+```dart
+class CollapsibleDemoExample extends StatelessWidget {
+  const CollapsibleDemoExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // The whole header is the button, and it carries the expanded state in its
+    // semantics — so a screen reader says "collapsed" without seeing a chevron.
+    return const SizedBox(
+      width: 360,
+      child: AstryxCollapsible(
+        title: 'Advanced settings',
+        description: 'Timeouts, retries and headers',
+        child: AstryxText(
+          'Requests time out after 30 seconds and are retried twice with an '
+          'exponential backoff.',
+        ),
+      ),
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** The header is a button that carries `expanded` in its semantics, so a screen reader announces the state rather than the user inferring it from a rotated chevron. Collapsed content is **not in the tree** — no layout, no semantics, and no focus stops behind a closed section.
+
+| Key | Does |
+| --- | --- |
+| `Tab` | Moves to the header, which takes focus. |
+| `Enter` / `Space` | Expands or collapses it. |
+
+### AstryxCollapsible
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `title` **(required)** | `String` | — | The header text, and the header button’s accessible name. |
+| `child` **(required)** | `Widget` | — | The content shown while expanded. |
+| `controller` | `AstryxCollapsibleController?` | — | Drives the expanded state from outside. Null keeps it internal. |
+| `initiallyExpanded` | `bool` | `false` | Whether the content starts visible. Ignored with a `controller`. |
+| `description` | `String?` | — | Secondary text below the title. |
+| `leading` | `Widget?` | — | A widget before the title. |
+| `trailing` | `Widget?` | — | A widget after the title. Not interactive — the header is one button. |
+| `enabled` | `bool` | `true` | Whether the header responds. |
+| `onExpansionChanged` | `ValueChanged<bool>?` | — | Called with the new state whenever it expands or collapses. |
+
+### AstryxCollapsibleController
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `isExpanded` | `bool` | — | Whether the content is showing. |
+| `expand()` | `void` | — | Shows it. |
+| `collapse()` | `void` | — | Hides it. |
+| `toggle()` | `void` | — | Shows it if hidden, hides it if shown. |
+
+---
+
+## AstryxCollapsibleGroup
+
+`lib/src/components/overlay/collapsible_group.dart` · upstream `CollapsibleGroup`
+
+Several collapsibles as one section, optionally an accordion.
+
+```dart
+class CollapsibleGroupDemoExample extends StatelessWidget {
+  const CollapsibleGroupDemoExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // The default: sections divided into one block, each owning its own state.
+    // Two can be open at once, which is what makes them comparable.
+    return const SizedBox(
+      width: 380,
+      child: AstryxCollapsibleGroup(
+        children: <AstryxCollapsible>[
+          AstryxCollapsible(
+            title: 'Billing',
+            description: 'Plan, invoices and payment method',
+            child: AstryxText('Team plan · renews 4 April · Visa ···· 4242'),
+          ),
+          AstryxCollapsible(
+            title: 'Members',
+            description: '12 people, 3 pending invitations',
+            child: AstryxText('Owners: Ada, Priya. Everyone else can deploy.'),
+          ),
+          AstryxCollapsible(
+            title: 'Audit log',
+            description: 'Everything anyone changed',
+            child: AstryxText('Retained for 90 days on this plan.'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Careful:** Exclusive is not the default, and should not be your default either. It saves vertical space by removing the one thing a set of sections is good for — comparing two of them. Use it where the panels are long enough that two open at once is worse than switching.
+
+### AstryxCollapsibleGroup
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `children` **(required)** | `List<AstryxCollapsible>` | — | The sections, in order. |
+| `exclusive` | `bool` | `false` | Whether opening one section closes the others. |
+| `initialIndex` | `int?` | — | Which section starts open when `exclusive`. Null opens none. |
+| `divided` | `bool` | `true` | Whether to draw a rule between sections. |
+| `onChanged` | `ValueChanged<int?>?` | — | Called with the index now open. Only fires for an exclusive group. |
 
 ---
 

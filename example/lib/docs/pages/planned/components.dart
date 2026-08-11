@@ -16,64 +16,6 @@ import 'package:example/docs/pages/_stub.dart';
 /// Every component page that is a placeholder, in upstream nav order.
 final List<DocPage> plannedComponentPages = <DocPage>[
   stubPage(
-    id: 'alert_dialog',
-    title: 'AlertDialog',
-    group: DocGroup.overlays,
-    description:
-        'A modal that interrupts to confirm or cancel one '
-        'consequential action.',
-    upstream: 'AlertDialog / useImperativeAlertDialog',
-    upstreamPath: '/components/AlertDialog',
-  ),
-  stubPage(
-    id: 'hover_card',
-    title: 'HoverCard',
-    group: DocGroup.overlays,
-    description:
-        'A rich card revealed on hover over a trigger, for a '
-        'preview that a tooltip is too small to hold.',
-    upstream: 'HoverCard / useHoverCard',
-    upstreamPath: '/components/HoverCard',
-  ),
-  stubPage(
-    id: 'overlay',
-    title: 'Overlay',
-    group: DocGroup.overlays,
-    description:
-        'The scrim and layer primitive the modal components are '
-        'built on.',
-    upstream: 'Overlay',
-    upstreamPath: '/components/Overlay',
-  ),
-  stubPage(
-    id: 'collapsible',
-    title: 'Collapsible',
-    group: DocGroup.overlays,
-    description:
-        'A disclosure: a header that shows and hides its own '
-        'content.',
-    upstream: 'Collapsible / useCollapsible',
-    upstreamPath: '/components/Collapsible',
-  ),
-  stubPage(
-    id: 'collapsible_group',
-    title: 'CollapsibleGroup',
-    group: DocGroup.overlays,
-    description:
-        'Several collapsibles sharing a section, optionally '
-        'one-open-at-a-time.',
-    upstream: 'CollapsibleGroup',
-    upstreamPath: '/components/CollapsibleGroup',
-  ),
-  stubPage(
-    id: 'context_menu',
-    title: 'ContextMenu',
-    group: DocGroup.overlays,
-    description: 'A menu raised by a secondary click, at the pointer.',
-    upstream: 'ContextMenu / ContextMenuItem',
-    upstreamPath: '/components/ContextMenu',
-  ),
-  stubPage(
     id: 'app_shell',
     title: 'AppShell',
     group: DocGroup.appShell,
