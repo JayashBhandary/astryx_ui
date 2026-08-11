@@ -2,7 +2,12 @@ import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// The status indicators.
-final List<DocPage> feedbackPages = <DocPage>[_spinner, _skeleton, _progress];
+final List<DocPage> feedbackPages = <DocPage>[
+  _spinner,
+  _skeleton,
+  _progress,
+  _statusDot,
+];
 
 const String _group = DocGroup.status;
 
@@ -254,3 +259,131 @@ final List<DocProp> _progressProps = <DocProp>[
     defaultValue: 'true',
   ),
 ];
+
+const DocPage _statusDot = DocPage(
+  id: 'status_dot',
+  title: 'AstryxStatusDot',
+  group: _group,
+  description:
+      'A small coloured dot standing for a state, always paired with '
+      'text.',
+  source: 'lib/src/components/feedback/status_dot.dart',
+  upstream: 'StatusDot',
+  upstreamPath: '/components/StatusDot',
+  blocks: <DocBlock>[
+    DocProse(
+      'An 8px circle in one of five semantic colours. It exists to make a '
+      'state **scannable** down a column of rows — not to state it.',
+    ),
+    DocExample('status_dot_demo', align: DocExampleAlign.start),
+    DocHeading('Usage'),
+    DocCode('''
+AstryxHStack(
+  gap: AstryxSpacingToken.spacing2,
+  children: const <Widget>[
+    AstryxStatusDot(AstryxStatusDotVariant.success, label: 'Online'),
+    AstryxText('api-gateway'),
+  ],
+)'''),
+    DocCallout.accessibility(
+      "Never the only thing that says what the state is. Upstream's own "
+      'description of this component is "always paired with text", and that is '
+      'the whole rule: colour alone excludes anybody who cannot tell green '
+      'from amber, and a dot is too small to carry a shape or an icon as well. '
+      '`label` is required and keeps the state readable to a screen reader — '
+      'but a sighted reader who cannot see the hue needs the words on the '
+      'screen. See [Colour](color).',
+    ),
+    DocHeading('Variants'),
+    DocTable(
+      headers: <String>['Variant', 'Token', 'For'],
+      rows: <List<String>>[
+        <String>[
+          '`success`',
+          '`--color-success`',
+          'Healthy, online, passing.',
+        ],
+        <String>[
+          '`warning`',
+          '`--color-warning`',
+          'Degraded, nearly out — needs attention but is not down.',
+        ],
+        <String>['`error`', '`--color-error`', 'Down, failed, rejected.'],
+        <String>[
+          '`accent`',
+          '`--color-accent`',
+          'In progress, or "this one" — a state the accent describes better '
+              'than a status colour does.',
+        ],
+        <String>[
+          '`neutral`',
+          '`--color-icon-secondary`',
+          'Off, idle, unknown. Deliberately not the disabled grey: an unknown '
+              'state is a state.',
+        ],
+      ],
+    ),
+    DocHeading('Where it earns its keep'),
+    DocProse(
+      'A list or a table whose rows already say what the state is. The dot '
+      'adds nothing to a single line of prose, and everything to forty rows '
+      'somebody is looking down.',
+    ),
+    DocExample('status_dot_in_place', align: DocExampleAlign.stretch),
+    DocProse(
+      '`pulsing` says the state is live rather than settled — a deploy in '
+      'flight, a stream connected. Under reduced motion the dot holds still at '
+      'full opacity rather than disappearing, which is the same rule the '
+      '[spinner](spinner) and the [progress bar](progress_bar) follow: the '
+      'state stays legible without the movement.',
+    ),
+    DocProse(
+      '`tooltip` explains a state a word cannot. It is not a substitute for '
+      '`label`, and not a substitute for the text beside the dot — a third of '
+      'users have no hover at all. See [Density](density).',
+    ),
+    DocHeading('Or a badge'),
+    DocProse(
+      '[AstryxBadge](badge) carries its own text and can stand alone; a dot '
+      'cannot. Reach for a dot when the words are already there — a table '
+      'cell, a list row, a header — and a badge when they are not. A dot beside a '
+      'badge saying the same thing is one of them too many.',
+    ),
+    DocCallout.note(
+      "Upstream's `neutral` theme nudges this component's success, warning "
+      'and error fills through a per-component style override, and it is '
+      'transcribed in `lib/src/theme/themes/neutral.dart`. Nothing in this '
+      'port reads those maps yet — every widget resolves the plain token — so '
+      'the dot is a shade off upstream in that one theme. It is the same gap '
+      'for `badge`, `banner`, `switch` and `progressbar`.',
+    ),
+    DocApi('AstryxStatusDot', <DocProp>[
+      DocProp(
+        'variant',
+        'AstryxStatusDotVariant',
+        'What the dot means, and therefore its colour. Positional.',
+        required: true,
+      ),
+      DocProp(
+        'label',
+        'String',
+        "What the state is, in words. The dot's accessible name.",
+        required: true,
+      ),
+      DocProp(
+        'pulsing',
+        'bool',
+        'Whether the dot breathes, to say the state is live. Honours reduced '
+            'motion.',
+        defaultValue: 'false',
+      ),
+      DocProp('tooltip', 'String?', 'Hover text explaining the state.'),
+    ]),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[AstryxBadge](badge) — a state that carries its own text.',
+      '[AstryxBanner](banner) — a state that needs a sentence and an action.',
+      '[Colour](color) — why a categorical palette is never severity.',
+    ]),
+  ],
+);

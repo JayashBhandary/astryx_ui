@@ -197,16 +197,27 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxCenter` | Centres a child, with token padding and a measure. | `references/layout.md` |
 | `AstryxDivider` | A rule between sections, optionally labelled. | `references/layout.md` |
 | `AstryxIcon` | A glyph named semantically and resolved through the theme. | `references/layout.md` |
+| `AstryxVisuallyHidden` | Content present for a screen reader and absent from the screen. | `references/layout.md` |
 | `AstryxButton` | A labelled action, in four levels of prominence. | `references/actions.md` |
 | `AstryxIconButton` | A square button holding a glyph instead of words. | `references/actions.md` |
 | `AstryxButtonGroup` | Joins related actions into one control, or spaces them as a set. | `references/actions.md` |
+| `AstryxToggleButton` | A button that stays pressed — a setting, not an action. | `references/actions.md` |
+| `AstryxToggleButtonGroup` | Toggle buttons as one control — single or multiple selection. | `references/actions.md` |
 | `AstryxField` | Gives any control a label, a description, a required marker and a validation message. | `references/forms.md` |
 | `AstryxTextInput` | A single-line or multi-line text field, with validation. | `references/forms.md` |
 | `AstryxTextArea` | A multi-line text field that grows with its content. | `references/forms.md` |
 | `AstryxCheckbox` | A two-state or three-state checkbox with a required label. | `references/forms.md` |
+| `AstryxCheckboxList` | A group of checkboxes sharing one label and one validation state. | `references/forms.md` |
 | `AstryxRadioList` | One choice out of several, as an ARIA radio group. | `references/forms.md` |
 | `AstryxSwitch` | A setting that takes effect the moment it is flipped. | `references/forms.md` |
 | `AstryxSelector` | A dropdown that picks one value, with optional search. | `references/forms.md` |
+| `AstryxNumberInput` | A numeric field with steppers, a range and unit text. | `references/forms.md` |
+| `AstryxFileInput` | A file field: the chooser, the chosen list, and the limits. | `references/forms.md` |
+| `AstryxSlider` | A value, or a range, chosen by dragging along a track. | `references/forms.md` |
+| `AstryxMultiSelector` | A selector that keeps several choices, shown as tokens. | `references/forms.md` |
+| `AstryxComplexSelector` | A selector with a trigger this package draws and a surface you draw. | `references/forms.md` |
+| `AstryxInputGroup` | Adjacent inputs and affixes joined into one bordered control. | `references/forms.md` |
+| `AstryxFormLayout` | The column and label geometry a form’s fields share. | `references/forms.md` |
 | `AstryxSpinner` | An indeterminate wait, in three sizes. | `references/status.md` |
 | `AstryxSkeleton` | A placeholder in the shape of the content that is coming. | `references/status.md` |
 | `AstryxProgressBar` | A determinate or indeterminate bar, with an announced label. | `references/status.md` |
@@ -259,6 +270,9 @@ Open the reference before writing a component you have not written before. Each 
 | Density | One widget set that is honest on a mouse and on a thumb. | `references/guides.md` |
 | Right-to-left | Logical throughout, so RTL is a `Directionality` and nothing more. | `references/guides.md` |
 | Accessibility | The rules the whole widget set is built to, in one place. | `references/guides.md` |
+| Migration | Coming from Material or Cupertino: what maps, what does not, and what to stop doing. | `references/guides.md` |
+| Working with AI | The generated agent skill, what it contains, and how to keep it current. | `references/guides.md` |
+| Themes | The eight themes side by side, and the same components rendered in each. | `references/guides.md` |
 
 ## All references
 

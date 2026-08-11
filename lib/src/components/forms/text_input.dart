@@ -354,7 +354,13 @@ class _AstryxTextInputState extends State<AstryxTextInput> {
       onTap: () => _focusNode.requestFocus(),
       leading: widget.leading,
       trailing: _buildTrailing(context, status, enabled, l10n),
-      child: content,
+      // Only the editable is excluded, not the whole container. Excluding the
+      // container took the `leading` and `trailing` slots with it — so the
+      // clear button announced as nothing at all, and a control placed there by
+      // a caller (`AstryxNumberInput`'s steppers) was unreachable to a screen
+      // reader while staying perfectly clickable. The slots are content beside
+      // the field, not part of it.
+      child: ExcludeSemantics(child: content),
     );
 
     final label = widget.label ?? scope?.label;
@@ -374,7 +380,7 @@ class _AstryxTextInputState extends State<AstryxTextInput> {
       validationResult: status?.type == AstryxFieldStatusType.error
           ? SemanticsValidationResult.invalid
           : SemanticsValidationResult.none,
-      child: ExcludeSemantics(child: container),
+      child: container,
     );
 
     if (widget.label == null) {

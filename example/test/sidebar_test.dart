@@ -86,7 +86,13 @@ void main() {
   testWidgets('exactly the visible placeholders are badged', (tester) async {
     final controller = await pumpDocs(tester);
 
-    final placeholder = docPages.firstWhere((page) => !page.isWritten);
+    // A `planned` page specifically, not merely an unwritten one: `Getting
+    // started` holds three `notPlanned` placeholders and no `planned` ones, so
+    // opening the first unwritten page's group can open a group with nothing to
+    // count.
+    final placeholder = docPages.firstWhere(
+      (page) => page.status == DocStatus.planned,
+    );
     controller.writtenOnly = false;
     await ensureOpen(tester, controller, placeholder.group);
 

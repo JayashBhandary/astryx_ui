@@ -26,6 +26,8 @@ import 'package:example/examples/divider_examples.dart';
 import 'package:example/examples/dropdown_menu_examples.dart';
 import 'package:example/examples/elevation_examples.dart';
 import 'package:example/examples/field_examples.dart';
+import 'package:example/examples/forms_advanced_examples.dart';
+import 'package:example/examples/forms_group_examples.dart';
 import 'package:example/examples/grid_examples.dart';
 import 'package:example/examples/heading_examples.dart';
 import 'package:example/examples/icon_button_examples.dart';
@@ -43,6 +45,7 @@ import 'package:example/examples/skeleton_examples.dart';
 import 'package:example/examples/spacing_examples.dart';
 import 'package:example/examples/spinner_examples.dart';
 import 'package:example/examples/stack_examples.dart';
+import 'package:example/examples/status_dot_examples.dart';
 import 'package:example/examples/styling_examples.dart';
 import 'package:example/examples/switch_examples.dart';
 import 'package:example/examples/tab_list_examples.dart';
@@ -54,10 +57,13 @@ import 'package:example/examples/template_settings_examples.dart';
 import 'package:example/examples/text_area_examples.dart';
 import 'package:example/examples/text_examples.dart';
 import 'package:example/examples/text_input_examples.dart';
+import 'package:example/examples/themes_examples.dart';
 import 'package:example/examples/theming_examples.dart';
 import 'package:example/examples/toast_examples.dart';
+import 'package:example/examples/toggle_button_examples.dart';
 import 'package:example/examples/tooltip_examples.dart';
 import 'package:example/examples/typography_examples.dart';
+import 'package:example/examples/visually_hidden_examples.dart';
 
 /// Every example's widget, keyed by its region id.
 final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
@@ -122,6 +128,22 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'field_scope': (_) => const FieldScopeExample(),
   'field_markers': (_) => const FieldMarkersExample(),
   'field_statuses': (_) => const FieldStatusesExample(),
+  'form_layout_directions': (_) => const FormLayoutDirectionsExample(),
+  'form_layout_labels': (_) => const FormLayoutLabelsExample(),
+  'input_group_demo': (_) => const InputGroupDemoExample(),
+  'input_group_status': (_) => const InputGroupStatusExample(),
+  'slider_demo': (_) => const SliderDemoExample(),
+  'slider_range': (_) => const SliderRangeExample(),
+  'multi_selector_demo': (_) => const MultiSelectorDemoExample(),
+  'multi_selector_count': (_) => const MultiSelectorCountExample(),
+  'complex_selector_demo': (_) => const ComplexSelectorDemoExample(),
+  'checkbox_list_demo': (_) => const CheckboxListDemoExample(),
+  'checkbox_list_density': (_) => const CheckboxListDensityExample(),
+  'checkbox_list_status': (_) => const CheckboxListStatusExample(),
+  'number_input_demo': (_) => const NumberInputDemoExample(),
+  'number_input_range': (_) => const NumberInputRangeExample(),
+  'file_input_demo': (_) => const FileInputDemoExample(),
+  'file_input_dropzone': (_) => const FileInputDropzoneExample(),
   'grid_demo': (_) => const GridDemoExample(),
   'grid_responsive': (_) => const GridResponsiveExample(),
   'grid_repeat': (_) => const GridRepeatExample(),
@@ -181,6 +203,8 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'stack_align': (_) => const StackAlignExample(),
   'stack_wrap': (_) => const StackWrapExample(),
   'stack_nested': (_) => const StackNestedExample(),
+  'status_dot_demo': (_) => const StatusDotDemoExample(),
+  'status_dot_in_place': (_) => const StatusDotInPlaceExample(),
   'styling_scopes': (_) => const StylingScopesExample(),
   'switch_demo': (_) => const SwitchDemoExample(),
   'switch_settings_list': (_) => const SwitchSettingsListExample(),
@@ -229,6 +253,10 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'text_input_formatters': (_) => const TextInputFormattersExample(),
   'text_input_states': (_) => const TextInputStatesExample(),
   'text_input_multiline': (_) => const TextInputMultilineExample(),
+  'themes_gallery': (_) => const ThemesGalleryExample(),
+  'themes_light_dark': (_) => const ThemesLightDarkExample(),
+  'themes_swatches': (_) => const ThemesSwatchesExample(),
+  'themes_components': (_) => const ThemesComponentsExample(),
   'theming_themes': (_) => const ThemingThemesExample(),
   'theming_modes': (_) => const ThemingModesExample(),
   'theming_tokens': (_) => const ThemingTokensExample(),
@@ -241,6 +269,12 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'toast_action': (_) => const ToastActionExample(),
   'toast_duration': (_) => const ToastDurationExample(),
   'toast_queue': (_) => const ToastQueueExample(),
+  'toggle_button_demo': (_) => const ToggleButtonDemoExample(),
+  'toggle_button_icon_only': (_) => const ToggleButtonIconOnlyExample(),
+  'toggle_button_group_single': (_) => const ToggleButtonGroupSingleExample(),
+  'toggle_button_group_multiple': (_) => const ToggleButtonGroupMultipleExample(),
+  'toggle_button_group_vertical': (_) => const ToggleButtonGroupVerticalExample(),
+  'toggle_button_states': (_) => const ToggleButtonStatesExample(),
   'tooltip_demo': (_) => const TooltipDemoExample(),
   'tooltip_sides': (_) => const TooltipSidesExample(),
   'tooltip_timing': (_) => const TooltipTimingExample(),
@@ -248,4 +282,6 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'tooltip_wrapping': (_) => const TooltipWrappingExample(),
   'typography_roles': (_) => const TypographyRolesExample(),
   'typography_in_context': (_) => const TypographyInContextExample(),
+  'visually_hidden_live': (_) => const VisuallyHiddenLiveExample(),
+  'visually_hidden_space': (_) => const VisuallyHiddenSpaceExample(),
 };

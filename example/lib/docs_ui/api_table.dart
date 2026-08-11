@@ -27,7 +27,12 @@ class DocsApiTable extends StatelessWidget {
         AstryxTable<DocProp>(
           label: '${api.title} properties',
           rows: api.props,
-          keyOf: (row) => row.name,
+          // Position, not name. A property name is *not* unique on a class with
+          // more than one constructor — `AstryxToggleButtonGroup` documents an
+          // `onChanged` for `.single` and another for `.multiple` — and two
+          // rows claiming one key is a duplicate-`GlobalKey` crash rather than
+          // a rendering nuisance.
+          keyOf: (row) => '${api.props.indexOf(row)}:${row.name}',
           minWidth: 560,
           columns: <AstryxTableColumn<DocProp>>[
             AstryxTableColumn<DocProp>(

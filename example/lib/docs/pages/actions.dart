@@ -1,11 +1,13 @@
 import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
-/// The action components: the two buttons and the group that joins them.
+/// The action components: the buttons, and the groups that gather them.
 final List<DocPage> actionPages = <DocPage>[
   _button,
   _iconButton,
   _buttonGroup,
+  _toggleButton,
+  _toggleButtonGroup,
 ];
 
 const String _group = DocGroup.actions;
@@ -474,5 +476,420 @@ final List<DocProp> _buttonGroupScopeProps = <DocProp>[
     'buttonTheme',
     'AstryxButtonTheme?',
     'Position-dependent visual overrides — chiefly the corner radii.',
+  ),
+];
+
+final DocPage _toggleButton = DocPage(
+  id: 'toggle_button',
+  title: 'AstryxToggleButton',
+  group: _group,
+  description: 'A button that stays pressed — a setting, not an action.',
+  source: 'lib/src/components/action/toggle_button.dart',
+  upstream: 'ToggleButton',
+  upstreamPath: '/components/ToggleButton',
+  blocks: <DocBlock>[
+    const DocProse(
+      'A toolbar’s **Bold**, a filter that stays on, a list-or-grid switch. It '
+      'looks like a button and behaves like a setting: pressing it does not '
+      'start something, it changes what is true.',
+    ),
+    const DocExample('toggle_button_demo', align: DocExampleAlign.start),
+    const DocHeading('Usage'),
+    const DocCode('''
+AstryxToggleButton(
+  label: 'Only my issues',
+  icon: const AstryxIcon(AstryxIconName.funnel),
+  pressed: _pressed,
+  onChanged: (value) => setState(() => _pressed = value),
+)'''),
+    const DocProse(
+      'The button holds nothing. `onChanged` reports the state it should move '
+      'to, and the caller owns the boolean — the same contract as '
+      '[AstryxCheckbox](checkbox) and [AstryxSwitch](switch). Upstream calls '
+      'this `onPressedChange`; it is `onChanged` here so that every stateful '
+      'control in the package answers to one name.',
+    ),
+    const DocCallout.note(
+      'There is no `variant`. A toggle is always a ghost button, because the '
+      'pressed fill *is* its visual language — a filled variant would have '
+      'nothing left to say when it went on.',
+    ),
+    const DocHeading('Which widget, though'),
+    const DocTable(
+      headers: <String>['Reach for', 'When'],
+      rows: <List<String>>[
+        <String>[
+          '`AstryxToggleButton`',
+          'A toolbar control, a formatting mark, a filter chip that stays '
+              'down. It lives beside other buttons and looks like one.',
+        ],
+        <String>[
+          '[AstryxSwitch](switch)',
+          'A setting in a form. It is labelled, announced as a switch, and '
+              'reads as configuration rather than as a control you press.',
+        ],
+        <String>[
+          '[AstryxCheckbox](checkbox)',
+          'A value being selected, especially in a list or a set of options.',
+        ],
+        <String>[
+          '[AstryxTabList](tab_list)',
+          'Switching what a panel shows. Tabs, not toggles — a tab strip '
+              'always has exactly one selection.',
+        ],
+      ],
+    ),
+    const DocHeading('Icon only'),
+    const DocProse(
+      'Upstream calls this `isIconOnly`; here it is `labelHidden`, the name '
+      'the form controls already use for "keep the name, drop the text". The '
+      'button squares off and — unless you pass a `tooltip` of your own — '
+      'takes the label as its tooltip, so a reader who does not know the glyph '
+      'still has somewhere to look.',
+    ),
+    const DocExample('toggle_button_icon_only'),
+    const DocCode('''
+AstryxToggleButton(
+  label: 'Watch this repository',
+  labelHidden: true,
+  icon: const AstryxIcon(AstryxIconName.eyeSlash),
+  pressedIcon: const AstryxIcon(AstryxIconName.check),
+  pressed: _watching,
+  onChanged: (value) => setState(() => _watching = value),
+)'''),
+    const DocProse(
+      '`pressedIcon` swaps the glyph while the button is on — an outline '
+      'becoming a fill, upstream’s own use for it. It falls back to `icon`, so '
+      'a toggle with one glyph needs nothing extra. Colour a pressed glyph by '
+      'passing an already-coloured widget.',
+    ),
+    const DocHeading('States'),
+    const DocExample('toggle_button_states', align: DocExampleAlign.stretch),
+    const DocProse(
+      'Disabled and loading both refuse the press; loading also announces the '
+      'wait and keeps the button’s width, so a toolbar does not jump. The '
+      'pressed fill is `--color-overlay-pressed` over the transparent ghost '
+      'background.',
+    ),
+    const DocCallout.note(
+      'A pressed toggle does not change under a pointer. Upstream applies the '
+      'pressed fill unconditionally, which overrides its own hover tint, and '
+      'that is reproduced here — two overlapping "this one is active" signals '
+      'read worse than one that holds still. Focus and press feedback are '
+      'unaffected.',
+    ),
+    const DocHeading('Accessibility'),
+    const DocList(<String>[
+      'The label is **required**, and is the accessible name whether it is '
+          'painted or not.',
+      'A toggle reports a **selected** state; a plain button has no such state '
+          'at all, so nothing announces "not selected" about a Save button. '
+          'Upstream spells it `aria-pressed`; Flutter’s nearest flag is '
+          '`selected`, which is what `SegmentedButton` uses in the framework '
+          'itself.',
+      'Enter and Space activate it, and the focus ring lands on the painted '
+          'bounds while the touch target grows underneath. See '
+          '[Density](density).',
+      'The pressed state is never colour alone: the label also shifts to '
+          'semibold.',
+    ]),
+    const DocCallout.warning(
+      'Windows High Contrast is not covered. Upstream repaints the pressed '
+      'state with the platform `Highlight` colours under `forced-colors`, and '
+      'Flutter has no equivalent — `MediaQuery.highContrast` is a preference, '
+      'not a forced palette. On a forced-colours desktop the pressed fill may '
+      'be dropped, and the weight shift is what remains.',
+    ),
+    const DocHeading('Two things upstream has that this does not'),
+    const DocList(<String>[
+      '**`pressedChangeAction`.** Upstream takes an async callback, runs it in '
+          'a React transition, and shows an optimistic pressed state with a '
+          'spinner until it settles. There is no transition model to port it '
+          'onto; drive `pressed` and `loading` yourself, which is how every '
+          'other control in this package reports work in flight.',
+      '**`children`.** Upstream lets visible content replace the label. Here '
+          'the label is the text, as on [AstryxButton](button) — one way to '
+          'name a button rather than two.',
+    ]),
+    DocApi('AstryxToggleButton', _toggleButtonProps),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[AstryxToggleButtonGroup](toggle_button_group) — several of these as '
+          'one control.',
+      '[AstryxButton](button) — the action that does not stay pressed.',
+      '[AstryxSwitch](switch) — the setting that does not look like a button.',
+    ]),
+  ],
+);
+
+final List<DocProp> _toggleButtonProps = <DocProp>[
+  const DocProp(
+    'label',
+    'String',
+    'The visible text, and the accessible name.',
+    required: true,
+  ),
+  const DocProp(
+    'pressed',
+    'bool',
+    'Whether the button is on. Ignored inside a group.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'onChanged',
+    'ValueChanged<bool>?',
+    'Called with the state to move to. Null makes the button inert; ignored '
+        'inside a group.',
+  ),
+  const DocProp(
+    'value',
+    'String?',
+    'This button’s identity inside an `AstryxToggleButtonGroup`. Required '
+        'there, meaningless outside.',
+  ),
+  const DocProp('icon', 'Widget?', 'Content before the label.'),
+  const DocProp(
+    'pressedIcon',
+    'Widget?',
+    'The glyph shown while pressed. Falls back to `icon`.',
+  ),
+  const DocProp(
+    'labelHidden',
+    'bool',
+    'Keeps the label as the accessible name without painting it: the button '
+        'squares off and tooltips itself.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'size',
+    'AstryxButtonSize?',
+    'The control height. Null takes the group’s, then the inherited size.',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether the button accepts interaction. **Ignored inside a group**, which '
+        'decides for its children.',
+    defaultValue: 'true',
+  ),
+  const DocProp(
+    'loading',
+    'bool',
+    'Whether work is in flight. Suppresses activation and shows a spinner.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'tooltip',
+    'String?',
+    'Hover text. Defaults to `label` when `labelHidden`.',
+  ),
+  const DocProp('focusNode', 'FocusNode?', 'The focus node, if you own one.'),
+  const DocProp(
+    'autofocus',
+    'bool',
+    'Whether to take focus when first built.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'theme',
+    'AstryxButtonTheme?',
+    'Visual overrides, merged over `AstryxThemeData.button`.',
+  ),
+];
+
+final DocPage _toggleButtonGroup = DocPage(
+  id: 'toggle_button_group',
+  title: 'AstryxToggleButtonGroup',
+  group: _group,
+  description: 'Toggle buttons as one control — single or multiple selection.',
+  source: 'lib/src/components/action/toggle_button.dart',
+  upstream: 'ToggleButtonGroup',
+  upstreamPath: '/components/ToggleButtonGroup',
+  blocks: <DocBlock>[
+    const DocProse(
+      'The group owns the selection, so its children carry a `value` rather '
+      'than a boolean. Which may be on at once is the constructor’s job, '
+      'not a flag: `.single` for at most one, `.multiple` for any number.',
+    ),
+    const DocHeading('At most one'),
+    const DocExample(
+      'toggle_button_group_single',
+      align: DocExampleAlign.start,
+    ),
+    const DocCode('''
+AstryxToggleButtonGroup.single(
+  label: 'View mode',
+  value: _view,
+  onChanged: (value) => setState(() => _view = value),
+  children: const <Widget>[
+    AstryxToggleButton(value: 'list', label: 'List'),
+    AstryxToggleButton(value: 'grid', label: 'Grid'),
+    AstryxToggleButton(value: 'board', label: 'Board'),
+  ],
+)'''),
+    const DocProse(
+      'Pressing the button that is already on **clears** the group, and '
+      '`onChanged` receives null. That is upstream’s behaviour and the reason '
+      'the value is nullable: "none" stays reachable. If your screen cannot '
+      'represent none, a [tab list](tab_list) is the honest control.',
+    ),
+    const DocHeading('Any number'),
+    const DocExample(
+      'toggle_button_group_multiple',
+      align: DocExampleAlign.start,
+    ),
+    const DocCode('''
+AstryxToggleButtonGroup.multiple(
+  label: 'Filter by status',
+  values: _statuses,
+  onChanged: (values) => setState(() => _statuses = values),
+  children: const <Widget>[
+    AstryxToggleButton(value: 'passing', label: 'Passing'),
+    AstryxToggleButton(value: 'failing', label: 'Failing'),
+    AstryxToggleButton(value: 'queued', label: 'Queued'),
+  ],
+)'''),
+    const DocProse(
+      'Each change hands you a **new set**; the group never edits the one it '
+      'was given. Upstream splits these two modes with a discriminated union '
+      'on a `type` prop — two named constructors are how Dart says the same '
+      'thing, and they make the wrong `onChanged` signature a compile error '
+      'rather than a runtime surprise.',
+    ),
+    const DocHeading('Vertical'),
+    const DocExample('toggle_button_group_vertical'),
+    const DocProse(
+      'A vertical group stretches its buttons to one width, so labels of '
+      'different lengths still line up. `size` cascades to every child that '
+      'does not set its own.',
+    ),
+    const DocHeading('Not a segmented control'),
+    const DocProse(
+      'The buttons are spaced by `--spacing-1` rather than joined, and each is '
+      'its own tab stop — a set of related controls, not one widget with an '
+      'internal cursor. For a joined row of *actions* see '
+      '[AstryxButtonGroup](button_group); for choosing what a panel shows, '
+      '[AstryxTabList](tab_list), which has roving focus and a single stop.',
+    ),
+    const DocCallout.accessibility(
+      'The group’s `label` is required: it is the accessible name of the set, '
+      'and without it a reader meets three unrelated buttons. Each child keeps '
+      'its own node and its own selected state.',
+    ),
+    const DocCallout.warning(
+      'Inside a group, a child’s own `enabled` is **ignored** — the group '
+      'decides. Upstream does the same (`group?.isDisabled ?? isDisabled`), so '
+      'it is reproduced and pinned by a test rather than quietly improved. '
+      'Disable the group, not its children. A grouped button without a `value` '
+      'asserts in debug, because the group would have no way to know which one '
+      'is on.',
+    ),
+    DocApi('AstryxToggleButtonGroup', _toggleButtonGroupProps),
+    DocApi(
+      'AstryxToggleButtonGroupScope',
+      _toggleButtonGroupScopeProps,
+      description:
+          'The inherited widget the group installs, and the buttons read. The '
+          'port of upstream’s `ToggleButtonGroupContext` — reach for it only '
+          'when building a control of your own that has to know what is '
+          'selected.',
+    ),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[AstryxToggleButton](toggle_button) — the child, and the states it '
+          'paints.',
+      '[AstryxButtonGroup](button_group) — actions joined into one shape.',
+      '[AstryxRadioList](radio_list) — one choice from a set, as a form '
+          'control.',
+    ]),
+  ],
+);
+
+final List<DocProp> _toggleButtonGroupProps = <DocProp>[
+  const DocProp(
+    'label',
+    'String',
+    'The group’s accessible name — "View mode", "Text formatting".',
+    required: true,
+  ),
+  const DocProp(
+    'value',
+    'String?',
+    '`.single` only: the value that is on, or null for none.',
+    required: true,
+  ),
+  const DocProp(
+    'onChanged',
+    'ValueChanged<String?>',
+    '`.single` only: the new value, or null when the group has been cleared.',
+    required: true,
+  ),
+  const DocProp(
+    'values',
+    'Set<String>',
+    '`.multiple` only: the values that are on.',
+    required: true,
+  ),
+  const DocProp(
+    'onChanged',
+    'ValueChanged<Set<String>>',
+    '`.multiple` only: a new set, each time.',
+    required: true,
+  ),
+  const DocProp(
+    'children',
+    'List<Widget>',
+    'The toggle buttons, in order. Each needs a `value`.',
+    required: true,
+  ),
+  const DocProp(
+    'axis',
+    'Axis',
+    'Whether the group runs horizontally or vertically.',
+    defaultValue: 'Axis.horizontal',
+  ),
+  const DocProp(
+    'size',
+    'AstryxButtonSize?',
+    'The size every child takes unless it sets its own.',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether the whole group accepts interaction. The only place to disable a '
+        'grouped toggle.',
+    defaultValue: 'true',
+  ),
+  const DocProp(
+    'gap',
+    'AstryxSpacingToken?',
+    'The space between the buttons.',
+    defaultValue: 'AstryxSpacingToken.spacing1',
+  ),
+];
+
+final List<DocProp> _toggleButtonGroupScopeProps = <DocProp>[
+  const DocProp(
+    'selectedValues',
+    'Set<String>',
+    'The values currently on.',
+    required: true,
+  ),
+  const DocProp(
+    'toggle',
+    'void Function(String value)',
+    'Reports that a button’s value has been pressed.',
+    required: true,
+  ),
+  const DocProp(
+    'size',
+    'AstryxButtonSize?',
+    'The size children inherit.',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether the group accepts interaction.',
+    defaultValue: 'true',
   ),
 ];

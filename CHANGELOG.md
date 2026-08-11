@@ -7,6 +7,232 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+Ten new components, and the documentation for them. Two existing widgets
+changed — both fixes, both in **Fixed**.
+
+### Added
+
+- **`AstryxSlider`**, with `AstryxSlider.range`, `AstryxSliderMark`,
+  `AstryxSliderOrientation` and `AstryxSliderValueDisplay` — ported from
+  `packages/core/src/Slider/`. `min`/`max`/`step`, marks, `formatValue`, both
+  orientations, `onChanged` during a drag and `onChangeEnd` when it settles. A
+  range keeps its thumbs in order and no closer than `minStepsBetweenThumbs`
+  steps; each thumb is its own tab stop and its own announced `slider` carrying
+  the *formatted* value, plus increase and decrease actions for a switch or
+  voice user.
+  - Upstream is a native `input[type=range]`, so the keyboard map is written out
+    here: arrows a step (mirrored under RTL), Page keys ten, Home and End the
+    ends. A keyboard move fires `onChangeEnd` too, since there is no drag to
+    end.
+  - `valueDisplay: tooltip` shows nothing yet — upstream gets that bubble from
+    the browser on hover. `text` is the visible-to-everyone alternative and is
+    what the page demonstrates.
+- **`AstryxMultiSelector`**, with `AstryxMultiSelectorTriggerDisplay` — the same
+  `AstryxSelectorEntry` options as `AstryxSelector`, because upstream shares
+  those types between the two as well. A `Set<T>` value, checkbox rows, and a
+  list that **stays open** as options are ticked. `showSearch` filters and drops
+  a heading whose options all filtered away; `showSelectAll` ticks everything
+  and clears it when everything is ticked; the trigger shows tokens up to
+  `maxBadges` then "+n more", or a count. The field announces *which* options
+  are chosen rather than how many.
+- **`AstryxComplexSelector`**, with `AstryxComplexSelectorState` — the headless
+  half of upstream's selector family: this package draws the field, the trigger,
+  the overlay, the focus trap and the barrier, and `surfaceBuilder` draws the
+  contents. For a calendar, a swatch grid, a two-pane picker. Reporting a value
+  deliberately does not close the surface, so a multi-step picker can stay open;
+  upstream's four-argument render prop arrives as one state object.
+- **`AstryxInputGroup`**, with `AstryxInputGroupText`,
+  `AstryxInputGroupPosition` and `AstryxInputGroupScope` — inputs and affixes
+  joined into one bordered control. The group carries the label, description and
+  status for the row; each child learns its position from the scope and squares
+  the corners that meet a neighbour, directionally, so a group mirrors under RTL
+  without being told which way it runs. `AstryxInputContainer` reads that scope,
+  which is how a plain `AstryxTextInput` joins a group without being changed.
+- **`AstryxFormLayout`**, with `AstryxFormLayoutDirection` and
+  `AstryxFormLayoutScope` — `vertical`, `horizontal` (equal columns) and
+  `horizontalLabels`. The last one is the only one that does more than space
+  fields out: `AstryxField` reads the scope and moves its label and description
+  beside the control, collapsing back to a stack below upstream's own 480px.
+  Upstream sizes that column to its widest label, which CSS grid does for free;
+  `labelWidth` is the honest Flutter version rather than laying every label out
+  twice.
+- **`AstryxCheckboxList`**, with `AstryxCheckboxOption` and
+  `AstryxCheckboxListDensity` — several independent choices under one label, one
+  description and one validation state. Generic over the value type like
+  `AstryxRadioList`, rather than upstream's `string[]`. Ported from
+  `packages/core/src/CheckboxList/`: the checked-row tint, `compact` and
+  `balanced` densities, optional dividers, per-row `description`, `trailing`,
+  `enabled` and `loading`, and a group-wide `readOnly` that does *not* dim.
+  - **Keyboarded as a checkbox group, not a radio group.** Every row is its own
+    tab stop and Space toggles the focused one — the opposite of
+    `AstryxRadioList`, whose whole group is one stop with the arrows moving
+    inside it. A checkbox list built on the radio pattern swallows Tab and traps
+    anyone using a keyboard, so a test pins the difference by counting
+    traversable stops in both.
+  - Upstream composes its own `List`/`ListItem`, which this port does not have.
+    The rows are `AstryxCheckbox`es in a tinted, inset container instead, and
+    the inset is paid whether a row is checked or not so nothing shifts sideways
+    as rows are ticked.
+- **`AstryxNumberInput`** — a numeric field over `AstryxTextInput`, ported from
+  `packages/core/src/NumberInput/`. `min`, `max`, `step`, `integerOnly`,
+  `units`, `showClear`, and a `num?` value so `integerOnly` yields `int`s and a
+  fractional step yields `double`s without a second widget. Commits on a
+  stepper, an arrow key, blur or Enter — never mid-keystroke.
+  - **Out-of-range typing is rejected, not clamped**, which is upstream's
+    `parseNumberInput` returning null rather than the nearest legal number. The
+    text reverts and the refusal is announced through a live region
+    (`AstryxVisuallyHidden`), because reverting in silence tells a screen-reader
+    user nothing — WCAG 3.3.1. Pressing a *stepper* does stop at the boundary,
+    as a browser's spinner does.
+  - Upstream is an `<input type="number">`, so three behaviours it gets from the
+    browser are written out here: the arrow keys stepping the value, the
+    steppers themselves (drawn rather than left to a UA hover affordance —
+    nothing important may live behind hover, and a thumb has no arrow keys), and
+    refusing letters as they are typed. The wheel-changes-a-focused-number
+    behaviour is deliberately **not** ported.
+- **`AstryxFileInput`**, with `AstryxFile`, `AstryxFilePicker`,
+  `AstryxFilePickRequest` and `AstryxFileInputMode` — the chooser, the chosen
+  list, and the limits, ported from `packages/core/src/FileInput/` including
+  `validateFiles` message for message and `formatFileSize` figure for figure.
+  `accept` matches an extension, a `type/*` family or an exact MIME type;
+  `maxSize` rejects; `maxFiles` truncates with a complaint; a caller's `status`
+  beats the field's own so a server rejection is not overwritten locally.
+  - **The dialog is a seam, not a feature.** Flutter ships no file picker and
+    this package depends on no plugins, so `onPick` asks the application to open
+    one — the same shape as `AstryxLinkDelegate`. `AstryxFile` is a description
+    (name, optional size and MIME type, plus an untouched `handle`) rather than
+    `dart:io`'s `File`, which does not exist on the web.
+  - A file of **unknown** size passes a `maxSize` check: a reticent picker is
+    not a large file.
+  - `dropzone` mode is a zone, not a drop target. External file drag-and-drop
+    needs a platform channel Flutter does not ship; the panel takes clicks,
+    taps and the keyboard, and the page says so.
+- Fourteen localised strings for the above, on `AstryxLocalizations`: the
+  stepper names, the rejected-number announcement, the file prompts and the four
+  file validation messages, and the multiple selector's count, tail,
+  select-all row and no-matches line.
+- **`AstryxToggleButton`** — a button with a sticky on state, for a toolbar
+  control or a filter that stays down rather than for an action. Ported from
+  upstream's `packages/core/src/ToggleButton/ToggleButton.tsx`: always a ghost
+  button, `--color-overlay-pressed` as the pressed fill, the label shifting to
+  semibold, `pressedIcon` for an outline-to-filled swap, and the pressed state
+  coming from the group when it is in one. Reports through `onChanged` like
+  every other stateful control here, not upstream's `onPressedChange`.
+  - The pressed label's **width is reserved** so a toolbar cannot shuffle
+    sideways as toggles are pressed. Upstream reserves it by rendering a second
+    hidden copy of the label at semibold; ported literally that leaks — every
+    toggle would answer `find.text('Bold')` twice, in your tests as well as
+    these — so the port measures with a `TextPainter` instead and renders one
+    `Text`. Same stable width, one node.
+  - Upstream's `isIconOnly` arrives as **`labelHidden`**, the name the form
+    controls already use for "keep the accessible name, drop the text". As
+    upstream does, it squares the button and takes the label as its tooltip.
+  - **Two upstream props are deliberately absent.** `pressedChangeAction` is a
+    React transition with an optimistic pressed state and no Flutter
+    counterpart — drive `pressed` and `loading` yourself, as with every other
+    control. `children` is not ported because the label is the text here, as on
+    `AstryxButton`.
+- **`AstryxToggleButtonGroup`**, with `AstryxToggleButtonGroupScope` — several
+  toggles acting as one control, the port of upstream's discriminated union on
+  `type`. Two named constructors instead: `.single` takes a `String?` and
+  clearing is reachable by pressing the button that is already on, `.multiple`
+  takes a `Set<String>` and hands back a new set each time. Dart makes the
+  wrong `onChanged` signature a compile error rather than a runtime surprise.
+  A child's own `enabled` is ignored inside a group, which is upstream's
+  behaviour (`group?.isDisabled ?? isDisabled`) reproduced and pinned rather
+  than quietly improved; a grouped button with no `value` asserts in debug.
+- Pages for both, in **Actions**, with six examples: a filter toggle, an
+  icon-only watch button with an icon swap, single and multiple groups, a
+  vertical group, and the four states side by side.
+- **The five remaining guide pages**, which had been placeholders since the
+  site was scaffolded. `Getting started` now holds no *Soon* badges at all;
+  the three that remain there are the deliberate `N/A` omissions.
+  - **Migration** — what maps from Material and Cupertino, and what actually
+    differs about each: `IconButton` requiring a name, a dialog being a widget
+    rather than a route, one radio *group* rather than a tile per option. Plus
+    the habits that survive a migration and quietly undo it, how two theme
+    systems behave in one tree, and an order of work that keeps the app
+    running throughout.
+  - **Working with AI** — the generated agent skill: installing it as a Claude
+    Code plugin, what each reference file holds, why it is generated rather
+    than written, and why a page that is not finished is never published to
+    it.
+  - **Themes** — the gallery upstream's `/themes` is, with the four new
+    examples below. Also what actually differs between the eight (accent,
+    type scale, corner radii, motion), that the named typefaces are not
+    bundled by either implementation, and that `gothic` renders the same in
+    both brightnesses because its tokens are single values rather than pairs.
+  - **Changelog** — this file, rendered.
+  - **Community** — where to report what, the fidelity rule that decides
+    whether a divergence is a bug, the loop for contributing a component, and
+    the checklist a component has to pass to be called finished.
+- **`AstryxVisuallyHidden` has a page.** It was badged *Soon* while the widget
+  had been exported since 0.0.1-dev — the placeholder was written from the
+  upstream sitemap and never rechecked against the package. The page leads with
+  the distinction the widget's own doc comment calls the most common false
+  friend in the port: upstream's `VisuallyHidden` both names controls and
+  announces changes, and only the second needs a widget here, because every
+  control in this package takes its accessible name as a required parameter.
+  Two examples: a live region announcing a character count, and proof that the
+  hidden child measures `Size.zero`.
+- `example/tool/gen_changelog.dart` — parses `CHANGELOG.md` into
+  `lib/docs/changelog.g.dart` as documentation blocks. The changelog stays a
+  single file at the repository root, where pub and GitHub look for it, and the
+  site compiles it rather than keeping a second copy somebody has to remember
+  to update.
+- Four examples in `example/lib/examples/themes_examples.dart`: all eight
+  themes side by side, each in both brightnesses, six colour tokens sampled
+  from inside each one, and the same four controls rendered eight times.
+- **Links that leave the site now open.** Every page carries them — the
+  upstream page it ports, the repository, the issue tracker — and until now
+  they were painted, underlined and inert, which reads as a failed click. The
+  documentation app installs an `AstryxLinkDelegate`, so they go through the
+  same seam an `AstryxButton(destination:)` uses; the web half is a conditional
+  import in the shape of `url_strategy.dart`, and off the web it declines
+  rather than guessing.
+
+### Changed
+
+- `AstryxButtonSurface` takes an optional `selected`, which the toggle button
+  passes and the other two buttons do not. Absent rather than false on a plain
+  action, so nothing announces "not selected" about a Save button. Upstream
+  spells it `aria-pressed`; Flutter's `toggled` flag is the switch's on/off, so
+  `selected` carries it — the mapping `SegmentedButton` uses in the framework
+  itself. Internal: `AstryxButtonSurface` is `@internal` and no call site
+  outside the package can pass it.
+- `gen_skill.dart` publishes every written page except `changelog` and
+  `community`. An agent gains nothing from the release history or from how to
+  file an issue, and the changelog alone would put every bullet of every
+  release into the reference file it opens to learn what a token is.
+- `sidebar_test.dart` picks a `planned` page rather than merely an unwritten
+  one for its badge count. `Getting started` no longer has a `planned` page,
+  and the old expression could open a group with nothing to count.
+
+### Fixed
+
+- **`AstryxInputGroup` exposed a latent layout fault in the affix.** Stretching
+  the joined row handed every child an infinite height, which the affix's own
+  minimum height then tried to honour and asserted on. The row lets each child
+  take the height its size token gives it instead. Found by the tests, not by a
+  consumer.
+- **`AstryxMultiSelector`'s clear button announced as nothing**, for the same
+  reason the file field's did an entry ago: an `ExcludeSemantics` around the
+  whole trigger. Removed before it shipped, and now pinned by a test that
+  reaches the button by name.
+- **`AstryxTextInput`'s `leading` and `trailing` slots were invisible to
+  assistive technology.** The whole input container sat inside an
+  `ExcludeSemantics`, which had been there to stop the editable announcing its
+  content twice — and took the slots with it. The clear button `showClear` draws
+  therefore announced as nothing at all while staying perfectly clickable, and
+  the same held for anything a caller put in either slot. Only the editable is
+  excluded now. Found while building `AstryxNumberInput`, whose steppers live in
+  that slot.
+- The documentation site's API tables keyed their rows by property name, so a
+  class documenting two constructors with a parameter of the same name — the
+  new group's `onChanged`, once per constructor — crashed the page with a
+  duplicate `GlobalKey`. Keyed by position now. No library code involved; it is
+  listed because the first legitimate content of that shape found it.
+
 ## [0.0.6-dev]
 
 Documentation and tooling only. No library code changed, so nothing here can

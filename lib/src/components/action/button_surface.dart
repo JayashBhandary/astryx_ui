@@ -35,6 +35,7 @@ class AstryxButtonSurface extends StatefulWidget {
     this.autofocus = false,
     this.squared = false,
     this.excludeChildSemantics = false,
+    this.selected,
   });
 
   /// The resolved visual values.
@@ -69,6 +70,17 @@ class AstryxButtonSurface extends StatefulWidget {
 
   /// Whether to hide the child's own semantics.
   final bool excludeChildSemantics;
+
+  /// Whether the button is in a sticky on state — `AstryxToggleButton`.
+  ///
+  /// Null for a button that has no such state, which is every plain action:
+  /// the flag is absent from the node rather than present and false, so a
+  /// screen reader does not announce "not selected" about a Save button.
+  ///
+  /// Upstream spells this `aria-pressed`. Flutter has no equivalent — its
+  /// `toggled` flag is the switch's on/off — so `selected` carries it, which is
+  /// what `SegmentedButton` does in the framework's own widgets.
+  final bool? selected;
 
   @override
   State<AstryxButtonSurface> createState() => _AstryxButtonSurfaceState();
@@ -127,6 +139,7 @@ class _AstryxButtonSurfaceState extends State<AstryxButtonSurface> {
       label: widget.semanticsLabel,
       enabled: _interactive,
       focusable: _interactive,
+      selected: widget.selected,
       // The action an assistive technology invokes. A screen reader activates
       // through this, not by synthesising a tap, so it must be wired even
       // though the GestureDetector below also handles presses.

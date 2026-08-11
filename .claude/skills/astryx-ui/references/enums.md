@@ -6,7 +6,7 @@
      Regenerate: cd example && dart run tool/gen_skill.dart
 -->
 
-Scraped from the package source, so this is what the analyser will accept. 61 public enums.
+Scraped from the package source, so this is what the analyser will accept. 68 public enums.
 
 | Enum | Values |
 | --- | --- |
@@ -15,6 +15,7 @@ Scraped from the package source, so this is what the analyser will accept. 61 pu
 | `AstryxButtonSize` | `sm`, `md`, `lg` |
 | `AstryxButtonVariant` | `primary`, `secondary`, `ghost`, `destructive` |
 | `AstryxCenterAxis` | `both`, `horizontal`, `vertical` |
+| `AstryxCheckboxListDensity` | `compact`, `balanced` |
 | `AstryxCheckboxValue` | `unchecked`, `checked`, `indeterminate` |
 | `AstryxColorMode` | `system`, `light`, `dark` |
 | `AstryxColorToken` | `accent`, `accentMuted`, `onAccent`, `neutral`, `backgroundSurface`, `backgroundBody`, `overlay`, `overlayHover`, `overlayPressed`, `backgroundMuted`, `textPrimary`, `textSecondary`, `textDisabled`, `textAccent`, `onDark`, `onLight`, `iconAccent`, `iconPrimary`, `iconSecondary`, `iconDisabled`, `backgroundCard`, `backgroundPopover`, `backgroundInverted`, `backgroundErrorInverted`, `success`, `successMuted`, `onSuccess`, `error`, `errorMuted`, `onError`, `warning`, `warningMuted`, `onWarning`, `border`, `borderEmphasized`, `skeleton`, `track`, `shadow`, `tintHover`, `backgroundBlue`, `borderBlue`, `iconBlue`, `textBlue`, `backgroundCyan`, `borderCyan`, `iconCyan`, `textCyan`, `backgroundGray`, `borderGray`, `iconGray`, `textGray`, `backgroundGreen`, `borderGreen`, `iconGreen`, `textGreen`, `backgroundOrange`, `borderOrange`, `iconOrange`, `textOrange`, `backgroundPink`, `borderPink`, `iconPink`, `textPink`, `backgroundPurple`, `borderPurple`, `iconPurple`, `textPurple`, `backgroundRed`, `borderRed`, `iconRed`, `textRed`, `backgroundTeal`, `borderTeal`, `iconTeal`, `textTeal`, `backgroundYellow`, `borderYellow`, `iconYellow`, `textYellow` |
@@ -27,14 +28,18 @@ Scraped from the package source, so this is what the analyser will accept. 61 pu
 | `AstryxElementSize` | `sm`, `md`, `lg` |
 | `AstryxElevation` | `none`, `low`, `med`, `high` |
 | `AstryxFieldStatusType` | `error`, `warning`, `success` |
+| `AstryxFileInputMode` | `input`, `dropzone` |
 | `AstryxFontWeightToken` | `normal`, `medium`, `semibold`, `bold` |
+| `AstryxFormLayoutDirection` | `vertical`, `horizontal`, `horizontalLabels` |
 | `AstryxGridRepeat` | `fit`, `fill` |
 | `AstryxHeadingType` | `display1`, `display2`, `display3` |
 | `AstryxIconColor` | `primary`, `secondary`, `tertiary`, `disabled`, `accent`, `success`, `error`, `warning`, `inherit` |
 | `AstryxIconName` | `close`, `chevronDown`, `chevronLeft`, `chevronRight`, `chevronsLeft`, `chevronsRight`, `check`, `success`, `error`, `warning`, `info`, `calendar`, `clock`, `externalLink`, `menu`, `moreHorizontal`, `search`, `arrowUp`, `arrowDown`, `arrowsUpDown`, `funnel`, `eyeSlash`, `viewColumns`, `copy`, `checkDouble`, `wrench`, `stop`, `microphone` |
 | `AstryxIconSize` | `xsm`, `sm`, `md`, `lg` |
 | `AstryxInputDevice` | `keyboard`, `pointer` |
+| `AstryxInputGroupPosition` | `start`, `middle`, `end`, `only` |
 | `AstryxInputSize` | `sm`, `md`, `lg` |
+| `AstryxMultiSelectorTriggerDisplay` | `badges`, `count` |
 | `AstryxNeutralStyle` | `warm`, `cool`, `neutral` |
 | `AstryxOverlayAlign` | `start`, `center`, `end` |
 | `AstryxOverlaySide` | `top`, `bottom`, `left`, `right` |
@@ -46,6 +51,8 @@ Scraped from the package source, so this is what the analyser will accept. 61 pu
 | `AstryxShadowToken` | `low`, `med`, `high`, `insetHover`, `insetSelected`, `insetSuccess`, `insetWarning`, `insetError` |
 | `AstryxSizeToken` | `elementSm`, `elementMd`, `elementLg` |
 | `AstryxSkeletonShape` | `rectangle`, `text`, `circle` |
+| `AstryxSliderOrientation` | `horizontal`, `vertical` |
+| `AstryxSliderValueDisplay` | `tooltip`, `text`, `none` |
 | `AstryxSortDirection` | `ascending`, `descending` |
 | `AstryxSpacingToken` | `spacing0`, `spacing0_5`, `spacing1`, `spacing1_5`, `spacing2`, `spacing3`, `spacing4`, `spacing5`, `spacing6`, `spacing7`, `spacing8`, `spacing9`, `spacing10`, `spacing11`, `spacing12` |
 | `AstryxSpinnerShade` | `accent`, `subtle`, `onMedia`, `inherit` |

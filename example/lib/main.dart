@@ -1,6 +1,7 @@
 import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs_ui/docs_controller.dart';
 import 'package:example/docs_ui/docs_shell.dart';
+import 'package:example/docs_ui/external_link.dart';
 import 'package:example/docs_ui/url_strategy.dart';
 import 'package:flutter/widgets.dart';
 
@@ -47,6 +48,11 @@ class _DocsAppState extends State<DocsApp> {
           mode: _controller.mode,
           density: _controller.density,
           debugShowCheckedModeBanner: false,
+          // The package deliberately does not decide what following a link
+          // means — `AstryxLinkDelegate.none` warns and does nothing. This is
+          // the application filling that hole, and it is the same seam an
+          // `AstryxButton(destination:)` goes through.
+          linkDelegate: const AstryxLinkDelegate.fromCallback(openExternalLink),
           // The page is chosen from the URL by `DocsController`, not by the
           // navigator. Pinning the initial route stops `WidgetsApp` trying to
           // push `/tokens` as a named route it has never heard of.

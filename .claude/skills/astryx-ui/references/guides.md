@@ -1414,3 +1414,182 @@ The rules the whole widget set is built to, in one place.
 
 ---
 
+## Migration
+
+Coming from Material or Cupertino: what maps, what does not, and what to stop doing.
+
+```dart
+// The app is still a MaterialApp. One screen is not.
+MaterialApp(
+  home: const HomeScreen(),
+  routes: <String, WidgetBuilder>{
+    '/settings': (context) => const AstryxThemeProvider(
+      child: SettingsScreen(),
+    ),
+  },
+)
+```
+
+**Rules**
+
+- **Note:** Two providers in one application are fine, and so is one inside another: a theme is a value, not a global. That is the same property that lets Themes (references/guides.md) render eight of them on one page.
+- **Note:** The test for step 4: switch the theme and the density with the pickers at the top of this page, then do the same in your app. Whatever stops looking right is a value a widget is still holding.
+
+| Material | Here | What actually differs |
+| --- | --- | --- |
+| `MaterialApp` | `AstryxApp` (references/guides.md) | A `WidgetsApp`. Nothing Material-shaped arrives with it — no `Scaffold`, no `AppBar`, no `ThemeData`. |
+| `Theme.of(context)`, `ColorScheme` | `AstryxTheme.of(context)` | Tokens rather than a colour scheme: `theme.color(…)`, `theme.spacing(…)`, `theme.textStyle(…)`. See Design tokens (references/guides.md). |
+| `ElevatedButton`, `FilledButton` | `AstryxButton` (references/actions.md) | One button with a `variant`. `primary` is the filled one; there is also `destructive`, which Material leaves you to build. |
+| `OutlinedButton`, `TextButton` | `AstryxButton` (references/actions.md) | `secondary` and `ghost`. Emphasis is a variant, not a class. |
+| `IconButton` | `AstryxIconButton` (references/actions.md) | `label` is **required** even though nothing is painted. An unnamed icon button is a compile error here, not a review comment. |
+| `TextField`, `TextFormField` | `AstryxTextInput` (references/forms.md), `AstryxTextArea` (references/forms.md) | No `InputDecoration`. The label, the description and the error are parameters on the input — or on `AstryxField` (references/forms.md), which labels anything. |
+| `Checkbox`, `CheckboxListTile` | `AstryxCheckbox` (references/forms.md) | The label belongs to the control, so there is no tile variant. Tristate is `AstryxCheckboxValue`, not a nullable `bool`. |
+| `Switch`, `SwitchListTile` | `AstryxSwitch` (references/forms.md) | Same: one widget, `label` required. |
+| `Radio`, `RadioListTile` | `AstryxRadioList` (references/forms.md) | The **group** is the widget. Roving focus, arrow keys and the single tab stop come from it owning the set. |
+| `DropdownButton`, `DropdownMenu` | `AstryxSelector` (references/forms.md) | Choosing a *value* is a selector. Material’s dropdown does both jobs; here they are two widgets. |
+| `PopupMenuButton` | `AstryxDropdownMenu` (references/overlays.md) | Choosing a *command* is a menu. Sections, dividers and destructive items are part of it. |
+| `Card`, `InkWell` | `AstryxCard` (references/surfaces.md) | A pressable card is a non-null `onPressed`, not a wrapper. There is no ink ripple: the states are hover, focus-visible and pressed. |
+| `Chip` | `AstryxBadge` (references/surfaces.md) | A badge is a label, not a control. Nothing about it is tappable, and that is the point. |
+| `MaterialBanner` | `AstryxBanner` (references/surfaces.md) | Status is a variant, and every one carries an icon as well as a fill. |
+| `Divider`, `VerticalDivider` | `AstryxDivider` (references/layout.md) | One widget with an `axis`, and an optional label in the rule. |
+| `CircularProgressIndicator` | `AstryxSpinner` (references/status.md) | Settles into a complete ring under reduced motion rather than vanishing. |
+| `LinearProgressIndicator` | `AstryxProgressBar` (references/status.md) | Takes a `label`; determinate and indeterminate are the same widget. |
+| Shimmer packages | `AstryxSkeleton` (references/status.md) | In the package, themed by `--color-skeleton`, and still legible when animations are off. |
+| `Tooltip` | `AstryxTooltip` (references/overlays.md) | Same idea, stricter rule: a tooltip may not be the only route to information. A third of your users have no hover. |
+| `SnackBar`, `ScaffoldMessenger` | `AstryxToast` (references/overlays.md) | `AstryxToastScope.of(context).show(…)`. No `Scaffold` in the way, because there is no `Scaffold`. |
+| `AlertDialog`, `showDialog` | `AstryxDialog` (references/overlays.md) | A **widget in the tree** driven by a controller, not a route pushed onto a navigator. |
+| `TabBar`, `TabBarView` | `AstryxTabList` (references/data.md) | The list only. You own the body it selects, which is usually a switch over your own state. |
+| `DataTable` | `AstryxTable` (references/data.md) | Columns are `AstryxTableColumn` objects with their own widths, alignment and sort. Row actions stay visible rather than appearing on hover. |
+| `Text`, `TextStyle` | `AstryxText` (references/layout.md), `AstryxHeading` (references/layout.md) | Ask for a `type` or a `level`, never a size. See Typography (references/guides.md). |
+| `Icon`, `Icons.*` | `AstryxIcon` (references/layout.md) | Icons are asked for by meaning — `AstryxIconName.success` — and the registry decides the glyph. |
+| `Column` + `SizedBox` gaps | `AstryxVStack` (references/layout.md), `AstryxHStack` | `gap` is a spacing token, so a reordered list keeps its rhythm and no gap is a magic number. |
+| `GridView`, `Wrap` | `AstryxGrid` (references/layout.md) | A `minWidth` and no breakpoints: the grid works out its own column count. See Layout (references/guides.md). |
+| `Semantics(label:)` for hidden text | `labelHidden`, `AstryxVisuallyHidden` | Hiding a label from sight while keeping it as the accessible name is a parameter on the control. |
+
+| Cupertino | Here |
+| --- | --- |
+| `CupertinoButton` | `AstryxButton` (references/actions.md) |
+| `CupertinoTextField` | `AstryxTextInput` (references/forms.md) |
+| `CupertinoSwitch` | `AstryxSwitch` (references/forms.md) |
+| `CupertinoAlertDialog` | `AstryxDialog` (references/overlays.md) |
+| `CupertinoActivityIndicator` | `AstryxSpinner` (references/status.md) |
+| `CupertinoSegmentedControl` | `AstryxButtonGroup` (references/actions.md) for actions, `AstryxTabList` (references/data.md) for views |
+| `CupertinoPageScaffold` | Nothing yet — see below. |
+
+| Habit | Instead |
+| --- | --- |
+| `Colors.blue`, `Color(0xFF…)` | A colour token. If none of the seventy-nine fits, the answer is a `tokens` override in `defineTheme`, not a literal. See Colour (references/guides.md). |
+| `EdgeInsets.all(16)` | `theme.spacing(AstryxSpacingToken.spacing4)`, or the component’s own padding parameter, which already takes a token. |
+| `TextStyle(fontSize: 13)` | A type role. `theme.textStyle(AstryxTypeRole.supporting)` when you are building something the widget set does not cover. |
+| `BorderRadius.circular(8)` | `theme.borderRadius(AstryxRadiusToken.element)` — which is 0 in the `y2k` theme, and that is the point. |
+| `Duration(milliseconds: 200)` | `AstryxMotion.of(context)`, which honours reduced motion. See Motion (references/guides.md). |
+| Row actions revealed on hover | Keep them visible. Nothing important may live behind hover — see Density (references/guides.md). |
+| `left`, `right`, `EdgeInsets.only(left:)` | Start and end. `EdgeInsetsDirectional`, and the components’ own logical parameters. |
+| A heading size chosen for looks | `level` for the outline, `type` for the size. Skipping a level to get a size breaks the document; see Typography (references/guides.md). |
+| `if (Platform.isAndroid)` for touch sizing | Density resolves itself, from the platform *and* the pointer. |
+
+---
+
+## Working with AI
+
+The generated agent skill, what it contains, and how to keep it current.
+
+**Rules**
+
+- **Note:** Only written pages are published to it. A component that is stubbed or still *Soon* is left out entirely, because an agent told about a widget the package does not export will call it, and the call will not compile.
+- **Careful:** Pre-alpha: the API changes between releases. Pin the plugin to the tag matching the version in your `pubspec.yaml`, or the agent will confidently write against a package you are not using.
+
+| File | Holds |
+| --- | --- |
+| `SKILL.md` | The short half: setup, the rules that must not be broken, a table for choosing between two similar components, the mistakes a generator makes without it, and an index of every component. |
+| `references/guides.md` | The guide pages — tokens, colour, typography, density, RTL, accessibility. |
+| `references/*.md` per group | One file per sidebar group — actions, forms, overlays, surfaces, data, layout, status, templates. Each component has a canonical snippet and its full property table. |
+| `references/enums.md` | Every public enum and its values, scraped from the package source. The names are not always the obvious ones, and an invented variant does not compile. |
+| `references/patterns.md` | Whole screens: a form in a card, a table with row actions, a destructive flow, a settings list. |
+
+---
+
+## Themes
+
+The eight themes side by side, and the same components rendered in each.
+
+```dart
+class ThemesGalleryExample extends StatelessWidget {
+  const ThemesGalleryExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxGrid(
+      minWidth: 210,
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        for (final (name, theme) in galleryThemes)
+          AstryxThemeProvider(
+            theme: theme,
+            // Each cell paints its own page background rather than borrowing
+            // the site's: `--color-background-body` is the first thing that
+            // separates one theme from the next, and a gallery that hides it
+            // would be comparing seven cards on one page.
+            child: Builder(
+              builder: (context) {
+                final t = AstryxTheme.of(context);
+
+                return DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: t.color(AstryxColorToken.backgroundBody),
+                    borderRadius: t.borderRadius(AstryxRadiusToken.container),
+                    border: Border.all(
+                      color: t.color(AstryxColorToken.border),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(
+                      t.spacing(AstryxSpacingToken.spacing3),
+                    ),
+                    child: AstryxVStack(
+                      gap: AstryxSpacingToken.spacing2,
+                      align: AstryxStackAlign.stretch,
+                      children: <Widget>[
+                        AstryxHeading(name, level: 4),
+                        const AstryxText(
+                          'Body copy, on the page.',
+                          type: AstryxTextType.supporting,
+                          color: AstryxTextColor.secondary,
+                        ),
+                        AstryxButton(
+                          label: 'Primary',
+                          variant: AstryxButtonVariant.primary,
+                          size: AstryxButtonSize.sm,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Note:** The themes name real typefaces — Figtree, DM Sans, Playwrite US Trad, Fraunces, Montserrat, Poppins, Outfit, Fustat, JetBrains Mono — and the package bundles **none** of them, exactly as upstream ships no font files. Each falls through its stack to the platform’s own UI font until you add the family to your `pubspec.yaml`. What you see below is therefore the size, the weight and the rhythm, not the face. See Typography (references/guides.md).
+- **Careful:** Switch this page to `stone` and the error foregrounds go blank: upstream sets `--color-on-error` equal to `--color-error`, a 1.00:1 contrast failure, and the port reproduces it rather than quietly correcting it. Pinned by a test, overridable in one line. See Colour (references/guides.md).
+
+| Theme | Accent — light · dark | Type: base · ratio | Corners: element / container |
+| --- | --- | --- | --- |
+| `neutral` | `#262626` · `#ebebeb` | 14px · 1.2 | 10px / 12px |
+| `matcha` | `#3E481D` · `#C0CBA9` | 16px · 1.25 | 12px / 18px |
+| `stone` | `#25252a` · `#f3f3f5` | 14px · 1.25 | 8px / 12px |
+| `gothic` | `#E8F1F6` — one value, both modes | 16px · 1.25 | 8px / 12px |
+| `chocolate` | `#8C5927` · `#d4a06a` | 14px · 1.2 | 10px / 12px |
+| `y2k` | `#2d241b` · `#EDEFFC` | 16px · 1.25 | 0 / 0 |
+| `butter` | `#225BFF` · `#FDEE8C` | 14px · 1.25 | 8px / 12px |
+| `acme` | `#0F62FE`, derived | the engine defaults | base 2, multiplier 2 |
+
+---
+

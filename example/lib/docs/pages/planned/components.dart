@@ -247,100 +247,6 @@ final List<DocPage> plannedComponentPages = <DocPage>[
     upstreamPath: '/components/Link',
   ),
   stubPage(
-    id: 'checkbox_list',
-    title: 'CheckboxList',
-    group: DocGroup.forms,
-    description:
-        'A group of checkboxes sharing one label and one validation '
-        'state.',
-    upstream: 'CheckboxList / CheckboxListItem',
-    upstreamPath: '/components/CheckboxList',
-  ),
-  stubPage(
-    id: 'number_input',
-    title: 'NumberInput',
-    group: DocGroup.forms,
-    description: 'A numeric field with step controls and range clamping.',
-    upstream: 'NumberInput',
-    upstreamPath: '/components/NumberInput',
-  ),
-  stubPage(
-    id: 'file_input',
-    title: 'FileInput',
-    group: DocGroup.forms,
-    description:
-        'A file picker with a drop target and the list of what was '
-        'chosen.',
-    upstream: 'FileInput',
-    upstreamPath: '/components/FileInput',
-  ),
-  stubPage(
-    id: 'slider',
-    title: 'Slider',
-    group: DocGroup.forms,
-    description: 'A value chosen by dragging along a track.',
-    upstream: 'Slider',
-    upstreamPath: '/components/Slider',
-  ),
-  stubPage(
-    id: 'multi_selector',
-    title: 'MultiSelector',
-    group: DocGroup.forms,
-    description:
-        'A selector that keeps several choices, shown as removable '
-        'tokens.',
-    upstream: 'MultiSelector',
-    upstreamPath: '/components/MultiSelector',
-  ),
-  stubPage(
-    id: 'complex_selector',
-    title: 'ComplexSelector',
-    group: DocGroup.forms,
-    description:
-        'A selector over grouped or richly-rendered options, beyond '
-        'a flat list.',
-    upstream: 'ComplexSelector',
-    upstreamPath: '/components/ComplexSelector',
-  ),
-  stubPage(
-    id: 'input_group',
-    title: 'InputGroup',
-    group: DocGroup.forms,
-    description:
-        'Adjacent inputs and affixes joined into one bordered '
-        'container.',
-    upstream: 'InputGroup / InputGroupText',
-    upstreamPath: '/components/InputGroup',
-  ),
-  stubPage(
-    id: 'form_layout',
-    title: 'FormLayout',
-    group: DocGroup.forms,
-    description: "The column and label geometry a form's fields share.",
-    upstream: 'FormLayout',
-    upstreamPath: '/components/FormLayout',
-  ),
-  stubPage(
-    id: 'toggle_button',
-    title: 'ToggleButton',
-    group: DocGroup.actions,
-    description:
-        'A button that stays pressed, for a setting rather than an '
-        'action.',
-    upstream: 'ToggleButton',
-    upstreamPath: '/components/ToggleButton',
-  ),
-  stubPage(
-    id: 'toggle_button_group',
-    title: 'ToggleButtonGroup',
-    group: DocGroup.actions,
-    description:
-        'Toggle buttons as one control — single or multiple '
-        'selection.',
-    upstream: 'ToggleButtonGroup',
-    upstreamPath: '/components/ToggleButtonGroup',
-  ),
-  stubPage(
     id: 'calendar',
     title: 'Calendar',
     group: DocGroup.dateTime,
@@ -721,32 +627,12 @@ final List<DocPage> plannedComponentPages = <DocPage>[
     upstreamPath: '/components/SelectableCard',
   ),
   stubPage(
-    id: 'status_dot',
-    title: 'StatusDot',
-    group: DocGroup.status,
-    description:
-        'A small coloured dot standing for a state, always paired '
-        'with text.',
-    upstream: 'StatusDot',
-    upstreamPath: '/components/StatusDot',
-  ),
-  stubPage(
     id: 'stack_item',
     title: 'StackItem',
     group: DocGroup.layout,
     description: 'A stack child with its own flex, alignment and order.',
     upstream: 'StackItem',
     upstreamPath: '/components/StackItem',
-  ),
-  stubPage(
-    id: 'visually_hidden',
-    title: 'VisuallyHidden',
-    group: DocGroup.layout,
-    description:
-        'Content present for a screen reader and absent from the '
-        'screen.',
-    upstream: 'VisuallyHidden',
-    upstreamPath: '/components/VisuallyHidden',
   ),
   stubPage(
     id: 'theme',

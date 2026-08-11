@@ -357,3 +357,80 @@ class IconDemoExample extends StatelessWidget {
 
 ---
 
+## AstryxVisuallyHidden
+
+`lib/src/foundation/semantics.dart` · upstream `VisuallyHidden`
+
+Content present for a screen reader and absent from the screen.
+
+```dart
+class VisuallyHiddenLiveExample extends StatefulWidget {
+  const VisuallyHiddenLiveExample({super.key});
+
+  @override
+  State<VisuallyHiddenLiveExample> createState() =>
+      _VisuallyHiddenLiveExampleState();
+}
+
+class _VisuallyHiddenLiveExampleState extends State<VisuallyHiddenLiveExample> {
+  static const int _limit = 40;
+
+  final TextEditingController _controller = TextEditingController();
+  int _remaining = _limit;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // The count is the announcement. There is no widget it could be the name
+    // of — the input is already named "Summary" — so the only way to report it
+    // is a region of its own.
+    final announcement = '$_remaining characters remaining';
+
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        AstryxTextInput(
+          label: 'Summary',
+          controller: _controller,
+          maxLength: _limit,
+          placeholder: 'What changed, in one line',
+          onChanged: (value) =>
+              setState(() => _remaining = _limit - value.length),
+        ),
+        AstryxVisuallyHidden(
+          liveRegion: true,
+          child: Text(announcement),
+        ),
+        // The same string, painted, so this page can show what is otherwise
+        // only audible. A real form would not draw it twice.
+        AstryxText(
+          'A screen reader hears: “$announcement”',
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Careful:** Upstream’s `VisuallyHidden` does **two** jobs, and only one of them needs a widget here. Reaching for it to name a control is the most common false friend in the whole port — read both sections below before using it.
+- **Accessibility:** A live region interrupts whatever is being read. Reserve it for changes the user must hear — an error, a destructive result, a limit reached. Progress that merely happens should not talk over the thing the reader is trying to listen to. See Accessibility (references/guides.md).
+
+### AstryxVisuallyHidden
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `child` **(required)** | `Widget` | — | The content to announce but not paint. |
+| `liveRegion` | `bool` | `false` | Whether a change to the content is announced as it happens, interrupting. |
+
+---
+

@@ -44,6 +44,22 @@ const String _guideGroup = DocGroup.gettingStarted;
 /// From `lib/docs/groups.dart`, so adding a group cannot leave this behind.
 const Map<String, String> _groupFiles = docGroupFiles;
 
+/// Written pages that are still not the skill's business.
+///
+/// Not an omission the way a placeholder is: an agent gains nothing from the
+/// release history or from how to file an issue, and `changelog` alone would
+/// put every bullet of every release into `references/guides.md`, which is the
+/// file it opens to learn what a token is.
+///
+/// Everything else that is written is published. If a page here ever grows a
+/// rule an agent must follow, the rule belongs in `_rules` below, not in a
+/// reference nobody opens.
+const Set<String> _notForAgents = <String>{'changelog', 'community'};
+
+/// Whether [page] is published to the skill.
+bool _forAgents(DocPage page) =>
+    page.isWritten && !_notForAgents.contains(page.id);
+
 void main() {
   if (!Directory('lib/docs').existsSync()) {
     stderr.writeln('Run this from the example/ directory.');
@@ -65,7 +81,7 @@ void main() {
     // Written pages only: an agent told about a widget the package does not
     // export yet will call it, and the call will not compile. A group whose
     // pages are all placeholders gets no reference file at all.
-    final pages = entry.value.where((page) => page.isWritten).toList();
+    final pages = entry.value.where(_forAgents).toList();
     if (pages.isEmpty) continue;
 
     File(
@@ -150,7 +166,7 @@ String _skill() {
     ..writeln('| Component | For | Reference |')
     ..writeln('| --- | --- | --- |');
 
-  for (final page in writtenDocPages) {
+  for (final page in docPages.where(_forAgents)) {
     if (page.group == _guideGroup) continue;
     out.writeln(
       '| `${page.title}` | ${_plain(page.description)} '
@@ -165,7 +181,9 @@ String _skill() {
     ..writeln('| Topic | Covers | Reference |')
     ..writeln('| --- | --- | --- |');
 
-  for (final page in writtenDocPages.where((p) => p.group == _guideGroup)) {
+  for (final page in docPages.where(
+    (p) => _forAgents(p) && p.group == _guideGroup,
+  )) {
     out.writeln(
       '| ${page.title} | ${_plain(page.description)} '
       '| `references/guides.md` |',
@@ -190,7 +208,7 @@ String _skill() {
   // the site may grow into, and pointing an agent at a file that was never
   // written is worse than not mentioning it.
   for (final entry in docPagesByGroup.entries) {
-    if (!entry.value.any((page) => page.isWritten)) continue;
+    if (!entry.value.any(_forAgents)) continue;
     out.writeln('- `references/${_groupFiles[entry.key]}` — ${entry.key}.');
   }
 

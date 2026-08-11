@@ -180,3 +180,158 @@ class ButtonGroupDemoExample extends StatelessWidget {
 
 ---
 
+## AstryxToggleButton
+
+`lib/src/components/action/toggle_button.dart` · upstream `ToggleButton`
+
+A button that stays pressed — a setting, not an action.
+
+```dart
+class ToggleButtonDemoExample extends StatefulWidget {
+  const ToggleButtonDemoExample({super.key});
+
+  @override
+  State<ToggleButtonDemoExample> createState() =>
+      _ToggleButtonDemoExampleState();
+}
+
+class _ToggleButtonDemoExampleState extends State<ToggleButtonDemoExample> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // The button owns no state. It reports the state it should move to, and the
+    // caller decides — the same contract as every other control here.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxToggleButton(
+          label: 'Only my issues',
+          icon: const AstryxIcon(AstryxIconName.funnel),
+          pressed: _pressed,
+          onChanged: (value) => setState(() => _pressed = value),
+        ),
+        AstryxText(
+          _pressed ? 'Showing 12 of 240 issues.' : 'Showing all 240 issues.',
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Note:** There is no `variant`. A toggle is always a ghost button, because the pressed fill *is* its visual language — a filled variant would have nothing left to say when it went on.
+- **Note:** A pressed toggle does not change under a pointer. Upstream applies the pressed fill unconditionally, which overrides its own hover tint, and that is reproduced here — two overlapping "this one is active" signals read worse than one that holds still. Focus and press feedback are unaffected.
+- **Careful:** Windows High Contrast is not covered. Upstream repaints the pressed state with the platform `Highlight` colours under `forced-colors`, and Flutter has no equivalent — `MediaQuery.highContrast` is a preference, not a forced palette. On a forced-colours desktop the pressed fill may be dropped, and the weight shift is what remains.
+
+| Reach for | When |
+| --- | --- |
+| `AstryxToggleButton` | A toolbar control, a formatting mark, a filter chip that stays down. It lives beside other buttons and looks like one. |
+| AstryxSwitch (references/forms.md) | A setting in a form. It is labelled, announced as a switch, and reads as configuration rather than as a control you press. |
+| AstryxCheckbox (references/forms.md) | A value being selected, especially in a list or a set of options. |
+| AstryxTabList (references/data.md) | Switching what a panel shows. Tabs, not toggles — a tab strip always has exactly one selection. |
+
+### AstryxToggleButton
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `label` **(required)** | `String` | — | The visible text, and the accessible name. |
+| `pressed` | `bool` | `false` | Whether the button is on. Ignored inside a group. |
+| `onChanged` | `ValueChanged<bool>?` | — | Called with the state to move to. Null makes the button inert; ignored inside a group. |
+| `value` | `String?` | — | This button’s identity inside an `AstryxToggleButtonGroup`. Required there, meaningless outside. |
+| `icon` | `Widget?` | — | Content before the label. |
+| `pressedIcon` | `Widget?` | — | The glyph shown while pressed. Falls back to `icon`. |
+| `labelHidden` | `bool` | `false` | Keeps the label as the accessible name without painting it: the button squares off and tooltips itself. |
+| `size` | `AstryxButtonSize?` | — | The control height. Null takes the group’s, then the inherited size. |
+| `enabled` | `bool` | `true` | Whether the button accepts interaction. **Ignored inside a group**, which decides for its children. |
+| `loading` | `bool` | `false` | Whether work is in flight. Suppresses activation and shows a spinner. |
+| `tooltip` | `String?` | — | Hover text. Defaults to `label` when `labelHidden`. |
+| `focusNode` | `FocusNode?` | — | The focus node, if you own one. |
+| `autofocus` | `bool` | `false` | Whether to take focus when first built. |
+| `theme` | `AstryxButtonTheme?` | — | Visual overrides, merged over `AstryxThemeData.button`. |
+
+---
+
+## AstryxToggleButtonGroup
+
+`lib/src/components/action/toggle_button.dart` · upstream `ToggleButtonGroup`
+
+Toggle buttons as one control — single or multiple selection.
+
+```dart
+class ToggleButtonGroupSingleExample extends StatefulWidget {
+  const ToggleButtonGroupSingleExample({super.key});
+
+  @override
+  State<ToggleButtonGroupSingleExample> createState() =>
+      _ToggleButtonGroupSingleExampleState();
+}
+
+class _ToggleButtonGroupSingleExampleState
+    extends State<ToggleButtonGroupSingleExample> {
+  String? _view = 'grid';
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxToggleButtonGroup.single(
+          label: 'View mode',
+          value: _view,
+          onChanged: (value) => setState(() => _view = value),
+          children: const <Widget>[
+            AstryxToggleButton(value: 'list', label: 'List'),
+            AstryxToggleButton(value: 'grid', label: 'Grid'),
+            AstryxToggleButton(value: 'board', label: 'Board'),
+          ],
+        ),
+        // Pressing the one that is already on clears the group, so "none" is
+        // always reachable — upstream's behaviour, and the reason the value is
+        // nullable.
+        AstryxText(
+          _view == null ? 'No view chosen.' : 'Showing the $_view view.',
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** The group’s `label` is required: it is the accessible name of the set, and without it a reader meets three unrelated buttons. Each child keeps its own node and its own selected state.
+- **Careful:** Inside a group, a child’s own `enabled` is **ignored** — the group decides. Upstream does the same (`group?.isDisabled ?? isDisabled`), so it is reproduced and pinned by a test rather than quietly improved. Disable the group, not its children. A grouped button without a `value` asserts in debug, because the group would have no way to know which one is on.
+
+### AstryxToggleButtonGroup
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `label` **(required)** | `String` | — | The group’s accessible name — "View mode", "Text formatting". |
+| `value` **(required)** | `String?` | — | `.single` only: the value that is on, or null for none. |
+| `onChanged` **(required)** | `ValueChanged<String?>` | — | `.single` only: the new value, or null when the group has been cleared. |
+| `values` **(required)** | `Set<String>` | — | `.multiple` only: the values that are on. |
+| `onChanged` **(required)** | `ValueChanged<Set<String>>` | — | `.multiple` only: a new set, each time. |
+| `children` **(required)** | `List<Widget>` | — | The toggle buttons, in order. Each needs a `value`. |
+| `axis` | `Axis` | `Axis.horizontal` | Whether the group runs horizontally or vertically. |
+| `size` | `AstryxButtonSize?` | — | The size every child takes unless it sets its own. |
+| `enabled` | `bool` | `true` | Whether the whole group accepts interaction. The only place to disable a grouped toggle. |
+| `gap` | `AstryxSpacingToken?` | `AstryxSpacingToken.spacing1` | The space between the buttons. |
+
+### AstryxToggleButtonGroupScope
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `selectedValues` **(required)** | `Set<String>` | — | The values currently on. |
+| `toggle` **(required)** | `void Function(String value)` | — | Reports that a button’s value has been pressed. |
+| `size` | `AstryxButtonSize?` | — | The size children inherit. |
+| `enabled` | `bool` | `true` | Whether the group accepts interaction. |
+
+---
+

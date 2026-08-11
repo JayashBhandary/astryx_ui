@@ -66,6 +66,21 @@ Run it after touching anything in `lib/examples/`:
 dart run tool/gen_snippets.dart
 ```
 
+## The changelog page
+
+The release history is written once, at the repository root, where pub and
+GitHub look for it. The site does not keep a second copy — it compiles the
+first:
+
+```sh
+dart run tool/gen_changelog.dart
+```
+
+`tool/gen_changelog.dart` parses `../CHANGELOG.md` (Keep a Changelog: `## [x]`
+releases, `### Added` sections, wrapped bullets) into `lib/docs/changelog.g.dart`
+as `DocBlock`s, and the `changelog` page is that list behind a short preamble.
+Run it after editing the changelog, before `gen_docs_md.dart`.
+
 ## Markdown output
 
 The page model in `lib/docs/pages/` is pure Dart — no `flutter` import — so a
@@ -124,7 +139,8 @@ lib/
 │   ├── pages.dart         the registry, plus previous/next resolution
 │   ├── pages/             the content: one file per group
 │   ├── snippets.g.dart    generated — every example's source
-│   └── previews.g.dart    generated — every example's builder
+│   ├── previews.g.dart    generated — every example's builder
+│   └── changelog.g.dart   generated — ../CHANGELOG.md as DocBlocks
 ├── docs_ui/               the chrome, built from astryx_ui
 │   ├── docs_shell.dart    sidebar, top bar, page area
 │   ├── doc_page_view.dart renders a DocPage
@@ -132,18 +148,21 @@ lib/
 │   ├── segmented.dart     the button-group picker both of those use
 │   ├── code_block.dart    Dart highlighting, from theme tokens
 │   ├── api_table.dart     the property tables
+│   ├── external_link.dart opens a link that leaves the site (web only)
 │   └── inline_markup.dart `code`, **bold**, [links](introduction)
 └── examples/              one file per component, in marked regions
 tool/
 ├── gen_snippets.dart      lib/examples/ → snippets.g.dart, previews.g.dart
+├── gen_changelog.dart     ../CHANGELOG.md → changelog.g.dart
 ├── gen_docs_md.dart       the page model → ../doc/
 └── gen_skill.dart         the page model → ../.claude/skills/astryx-ui/
 ```
 
-After changing any page or example, all three:
+After changing any page or example, all four:
 
 ```sh
 dart run tool/gen_snippets.dart && \
+  dart run tool/gen_changelog.dart && \
   dart run tool/gen_docs_md.dart && \
   dart run tool/gen_skill.dart
 ```

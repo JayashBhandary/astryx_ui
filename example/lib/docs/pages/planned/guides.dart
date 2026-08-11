@@ -1,12 +1,15 @@
-/// Documentation topics upstream has and this port does not, yet.
+/// The guide topics upstream has that this port does not.
 ///
-/// Three are `notPlanned`: they document StyleX and the Node CLI, neither of
-/// which has a Flutter counterpart. They are pages rather than omissions so the
-/// parity check against `scrape/upstream_pages.txt` stays honest.
+/// All three that remain are `notPlanned`: they document StyleX and the Node
+/// CLI, neither of which has a Flutter counterpart. They are pages rather than
+/// omissions so the parity check against `scrape/upstream_pages.txt` stays
+/// honest — a deliberate decision and an oversight look identical from the
+/// outside otherwise.
 ///
 /// **Pure Dart** — see the note on `model.dart`. Generated from
-/// `scrape/completesite_map.md`, then maintained by hand: a page
-/// graduates out of here when someone writes it.
+/// `scrape/completesite_map.md`, then maintained by hand: a page graduates out
+/// of here when someone writes it, which is how `migration`,
+/// `working_with_ai`, `themes`, `changelog` and `community` left.
 library;
 
 import 'package:example/docs/groups.dart';
@@ -15,24 +18,6 @@ import 'package:example/docs/pages/_stub.dart';
 
 /// The missing documentation topics, plus the deliberate omissions.
 final List<DocPage> plannedGuidePages = <DocPage>[
-  stubPage(
-    id: 'migration',
-    title: 'Migration',
-    group: DocGroup.gettingStarted,
-    description:
-        'Coming from Material or Cupertino: what maps, what does '
-        'not, and what to stop doing.',
-    upstreamPath: '/docs/migration',
-  ),
-  stubPage(
-    id: 'working_with_ai',
-    title: 'Working with AI',
-    group: DocGroup.gettingStarted,
-    description:
-        'The generated agent skill, what it contains, and how to '
-        'keep it current.',
-    upstreamPath: '/docs/working-with-ai',
-  ),
   stubPage(
     id: 'styling_libraries',
     title: 'Styling libraries',
@@ -63,33 +48,5 @@ final List<DocPage> plannedGuidePages = <DocPage>[
         'Not applicable.',
     status: DocStatus.notPlanned,
     upstreamPath: '/docs/cli-integrations',
-  ),
-  stubPage(
-    id: 'themes',
-    title: 'Themes',
-    group: DocGroup.gettingStarted,
-    description:
-        'The eight themes side by side, and the same components '
-        'rendered in each. The chrome already switches between '
-        'them; this page is the gallery.',
-    upstreamPath: '/themes',
-  ),
-  stubPage(
-    id: 'changelog',
-    title: 'Changelog',
-    group: DocGroup.gettingStarted,
-    description:
-        'What changed in each release. Rendered from '
-        '`CHANGELOG.md`.',
-    upstreamPath: '/changelog',
-  ),
-  stubPage(
-    id: 'community',
-    title: 'Community',
-    group: DocGroup.gettingStarted,
-    description:
-        'The repository, the issue tracker, and how to contribute a '
-        'component.',
-    upstreamPath: '/community',
   ),
 ];

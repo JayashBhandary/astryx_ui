@@ -1,3 +1,4 @@
+import 'package:example/docs/changelog.g.dart';
 import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 import 'package:example/docs/version.g.dart';
@@ -24,6 +25,12 @@ final List<DocPage> guidePages = <DocPage>[
   _density,
   _rtl,
   _accessibility,
+  _migration,
+  _workingWithAi,
+  // The chrome pages, last, in the order upstream's own header lists them.
+  _themes,
+  _changelog,
+  _community,
 ];
 
 const String _group = DocGroup.gettingStarted;
@@ -2098,5 +2105,855 @@ const DocPage _accessibility = DocPage(
       'legibility at small sizes; Lucide ships no filled variants. Swap the '
       'icon registry if this matters to you.',
     ),
+  ],
+);
+
+const DocPage _migration = DocPage(
+  id: 'migration',
+  title: 'Migration',
+  group: _group,
+  description:
+      'Coming from Material or Cupertino: what maps, what does not, and '
+      'what to stop doing.',
+  upstreamPath: '/docs/migration',
+  blocks: <DocBlock>[
+    DocProse(
+      'There is no migration mode and no compatibility layer, because none is '
+      'needed. `astryx_ui` is built on `flutter/widgets`, so a Material '
+      'application adopts it the way it would adopt any other widget set: one '
+      'subtree at a time, with both in the tree meanwhile — or permanently, if '
+      'the chrome stays Material and the content does not.',
+    ),
+    DocHeading('Where it goes'),
+    DocProse(
+      '`AstryxThemeProvider` installs the theme, the icon registry, the '
+      'localisations, the focus-visible scope and the toast host for the '
+      'subtree below it. It is an ordinary widget, so a single route can adopt '
+      'the design system while everything around it stays as it was.',
+    ),
+    DocCode('''
+// The app is still a MaterialApp. One screen is not.
+MaterialApp(
+  home: const HomeScreen(),
+  routes: <String, WidgetBuilder>{
+    '/settings': (context) => const AstryxThemeProvider(
+      child: SettingsScreen(),
+    ),
+  },
+)'''),
+    DocCallout.note(
+      'Two providers in one application are fine, and so is one inside '
+      'another: a theme is a value, not a global. That is the same property '
+      'that lets [Themes](themes) render eight of them on one page.',
+    ),
+    DocHeading('What maps'),
+    DocProse(
+      'The third column is the part worth reading. Most of these are not '
+      'renames — the widget exists because the Material one made a choice this '
+      'design system does not make.',
+    ),
+    DocTable(
+      headers: <String>['Material', 'Here', 'What actually differs'],
+      rows: <List<String>>[
+        <String>[
+          '`MaterialApp`',
+          '[`AstryxApp`](installation)',
+          'A `WidgetsApp`. Nothing Material-shaped arrives with it — no '
+              '`Scaffold`, no `AppBar`, no `ThemeData`.',
+        ],
+        <String>[
+          '`Theme.of(context)`, `ColorScheme`',
+          '`AstryxTheme.of(context)`',
+          'Tokens rather than a colour scheme: `theme.color(…)`, '
+              '`theme.spacing(…)`, `theme.textStyle(…)`. See '
+              '[Design tokens](tokens).',
+        ],
+        <String>[
+          '`ElevatedButton`, `FilledButton`',
+          '[`AstryxButton`](button)',
+          'One button with a `variant`. `primary` is the filled one; there is '
+              'also `destructive`, which Material leaves you to build.',
+        ],
+        <String>[
+          '`OutlinedButton`, `TextButton`',
+          '[`AstryxButton`](button)',
+          '`secondary` and `ghost`. Emphasis is a variant, not a class.',
+        ],
+        <String>[
+          '`IconButton`',
+          '[`AstryxIconButton`](icon_button)',
+          '`label` is **required** even though nothing is painted. An unnamed '
+              'icon button is a compile error here, not a review comment.',
+        ],
+        <String>[
+          '`TextField`, `TextFormField`',
+          '[`AstryxTextInput`](text_input), [`AstryxTextArea`](text_area)',
+          'No `InputDecoration`. The label, the description and the error are '
+              'parameters on the input — or on [`AstryxField`](field), which '
+              'labels anything.',
+        ],
+        <String>[
+          '`Checkbox`, `CheckboxListTile`',
+          '[`AstryxCheckbox`](checkbox)',
+          'The label belongs to the control, so there is no tile variant. '
+              'Tristate is `AstryxCheckboxValue`, not a nullable `bool`.',
+        ],
+        <String>[
+          '`Switch`, `SwitchListTile`',
+          '[`AstryxSwitch`](switch)',
+          'Same: one widget, `label` required.',
+        ],
+        <String>[
+          '`Radio`, `RadioListTile`',
+          '[`AstryxRadioList`](radio_list)',
+          'The **group** is the widget. Roving focus, arrow keys and the '
+              'single tab stop come from it owning the set.',
+        ],
+        <String>[
+          '`DropdownButton`, `DropdownMenu`',
+          '[`AstryxSelector`](selector)',
+          'Choosing a *value* is a selector. Material’s dropdown does both '
+              'jobs; here they are two widgets.',
+        ],
+        <String>[
+          '`PopupMenuButton`',
+          '[`AstryxDropdownMenu`](dropdown_menu)',
+          'Choosing a *command* is a menu. Sections, dividers and destructive '
+              'items are part of it.',
+        ],
+        <String>[
+          '`Card`, `InkWell`',
+          '[`AstryxCard`](card)',
+          'A pressable card is a non-null `onPressed`, not a wrapper. There is '
+              'no ink ripple: the states are hover, focus-visible and pressed.',
+        ],
+        <String>[
+          '`Chip`',
+          '[`AstryxBadge`](badge)',
+          'A badge is a label, not a control. Nothing about it is tappable, '
+              'and that is the point.',
+        ],
+        <String>[
+          '`MaterialBanner`',
+          '[`AstryxBanner`](banner)',
+          'Status is a variant, and every one carries an icon as well as a '
+              'fill.',
+        ],
+        <String>[
+          '`Divider`, `VerticalDivider`',
+          '[`AstryxDivider`](divider)',
+          'One widget with an `axis`, and an optional label in the rule.',
+        ],
+        <String>[
+          '`CircularProgressIndicator`',
+          '[`AstryxSpinner`](spinner)',
+          'Settles into a complete ring under reduced motion rather than '
+              'vanishing.',
+        ],
+        <String>[
+          '`LinearProgressIndicator`',
+          '[`AstryxProgressBar`](progress_bar)',
+          'Takes a `label`; determinate and indeterminate are the same widget.',
+        ],
+        <String>[
+          'Shimmer packages',
+          '[`AstryxSkeleton`](skeleton)',
+          'In the package, themed by `--color-skeleton`, and still legible '
+              'when animations are off.',
+        ],
+        <String>[
+          '`Tooltip`',
+          '[`AstryxTooltip`](tooltip)',
+          'Same idea, stricter rule: a tooltip may not be the only route to '
+              'information. A third of your users have no hover.',
+        ],
+        <String>[
+          '`SnackBar`, `ScaffoldMessenger`',
+          '[`AstryxToast`](toast)',
+          '`AstryxToastScope.of(context).show(…)`. No `Scaffold` in the way, '
+              'because there is no `Scaffold`.',
+        ],
+        <String>[
+          '`AlertDialog`, `showDialog`',
+          '[`AstryxDialog`](dialog)',
+          'A **widget in the tree** driven by a controller, not a route '
+              'pushed onto a navigator.',
+        ],
+        <String>[
+          '`TabBar`, `TabBarView`',
+          '[`AstryxTabList`](tab_list)',
+          'The list only. You own the body it selects, which is usually a '
+              'switch over your own state.',
+        ],
+        <String>[
+          '`DataTable`',
+          '[`AstryxTable`](table)',
+          'Columns are `AstryxTableColumn` objects with their own widths, '
+              'alignment and sort. Row actions stay visible rather than '
+              'appearing on hover.',
+        ],
+        <String>[
+          '`Text`, `TextStyle`',
+          '[`AstryxText`](text), [`AstryxHeading`](heading)',
+          'Ask for a `type` or a `level`, never a size. See '
+              '[Typography](typography).',
+        ],
+        <String>[
+          '`Icon`, `Icons.*`',
+          '[`AstryxIcon`](icon)',
+          'Icons are asked for by meaning — `AstryxIconName.success` — and the '
+              'registry decides the glyph.',
+        ],
+        <String>[
+          '`Column` + `SizedBox` gaps',
+          '[`AstryxVStack`](stack), `AstryxHStack`',
+          '`gap` is a spacing token, so a reordered list keeps its rhythm and '
+              'no gap is a magic number.',
+        ],
+        <String>[
+          '`GridView`, `Wrap`',
+          '[`AstryxGrid`](grid)',
+          'A `minWidth` and no breakpoints: the grid works out its own column '
+              'count. See [Layout](layout_guide).',
+        ],
+        <String>[
+          '`Semantics(label:)` for hidden text',
+          '`labelHidden`, `AstryxVisuallyHidden`',
+          'Hiding a label from sight while keeping it as the accessible name '
+              'is a parameter on the control.',
+        ],
+      ],
+    ),
+    DocHeading('From Cupertino'),
+    DocTable(
+      headers: <String>['Cupertino', 'Here'],
+      rows: <List<String>>[
+        <String>['`CupertinoButton`', '[`AstryxButton`](button)'],
+        <String>['`CupertinoTextField`', '[`AstryxTextInput`](text_input)'],
+        <String>['`CupertinoSwitch`', '[`AstryxSwitch`](switch)'],
+        <String>['`CupertinoAlertDialog`', '[`AstryxDialog`](dialog)'],
+        <String>['`CupertinoActivityIndicator`', '[`AstryxSpinner`](spinner)'],
+        <String>[
+          '`CupertinoSegmentedControl`',
+          '[`AstryxButtonGroup`](button_group) for actions, '
+              '[`AstryxTabList`](tab_list) for views',
+        ],
+        <String>['`CupertinoPageScaffold`', 'Nothing yet — see below.'],
+      ],
+    ),
+    DocProse(
+      'The design system does not switch appearance by platform: an internal '
+      'tool should look the same to the person who uses it on a laptop and on '
+      'a tablet. What *does* change by platform is density — see '
+      '[Density](density) — and that is a target size, not a style.',
+    ),
+    DocHeading('What has no counterpart yet'),
+    DocProse(
+      'Roughly 30 components are in scope for 1.0, and the application shell '
+      'is not among them yet. There is no `Scaffold`, `AppBar`, `Drawer`, '
+      '`NavigationBar`, `BottomSheet`, date picker, autocomplete or avatar. '
+      'Those pages exist in the sidebar under **Navigation**, **App shell**, '
+      '**Date & time**, **Media** and **Command & search**, carrying the '
+      '*Soon* badge.',
+    ),
+    DocProse(
+      'Until they land, keep the Material ones. A `Scaffold` whose `body` is '
+      'an `AstryxThemeProvider` is a perfectly good arrangement, and it is '
+      'what most adopting applications will look like for a while.',
+    ),
+    DocHeading('Two theme systems in one tree'),
+    DocProse(
+      'The Material widgets you keep still read `ThemeData`, and nothing in '
+      '`astryx_ui` touches it. The two are independent, which is what makes '
+      'the incremental path safe — and also what makes them able to disagree.',
+    ),
+    DocList(<String>[
+      '**Brightness.** `AstryxColorMode.system` and `ThemeMode.system` both '
+          'follow the platform, so the common case agrees for free. If you '
+          'force one, force the other from the same value.',
+      '**Density.** `VisualDensity` and `AstryxDensity` are unrelated. Setting '
+          'Material’s does not move the Astryx one, which resolves from the '
+          'platform and the pointer precision `MediaQuery` reports.',
+      '**Type.** Material’s `Typography` does not reach an `AstryxText`, and '
+          'the package bundles no typeface. See [Typography](typography).',
+      '**Direction.** Both are logical. One `Directionality` covers the whole '
+          'tree; see [Right-to-left](rtl).',
+    ]),
+    DocHeading('What to stop doing'),
+    DocProse(
+      'These are the habits that survive a migration and quietly undo it. Each '
+      'one is a value a component is holding that the theme should be holding '
+      'instead.',
+    ),
+    DocTable(
+      headers: <String>['Habit', 'Instead'],
+      rows: <List<String>>[
+        <String>[
+          '`Colors.blue`, `Color(0xFF…)`',
+          'A colour token. If none of the seventy-nine fits, the answer is a '
+              '`tokens` override in `defineTheme`, not a literal. See '
+              '[Colour](color).',
+        ],
+        <String>[
+          '`EdgeInsets.all(16)`',
+          '`theme.spacing(AstryxSpacingToken.spacing4)`, or the component’s '
+              'own padding parameter, which already takes a token.',
+        ],
+        <String>[
+          '`TextStyle(fontSize: 13)`',
+          'A type role. `theme.textStyle(AstryxTypeRole.supporting)` when you '
+              'are building something the widget set does not cover.',
+        ],
+        <String>[
+          '`BorderRadius.circular(8)`',
+          '`theme.borderRadius(AstryxRadiusToken.element)` — which is 0 in the '
+              '`y2k` theme, and that is the point.',
+        ],
+        <String>[
+          '`Duration(milliseconds: 200)`',
+          '`AstryxMotion.of(context)`, which honours reduced motion. See '
+              '[Motion](motion).',
+        ],
+        <String>[
+          'Row actions revealed on hover',
+          'Keep them visible. Nothing important may live behind hover — see '
+              '[Density](density).',
+        ],
+        <String>[
+          '`left`, `right`, `EdgeInsets.only(left:)`',
+          'Start and end. `EdgeInsetsDirectional`, and the components’ own '
+              'logical parameters.',
+        ],
+        <String>[
+          'A heading size chosen for looks',
+          '`level` for the outline, `type` for the size. Skipping a level to '
+              'get a size breaks the document; see [Typography](typography).',
+        ],
+        <String>[
+          '`if (Platform.isAndroid)` for touch sizing',
+          'Density resolves itself, from the platform *and* the pointer.',
+        ],
+      ],
+    ),
+    DocHeading('An order that works'),
+    DocList(
+      <String>[
+        'Wrap one screen in `AstryxThemeProvider`. Nothing else changes; the '
+            'Material widgets inside it carry on.',
+        'Replace the leaf controls — buttons, inputs, toggles. The compile '
+            'errors are the audit: every icon button without a name, every '
+            'input without a label.',
+        'Replace the containers — cards, banners, tables, dialogs. This is '
+            'where `showDialog` becomes a widget and `SnackBar` becomes a '
+            'toast.',
+        'Delete the literals. Colours, paddings, radii, durations, text '
+            'styles. Anything that cannot be said with a token belongs in the '
+            'theme definition.',
+        'Do the shell last, or not at all. It is the part with no counterpart '
+            'yet, and it is the part users notice least.',
+      ],
+      ordered: true,
+    ),
+    DocCallout.note(
+      'The test for step 4: switch the theme and the density with the pickers '
+      'at the top of this page, then do the same in your app. Whatever stops '
+      'looking right is a value a widget is still holding.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[Installation](installation) — the provider, and the two import '
+          'surfaces.',
+      '[Principles](principles) — why the differences above are differences.',
+      '[Design tokens](tokens) — what replaces the literals.',
+      '[Accessibility](accessibility) — the rules the widgets enforce for you.',
+    ]),
+  ],
+);
+
+const DocPage _workingWithAi = DocPage(
+  id: 'working_with_ai',
+  title: 'Working with AI',
+  group: _group,
+  description:
+      'The generated agent skill, what it contains, and how to keep it '
+      'current.',
+  upstreamPath: '/docs/working-with-ai',
+  blocks: <DocBlock>[
+    DocProse(
+      'An agent writing `astryx_ui` code fails in a particular way: it writes '
+      'Material. It reaches for `ElevatedButton`, pads with `EdgeInsets.all`, '
+      'gives an icon button no name, and hides the row actions behind hover — '
+      'all of it plausible, all of it wrong here. The package ships a skill to '
+      'stop that, and the skill is generated from the same pages you are '
+      'reading.',
+    ),
+    DocHeading('Install it'),
+    DocProse(
+      'The repository is a Claude Code plugin marketplace, so the skill '
+      'installs in two commands:',
+    ),
+    DocCode('''
+/plugin marketplace add JayashBhandary/astryx_ui
+/plugin install astryx-ui@astryx-ui''', language: 'text'),
+    DocProse(
+      'Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.6-dev` '
+      '— and take later ones with `/plugin marketplace update`. The plugin’s '
+      'version is copied from `pubspec.yaml` by the generator, so the skill '
+      'you install and the package you depend on cannot silently be different '
+      'releases.',
+    ),
+    DocProse(
+      'Not using Claude Code? Copy `.claude/skills/astryx-ui/` into your own '
+      'project, or point the agent at `doc/`, which is this site as plain '
+      'markdown. Inside the repository itself the skill loads whether or not '
+      'the plugin is installed.',
+    ),
+    DocHeading('What is in it'),
+    DocTable(
+      headers: <String>['File', 'Holds'],
+      rows: <List<String>>[
+        <String>[
+          '`SKILL.md`',
+          'The short half: setup, the rules that must not be broken, a table '
+              'for choosing between two similar components, the mistakes a '
+              'generator makes without it, and an index of every component.',
+        ],
+        <String>[
+          '`references/guides.md`',
+          'The guide pages — tokens, colour, typography, density, RTL, '
+              'accessibility.',
+        ],
+        <String>[
+          '`references/*.md` per group',
+          'One file per sidebar group — actions, forms, overlays, surfaces, '
+              'data, layout, status, templates. Each component has a canonical '
+              'snippet and its full property table.',
+        ],
+        <String>[
+          '`references/enums.md`',
+          'Every public enum and its values, scraped from the package source. '
+              'The names are not always the obvious ones, and an invented '
+              'variant does not compile.',
+        ],
+        <String>[
+          '`references/patterns.md`',
+          'Whole screens: a form in a card, a table with row actions, a '
+              'destructive flow, a settings list.',
+        ],
+      ],
+    ),
+    DocCallout.note(
+      'Only written pages are published to it. A component that is stubbed or '
+      'still *Soon* is left out entirely, because an agent told about a widget '
+      'the package does not export will call it, and the call will not '
+      'compile.',
+    ),
+    DocHeading('Why it is generated'),
+    DocProse(
+      'The pages in `example/lib/docs/pages/` are pure Dart — no `flutter` '
+      'import — which is what lets three different generators read them on the '
+      'plain Dart VM. This site, the markdown in `doc/`, and the skill are '
+      'three renderings of one registry, so they cannot describe different '
+      'APIs. Hand-written agent instructions rot; these go stale only if the '
+      'documentation does.',
+    ),
+    DocCode(
+      '''
+cd example
+dart run tool/gen_snippets.dart    # examples -> snippets + previews
+dart run tool/gen_changelog.dart   # CHANGELOG.md -> the changelog page
+dart run tool/gen_docs_md.dart     # pages -> ../doc/
+dart run tool/gen_skill.dart       # pages -> ../.claude/skills/''',
+      language: 'bash',
+    ),
+    DocHeading('Getting a useful answer'),
+    DocProse(
+      'The skill loads on relevance, so naming the package in the request is '
+      'usually enough — "build the settings screen with `astryx_ui`" rather '
+      'than "build a settings screen". Two more things are worth asking for '
+      'explicitly:',
+    ),
+    DocList(<String>[
+      '**A review, not just code.** "Check this file against the astryx_ui '
+          'rules" catches the literals and the missing labels that compile '
+          'perfectly well.',
+      '**A component choice, with the reason.** "Selector or dropdown menu '
+          'here?" — the skill carries the table that answers it, and the '
+          'answer is about values versus commands.',
+    ]),
+    DocProse(
+      'What it will still not do is invent a component. If the answer is that '
+      'the package has no navigation bar yet, that is the honest answer, and '
+      'the [Migration](migration) page says what to do instead.',
+    ),
+    DocCallout.warning(
+      'Pre-alpha: the API changes between releases. Pin the plugin to the tag '
+      'matching the version in your `pubspec.yaml`, or the agent will '
+      'confidently write against a package you are not using.',
+    ),
+    DocHeading('Upstream’s answer, and why this differs'),
+    DocProse(
+      'Astryx ships a Node CLI for agents and scaffolding, with editor '
+      'integrations around it. There is no Dart equivalent and none is '
+      'planned: a generated skill covers the same ground without a second '
+      'toolchain in a Flutter project. Both upstream pages are here, marked '
+      '*N/A* — [The Astryx CLI](astryx_cli) and '
+      '[CLI integrations](cli_integrations).',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[Principles](principles) — the reasoning the rules compress.',
+      '[Accessibility](accessibility) — the rules themselves.',
+      '[Migration](migration) — what an agent trained on Material must '
+          'unlearn.',
+      '[Community](community) — the repository the skill is released from.',
+    ]),
+  ],
+);
+
+const DocPage _themes = DocPage(
+  id: 'themes',
+  title: 'Themes',
+  group: _group,
+  description:
+      'The eight themes side by side, and the same components rendered '
+      'in each.',
+  upstreamPath: '/themes',
+  blocks: <DocBlock>[
+    DocProse(
+      'Seven themes ship with the package. The eighth, *acme*, is defined in '
+      'this site’s own example code from a single hex accent — it is in the '
+      'gallery deliberately, because a theme the engine generated should be '
+      'indistinguishable from the seven that were tuned by hand.',
+    ),
+    DocProse(
+      'Every cell below paints its own page background. Nothing in them is '
+      'configured twice: one `AstryxThemeProvider` per cell, and the widgets '
+      'inside resolve whatever the theme above them says.',
+    ),
+    DocExample('themes_gallery', align: DocExampleAlign.stretch),
+    DocHeading('What actually differs'),
+    DocTable(
+      headers: <String>[
+        'Theme',
+        'Accent — light · dark',
+        'Type: base · ratio',
+        'Corners: element / container',
+      ],
+      rows: <List<String>>[
+        <String>[
+          '`neutral`',
+          '`#262626` · `#ebebeb`',
+          '14px · 1.2',
+          '10px / 12px',
+        ],
+        <String>[
+          '`matcha`',
+          '`#3E481D` · `#C0CBA9`',
+          '16px · 1.25',
+          '12px / 18px',
+        ],
+        <String>[
+          '`stone`',
+          '`#25252a` · `#f3f3f5`',
+          '14px · 1.25',
+          '8px / 12px',
+        ],
+        <String>[
+          '`gothic`',
+          '`#E8F1F6` — one value, both modes',
+          '16px · 1.25',
+          '8px / 12px',
+        ],
+        <String>[
+          '`chocolate`',
+          '`#8C5927` · `#d4a06a`',
+          '14px · 1.2',
+          '10px / 12px',
+        ],
+        <String>['`y2k`', '`#2d241b` · `#EDEFFC`', '16px · 1.25', '0 / 0'],
+        <String>[
+          '`butter`',
+          '`#225BFF` · `#FDEE8C`',
+          '14px · 1.25',
+          '8px / 12px',
+        ],
+        <String>[
+          '`acme`',
+          '`#0F62FE`, derived',
+          'the engine defaults',
+          'base 2, multiplier 2',
+        ],
+      ],
+    ),
+    DocProse(
+      'Motion differs too, quietly: `gothic` is slower than the rest '
+      '(150 / 350 / 800ms), `y2k` faster (100 / 250 / 600ms), and everything '
+      'else runs 125 / 300 / 700ms. Under reduced motion all eight are '
+      'identical, because the durations collapse. See [Motion](motion).',
+    ),
+    DocCallout.note(
+      'The themes name real typefaces — Figtree, DM Sans, Playwrite US Trad, '
+      'Fraunces, Montserrat, Poppins, Outfit, Fustat, JetBrains Mono — and '
+      'the package bundles **none** of them, exactly as upstream ships no '
+      'font files. Each falls through its stack to the platform’s own UI font '
+      'until you add the family to your `pubspec.yaml`. What you see below is '
+      'therefore the size, the weight and the rhythm, not the face. See '
+      '[Typography](typography).',
+    ),
+    DocHeading('Light and dark are one definition'),
+    DocProse(
+      'A colour token is not a colour: it is a `light-dark()` pair, and the '
+      'mode picks a half. Dark is not a second theme to maintain, which is why '
+      'both halves of all eight fit on one page.',
+    ),
+    DocExample('themes_light_dark', align: DocExampleAlign.stretch),
+    DocProse(
+      '`gothic` is the exception worth noticing: its tokens are single values '
+      'rather than pairs, so it renders the same in either mode. That is '
+      'upstream’s decision, reproduced — a theme is allowed to have an opinion '
+      'about brightness.',
+    ),
+    DocHeading('The tokens underneath'),
+    DocProse(
+      'Six of the seventy-nine colour tokens, sampled from inside each theme — '
+      'left to right: `accent`, `backgroundBody`, `backgroundCard`, `border`, '
+      '`success` and `error`. The two statuses barely move: green means '
+      'success in every theme, so they are convention-bound rather than '
+      'derived from the accent.',
+    ),
+    DocExample('themes_swatches', align: DocExampleAlign.stretch),
+    DocProse(
+      'There is no way to read a theme’s values except through the resolved '
+      'token set — `theme.color(token)` inside the provider. That is the same '
+      'route every component takes, and the reason a theme swap cannot miss '
+      'one. See [Design tokens](tokens).',
+    ),
+    DocHeading('The same controls, eight times'),
+    DocProse(
+      'Nothing in this example names a colour, a radius or a size. The four '
+      'controls are identical in all eight cells; everything that changes '
+      'between them was resolved from the provider above.',
+    ),
+    DocExample('themes_components', align: DocExampleAlign.stretch),
+    DocHeading('Choosing one'),
+    DocList(<String>[
+      '**`neutral`** — the default, and the one the components were designed '
+          'against. Start here.',
+      '**`stone`** — the same restraint with tighter corners and a larger type '
+          'ratio. The most "internal tool" of the seven.',
+      '**`gothic`** — a fixed dark palette. For a tool that lives on a wall or '
+          'beside a terminal.',
+      '**`matcha`**, **`chocolate`** — a serif or script heading face against '
+          'a sans body. Warmer, and the roundest corners in the set.',
+      '**`y2k`** — every radius is zero. Nothing else in the package makes '
+          'that as visible.',
+      '**`butter`** — a blue accent in light, a yellow one in dark. The '
+          'loudest, and a good test of whether your screens survive a theme '
+          'they were not drawn for.',
+    ]),
+    DocCallout.warning(
+      'Switch this page to `stone` and the error foregrounds go blank: '
+      'upstream sets `--color-on-error` equal to `--color-error`, a 1.00:1 '
+      'contrast failure, and the port reproduces it rather than quietly '
+      'correcting it. Pinned by a test, overridable in one line. See '
+      '[Colour](color).',
+    ),
+    DocHeading('Or define your own'),
+    DocProse(
+      'One hex accent is enough. `defineTheme` runs the same HCT derivation '
+      'the TypeScript version does, so a theme defined in Dart resolves to the '
+      'values React would produce — including the `--color-on-*` foregrounds '
+      'that keep text legible.',
+    ),
+    DocCode('''
+final acmeTheme = defineTheme(
+  const AstryxDefineThemeInput(
+    name: 'acme',
+    color: AstryxColorScaleConfig(accent: '#0F62FE'),
+    radius: AstryxRadiusScaleConfig(base: 2, multiplier: 2),
+  ),
+);'''),
+    DocProse(
+      'That is the `acme` in the picker above, and in every gallery on this '
+      'page. [Theming](theming) covers the rest: extending a theme, overriding '
+      'individual tokens, and swapping the icon registry.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[Theming](theming) — how a theme is defined and installed.',
+      '[Design tokens](tokens) — what a theme resolves to.',
+      '[Colour](color) — the seventy-nine tokens, and what is guaranteed.',
+      '[Theme showcase](theme_showcase) — one of every component, on one '
+          'screen, for judging a theme.',
+    ]),
+  ],
+);
+
+const DocPage _changelog = DocPage(
+  id: 'changelog',
+  title: 'Changelog',
+  group: _group,
+  description: 'What changed in each release. Rendered from `CHANGELOG.md`.',
+  upstreamPath: '/changelog',
+  blocks: <DocBlock>[
+    DocProse(
+      'The format is [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), '
+      'and the versioning is '
+      '[semantic](https://semver.org/spec/v2.0.0.html) — with one caveat '
+      'below. Every release is also on '
+      '[pub.dev](https://pub.dev/packages/astryx_ui/versions) and on the '
+      '[releases page](https://github.com/JayashBhandary/astryx_ui/releases), '
+      'where each tag carries the diff against the one before it.',
+    ),
+    DocCallout.warning(
+      'Pre-alpha. Until 0.1.0 the API may change without a major version '
+      'bump, so pin an exact version if that matters to you. Anything that '
+      'does break is listed here under **Changed** or **Removed**, with what '
+      'to do instead.',
+    ),
+    DocCallout.note(
+      'This page is not written: it is compiled. `tool/gen_changelog.dart` '
+      'parses the repository’s `CHANGELOG.md` — the same file pub serves — '
+      'into the blocks below, so the site cannot fall behind the release it '
+      'describes. See [Working with AI](working_with_ai) for the other '
+      'generators.',
+    ),
+    ...changelogBlocks,
+  ],
+);
+
+const DocPage _community = DocPage(
+  id: 'community',
+  title: 'Community',
+  group: _group,
+  description:
+      'The repository, the issue tracker, and how to contribute a '
+      'component.',
+  upstreamPath: '/community',
+  blocks: <DocBlock>[
+    DocProse(
+      'This is an unofficial port, maintained in the open by one person. There '
+      'is no forum, no chat and no support contract — the repository is the '
+      'whole of it, and an issue is the fastest way to be heard.',
+    ),
+    DocTable(
+      headers: <String>['Where', 'For'],
+      rows: <List<String>>[
+        <String>[
+          '[The repository](https://github.com/JayashBhandary/astryx_ui)',
+          'The package, this site, the tests and the generators.',
+        ],
+        <String>[
+          '[Issues](https://github.com/JayashBhandary/astryx_ui/issues)',
+          'Bugs, divergences from upstream, and a component you need that is '
+              'still marked *Soon*.',
+        ],
+        <String>[
+          '[pub.dev](https://pub.dev/packages/astryx_ui)',
+          'Releases, the API reference generated from the source, and the '
+              'version constraint to copy.',
+        ],
+        <String>[
+          '[Upstream](https://astryx.atmeta.com)',
+          'Meta’s own Astryx: the React design system this ports, and the '
+              'reference every disagreement is settled against.',
+        ],
+      ],
+    ),
+    DocHeading('Reporting something'),
+    DocProse(
+      'A widget bug in this package is nearly always a bug in one '
+      'configuration and not another, so the configuration is most of the '
+      'report:',
+    ),
+    DocList(<String>[
+      'The **theme**, the **brightness**, the **density** and the **text '
+          'direction** — the four pickers at the top of this site. Reproduce '
+          'it here first if you can; a page URL plus four settings is a '
+          'complete report.',
+      'The **platform** and the Flutter version, from `flutter doctor`.',
+      'The smallest widget tree that shows it. The package has no runtime '
+          'configuration to rule out, so a small tree really is enough.',
+      '**What upstream does.** If `astryx.atmeta.com` behaves the same way, it '
+          'is fidelity rather than a bug — see below.',
+    ]),
+    DocCallout.note(
+      'Where this port and upstream disagree, upstream wins, even when '
+      'upstream is wrong: the `stone` theme’s 1.00:1 `--color-on-error` is '
+      'reproduced and pinned by a test rather than corrected. A divergence is '
+      'a bug; a faithfully reproduced defect is a documented limitation. '
+      '[Principles](principles) explains why that trade is made.',
+    ),
+    DocHeading('Contributing a component'),
+    DocProse(
+      'The pages marked *Soon* in the sidebar are the list, and each one names '
+      'the upstream page it will be written from. The loop is short because '
+      'everything downstream of the widget is generated:',
+    ),
+    DocList(
+      <String>[
+        'Write the widget under `lib/src/components/<group>/`, on '
+            '`flutter/widgets`. No literal values — every colour, length, '
+            'radius and duration comes from the theme.',
+        'Test it: the keyboard map, the semantics, both densities, both '
+            'directions, and the token values against upstream where there is '
+            'a fixture to compare with.',
+        'Add a real example to `example/lib/examples/`, wrapped in an '
+            '`// #example id -> Widget` region. The preview and the code block '
+            'both come from it, so they cannot drift.',
+        'Write the page: a `DocPage` in `example/lib/docs/pages/`, replacing '
+            'the stub in `pages/planned/`. Prose, examples, the API table.',
+        'Run the generators and the tests. The parity test will tell you if '
+            'the upstream page you claimed is not the one you documented.',
+      ],
+      ordered: true,
+    ),
+    DocCode('''
+cd example
+dart run tool/gen_snippets.dart
+dart run tool/gen_docs_md.dart
+dart run tool/gen_skill.dart
+flutter test && (cd .. && flutter test)''', language: 'bash'),
+    DocHeading('What "finished" means here'),
+    DocProse(
+      'Fewer components, finished, rather than many that are nearly right. A '
+      'component is done when all of this is true — which is also the review '
+      'checklist:',
+    ),
+    DocList(<String>[
+      'Every value is a token. No colour, padding, radius or duration is '
+          'written into the widget.',
+      'It is operable from the keyboard, and the focus ring is visible where '
+          'it lands.',
+      'It has an accessible name that cannot be omitted, and it announces '
+          'state changes without interrupting for anything less than an error.',
+      'It is correct in both densities, and nothing important is behind hover.',
+      'It is logical throughout, so right-to-left is a `Directionality` and '
+          'nothing else.',
+      'It honours reduced motion without losing information.',
+      'It reads correctly in all eight themes, in both brightnesses.',
+      'Its limitations are written down, in the doc comment and on its page.',
+    ]),
+    DocProse(
+      'What is unlikely to be accepted is invention: a component upstream does '
+      'not have, or a "better" value than the one the engine derives. The '
+      'value of a port is that it is one. Improvements belong upstream, where '
+      'both implementations can inherit them.',
+    ),
+    DocHeading('Licence'),
+    DocProse(
+      'MIT. Not affiliated with, endorsed by, or supported by Meta Platforms, '
+      'Inc. — the name and the design decisions are theirs, the Dart is not. '
+      'The repository’s `NOTICE` records what is derived from upstream and '
+      'under what terms.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[Principles](principles) — the trades this project has already made.',
+      '[Changelog](changelog) — what shipped, and what broke.',
+      '[Working with AI](working_with_ai) — the generators, and the skill '
+          'they produce.',
+    ]),
   ],
 );

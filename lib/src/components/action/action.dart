@@ -7,3 +7,4 @@ export 'button_group.dart';
 // two buttons but are not public API.
 export 'button_style.dart' hide ResolvedButtonStyle, resolveAstryxButtonStyle;
 export 'icon_button.dart';
+export 'toggle_button.dart';

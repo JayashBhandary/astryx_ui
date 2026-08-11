@@ -2,6 +2,7 @@
 library;
 
 import 'package:astryx_ui/src/components/forms/field_status.dart';
+import 'package:astryx_ui/src/components/forms/form_layout.dart';
 import 'package:astryx_ui/src/components/layout/icon.dart';
 import 'package:astryx_ui/src/components/layout/stack.dart';
 import 'package:astryx_ui/src/components/layout/text.dart';
@@ -210,53 +211,100 @@ class _AstryxFieldState extends State<AstryxField> {
         ? l10n.fieldRequired
         : (widget.optional ? l10n.fieldOptional : null);
 
-    Widget field = AstryxVStack(
-      gap: AstryxSpacingToken.spacing1,
-      align: AstryxStackAlign.stretch,
-      children: <Widget>[
-        if (!widget.labelHidden)
-          // The label is decorative *here*, because the control carries it as
-          // its accessible name. Announcing it twice is the classic mistake.
-          ExcludeSemantics(
-            child: AstryxHStack(
+    // A label-left form puts the label beside the control rather than above
+    // it — see `AstryxFormLayout`. Nothing else about the field changes, and
+    // outside such a form the scope is absent and this is false.
+    final labelBeside =
+        !widget.labelHidden && AstryxFormLayoutScope.labelsBesideAt(context);
+
+    final labelBlock = widget.labelHidden
+        ? null
+        // The label is decorative *here*, because the control carries it as
+        // its accessible name. Announcing it twice is the classic mistake.
+        : ExcludeSemantics(
+            child: AstryxVStack(
               gap: AstryxSpacingToken.spacing1,
+              align: AstryxStackAlign.stretch,
               children: <Widget>[
-                // `Flexible`, so a long label wraps instead of overflowing.
-                // At 200% text scale a thirteen-character label is already
-                // wider than a 320px field (ADR-042).
-                Flexible(
-                  child: AstryxText(
-                    widget.label,
-                    type: AstryxTextType.label,
-                    color: widget.enabled
-                        ? AstryxTextColor.primary
-                        : AstryxTextColor.disabled,
-                  ),
+                AstryxHStack(
+                  gap: AstryxSpacingToken.spacing1,
+                  children: <Widget>[
+                    Flexible(
+                      child: AstryxText(
+                        widget.label,
+                        type: AstryxTextType.label,
+                        color: widget.enabled
+                            ? AstryxTextColor.primary
+                            : AstryxTextColor.disabled,
+                      ),
+                    ),
+                    if (marker != null)
+                      AstryxText(
+                        marker,
+                        type: AstryxTextType.supporting,
+                        color: AstryxTextColor.secondary,
+                      ),
+                  ],
                 ),
-                if (marker != null)
+                if (widget.description != null)
                   AstryxText(
-                    marker,
+                    widget.description!,
                     type: AstryxTextType.supporting,
                     color: AstryxTextColor.secondary,
                   ),
               ],
             ),
-          ),
-        if (widget.description != null && !widget.labelHidden)
-          ExcludeSemantics(
-            child: AstryxText(
-              widget.description!,
-              type: AstryxTextType.supporting,
-              color: AstryxTextColor.secondary,
-            ),
-          ),
-        widget.child,
-        if (status?.message != null && status!.message!.isNotEmpty)
-          ExcludeSemantics(
-            child: _StatusMessage(status: status, enabled: widget.enabled),
-          ),
-      ],
-    );
+          );
+
+    var field = labelBeside
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: theme.spacing(AstryxSpacingToken.spacing4),
+            children: <Widget>[
+              SizedBox(
+                // A number, not the widest label in the form: CSS grid sizes
+                // that column for upstream, and Flutter would have to lay every
+                // label out twice to match it.
+                width:
+                    AstryxFormLayoutScope.maybeOf(context)?.labelWidth ?? 160,
+                child: labelBlock,
+              ),
+              Expanded(
+                child: AstryxVStack(
+                  gap: AstryxSpacingToken.spacing1,
+                  align: AstryxStackAlign.stretch,
+                  children: <Widget>[
+                    widget.child,
+                    if (status?.message != null && status!.message!.isNotEmpty)
+                      ExcludeSemantics(
+                        child: _StatusMessage(
+                          status: status,
+                          enabled: widget.enabled,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          )
+        : AstryxVStack(
+            gap: AstryxSpacingToken.spacing1,
+            align: AstryxStackAlign.stretch,
+            children: <Widget>[
+              // The label block uses `Flexible`, so a long label wraps rather
+              // than overflowing: at 200% text scale a thirteen-character
+              // label is already wider than a 320px field (ADR-042).
+              ?labelBlock,
+              widget.child,
+              if (status?.message != null && status!.message!.isNotEmpty)
+                ExcludeSemantics(
+                  child: _StatusMessage(
+                    status: status,
+                    enabled: widget.enabled,
+                  ),
+                ),
+            ],
+          );
 
     if (widget.width != null) {
       field = SizedBox(width: widget.width, child: field);

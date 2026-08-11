@@ -107,6 +107,56 @@ class AstryxLocalizations {
   String charactersOverLimit(int count) =>
       '$count ${count == 1 ? 'character' : 'characters'} over the limit';
 
+  /// Summarises how many options a multiple selector is holding.
+  String multiSelectorSelected(int count) => '$count selected';
+
+  /// The tail of a token list too long for the trigger.
+  String multiSelectorMore(int count) => '+$count more';
+
+  /// The row that ticks or unticks every option.
+  String get multiSelectorSelectAll => 'Select all';
+
+  /// Shown when a search matches no option.
+  String get selectorNoResults => 'No matches';
+
+  /// Names the increment stepper on the field named [label].
+  String numberInputIncrement(String label) =>
+      label.isEmpty ? 'Increase' : 'Increase $label';
+
+  /// Names the decrement stepper on the field named [label].
+  String numberInputDecrement(String label) =>
+      label.isEmpty ? 'Decrease' : 'Decrease $label';
+
+  /// Announces that a typed number was refused and the old value put back.
+  ///
+  /// A number field reverts silently on blur, which leaves a screen-reader user
+  /// with no idea their entry was thrown away — WCAG 3.3.1.
+  String numberInputRejected(String input) => '$input is not accepted here';
+
+  /// The prompt on an empty single-file field.
+  String get fileInputChooseFile => 'Choose file';
+
+  /// The prompt on an empty multiple-file field.
+  String get fileInputChooseFiles => 'Choose files';
+
+  /// Summarises a selection of more than one file.
+  String fileInputSelected(int count) => '$count files selected';
+
+  /// Removes every file chosen in the field named [label].
+  String fileInputClear(String label) =>
+      label.isEmpty ? 'Remove files' : 'Remove the files chosen for $label';
+
+  /// Rejects [name] for not being one of the accepted types.
+  String fileInputWrongType(String name) =>
+      '"$name" is not an accepted file type';
+
+  /// Rejects [name] for being larger than [limit], already formatted.
+  String fileInputTooLarge(String name, String limit) =>
+      '"$name" exceeds the $limit limit';
+
+  /// Rejects a selection of more than [limit] files.
+  String fileInputTooMany(int limit) => 'Maximum $limit files allowed';
+
   // ---------------------------------------------------------------------------
   // Text selection
   //

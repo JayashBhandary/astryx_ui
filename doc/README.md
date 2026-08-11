@@ -26,14 +26,14 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [Density](guides/density.md) — One widget set that is honest on a mouse and on a thumb.
 - [Right-to-left](guides/rtl.md) — Logical throughout, so RTL is a `Directionality` and nothing more.
 - [Accessibility](guides/accessibility.md) — The rules the whole widget set is built to, in one place.
-- Migration — Coming from Material or Cupertino: what maps, what does not, and what to stop doing. *(not ported yet)*
-- Working with AI — The generated agent skill, what it contains, and how to keep it current. *(not ported yet)*
+- [Migration](guides/migration.md) — Coming from Material or Cupertino: what maps, what does not, and what to stop doing.
+- [Working with AI](guides/working_with_ai.md) — The generated agent skill, what it contains, and how to keep it current.
+- [Themes](guides/themes.md) — The eight themes side by side, and the same components rendered in each.
+- [Changelog](guides/changelog.md) — What changed in each release. Rendered from `CHANGELOG.md`.
+- [Community](guides/community.md) — The repository, the issue tracker, and how to contribute a component.
 - Styling libraries — Upstream covers integrating StyleX with other CSS-in-JS libraries. There is no Flutter counterpart. *(not planned)*
 - The Astryx CLI — Upstream ships a Node CLI for agents and scaffolding. This port has no Dart equivalent; the agent skill covers the same ground. *(not planned)*
 - CLI integrations — Editor and agent integrations for the upstream Node CLI. Not applicable. *(not planned)*
-- Themes — The eight themes side by side, and the same components rendered in each. The chrome already switches between them; this page is the gallery. *(not ported yet)*
-- Changelog — What changed in each release. Rendered from `CHANGELOG.md`. *(not ported yet)*
-- Community — The repository, the issue tracker, and how to contribute a component. *(not ported yet)*
 
 ## Layout & typography
 
@@ -44,16 +44,16 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxCenter](components/center.md) — Centres a child, with token padding and a measure.
 - [AstryxDivider](components/divider.md) — A rule between sections, optionally labelled.
 - [AstryxIcon](components/icon.md) — A glyph named semantically and resolved through the theme.
+- [AstryxVisuallyHidden](components/visually_hidden.md) — Content present for a screen reader and absent from the screen.
 - StackItem — A stack child with its own flex, alignment and order. *(not ported yet)*
-- VisuallyHidden — Content present for a screen reader and absent from the screen. *(not ported yet)*
 
 ## Actions
 
 - [AstryxButton](components/button.md) — A labelled action, in four levels of prominence.
 - [AstryxIconButton](components/icon_button.md) — A square button holding a glyph instead of words.
 - [AstryxButtonGroup](components/button_group.md) — Joins related actions into one control, or spaces them as a set.
-- ToggleButton — A button that stays pressed, for a setting rather than an action. *(not ported yet)*
-- ToggleButtonGroup — Toggle buttons as one control — single or multiple selection. *(not ported yet)*
+- [AstryxToggleButton](components/toggle_button.md) — A button that stays pressed — a setting, not an action.
+- [AstryxToggleButtonGroup](components/toggle_button_group.md) — Toggle buttons as one control — single or multiple selection.
 
 ## Forms
 
@@ -61,17 +61,17 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxTextInput](components/text_input.md) — A single-line or multi-line text field, with validation.
 - [AstryxTextArea](components/text_area.md) — A multi-line text field that grows with its content.
 - [AstryxCheckbox](components/checkbox.md) — A two-state or three-state checkbox with a required label.
+- [AstryxCheckboxList](components/checkbox_list.md) — A group of checkboxes sharing one label and one validation state.
 - [AstryxRadioList](components/radio_list.md) — One choice out of several, as an ARIA radio group.
 - [AstryxSwitch](components/switch.md) — A setting that takes effect the moment it is flipped.
 - [AstryxSelector](components/selector.md) — A dropdown that picks one value, with optional search.
-- CheckboxList — A group of checkboxes sharing one label and one validation state. *(not ported yet)*
-- NumberInput — A numeric field with step controls and range clamping. *(not ported yet)*
-- FileInput — A file picker with a drop target and the list of what was chosen. *(not ported yet)*
-- Slider — A value chosen by dragging along a track. *(not ported yet)*
-- MultiSelector — A selector that keeps several choices, shown as removable tokens. *(not ported yet)*
-- ComplexSelector — A selector over grouped or richly-rendered options, beyond a flat list. *(not ported yet)*
-- InputGroup — Adjacent inputs and affixes joined into one bordered container. *(not ported yet)*
-- FormLayout — The column and label geometry a form's fields share. *(not ported yet)*
+- [AstryxNumberInput](components/number_input.md) — A numeric field with steppers, a range and unit text.
+- [AstryxFileInput](components/file_input.md) — A file field: the chooser, the chosen list, and the limits.
+- [AstryxSlider](components/slider.md) — A value, or a range, chosen by dragging along a track.
+- [AstryxMultiSelector](components/multi_selector.md) — A selector that keeps several choices, shown as tokens.
+- [AstryxComplexSelector](components/complex_selector.md) — A selector with a trigger this package draws and a surface you draw.
+- [AstryxInputGroup](components/input_group.md) — Adjacent inputs and affixes joined into one bordered control.
+- [AstryxFormLayout](components/form_layout.md) — The column and label geometry a form’s fields share.
 
 ## Status
 

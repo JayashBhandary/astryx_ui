@@ -10,6 +10,7 @@ final List<DocPage> layoutPages = <DocPage>[
   _center,
   _divider,
   _icon,
+  _visuallyHidden,
 ];
 
 const String _group = DocGroup.layout;
@@ -732,5 +733,121 @@ final List<DocProp> _iconProps = <DocProp>[
     'theme',
     'AstryxIconTheme?',
     'Visual overrides, merged over `AstryxThemeData.icon`.',
+  ),
+];
+
+final DocPage _visuallyHidden = DocPage(
+  id: 'visually_hidden',
+  title: 'AstryxVisuallyHidden',
+  group: _group,
+  description:
+      'Content present for a screen reader and absent from the screen.',
+  source: 'lib/src/foundation/semantics.dart',
+  upstream: 'VisuallyHidden',
+  upstreamPath: '/components/VisuallyHidden',
+  blocks: <DocBlock>[
+    const DocProse(
+      'A child that is announced but never painted, and that measures nothing. '
+      'It exists for one situation: a change the user has to hear about, with '
+      'no widget for it to be the name of.',
+    ),
+    const DocCallout.warning(
+      'Upstream’s `VisuallyHidden` does **two** jobs, and only one of them '
+      'needs a widget here. Reaching for it to name a control is the most '
+      'common false friend in the whole port — read both sections below before '
+      'using it.',
+    ),
+    const DocHeading('The job it is for'),
+    const DocProse(
+      'A count, a result total, a status that has just changed. Nothing on '
+      'screen owns the string, so there is no label to hang it on; a region of '
+      'its own is the only place it can go.',
+    ),
+    const DocExample('visually_hidden_live', align: DocExampleAlign.start),
+    const DocCode(r'''
+AstryxVisuallyHidden(
+  liveRegion: true,
+  child: Text('$remaining characters remaining'),
+)'''),
+    const DocProse(
+      'Rebuilding it with different content is what announces the change. '
+      '`liveRegion` is what makes that announcement interrupt, rather than '
+      'wait to be found.',
+    ),
+    const DocHeading('The job it is not for'),
+    const DocProse(
+      'In React, hidden text inside a button is how the button gets its '
+      'accessible name. Flutter has a better answer, and using this widget for '
+      'it produces a control with an empty name and a stray label loose in the '
+      'tree beside it.',
+    ),
+    const DocCode('''
+// Wrong — a hidden label is not how a control is named.
+AstryxIconButton(
+  icon: AstryxIconName.close,
+  label: '',
+  onPressed: _close,
+)
+
+// Right — the name is a parameter, and it is required.
+AstryxIconButton(
+  icon: AstryxIconName.close,
+  label: 'Close',
+  onPressed: _close,
+)'''),
+    const DocProse(
+      'Every control in the package takes its accessible name directly: '
+      '`label` on [AstryxButton](button) and [AstryxIconButton](icon_button), '
+      '`label` on [AstryxField](field) and on every input. Where a name has to '
+      'be kept but not shown, that is `labelHidden` on the control itself — '
+      '[AstryxTextInput](text_input), [AstryxCheckbox](checkbox), '
+      '[AstryxSwitch](switch), [AstryxSelector](selector) and '
+      '[AstryxTable](table) all have one.',
+    ),
+    const DocCallout.accessibility(
+      'A live region interrupts whatever is being read. Reserve it for changes '
+      'the user must hear — an error, a destructive result, a limit reached. '
+      'Progress that merely happens should not talk over the thing the reader '
+      'is trying to listen to. See [Accessibility](accessibility).',
+    ),
+    const DocHeading('It occupies no space'),
+    const DocProse(
+      'The hidden child below sits between the two badges, and the row is laid '
+      'out exactly as it would be without it.',
+    ),
+    const DocExample('visually_hidden_space'),
+    const DocProse(
+      'A zero-sized box around a fully transparent child — not an `Offstage`, '
+      'and not a `Visibility`. Both of those drop the subtree from the '
+      'semantics tree as well as from the screen, which is the opposite of the '
+      'point, and a plain `Opacity` would too: `alwaysIncludeSemantics` is '
+      'what keeps the content readable. A test pins the size at `Size.zero` '
+      'and the label in the tree.',
+    ),
+    DocApi('AstryxVisuallyHidden', _visuallyHiddenProps),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[Accessibility](accessibility) — the announcement rules in full.',
+      '[AstryxField](field) — labelling anything, including a control the '
+          'package does not supply.',
+      '[Migration](migration) — the other React and Material habits that do '
+          'not carry over.',
+    ]),
+  ],
+);
+
+final List<DocProp> _visuallyHiddenProps = <DocProp>[
+  const DocProp(
+    'child',
+    'Widget',
+    'The content to announce but not paint.',
+    required: true,
+  ),
+  const DocProp(
+    'liveRegion',
+    'bool',
+    'Whether a change to the content is announced as it happens, '
+        'interrupting.',
+    defaultValue: 'false',
   ),
 ];

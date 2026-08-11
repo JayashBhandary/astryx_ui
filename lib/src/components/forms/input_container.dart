@@ -8,6 +8,7 @@ library;
 
 import 'package:astryx_ui/src/components/forms/field.dart';
 import 'package:astryx_ui/src/components/forms/field_status.dart';
+import 'package:astryx_ui/src/components/forms/input_group.dart';
 import 'package:astryx_ui/src/foundation/density.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/foundation/size_scope.dart';
@@ -118,7 +119,16 @@ class AstryxInputContainer extends StatelessWidget {
                     : height)
               : height);
 
-    final borderColor = switch (status?.type) {
+    // Inside an `AstryxInputGroup` the corners that meet a neighbour are
+    // squared, so three controls read as one box. Outside one this is the plain
+    // element radius, as before.
+    final group = AstryxInputGroupScope.maybeOf(context);
+    final effectiveStatus = status ?? group?.status;
+    final corner = Radius.circular(theme.radius(AstryxRadiusToken.element));
+    final borderRadius =
+        group?.position.radius(corner) ?? BorderRadius.all(corner);
+
+    final borderColor = switch (effectiveStatus?.type) {
       null when focused => theme.color(AstryxColorToken.accent),
       null => theme.color(AstryxColorToken.borderEmphasized),
       final type => theme.color(type.color),
@@ -129,7 +139,7 @@ class AstryxInputContainer extends StatelessWidget {
       // friends — which is what those five tokens exist for. Flutter cannot
       // paint an inset BoxShadow, so it is drawn as an inner border instead;
       // see the Border below.
-      if (focused && status == null)
+      if (focused && effectiveStatus == null)
         ...theme.boxShadows(AstryxShadowToken.insetSelected),
     ];
 
@@ -150,12 +160,14 @@ class AstryxInputContainer extends StatelessWidget {
               ? AstryxColorToken.backgroundSurface
               : AstryxColorToken.backgroundMuted,
         ),
-        borderRadius: theme.borderRadius(AstryxRadiusToken.element),
+        borderRadius: borderRadius,
         border: Border.all(
           color: borderColor,
           // Doubled when focused or in a status state, which is how the ring
           // reads as a ring rather than as a slightly darker border.
-          width: theme.borderWidth() * (focused || status != null ? 2 : 1),
+          width:
+              theme.borderWidth() *
+              (focused || effectiveStatus != null ? 2 : 1),
         ),
         boxShadow: shadows.isEmpty ? null : shadows,
       ),
