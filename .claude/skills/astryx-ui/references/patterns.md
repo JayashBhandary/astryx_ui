@@ -578,39 +578,70 @@ class GridResponsiveExample extends StatelessWidget {
 
 ## An empty state
 
-What `AstryxTable.emptyState` usually holds. Say why it is empty and offer the way out.
+What `AstryxList.empty` and `AstryxTable.emptyState` hold. Say why it is empty and offer the way out.
 
 ```dart
-class CenterDemoExample extends StatelessWidget {
-  const CenterDemoExample({super.key});
+class EmptyStateDemoExample extends StatelessWidget {
+  const EmptyStateDemoExample({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AstryxCenter(
-      minHeight: 200,
-      padding: AstryxSpacingToken.spacing6,
-      child: AstryxVStack(
-        gap: AstryxSpacingToken.spacing3,
-        align: AstryxStackAlign.center,
-        children: <Widget>[
-          const AstryxIcon(
-            AstryxIconName.search,
-            size: AstryxIconSize.lg,
-            color: AstryxIconColor.secondary,
+    return AstryxEmptyState(
+      icon: const AstryxIcon(AstryxIconName.search),
+      title: 'No deploys yet',
+      description: 'Push to the main branch and the first one will show here.',
+      actions: <Widget>[
+        AstryxButton(
+          label: 'Read the guide',
+          variant: AstryxButtonVariant.primary,
+          onPressed: () {},
+        ),
+        AstryxButton(label: 'Import a project', onPressed: () {}),
+      ],
+    );
+  }
+}
+```
+
+## A list of rows
+
+The list carries the dividers, the density and the name; the rows carry nothing but themselves.
+
+```dart
+class ListDemoExample extends StatefulWidget {
+  const ListDemoExample({super.key});
+
+  @override
+  State<ListDemoExample> createState() => _ListDemoExampleState();
+}
+
+class _ListDemoExampleState extends State<ListDemoExample> {
+  String? _open;
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxList(
+      label: 'Recent deploys',
+      showDividers: true,
+      children: <Widget>[
+        for (final deploy in const <List<String>>[
+          <String>['api', '2 minutes ago', 'Live'],
+          <String>['web', '1 hour ago', 'Live'],
+          <String>['worker', 'yesterday', 'Rolled back'],
+        ])
+          AstryxItem(
+            label: deploy[0],
+            description: deploy[1],
+            selected: _open == deploy[0],
+            trailing: AstryxBadge(
+              deploy[2],
+              variant: deploy[2] == 'Live'
+                  ? AstryxBadgeVariant.success
+                  : AstryxBadgeVariant.neutral,
+            ),
+            onPressed: () => setState(() => _open = deploy[0]),
           ),
-          const AstryxHeading('No projects yet', level: 4),
-          const AstryxText(
-            'Create one to start collecting requests.',
-            color: AstryxTextColor.secondary,
-            justify: AstryxTextJustify.center,
-          ),
-          AstryxButton(
-            label: 'New project',
-            variant: AstryxButtonVariant.primary,
-            onPressed: () {},
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

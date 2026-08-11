@@ -6,7 +6,7 @@
      Regenerate: cd example && dart run tool/gen_skill.dart
 -->
 
-Scraped from the package source, so this is what the analyser will accept. 69 public enums.
+Scraped from the package source, so this is what the analyser will accept. 76 public enums.
 
 | Enum | Values |
 | --- | --- |
@@ -27,6 +27,7 @@ Scraped from the package source, so this is what the analyser will accept. 69 pu
 | `AstryxEaseToken` | `standard` |
 | `AstryxElementSize` | `sm`, `md`, `lg` |
 | `AstryxElevation` | `none`, `low`, `med`, `high` |
+| `AstryxEmptyStateSize` | `compact`, `standard` |
 | `AstryxFieldStatusType` | `error`, `warning`, `success` |
 | `AstryxFileInputMode` | `input`, `dropzone` |
 | `AstryxFontWeightToken` | `normal`, `medium`, `semibold`, `bold` |
@@ -39,6 +40,10 @@ Scraped from the package source, so this is what the analyser will accept. 69 pu
 | `AstryxInputDevice` | `keyboard`, `pointer` |
 | `AstryxInputGroupPosition` | `start`, `middle`, `end`, `only` |
 | `AstryxInputSize` | `sm`, `md`, `lg` |
+| `AstryxItemDensity` | `compact`, `balanced` |
+| `AstryxKbdSize` | `sm`, `md` |
+| `AstryxLayoutPanelSide` | `start`, `end` |
+| `AstryxMetadataListDirection` | `stacked`, `inline` |
 | `AstryxMultiSelectorTriggerDisplay` | `badges`, `count` |
 | `AstryxNeutralStyle` | `warm`, `cool`, `neutral` |
 | `AstryxOverlayAlign` | `start`, `center`, `end` |
@@ -48,6 +53,8 @@ Scraped from the package source, so this is what the analyser will accept. 69 pu
 | `AstryxProgressVariant` | `accent`, `success`, `warning`, `error`, `neutral` |
 | `AstryxRadioListOrientation` | `vertical`, `horizontal` |
 | `AstryxRadiusToken` | `none`, `inner`, `element`, `container`, `page`, `chat`, `full` |
+| `AstryxResizeEdge` | `start`, `end`, `top`, `bottom` |
+| `AstryxSelectableCardControl` | `checkbox`, `radio` |
 | `AstryxShadowToken` | `low`, `med`, `high`, `insetHover`, `insetSelected`, `insetSuccess`, `insetWarning`, `insetError` |
 | `AstryxSizeToken` | `elementSm`, `elementMd`, `elementLg` |
 | `AstryxSkeletonShape` | `rectangle`, `text`, `circle` |

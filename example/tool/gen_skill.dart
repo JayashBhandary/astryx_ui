@@ -319,8 +319,8 @@ Break these and the result compiles, looks fine, and is wrong.
    severity.
 
 5. **Composite controls are one tab stop.** `AstryxRadioList`, `AstryxTabList`,
-   `AstryxDropdownMenu` and `AstryxSelector` handle their own arrow-key
-   navigation. Do not wrap their children in `Focus` or `InkWell`.
+   `AstryxTreeList`, `AstryxDropdownMenu` and `AstryxSelector` handle their own
+   arrow-key navigation. Do not wrap their children in `Focus` or `InkWell`.
 
 6. **Overlays take a `triggerBuilder`, not a child.** A button consumes its own
    taps, so the overlay hands you a controller:
@@ -344,7 +344,9 @@ Break these and the result compiles, looks fine, and is wrong.
 
 8. **There is one card.** No `ClickableCard`: a non-null `onPressed` makes
    `AstryxCard` a button, with hover, press, a focus ring, `Semantics(button:
-   true)` and tap-target enforcement.
+   true)` and tap-target enforcement. The one exception is
+   `AstryxSelectableCard`, which is a *control*, not a surface: it reports a
+   selection instead of a press, and announces itself as a checkbox or a radio.
 
 9. **Logical directions only.** `start`/`end`, `paddingInline`,
    `EdgeInsetsDirectional`. Never `left`/`right`. RTL is then a
@@ -368,6 +370,7 @@ const String _choosing = '''
 | A segmented control | `AstryxButtonGroup`, selected child takes a louder `variant` |
 | One choice, ≤7 options, all visible | `AstryxRadioList` |
 | One choice, many options | `AstryxSelector` |
+| One choice, options needing a price or a badge | `AstryxSelectableCard` |
 | A boolean that applies now | `AstryxSwitch` |
 | A boolean that applies on submit | `AstryxCheckbox` |
 | A label + validation around your own control | `AstryxField` |
@@ -386,7 +389,25 @@ const String _choosing = '''
 | A wait whose result has a known shape | `AstryxSkeleton` |
 | Row/column with token spacing | `AstryxHStack` / `AstryxVStack` |
 | A responsive tile wall | `AstryxGrid(minWidth: …)` |
-| An empty state | `AstryxCenter(minHeight: …)` |
+| An empty state | `AstryxEmptyState` |
+| The frame around an application | `AstryxAppShell` |
+| The destinations of an application | `AstryxSideNav` / `AstryxTopNav` / `AstryxMobileNav` (one `AstryxNavEntry` list, three containers) |
+| The icon slot in a nav row | `AstryxNavIcon` |
+| A workspace switcher | `AstryxNavHeadingMenu` |
+| The trail back up a hierarchy | `AstryxBreadcrumbs` |
+| A page inside that frame | `AstryxLayout` (pinned header and footer) |
+| A titled band of a page | `AstryxSection` (works out its own heading level) |
+| A draggable panel edge | `AstryxResizeHandle` |
+| An on-this-page contents | `AstryxOutline` |
+| A row: something, a label, something | `AstryxItem` |
+| A stack of rows | `AstryxList` (does **not** virtualise) |
+| Rows that nest | `AstryxTreeList` |
+| A row that must not wrap | `AstryxOverflowList` |
+| Facts about one record | `AstryxMetadataList` |
+| A symbol inside a sentence | `AstryxCode` (`AstryxCode.span` in `Text.rich`) |
+| More than a phrase of code | `AstryxCodeBlock` (no highlighting) |
+| Someone else's words | `AstryxBlockquote` |
+| A keyboard shortcut | `AstryxKbd` |
 ''';
 
 const String _mistakes = '''
@@ -665,9 +686,15 @@ const List<(String, String, String)> _patternIds = <(String, String, String)>[
   ),
   (
     'An empty state',
-    'center_demo',
-    'What `AstryxTable.emptyState` usually holds. Say why it is empty and '
-        'offer the way out.',
+    'empty_state_demo',
+    'What `AstryxList.empty` and `AstryxTable.emptyState` hold. Say why it is '
+        'empty and offer the way out.',
+  ),
+  (
+    'A list of rows',
+    'list_demo',
+    'The list carries the dividers, the density and the name; the rows carry '
+        'nothing but themselves.',
   ),
   (
     'A custom theme, and re-theming a subtree',

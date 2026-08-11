@@ -232,6 +232,59 @@ class AstryxLocalizations {
 
   /// Selects every row in the table.
   String get tableSelectAllRows => 'Select all rows';
+
+  // ---------------------------------------------------------------------------
+  // Lists
+  // ---------------------------------------------------------------------------
+
+  /// Opens the menu holding the [count] items an overflow list could not fit.
+  ///
+  /// Deliberately not `multiSelectorMore`: that one names *chosen* options that
+  /// are not shown, this one names items that did not fit, and the two are not
+  /// the same sentence in every language.
+  String overflowMore(int count) => '+$count more';
+
+  /// The fallback accessible name for an overflow list's menu.
+  String get overflowMenuLabel => 'More items';
+
+  // ---------------------------------------------------------------------------
+  // Code
+  // ---------------------------------------------------------------------------
+
+  /// Copies a code block to the clipboard.
+  ///
+  /// Separate from [textCopy], which is the selection menu's own verb: this
+  /// one names the whole block, not whatever happens to be selected.
+  String get codeCopy => 'Copy code';
+
+  /// Confirms that a code block was copied.
+  String get codeCopied => 'Copied';
+
+  // ---------------------------------------------------------------------------
+  // Navigation
+  // ---------------------------------------------------------------------------
+
+  /// The fallback accessible name for a navigation.
+  String get navLabel => 'Navigation';
+
+  /// Narrows the navigation rail to its icons.
+  String get navCollapse => 'Collapse the navigation';
+
+  /// Restores the labels to a collapsed rail.
+  String get navExpand => 'Expand the navigation';
+
+  /// Opens the navigation drawer. Label on the toggle a narrow window gets.
+  String get navOpen => 'Open the navigation';
+
+  /// The fallback accessible name for a breadcrumb trail.
+  String get breadcrumbsLabel => 'Breadcrumbs';
+
+  /// Opens the menu holding the [count] steps a trail could not fit.
+  ///
+  /// A count rather than a bare ellipsis: "show 3 more" says what pressing it
+  /// will do, and "…" does not.
+  String breadcrumbsMore(int count) =>
+      count == 1 ? 'Show 1 hidden step' : 'Show $count hidden steps';
 }
 
 /// Makes an [AstryxLocalizations] available to the widgets beneath it.

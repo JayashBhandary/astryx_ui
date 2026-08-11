@@ -13,13 +13,16 @@ library;
 
 import 'package:flutter/widgets.dart';
 import 'package:example/examples/alert_dialog_examples.dart';
+import 'package:example/examples/app_shell_examples.dart';
 import 'package:example/examples/badge_examples.dart';
 import 'package:example/examples/banner_examples.dart';
+import 'package:example/examples/blockquote_examples.dart';
 import 'package:example/examples/button_examples.dart';
 import 'package:example/examples/button_group_examples.dart';
 import 'package:example/examples/card_examples.dart';
 import 'package:example/examples/center_examples.dart';
 import 'package:example/examples/checkbox_examples.dart';
+import 'package:example/examples/code_examples.dart';
 import 'package:example/examples/collapsible_examples.dart';
 import 'package:example/examples/collapsible_group_examples.dart';
 import 'package:example/examples/color_examples.dart';
@@ -29,6 +32,7 @@ import 'package:example/examples/dialog_examples.dart';
 import 'package:example/examples/divider_examples.dart';
 import 'package:example/examples/dropdown_menu_examples.dart';
 import 'package:example/examples/elevation_examples.dart';
+import 'package:example/examples/empty_state_examples.dart';
 import 'package:example/examples/field_examples.dart';
 import 'package:example/examples/forms_advanced_examples.dart';
 import 'package:example/examples/forms_group_examples.dart';
@@ -38,13 +42,20 @@ import 'package:example/examples/hover_card_examples.dart';
 import 'package:example/examples/icon_button_examples.dart';
 import 'package:example/examples/icon_examples.dart';
 import 'package:example/examples/icons_examples.dart';
+import 'package:example/examples/item_examples.dart';
 import 'package:example/examples/layout_examples.dart';
+import 'package:example/examples/list_examples.dart';
+import 'package:example/examples/metadata_list_examples.dart';
 import 'package:example/examples/motion_examples.dart';
+import 'package:example/examples/navigation_examples.dart';
+import 'package:example/examples/overflow_list_examples.dart';
 import 'package:example/examples/overlay_examples.dart';
 import 'package:example/examples/platform_examples.dart';
 import 'package:example/examples/popover_examples.dart';
 import 'package:example/examples/progress_bar_examples.dart';
 import 'package:example/examples/radio_list_examples.dart';
+import 'package:example/examples/section_examples.dart';
+import 'package:example/examples/selectable_card_examples.dart';
 import 'package:example/examples/selector_examples.dart';
 import 'package:example/examples/shape_examples.dart';
 import 'package:example/examples/skeleton_examples.dart';
@@ -68,6 +79,7 @@ import 'package:example/examples/theming_examples.dart';
 import 'package:example/examples/toast_examples.dart';
 import 'package:example/examples/toggle_button_examples.dart';
 import 'package:example/examples/tooltip_examples.dart';
+import 'package:example/examples/tree_list_examples.dart';
 import 'package:example/examples/typography_examples.dart';
 import 'package:example/examples/visually_hidden_examples.dart';
 
@@ -76,6 +88,9 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'alert_dialog_demo': (_) => const AlertDialogDemoExample(),
   'alert_dialog_acknowledge': (_) => const AlertDialogAcknowledgeExample(),
   'alert_dialog_extra': (_) => const AlertDialogExtraExample(),
+  'app_shell_demo': (_) => const AppShellDemoExample(),
+  'layout_demo': (_) => const LayoutDemoExample(),
+  'layout_panel': (_) => const LayoutPanelExample(),
   'badge_demo': (_) => const BadgeDemoExample(),
   'badge_variants': (_) => const BadgeVariantsExample(),
   'badge_palettes': (_) => const BadgePalettesExample(),
@@ -86,6 +101,10 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'banner_actions': (_) => const BannerActionsExample(),
   'banner_content': (_) => const BannerContentExample(),
   'banner_icon': (_) => const BannerIconExample(),
+  'blockquote_demo': (_) => const BlockquoteDemoExample(),
+  'blockquote_child': (_) => const BlockquoteChildExample(),
+  'kbd_demo': (_) => const KbdDemoExample(),
+  'kbd_in_context': (_) => const KbdInContextExample(),
   'button_demo': (_) => const ButtonDemoExample(),
   'button_variants': (_) => const ButtonVariantsExample(),
   'button_sizes': (_) => const ButtonSizesExample(),
@@ -114,11 +133,16 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'checkbox_tristate': (_) => const CheckboxTristateExample(),
   'checkbox_sizes': (_) => const CheckboxSizesExample(),
   'checkbox_states': (_) => const CheckboxStatesExample(),
+  'code_demo': (_) => const CodeDemoExample(),
+  'code_span': (_) => const CodeSpanExample(),
+  'code_block_demo': (_) => const CodeBlockDemoExample(),
+  'code_block_numbers': (_) => const CodeBlockNumbersExample(),
   'collapsible_demo': (_) => const CollapsibleDemoExample(),
   'collapsible_rich': (_) => const CollapsibleRichExample(),
   'collapsible_controlled': (_) => const CollapsibleControlledExample(),
   'collapsible_group_demo': (_) => const CollapsibleGroupDemoExample(),
-  'collapsible_group_exclusive': (_) => const CollapsibleGroupExclusiveExample(),
+  'collapsible_group_exclusive': (_) =>
+      const CollapsibleGroupExclusiveExample(),
   'color_roles': (_) => const ColorRolesExample(),
   'color_on_pairs': (_) => const ColorOnPairsExample(),
   'color_palettes': (_) => const ColorPalettesExample(),
@@ -140,6 +164,8 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'dropdown_menu_placement': (_) => const DropdownMenuPlacementExample(),
   'elevation_shadows': (_) => const ElevationShadowsExample(),
   'elevation_button': (_) => const ElevationButtonExample(),
+  'empty_state_demo': (_) => const EmptyStateDemoExample(),
+  'empty_state_sizes': (_) => const EmptyStateSizesExample(),
   'field_demo': (_) => const FieldDemoExample(),
   'field_scope': (_) => const FieldScopeExample(),
   'field_markers': (_) => const FieldMarkersExample(),
@@ -167,7 +193,8 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'heading_demo': (_) => const HeadingDemoExample(),
   'heading_levels': (_) => const HeadingLevelsExample(),
   'heading_display': (_) => const HeadingDisplayExample(),
-  'heading_accessibility_level': (_) => const HeadingAccessibilityLevelExample(),
+  'heading_accessibility_level': (_) =>
+      const HeadingAccessibilityLevelExample(),
   'hover_card_demo': (_) => const HoverCardDemoExample(),
   'hover_card_timing': (_) => const HoverCardTimingExample(),
   'hover_card_sides': (_) => const HoverCardSidesExample(),
@@ -183,8 +210,21 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'icon_labelled': (_) => const IconLabelledExample(),
   'icons_registry_swap': (_) => const IconsRegistrySwapExample(),
   'icons_mirroring': (_) => const IconsMirroringExample(),
+  'item_demo': (_) => const ItemDemoExample(),
+  'item_states': (_) => const ItemStatesExample(),
   'layout_page': (_) => const LayoutPageExample(),
+  'list_demo': (_) => const ListDemoExample(),
+  'list_density': (_) => const ListDensityExample(),
+  'list_empty': (_) => const ListEmptyExample(),
+  'metadata_list_demo': (_) => const MetadataListDemoExample(),
+  'metadata_list_inline': (_) => const MetadataListInlineExample(),
   'motion_durations': (_) => const MotionDurationsExample(),
+  'side_nav_demo': (_) => const SideNavDemoExample(),
+  'top_nav_demo': (_) => const TopNavDemoExample(),
+  'mobile_nav_demo': (_) => const MobileNavDemoExample(),
+  'breadcrumbs_demo': (_) => const BreadcrumbsDemoExample(),
+  'overflow_list_demo': (_) => const OverflowListDemoExample(),
+  'overflow_list_widths': (_) => const OverflowListWidthsExample(),
   'overlay_demo': (_) => const OverlayDemoExample(),
   'overlay_placement': (_) => const OverlayPlacementExample(),
   'platform_targets': (_) => const PlatformTargetsExample(),
@@ -203,6 +243,14 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'radio_list_validation': (_) => const RadioListValidationExample(),
   'radio_list_sizes': (_) => const RadioListSizesExample(),
   'radio_list_disabled': (_) => const RadioListDisabledExample(),
+  'section_demo': (_) => const SectionDemoExample(),
+  'section_nesting': (_) => const SectionNestingExample(),
+  'resize_handle_demo': (_) => const ResizeHandleDemoExample(),
+  'outline_demo': (_) => const OutlineDemoExample(),
+  'selectable_card_demo': (_) => const SelectableCardDemoExample(),
+  'selectable_card_controls': (_) => const SelectableCardControlsExample(),
+  'selectable_card_states': (_) => const SelectableCardStatesExample(),
+  'selectable_card_compact': (_) => const SelectableCardCompactExample(),
   'selector_demo': (_) => const SelectorDemoExample(),
   'selector_sections': (_) => const SelectorSectionsExample(),
   'selector_search': (_) => const SelectorSearchExample(),
@@ -293,14 +341,18 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'toggle_button_demo': (_) => const ToggleButtonDemoExample(),
   'toggle_button_icon_only': (_) => const ToggleButtonIconOnlyExample(),
   'toggle_button_group_single': (_) => const ToggleButtonGroupSingleExample(),
-  'toggle_button_group_multiple': (_) => const ToggleButtonGroupMultipleExample(),
-  'toggle_button_group_vertical': (_) => const ToggleButtonGroupVerticalExample(),
+  'toggle_button_group_multiple': (_) =>
+      const ToggleButtonGroupMultipleExample(),
+  'toggle_button_group_vertical': (_) =>
+      const ToggleButtonGroupVerticalExample(),
   'toggle_button_states': (_) => const ToggleButtonStatesExample(),
   'tooltip_demo': (_) => const TooltipDemoExample(),
   'tooltip_sides': (_) => const TooltipSidesExample(),
   'tooltip_timing': (_) => const TooltipTimingExample(),
   'tooltip_semantics': (_) => const TooltipSemanticsExample(),
   'tooltip_wrapping': (_) => const TooltipWrappingExample(),
+  'tree_list_demo': (_) => const TreeListDemoExample(),
+  'tree_list_controlled': (_) => const TreeListControlledExample(),
   'typography_roles': (_) => const TypographyRolesExample(),
   'typography_in_context': (_) => const TypographyInContextExample(),
   'visually_hidden_live': (_) => const VisuallyHiddenLiveExample(),

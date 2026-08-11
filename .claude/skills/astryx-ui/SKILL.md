@@ -94,8 +94,8 @@ Break these and the result compiles, looks fine, and is wrong.
    severity.
 
 5. **Composite controls are one tab stop.** `AstryxRadioList`, `AstryxTabList`,
-   `AstryxDropdownMenu` and `AstryxSelector` handle their own arrow-key
-   navigation. Do not wrap their children in `Focus` or `InkWell`.
+   `AstryxTreeList`, `AstryxDropdownMenu` and `AstryxSelector` handle their own
+   arrow-key navigation. Do not wrap their children in `Focus` or `InkWell`.
 
 6. **Overlays take a `triggerBuilder`, not a child.** A button consumes its own
    taps, so the overlay hands you a controller:
@@ -119,7 +119,9 @@ Break these and the result compiles, looks fine, and is wrong.
 
 8. **There is one card.** No `ClickableCard`: a non-null `onPressed` makes
    `AstryxCard` a button, with hover, press, a focus ring, `Semantics(button:
-   true)` and tap-target enforcement.
+   true)` and tap-target enforcement. The one exception is
+   `AstryxSelectableCard`, which is a *control*, not a surface: it reports a
+   selection instead of a press, and announces itself as a checkbox or a radio.
 
 9. **Logical directions only.** `start`/`end`, `paddingInline`,
    `EdgeInsetsDirectional`. Never `left`/`right`. RTL is then a
@@ -141,6 +143,7 @@ Break these and the result compiles, looks fine, and is wrong.
 | A segmented control | `AstryxButtonGroup`, selected child takes a louder `variant` |
 | One choice, ≤7 options, all visible | `AstryxRadioList` |
 | One choice, many options | `AstryxSelector` |
+| One choice, options needing a price or a badge | `AstryxSelectableCard` |
 | A boolean that applies now | `AstryxSwitch` |
 | A boolean that applies on submit | `AstryxCheckbox` |
 | A label + validation around your own control | `AstryxField` |
@@ -159,7 +162,25 @@ Break these and the result compiles, looks fine, and is wrong.
 | A wait whose result has a known shape | `AstryxSkeleton` |
 | Row/column with token spacing | `AstryxHStack` / `AstryxVStack` |
 | A responsive tile wall | `AstryxGrid(minWidth: …)` |
-| An empty state | `AstryxCenter(minHeight: …)` |
+| An empty state | `AstryxEmptyState` |
+| The frame around an application | `AstryxAppShell` |
+| The destinations of an application | `AstryxSideNav` / `AstryxTopNav` / `AstryxMobileNav` (one `AstryxNavEntry` list, three containers) |
+| The icon slot in a nav row | `AstryxNavIcon` |
+| A workspace switcher | `AstryxNavHeadingMenu` |
+| The trail back up a hierarchy | `AstryxBreadcrumbs` |
+| A page inside that frame | `AstryxLayout` (pinned header and footer) |
+| A titled band of a page | `AstryxSection` (works out its own heading level) |
+| A draggable panel edge | `AstryxResizeHandle` |
+| An on-this-page contents | `AstryxOutline` |
+| A row: something, a label, something | `AstryxItem` |
+| A stack of rows | `AstryxList` (does **not** virtualise) |
+| Rows that nest | `AstryxTreeList` |
+| A row that must not wrap | `AstryxOverflowList` |
+| Facts about one record | `AstryxMetadataList` |
+| A symbol inside a sentence | `AstryxCode` (`AstryxCode.span` in `Text.rich`) |
+| More than a phrase of code | `AstryxCodeBlock` (no highlighting) |
+| Someone else's words | `AstryxBlockquote` |
+| A keyboard shortcut | `AstryxKbd` |
 
 ## Common mistakes
 
@@ -234,10 +255,32 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxCollapsible` | A disclosure: a header that shows and hides its own content. | `references/overlays.md` |
 | `AstryxCollapsibleGroup` | Several collapsibles as one section, optionally an accordion. | `references/overlays.md` |
 | `AstryxCard` | A bordered surface with a header, a body and a footer — pressable when you give it something to do. | `references/surfaces.md` |
+| `AstryxSelectableCard` | A card that carries selection state — a card-shaped radio or checkbox. | `references/surfaces.md` |
 | `AstryxBadge` | A small label: a status, a count, a category. | `references/surfaces.md` |
 | `AstryxBanner` | An inline message with a severity, announced when it appears. | `references/surfaces.md` |
 | `AstryxTabList` | A strip of tabs that reports a value and owns no panel. | `references/data.md` |
 | `AstryxTable` | A typed data table with sorting, selection, row actions and three column-width strategies. | `references/data.md` |
+| `AstryxItem` | The row the lists are built from — something at the start, a label, and something at the end. | `references/data.md` |
+| `AstryxList` | A vertical list of rows, with the separators and density the design system expects. | `references/data.md` |
+| `AstryxTreeList` | A list of nested, expandable rows. | `references/data.md` |
+| `AstryxOverflowList` | A row of items that measures itself and moves the tail into a menu. | `references/data.md` |
+| `AstryxMetadataList` | Label-and-value pairs, for the details panel of a record. | `references/data.md` |
+| `AstryxEmptyState` | What a list, table or panel shows when it has nothing to show. | `references/data.md` |
+| `AstryxCode` | Inline monospace, for a symbol or a value inside a sentence. | `references/data.md` |
+| `AstryxCodeBlock` | A fenced block of code, with the language, copy control and optional line numbers. | `references/data.md` |
+| `AstryxBlockquote` | A quotation set apart from the surrounding prose. | `references/data.md` |
+| `AstryxKbd` | A keyboard key or chord, rendered as a key. | `references/data.md` |
+| `AstryxSideNav` | A vertical navigation rail with sections, headings, and a collapsed state. | `references/navigation.md` |
+| `AstryxTopNav` | A horizontal application bar, with menus and an optional mega menu. | `references/navigation.md` |
+| `AstryxMobileNav` | The navigation drawer a narrow viewport gets instead of the rail. | `references/navigation.md` |
+| `AstryxNavHeadingMenu` | A navigation heading that is itself a menu trigger. | `references/navigation.md` |
+| `AstryxNavIcon` | The icon slot in a navigation item, sized and aligned for the rail. | `references/navigation.md` |
+| `AstryxBreadcrumbs` | The trail back up a hierarchy, collapsing in the middle when it will not fit. | `references/navigation.md` |
+| `AstryxAppShell` | The outer frame of an application: header, navigation, content, and the responsive behaviour joining them. | `references/app_shell.md` |
+| `AstryxLayout` | The content frame inside the shell — header, footer, panel and scrolling body. | `references/app_shell.md` |
+| `AstryxSection` | A titled band of page content, with its own heading level and spacing. | `references/app_shell.md` |
+| `AstryxResizeHandle` | A draggable divider that resizes the panel beside it. | `references/app_shell.md` |
+| `AstryxOutline` | An on-this-page table of contents, tracking the reader’s position. | `references/app_shell.md` |
 | `Login` | A centred sign-in form, with the validation, error and loading states a real one has. | `references/templates.md` |
 | `Login card` | Sign-in inside a bordered card, using all three card slots. | `references/templates.md` |
 | `SSO login` | Sign-in through identity providers, with an email link as the fallback. | `references/templates.md` |
@@ -293,6 +336,8 @@ Open the reference before writing a component you have not written before. Each 
 - `references/overlays.md` — Overlays.
 - `references/surfaces.md` — Surfaces.
 - `references/data.md` — Data display.
+- `references/navigation.md` — Navigation.
+- `references/app_shell.md` — App shell.
 - `references/templates.md` — Templates.
 
 The prose versions of these pages, for a human, are in `doc/` at the repository root. The live site is `example/`.

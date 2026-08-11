@@ -7,11 +7,230 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-Sixteen new components, and the documentation for them. Two existing widgets
-changed — both fixes, both in **Fixed**.
+Thirty-eight new components, and the documentation for them. Two existing
+widgets changed — both fixes, both in **Fixed**.
 
 ### Added
 
+- **The navigation set**, on one shared model: `AstryxNavEntry` with
+  `AstryxNavItem`, `AstryxNavSection` and `AstryxNavDivider`. The rail, the bar
+  and the drawer take the *same* list, so a navigation written once can be
+  shown three ways — which is what stops an application from having a rail and
+  a drawer that disagree about where its pages are.
+  - **`AstryxSideNav`** — upstream's `SideNav`, `SideNavSection`,
+    `SideNavHeading`, `SideNavItem` and `SideNavCollapseButton` as one widget,
+    three entry types and a button that appears the moment `onCollapsedChanged`
+    is passed. The rows scroll and the `footer` does not, so a rail of forty
+    destinations cannot push the account row off the bottom of the window.
+    - **Collapsed, the labels leave the screen and not the semantics tree.**
+      Each row keeps its label as its accessible name and gains a tooltip that
+      shows on *focus as well as hover*. That is the only concession to hover
+      in the whole widget set, and it is allowed only because the name is still
+      announced and still reachable without a pointer.
+  - **`AstryxTopNav`** — the same entries along a row. An item with `children`
+    opens a menu rather than indenting them, an item with a `panel` opens that
+    panel (upstream's mega menu, which is any widget here rather than four
+    components), and a section becomes a menu named after the group: a bar has
+    no room for a heading over a group, and a menu is exactly what holds one.
+  - **`AstryxMobileNav`** and **`AstryxMobileNavToggle`** — the drawer and its
+    button, ported from `MobileNav` and `MobileNavToggle`. The drawer is a real
+    `AstryxOverlay`; the toggle with no controller drives the enclosing
+    `AstryxAppShell`'s drawer, because two sources of truth for whether the
+    navigation is open is one too many. Closing after a choice is the caller's:
+    a drawer that closed itself would take a mis-tap as a navigation.
+  - **`AstryxNavIcon`** — the fixed square a row reserves for its icon. The
+    square is the point, not the icon: labels line up whether or not their
+    neighbours have icons, and a collapsed rail keeps its glyphs on one axis.
+    It carries the row's state too, taking `--color-icon-accent` when the row
+    is the current destination.
+  - **`AstryxNavHeadingMenu`** — the workspace switcher: the name of the thing
+    you are looking at, and the way to look at a different one. Announced as
+    one name — "Acme Corp, Production" — because that is one fact about where
+    the user is.
+- **`AstryxBreadcrumbs`**, with `AstryxBreadcrumb` — the trail back up a
+  hierarchy. **It collapses in the middle, never at the ends**: the first step
+  is the way out to the top and the last is where the user is, so dropping
+  either to save room throws away the two the trail exists for. What is dropped
+  goes into a menu where it was, and stays reachable.
+  - The row is measured by a render object rather than counted, so the answer
+    is right at every width, and the count settles for the reason
+    `AstryxOverflowList`'s does. A step with no `onPressed` is a label rather
+    than a link, because a link to the page you are on is a link that does
+    nothing.
+- `AstryxItem.labelHidden`, which is what a collapsed rail row is. The same
+  escape hatch `AstryxCheckbox` has, and the same rule: never to skip a label.
+- `AstryxLocalizations.navLabel`, `navCollapse`, `navExpand`, `navOpen`,
+  `breadcrumbsLabel` and `breadcrumbsMore`.
+
+- **`AstryxSection`**, with `AstryxSectionScope` — a titled band of page
+  content. **The heading level looks after itself**: a section inside another
+  section is one level deeper, so a page assembled from parts nobody wrote
+  together still produces an outline a screen reader can navigate. That fault —
+  an outline that jumps from `h2` to `h4`, or repeats `h2` for something that
+  is plainly a sub-part — is the commonest accessibility defect on a long page,
+  and the one nobody can see by looking at the screen. The top level is 2,
+  because 1 belongs to the page's own title in `AstryxLayout.header`; nesting
+  stops at 6, where HTML stops.
+- **`AstryxResizeHandle`**, with `AstryxResizeEdge` — the drag target between
+  two regions, ported from `ResizeHandle` and `useResizable`. It holds no size
+  of its own: `size` in, `onResize` out, so the number lives in the state that
+  also lays the region out.
+  - **Operable from the keyboard**, which is the part hand-rolled resize
+    handles almost always miss: Tab reaches it, the arrows move it by `step`,
+    Home and End go to `min` and `max`, and it announces itself as a slider
+    carrying the current size. `label` is required — nothing is painted on a
+    handle, so without one a screen reader has a slider and no idea what it
+    sizes.
+  - `edge` is one value rather than an axis and a direction, because those two
+    can be set inconsistently and this cannot. The inline edges mirror under
+    RTL so the same physical drag grows the panel either way; the block edges
+    never mirror.
+- **`AstryxOutline`**, with `AstryxOutlineEntry` — the on-this-page contents.
+  **What it tracks is where the anchors are, not what the scroll offset says**:
+  an offset means nothing on its own, since a page of short sections and a page
+  of long ones put the same number in different places. The active entry is the
+  last one whose heading has passed the top of the viewport, with `topOffset`
+  as the slack that stops it flickering between two.
+  - An entry's `anchor` — usually an `AstryxSection.headerKey` — earns its keep
+    twice: without it the outline cannot know where the heading is, and
+    pressing the entry has nowhere to scroll to. Upstream gets both from the
+    DOM id it links to.
+  - The entry being read is marked by an accent rule *and* `selected` in the
+    semantics tree, so it is not conveyed by colour alone.
+
+- **`AstryxAppShell`**, with `AstryxAppShellController` and
+  `AstryxAppShellScope` — the frame an application sits in: a full-width
+  header, navigation beside the content, and the content itself. Below
+  `compactBelow` the navigation moves behind a drawer, and **the drawer is a
+  real `AstryxOverlay`** — it traps focus, closes on Escape or a press on the
+  scrim, hands focus back to the button that opened it, and joins the same
+  dismissal stack as every dialog and menu. Growing back out of the compact
+  layout closes it, because a drawer left open would be a second copy of the
+  navigation now sitting beside the content.
+  - `AstryxAppShell.of(context)` is the port of `useAppShellMobile`: a header
+    cannot know whether to draw a menu button without knowing where the
+    navigation went, and that answer belongs to the shell.
+  - `compactBelow` is a number, not an entry in a breakpoint table. The
+    package still has no breakpoint system, and this does not introduce one:
+    the width at which a particular navigation stops fitting is a fact about
+    that navigation.
+  - `header` and `sidebar` take any widget. `SideNav`, `TopNav` and `MobileNav`
+    are not ported yet, and the shell does not wait for them.
+- **`AstryxLayout`**, with `AstryxLayoutPanelSide` — the page inside the shell:
+  a pinned header, a scrolling body, an optional panel beside it and a pinned
+  footer. A page title that scrolls away takes the reader's place in the
+  hierarchy with it, and a Save button that scrolls away is a Save button
+  people cannot find — which is the whole reason this is a widget rather than a
+  `Column`. The panel scrolls on its own, because one tied to the body's scroll
+  position disappears while you are reading it.
+  - Upstream's five components — `Layout`, `LayoutHeader`, `LayoutContent`,
+    `LayoutPanel`, `LayoutFooter` — are slots here. A slot cannot be put in the
+    wrong order, left out of its parent, or nested inside another by mistake.
+
+- **`AstryxCode`** — a symbol or a value in the code family. Flutter has no
+  inline element, so `AstryxCode.span` returns the same chip as an
+  `InlineSpan` for `Text.rich`, middle-aligned rather than baseline-aligned
+  because the chip carries padding of its own. This is the one place the port
+  cannot follow upstream's shape, and the span is the bridge.
+- **`AstryxCodeBlock`** — a fenced block with the language, a copy button and
+  optional line numbers. **Nothing is highlighted**: upstream colours its
+  blocks with a JavaScript tokeniser that has no counterpart here, and code
+  coloured by a grammar that does not match the language is code that lies
+  about what it means. `language` is a label the reader sees, not an
+  instruction.
+  - The copy button carries the whole string, including the lines scrolled out
+    of sight, and reports back in place by becoming a tick for two seconds
+    rather than raising a toast — a page of ten blocks that shouts once per
+    copy is a page nobody reads.
+  - Long lines scroll sideways rather than wrapping, because in code a line
+    break is not a neutral event; `wrap: true` where the layout matters more.
+    Line numbers are decoration: not copied, and not read aloud.
+- **`AstryxBlockquote`** — a quotation with a rule down its reading-start edge,
+  an optional `attribution` (the em dash is the widget's), and a `child` for
+  the quotations that are not one paragraph of plain text.
+- **`AstryxKbd`**, with `AstryxKbdSize` — one key cap or a chord of them.
+  `AstryxKbd('K')` for the common case, `AstryxKbd.chord` for the rest. **The
+  glyphs are the caller's**: this does not translate `Ctrl` to `⌘` on a Mac,
+  because only the caller knows whether the shortcut is the platform's or the
+  product's own. A chord is one semantics node, and `semanticsLabel` is what
+  turns `⌘ ⇧ P` into a shortcut somebody can follow.
+- `AstryxLocalizations.codeCopy` and `codeCopied`, for the code block's button.
+  Separate from `textCopy`, which is the selection menu's own verb.
+- **`AstryxItem`**, with `AstryxItemDensity` — the row the lists are built
+  from: something at the reading-start edge, a label and a description, and
+  something at the end. Ported from `Item`. A non-null `onPressed` makes it a
+  button, the same rule `AstryxCard` follows; `selected` is a selection rather
+  than a press state, and survives the pointer leaving. A disabled row **stays
+  in the semantics tree** — a control that vanishes when it is disabled tells a
+  screen-reader user the option does not exist rather than that it is
+  unavailable.
+- **`AstryxList`** — upstream's `List` and `ListItem`, where the item is
+  `AstryxItem` and this is only the container: the dividers, the density every
+  row inherits through a scope, and the `list`/`listItem` roles that let a
+  screen reader say "Recent deploys, list, 3 items" before reading the first
+  row. `empty` is what shows when there are no rows, because a list that
+  renders nothing reads as a bug. It is a `Column`: it does not scroll and does
+  not virtualise, the same limit `AstryxTable` carries.
+- **`AstryxTreeList`**, with `AstryxTreeNode` — nested, expandable rows.
+  **Keyboarded as an ARIA tree**: the whole tree is one tab stop, Down and Up
+  move, Right opens a branch and then steps into it, Left closes it and then
+  steps out to the parent, Home and End jump to the ends, and the inline arrows
+  mirror under RTL. The arrows deliberately do not wrap, unlike
+  `AstryxRadioList` — a tree is a hierarchy, and jumping from the last leaf
+  back to the first root loses the reader's place.
+  - Expansion and selection are carried as **ids**, not as flags on the nodes,
+    so rebuilding the tree from fresh data does not lose which branches were
+    open. Expansion is controlled (`expanded`) or uncontrolled
+    (`initiallyExpanded`); selection is always the caller's, as on
+    `AstryxRadioList`.
+  - Pressing a leaf chooses it; pressing a branch opens or closes it *and*
+    chooses it. A tree where clicking a folder does not select it is a tree
+    where the folder can never be the answer.
+- **`AstryxOverflowList`**, with `AstryxOverflowItem` — a row that measures
+  itself and moves its tail into a menu. An item carries both a `child`, drawn
+  while it fits, and a `label`, which names it in a real `AstryxDropdownMenu`
+  row once it does not: **nothing is hidden that a user cannot get to**, and
+  the items the menu stands in for leave the semantics tree so nobody hears the
+  same list twice.
+  - The count is only known during layout, so it reaches the label through a
+    `ValueNotifier` rather than `setState`. The trigger's width depends on the
+    count and the count depends on the trigger's width, but that circle only
+    turns one way — a wider label hides more items, and hiding more never
+    narrows the label — so the row settles within a frame or two of a resize.
+- **`AstryxMetadataList`**, with `AstryxMetadataItem` and
+  `AstryxMetadataListDirection` — the label-and-value pairs of a details panel,
+  `stacked` or `inline`. A pair is one semantics node, so a screen reader reads
+  "Owner, Ada Lovelace" rather than stopping between the two halves of one
+  fact; `semanticsValue` is what a widget-valued pair announces, because a
+  badge left to describe itself contributes one word of information.
+- **`AstryxEmptyState`**, with `AstryxEmptyStateSize` — what a list, a table or
+  a panel shows when it has nothing to show. **Not an error**: nothing has gone
+  wrong when a new project has no deploys, so it does not announce itself, take
+  a status colour, or borrow `AstryxBanner`'s urgency. The title is a level-3
+  heading, standing in the outline where the missing content would have been,
+  and the icon is decorative and excluded.
+- `AstryxLocalizations.overflowMore` and `overflowMenuLabel`, for the overflow
+  trigger. Deliberately not `multiSelectorMore`: that one names *chosen*
+  options that are not shown, this one names items that did not fit, and the
+  two are not the same sentence in every language.
+- **`AstryxSelectableCard`**, with `AstryxSelectableCardControl` — a card that
+  is also a checkbox or a radio, for a choice that needs more than a line of
+  text. Ported from `SelectableCard`. The whole card is the target; Space and
+  Enter both activate it, as they do on a pressable `AstryxCard`. Selection
+  shows three ways at once — the control fills, the border takes the accent,
+  and the surface takes `--color-accent-muted` — and the border and the tint are
+  dropped when the card cannot be operated, the same rule `AstryxCheckboxList`
+  applies to a checked row.
+  - **A radio card reports nothing when it is already selected**, which is what
+    a native radio does: reporting `false` would let a group end up with nothing
+    chosen. A checkbox card deselects, as a checkbox does.
+  - `label` is required and never painted, and the content keeps its own
+    semantics nodes — the opposite of `AstryxCheckbox`, whose label *is* the
+    whole of it. A card announced by its contents is a sentence nobody can act
+    on.
+  - Each card is its own tab stop. There is no shared `name` to group a set the
+    way a browser groups native radios, so `AstryxRadioList` remains the control
+    for four or more terse options.
 - **`AstryxSlider`**, with `AstryxSlider.range`, `AstryxSliderMark`,
   `AstryxSliderOrientation` and `AstryxSliderValueDisplay` — ported from
   `packages/core/src/Slider/`. `min`/`max`/`step`, marks, `formatValue`, both
@@ -237,6 +456,13 @@ changed — both fixes, both in **Fixed**.
   into `menu_surface.dart` (internal) and `menu_entry.dart`, so the dropdown
   and the context menu render the same rows and arrow the same way. The public
   names are unchanged.
+- The selection box and the block-box width rule are now shared rather than
+  copied. `AstryxSelectionIndicator` (internal) is the bordered box the
+  checkbox, the radio and the selectable card all fill — one copy of upstream's
+  three hover percentages instead of three — and `AstryxBlockWidth` (internal)
+  is the card's fill-a-bounded-width, shrink-to-fit-an-unbounded-one rule,
+  moved out of `card.dart`. No pixel changed: the existing goldens pass
+  untouched.
 - `AstryxButtonSurface` takes an optional `selected`, which the toggle button
   passes and the other two buttons do not. Absent rather than false on a plain
   action, so nothing announces "not selected" about a Save button. Upstream

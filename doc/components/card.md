@@ -419,6 +419,7 @@ Three neutral constants plus a palette constructor — thirteen fills in all, ma
 
 ## Related
 
+- [AstryxSelectableCard](selectable_card.md) — a card that records a choice rather than performing an action.
 - [AstryxBanner](banner.md) — for a message with a severity.
 - [AstryxGrid](grid.md) — for a wall of cards.
 - [AstryxPopover](popover.md) — a floating surface rather than an inline one.

@@ -4,13 +4,12 @@ library;
 import 'package:astryx_ui/src/components/feedback/spinner.dart';
 import 'package:astryx_ui/src/components/forms/field.dart';
 import 'package:astryx_ui/src/components/forms/field_status.dart';
+import 'package:astryx_ui/src/components/forms/selection_indicator.dart';
 import 'package:astryx_ui/src/components/forms/toggle_row.dart';
 import 'package:astryx_ui/src/foundation/focus_ring.dart';
-import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
-import 'package:astryx_ui/src/utils/color_mix.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -242,6 +241,10 @@ class _AstryxCheckboxState extends State<AstryxCheckbox>
 }
 
 /// The square itself.
+///
+/// The box, its fill and its hover tints are
+/// [AstryxSelectionIndicator]'s — shared with the radio and the selectable
+/// card. What belongs to a checkbox is the mark inside it.
 class _CheckboxBox extends StatelessWidget {
   const _CheckboxBox({
     required this.value,
@@ -261,33 +264,7 @@ class _CheckboxBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final motion = AstryxMotion.of(context);
-    final extent = AstryxToggleRow.extent(size);
     final filled = value.isFilled;
-
-    final tint = theme.color(AstryxColorToken.tintHover);
-    final accent = theme.color(AstryxColorToken.accent);
-    final surface = theme.color(AstryxColorToken.backgroundSurface);
-    final borderEmphasized = theme.color(AstryxColorToken.borderEmphasized);
-
-    // The hover percentages are upstream's, one for each state: 20% on the
-    // unchecked border, 5% on its fill, 15% on both when checked.
-    final Color background;
-    final Color border;
-    if (!enabled) {
-      background = filled
-          ? accent
-          : theme.color(AstryxColorToken.backgroundMuted);
-      border = theme.color(AstryxColorToken.border);
-    } else if (filled) {
-      background = hovered ? astryxMixColors(accent, tint, 15) : accent;
-      border = background;
-    } else {
-      background = hovered ? astryxMixColors(surface, tint, 5) : surface;
-      border = hovered
-          ? astryxMixColors(borderEmphasized, tint, 20)
-          : borderEmphasized;
-    }
 
     final mark = loading
         ? AstryxSpinner(
@@ -297,11 +274,9 @@ class _CheckboxBox extends StatelessWidget {
                 : theme.color(AstryxColorToken.accent),
           )
         : switch (value) {
-            AstryxCheckboxValue.checked => CustomPaint(
-              size: Size.square(size == AstryxToggleSize.sm ? 12 : 14),
-              painter: _CheckmarkPainter(
-                color: theme.color(AstryxColorToken.onAccent),
-              ),
+            AstryxCheckboxValue.checked => AstryxCheckmark(
+              extent: size == AstryxToggleSize.sm ? 12 : 14,
+              color: theme.color(AstryxColorToken.onAccent),
             ),
             AstryxCheckboxValue.indeterminate => Container(
               width: size == AstryxToggleSize.sm ? 10 : 12,
@@ -314,57 +289,14 @@ class _CheckboxBox extends StatelessWidget {
             AstryxCheckboxValue.unchecked => const SizedBox.shrink(),
           };
 
-    return Opacity(
-      // Upstream dims the whole disabled control rather than recolouring each
-      // part, so the same 0.5 lands here.
-      opacity: enabled ? 1.0 : 0.5,
-      child: AnimatedContainer(
-        duration: motion.duration(AstryxDurationToken.fast),
-        curve: motion.curve(),
-        width: extent,
-        height: extent,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: theme.borderRadius(AstryxRadiusToken.inner),
-          border: Border.all(color: border, width: theme.borderWidth()),
-        ),
-        child: mark,
-      ),
+    return AstryxSelectionIndicator(
+      shape: AstryxSelectionIndicatorShape.square,
+      filled: filled,
+      extent: AstryxToggleRow.extent(size),
+      enabled: enabled,
+      hovered: hovered,
+      theme: theme,
+      child: mark,
     );
   }
-}
-
-/// The tick, drawn as a stroked path rather than an icon.
-///
-/// Upstream ships an inline `<svg viewBox="0 0 10 10">` with the path
-/// `M8.5 2.5L4 7.5L1.5 5` — not a Lucide glyph — so this is the same geometry
-/// scaled to the box.
-class _CheckmarkPainter extends CustomPainter {
-  const _CheckmarkPainter({required this.color});
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final s = size.width / 10;
-    final path = Path()
-      ..moveTo(8.5 * s, 2.5 * s)
-      ..lineTo(4 * s, 7.5 * s)
-      ..lineTo(1.5 * s, 5 * s);
-
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5 * s
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_CheckmarkPainter oldDelegate) =>
-      color != oldDelegate.color;
 }

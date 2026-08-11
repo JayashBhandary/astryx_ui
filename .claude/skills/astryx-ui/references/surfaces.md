@@ -134,6 +134,118 @@ class _CardDemoExampleState extends State<CardDemoExample> {
 
 ---
 
+## AstryxSelectableCard
+
+`lib/src/components/surface/selectable_card.dart` · upstream `SelectableCard`
+
+A card that carries selection state — a card-shaped radio or checkbox.
+
+```dart
+class SelectableCardDemoExample extends StatefulWidget {
+  const SelectableCardDemoExample({super.key});
+
+  @override
+  State<SelectableCardDemoExample> createState() =>
+      _SelectableCardDemoExampleState();
+}
+
+class _SelectableCardDemoExampleState extends State<SelectableCardDemoExample> {
+  String _plan = 'pro';
+
+  @override
+  Widget build(BuildContext context) {
+    // One choice out of three, where each option carries a price and a line of
+    // detail — more than a radio row can hold, which is the whole reason to
+    // reach for a card here.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        for (final plan in const <List<String>>[
+          <String>['starter', 'Starter', r'$0', 'One project, one seat'],
+          <String>['pro', 'Pro', r'$20', 'Unlimited projects, five seats'],
+          <String>['scale', 'Scale', r'$80', 'Unlimited seats, SSO, audit log'],
+        ])
+          AstryxSelectableCard(
+            label: '${plan[1]} plan',
+            semanticsHint: '${plan[2]} per month. ${plan[3]}',
+            control: AstryxSelectableCardControl.radio,
+            selected: _plan == plan[0],
+            onSelectedChanged: (_) => setState(() => _plan = plan[0]),
+            child: AstryxVStack(
+              gap: AstryxSpacingToken.spacing1,
+              align: AstryxStackAlign.stretch,
+              children: <Widget>[
+                AstryxHStack(
+                  justify: AstryxStackJustify.between,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Flexible(
+                      child: AstryxText(plan[1], type: AstryxTextType.large),
+                    ),
+                    AstryxText('${plan[2]}/mo'),
+                  ],
+                ),
+                AstryxText(
+                  plan[3],
+                  type: AstryxTextType.supporting,
+                  color: AstryxTextColor.secondary,
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** `label` is **required**, and is not painted. Without it a screen reader announces the card’s whole contents as the control’s name, which for a heading, a price and a badge is a sentence nobody can act on. The content keeps its own semantics nodes, so it is still read — after the user has been told what the card is. Put anything else it needs to hear in `semanticsHint`.
+- **Note:** Each card is its own tab stop, unlike AstryxRadioList (references/forms.md), which is one tab stop with arrow-key traversal. A set of cards is a set of separate controls — there is no shared `name` to group them the way a browser groups native radios — so Tab visits each one. That is the cost of the extra content; for four or more terse options, the radio list is the better control.
+
+| Control | Announced as | Pressing it again |
+| --- | --- | --- |
+| `checkbox` | a checkbox, checked or not | deselects it |
+| `radio` | a radio, `inMutuallyExclusiveGroup` | **reports nothing** |
+
+| State | Set by | Reads as |
+| --- | --- | --- |
+| Interactive | `onSelectedChanged` non-null, `enabled: true` | hover, press, a focus ring, a tap target |
+| Inert | `onSelectedChanged: null` | not dimmed, still focusable and still announced, no tap action |
+| Disabled | `enabled: false` | dimmed, skipped by Tab, `enabled: false` announced |
+
+### AstryxSelectableCard
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `child` **(required)** | `Widget` | — | The content beside the control. |
+| `label` **(required)** | `String` | — | The accessible name. Required, and never painted. |
+| `selected` **(required)** | `bool` | — | Whether the card is selected. |
+| `onSelectedChanged` | `ValueChanged<bool>?` | — | Called with the selection a press would produce. Null leaves the card inert without dimming it. |
+| `control` | `AstryxSelectableCardControl` | `AstryxSelectableCardControl.checkbox` | Whether the card behaves as a checkbox or as a radio. |
+| `controlSize` | `AstryxToggleSize` | `AstryxToggleSize.md` | The size of the control, not of the card. |
+| `variant` | `AstryxCardVariant` | `AstryxCardVariant.standard` | The unselected fill. Selection overrides it. |
+| `elevation` | `AstryxElevation` | `AstryxElevation.none` | The resting shadow. |
+| `padding` | `AstryxSpacingToken` | `AstryxSpacingToken.spacing4` | The inner padding, and the gap between the control and the content. |
+| `enabled` | `bool` | `true` | Whether the card accepts input. |
+| `semanticsHint` | `String?` | — | What a screen reader reads after the name — a price, a caveat, why the card is unavailable. |
+| `width` | `double?` | — | A fixed width. Null sizes to the parent. |
+| `maxWidth` | `double?` | — | A ceiling on the width. |
+| `minHeight` | `double?` | — | A floor under the height. |
+| `focusNode` | `FocusNode?` | — | The focus node. |
+| `autofocus` | `bool` | `false` | Whether to take focus when first built. |
+
+### AstryxSelectableCardControl
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `checkbox` | `AstryxSelectableCardControl` | — | A checkbox. Any number of cards in the set may be selected, and pressing a selected card deselects it. The default. |
+| `radio` | `AstryxSelectableCardControl` | — | A radio. One card in the set is selected, and pressing it again reports nothing. |
+
+---
+
 ## AstryxBadge
 
 `lib/src/components/surface/badge.dart` · upstream `Badge`

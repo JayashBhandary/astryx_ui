@@ -1281,16 +1281,30 @@ LayoutBuilder(
       'group. Set the gap on the stack rather than padding the children, and '
       'a reordered section keeps the rhythm.',
     ),
+    DocHeading('The frame around the page'),
+    DocProse(
+      'Everything above is a page with nothing around it. An application has a '
+      'frame too: [AstryxAppShell](app_shell) for the window — the header, the '
+      'navigation, and what happens to the navigation when the window is '
+      'narrow — and [AstryxLayout](layout) for the page inside it, whose '
+      'header and footer stay put while the body scrolls.',
+    ),
+    DocProse(
+      'Neither introduces a breakpoint table. `AstryxAppShell.compactBelow` is '
+      'the same kind of number as the one beside the two-column form above: '
+      'one threshold, owned by the widget that needs it.',
+    ),
     DocHeading('What is not here yet'),
     DocProse(
-      'Upstream’s layout page also covers the application shell — the nav bar, '
-      'the sidebar, the breadcrumb trail above the content. Those components '
-      'are not ported yet; they carry the *Soon* badge under **Navigation** '
-      'and **App shell** in the sidebar. Until they land, a shell is a '
-      '`Row` of your own around the content column.',
+      'Upstream’s layout page also covers the navigation itself — the nav bar, '
+      'the rail, the breadcrumb trail above the content. Those carry the '
+      '*Soon* badge under **Navigation** in the sidebar. Until they land, the '
+      'shell’s `header` and `sidebar` take any widget, and an '
+      '[AstryxList](list) of [AstryxItem](item)s gets a long way.',
     ),
     DocHeading('Related'),
     DocList(<String>[
+      '[AstryxAppShell](app_shell) — the frame around the whole application.',
       '[Spacing](spacing) — the scale the gaps come from.',
       '[Dashboard](dashboard) — a whole screen, assembled.',
       '[Two-column form](form_two_column) — the `LayoutBuilder` pattern in '

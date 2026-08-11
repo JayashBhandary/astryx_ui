@@ -2,7 +2,12 @@ import 'package:example/docs/groups.dart';
 import 'package:example/docs/model.dart';
 
 /// Surfaces — the containers, and the labels that sit on them.
-final List<DocPage> surfacePages = <DocPage>[_card, _badge, _banner];
+final List<DocPage> surfacePages = <DocPage>[
+  _card,
+  _selectableCard,
+  _badge,
+  _banner,
+];
 
 const String _group = DocGroup.surfaces;
 
@@ -102,6 +107,8 @@ AstryxCard
     ),
     const DocHeading('Related'),
     const DocList(<String>[
+      '[AstryxSelectableCard](selectable_card) — a card that records a choice '
+          'rather than performing an action.',
       '[AstryxBanner](banner) — for a message with a severity.',
       '[AstryxGrid](grid) — for a wall of cards.',
       '[AstryxPopover](popover) — a floating surface rather than an inline '
@@ -191,6 +198,250 @@ final List<DocProp> _cardVariantProps = <DocProp>[
     'palette',
     'AstryxCardVariant.palette(AstryxPalette)',
     'One of the ten categorical families.',
+  ),
+];
+
+final DocPage _selectableCard = DocPage(
+  id: 'selectable_card',
+  title: 'AstryxSelectableCard',
+  group: _group,
+  description:
+      'A card that carries selection state — a card-shaped radio or checkbox.',
+  source: 'lib/src/components/surface/selectable_card.dart',
+  upstream: 'SelectableCard',
+  upstreamPath: '/components/SelectableCard',
+  blocks: <DocBlock>[
+    const DocExample('selectable_card_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode("import 'package:astryx_ui/astryx_ui.dart';"),
+    const DocCode('''
+AstryxSelectableCard(
+  label: 'Pro plan',
+  control: AstryxSelectableCardControl.radio,
+  selected: plan == Plan.pro,
+  onSelectedChanged: (_) => setState(() => plan = Plan.pro),
+  child: const AstryxText('Unlimited projects'),
+)'''),
+    const DocProse(
+      'A [card](card) records nothing and a pressable one *does* something; '
+      'this one *records* something. Reach for it when a choice needs more '
+      'than a line of text — a plan with a price, a region with a latency, an '
+      'integration with a logo. Below that the choice belongs in an '
+      '[AstryxRadioList](radio_list) or an '
+      '[AstryxCheckboxList](checkbox_list), which are cheaper to scan and '
+      'cheaper to operate.',
+    ),
+    const DocHeading('Checkbox or radio'),
+    const DocProse(
+      '`control` is the same distinction as a [checkbox](checkbox) against a '
+      '[radio group](radio_list), moved onto a card: a checkbox card is one of '
+      'several independent choices, a radio card is one choice out of several. '
+      'It changes the control that is drawn, what a screen reader is told, and '
+      'what a second press does.',
+    ),
+    const DocTable(
+      headers: <String>['Control', 'Announced as', 'Pressing it again'],
+      rows: <List<String>>[
+        <String>[
+          '`checkbox`',
+          'a checkbox, checked or not',
+          'deselects it',
+        ],
+        <String>[
+          '`radio`',
+          'a radio, `inMutuallyExclusiveGroup`',
+          '**reports nothing**',
+        ],
+      ],
+    ),
+    const DocProse(
+      'A radio card reporting nothing is deliberate, and is what a native '
+      'radio does: a choice out of several cannot be un-made by pressing it '
+      'again, and reporting `false` would let a group end up with nothing '
+      'selected.',
+    ),
+    const DocExample(
+      'selectable_card_controls',
+      align: DocExampleAlign.stretch,
+    ),
+    const DocHeading('Anatomy'),
+    const DocTree('''
+AstryxSelectableCard
+├── control   ← a checkbox or a radio, at the reading-start edge
+└── child     ← the content. Required, and arbitrary'''),
+    const DocProse(
+      'There is one slot, not the card’s three: a header above the control '
+      'would put the choice’s title out of line with the thing that records '
+      'it. Compose the inside with the stacks, as the examples do. `padding` '
+      'is both the card’s inset and the gap between the control and the '
+      'content, so the rhythm cannot drift.',
+    ),
+    const DocHeading('Selection'),
+    const DocProse(
+      'Selection shows three ways at once — the control fills, the border '
+      'takes the accent, and the surface takes `--color-accent-muted`. A card '
+      'is large enough that a user scanning for the selected one should not '
+      'have to hunt for a small tick.',
+    ),
+    const DocProse(
+      'The border and the tint are dropped when the card cannot be operated, '
+      'because a tint that survives that reads as an affordance the card does '
+      'not have — the same rule [AstryxCheckboxList](checkbox_list) applies to '
+      'a checked row. The control still fills, so a card the user cannot '
+      'change is still visibly the selected one.',
+    ),
+    const DocExample('selectable_card_states', align: DocExampleAlign.stretch),
+    const DocTable(
+      headers: <String>['State', 'Set by', 'Reads as'],
+      rows: <List<String>>[
+        <String>[
+          'Interactive',
+          '`onSelectedChanged` non-null, `enabled: true`',
+          'hover, press, a focus ring, a tap target',
+        ],
+        <String>[
+          'Inert',
+          '`onSelectedChanged: null`',
+          'not dimmed, still focusable and still announced, no tap action',
+        ],
+        <String>[
+          'Disabled',
+          '`enabled: false`',
+          'dimmed, skipped by Tab, `enabled: false` announced',
+        ],
+      ],
+    ),
+    const DocHeading('Size'),
+    const DocProse(
+      '`controlSize` sizes the control, not the card: `AstryxToggleSize.sm` is '
+      'a 20px box rather than 24px, the same two sizes the '
+      '[checkbox](checkbox) comes in. With `padding` one step down it is what '
+      'a card holding a single line wants, so the card is not mostly box.',
+    ),
+    const DocExample('selectable_card_compact'),
+    const DocCallout.accessibility(
+      '`label` is **required**, and is not painted. Without it a screen reader '
+      'announces the card’s whole contents as the control’s name, which for a '
+      'heading, a price and a badge is a sentence nobody can act on. The '
+      'content keeps its own semantics nodes, so it is still read — after the '
+      'user has been told what the card is. Put anything else it needs to hear '
+      'in `semanticsHint`.',
+    ),
+    const DocCallout.note(
+      'Each card is its own tab stop, unlike [AstryxRadioList](radio_list), '
+      'which is one tab stop with arrow-key traversal. A set of cards is a set '
+      'of separate controls — there is no shared `name` to group them the way '
+      'a browser groups native radios — so Tab visits each one. That is the '
+      'cost of the extra content; for four or more terse options, the radio '
+      'list is the better control.',
+    ),
+    DocApi('AstryxSelectableCard', _selectableCardProps),
+    DocApi(
+      'AstryxSelectableCardControl',
+      _selectableCardControlProps,
+      description: 'Which control the card draws, and therefore what it means.',
+    ),
+    const DocHeading('Related'),
+    const DocList(<String>[
+      '[AstryxCard](card) — the same surface, for content rather than a '
+          'choice.',
+      '[AstryxRadioList](radio_list) — one choice out of several, as rows.',
+      '[AstryxCheckboxList](checkbox_list) — independent choices, as rows.',
+    ]),
+  ],
+);
+
+final List<DocProp> _selectableCardProps = <DocProp>[
+  const DocProp(
+    'child',
+    'Widget',
+    'The content beside the control.',
+    required: true,
+  ),
+  const DocProp(
+    'label',
+    'String',
+    'The accessible name. Required, and never painted.',
+    required: true,
+  ),
+  const DocProp(
+    'selected',
+    'bool',
+    'Whether the card is selected.',
+    required: true,
+  ),
+  const DocProp(
+    'onSelectedChanged',
+    'ValueChanged<bool>?',
+    'Called with the selection a press would produce. Null leaves the card '
+        'inert without dimming it.',
+  ),
+  const DocProp(
+    'control',
+    'AstryxSelectableCardControl',
+    'Whether the card behaves as a checkbox or as a radio.',
+    defaultValue: 'AstryxSelectableCardControl.checkbox',
+  ),
+  const DocProp(
+    'controlSize',
+    'AstryxToggleSize',
+    'The size of the control, not of the card.',
+    defaultValue: 'AstryxToggleSize.md',
+  ),
+  const DocProp(
+    'variant',
+    'AstryxCardVariant',
+    'The unselected fill. Selection overrides it.',
+    defaultValue: 'AstryxCardVariant.standard',
+  ),
+  const DocProp(
+    'elevation',
+    'AstryxElevation',
+    'The resting shadow.',
+    defaultValue: 'AstryxElevation.none',
+  ),
+  const DocProp(
+    'padding',
+    'AstryxSpacingToken',
+    'The inner padding, and the gap between the control and the content.',
+    defaultValue: 'AstryxSpacingToken.spacing4',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether the card accepts input.',
+    defaultValue: 'true',
+  ),
+  const DocProp(
+    'semanticsHint',
+    'String?',
+    'What a screen reader reads after the name — a price, a caveat, why the '
+        'card is unavailable.',
+  ),
+  const DocProp('width', 'double?', 'A fixed width. Null sizes to the parent.'),
+  const DocProp('maxWidth', 'double?', 'A ceiling on the width.'),
+  const DocProp('minHeight', 'double?', 'A floor under the height.'),
+  const DocProp('focusNode', 'FocusNode?', 'The focus node.'),
+  const DocProp(
+    'autofocus',
+    'bool',
+    'Whether to take focus when first built.',
+    defaultValue: 'false',
+  ),
+];
+
+final List<DocProp> _selectableCardControlProps = <DocProp>[
+  const DocProp(
+    'checkbox',
+    'AstryxSelectableCardControl',
+    'A checkbox. Any number of cards in the set may be selected, and pressing '
+        'a selected card deselects it. The default.',
+  ),
+  const DocProp(
+    'radio',
+    'AstryxSelectableCardControl',
+    'A radio. One card in the set is selected, and pressing it again reports '
+        'nothing.',
   ),
 ];
 

@@ -7,11 +7,14 @@ library;
 
 import 'package:example/docs/model.dart';
 import 'package:example/docs/pages/actions.dart';
+import 'package:example/docs/pages/app_shell.dart';
 import 'package:example/docs/pages/data.dart';
+import 'package:example/docs/pages/data_lists.dart';
 import 'package:example/docs/pages/feedback.dart';
 import 'package:example/docs/pages/forms.dart';
 import 'package:example/docs/pages/guides.dart';
 import 'package:example/docs/pages/layout.dart';
+import 'package:example/docs/pages/navigation.dart';
 import 'package:example/docs/pages/overlays.dart';
 import 'package:example/docs/pages/planned/components.dart';
 import 'package:example/docs/pages/planned/guides.dart';
@@ -40,6 +43,9 @@ final List<DocPage> docPages = <DocPage>[
   ...overlayPages,
   ...surfacePages,
   ...dataPages,
+  ...listPages,
+  ...navigationPages,
+  ...appShellPages,
   ...templatePages,
   ...plannedGuidePages,
   ...plannedComponentPages,

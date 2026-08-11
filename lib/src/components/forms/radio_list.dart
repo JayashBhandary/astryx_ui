@@ -3,13 +3,13 @@ library;
 
 import 'package:astryx_ui/src/components/forms/field.dart';
 import 'package:astryx_ui/src/components/forms/field_status.dart';
+import 'package:astryx_ui/src/components/forms/selection_indicator.dart';
 import 'package:astryx_ui/src/components/forms/toggle_row.dart';
 import 'package:astryx_ui/src/foundation/focus_ring.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
-import 'package:astryx_ui/src/utils/color_mix.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -343,6 +343,10 @@ class _AstryxRadioListState<T> extends State<AstryxRadioList<T>>
 }
 
 /// The circle and its dot.
+///
+/// The circle, its fill and its hover tints are
+/// [AstryxSelectionIndicator]'s — shared with the checkbox and the selectable
+/// card. What belongs to a radio is the dot that grows in.
 class _RadioDot extends StatelessWidget {
   const _RadioDot({
     required this.selected,
@@ -361,58 +365,28 @@ class _RadioDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final motion = AstryxMotion.of(context);
-    final extent = AstryxToggleRow.extent(size);
     final dot = size == AstryxToggleSize.sm ? 8.0 : 10.0;
 
-    final tint = theme.color(AstryxColorToken.tintHover);
-    final accent = theme.color(AstryxColorToken.accent);
-    final surface = theme.color(AstryxColorToken.backgroundSurface);
-    final borderEmphasized = theme.color(AstryxColorToken.borderEmphasized);
-
-    final Color background;
-    final Color border;
-    if (!enabled) {
-      background = selected
-          ? accent
-          : theme.color(AstryxColorToken.backgroundMuted);
-      border = theme.color(AstryxColorToken.border);
-    } else if (selected) {
-      background = hovered ? astryxMixColors(accent, tint, 15) : accent;
-      border = background;
-    } else {
-      background = hovered ? astryxMixColors(surface, tint, 5) : surface;
-      border = hovered
-          ? astryxMixColors(borderEmphasized, tint, 20)
-          : borderEmphasized;
-    }
-
-    return Opacity(
-      opacity: enabled ? 1.0 : 0.5,
-      child: AnimatedContainer(
+    return AstryxSelectionIndicator(
+      shape: AstryxSelectionIndicatorShape.circle,
+      filled: selected,
+      extent: AstryxToggleRow.extent(size),
+      enabled: enabled,
+      hovered: hovered,
+      theme: theme,
+      child: AnimatedScale(
+        // The dot grows in rather than appearing, which is the only motion
+        // in the control and the only thing distinguishing the two states
+        // for a user who cannot rely on the fill colour.
+        scale: selected ? 1 : 0,
         duration: motion.duration(AstryxDurationToken.fast),
         curve: motion.curve(),
-        width: extent,
-        height: extent,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: background,
-          shape: BoxShape.circle,
-          border: Border.all(color: border, width: theme.borderWidth()),
-        ),
-        child: AnimatedScale(
-          // The dot grows in rather than appearing, which is the only motion
-          // in the control and the only thing distinguishing the two states
-          // for a user who cannot rely on the fill colour.
-          scale: selected ? 1 : 0,
-          duration: motion.duration(AstryxDurationToken.fast),
-          curve: motion.curve(),
-          child: Container(
-            width: dot,
-            height: dot,
-            decoration: BoxDecoration(
-              color: theme.color(AstryxColorToken.onAccent),
-              shape: BoxShape.circle,
-            ),
+        child: Container(
+          width: dot,
+          height: dot,
+          decoration: BoxDecoration(
+            color: theme.color(AstryxColorToken.onAccent),
+            shape: BoxShape.circle,
           ),
         ),
       ),

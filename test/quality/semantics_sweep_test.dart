@@ -142,6 +142,33 @@ void main() {
           finder: () => find.byType(AstryxCard),
           name: 'Open report',
         ),
+        'AstryxItem': spec(
+          enabled: AstryxItem(label: 'Ada Lovelace', onPressed: () {}),
+          disabled: AstryxItem(
+            label: 'Ada Lovelace',
+            enabled: false,
+            onPressed: () {},
+          ),
+          finder: () => find.byType(AstryxItem),
+          name: 'Ada Lovelace',
+        ),
+        'AstryxSelectableCard': spec(
+          enabled: AstryxSelectableCard(
+            label: 'Pro plan',
+            selected: false,
+            onSelectedChanged: (_) {},
+            child: const AstryxText('Unlimited projects'),
+          ),
+          disabled: AstryxSelectableCard(
+            label: 'Pro plan',
+            selected: false,
+            enabled: false,
+            onSelectedChanged: (_) {},
+            child: const AstryxText('Unlimited projects'),
+          ),
+          finder: () => find.byType(AstryxSelectableCard),
+          name: 'Pro plan',
+        ),
       };
 
   group('every interactive widget has an accessible name', () {

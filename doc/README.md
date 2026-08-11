@@ -97,24 +97,47 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 ## Surfaces
 
 - [AstryxCard](components/card.md) — A bordered surface with a header, a body and a footer — pressable when you give it something to do.
+- [AstryxSelectableCard](components/selectable_card.md) — A card that carries selection state — a card-shaped radio or checkbox.
 - [AstryxBadge](components/badge.md) — A small label: a status, a count, a category.
 - [AstryxBanner](components/banner.md) — An inline message with a severity, announced when it appears.
-- SelectableCard — A card that carries selection state, for a card-shaped radio or checkbox. *(not ported yet)*
 
 ## Data display
 
 - [AstryxTabList](components/tab_list.md) — A strip of tabs that reports a value and owns no panel.
 - [AstryxTable](components/table.md) — A typed data table with sorting, selection, row actions and three column-width strategies.
-- List — A vertical list of rows, with the separators and density the design system expects. *(not ported yet)*
-- TreeList — A list of nested, expandable rows. *(not ported yet)*
-- OverflowList — A row of items that measures itself and moves the tail into a menu. *(not ported yet)*
-- MetadataList — Label-and-value pairs, for the details panel of a record. *(not ported yet)*
-- Item — The row primitive the lists and menus share — icon, label, description, trailing slot. *(not ported yet)*
-- EmptyState — What a list, table or panel shows when it has nothing to show. *(not ported yet)*
-- Code — Inline monospace, for a symbol or a value inside a sentence. *(not ported yet)*
-- CodeBlock — A fenced block of code, with the language, copy control and optional line numbers. *(not ported yet)*
-- Blockquote — A quotation set apart from the surrounding prose. *(not ported yet)*
-- Kbd — A keyboard key or chord, rendered as a key. *(not ported yet)*
+- [AstryxItem](components/item.md) — The row the lists are built from — something at the start, a label, and something at the end.
+- [AstryxList](components/list.md) — A vertical list of rows, with the separators and density the design system expects.
+- [AstryxTreeList](components/tree_list.md) — A list of nested, expandable rows.
+- [AstryxOverflowList](components/overflow_list.md) — A row of items that measures itself and moves the tail into a menu.
+- [AstryxMetadataList](components/metadata_list.md) — Label-and-value pairs, for the details panel of a record.
+- [AstryxEmptyState](components/empty_state.md) — What a list, table or panel shows when it has nothing to show.
+- [AstryxCode](components/code.md) — Inline monospace, for a symbol or a value inside a sentence.
+- [AstryxCodeBlock](components/code_block.md) — A fenced block of code, with the language, copy control and optional line numbers.
+- [AstryxBlockquote](components/blockquote.md) — A quotation set apart from the surrounding prose.
+- [AstryxKbd](components/kbd.md) — A keyboard key or chord, rendered as a key.
+
+## Navigation
+
+- [AstryxSideNav](components/side_nav.md) — A vertical navigation rail with sections, headings, and a collapsed state.
+- [AstryxTopNav](components/top_nav.md) — A horizontal application bar, with menus and an optional mega menu.
+- [AstryxMobileNav](components/mobile_nav.md) — The navigation drawer a narrow viewport gets instead of the rail.
+- [AstryxNavHeadingMenu](components/nav_heading_menu.md) — A navigation heading that is itself a menu trigger.
+- [AstryxNavIcon](components/nav_icon.md) — The icon slot in a navigation item, sized and aligned for the rail.
+- [AstryxBreadcrumbs](components/breadcrumbs.md) — The trail back up a hierarchy, collapsing in the middle when it will not fit.
+- TabMenu — A tab whose selection opens a menu rather than switching a panel. *(not ported yet)*
+- MoreMenu — The overflow menu a toolbar or nav collapses its tail into. *(not ported yet)*
+- Toolbar — A horizontal band of controls, with arrow-key traversal as one tab stop. *(not ported yet)*
+- Pagination — Page-at-a-time controls for a list or table too long to scroll. *(not ported yet)*
+- SegmentedControl — A small set of mutually exclusive views, all labels visible at once. *(not ported yet)*
+- Link — Inline navigation in running text, with the visited and external affordances. *(not ported yet)*
+
+## App shell
+
+- [AstryxAppShell](components/app_shell.md) — The outer frame of an application: header, navigation, content, and the responsive behaviour joining them.
+- [AstryxLayout](components/layout.md) — The content frame inside the shell — header, footer, panel and scrolling body.
+- [AstryxSection](components/section.md) — A titled band of page content, with its own heading level and spacing.
+- [AstryxResizeHandle](components/resize_handle.md) — A draggable divider that resizes the panel beside it.
+- [AstryxOutline](components/outline.md) — An on-this-page table of contents, tracking the reader’s position.
 
 ## Templates
 
@@ -160,29 +183,6 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - Table page with chart — A table screen with a summary chart above it. *(not ported yet)*
 - Table page with heatmap — A table screen whose cells carry heatmap and status colouring. *(not ported yet)*
 - Retail heatmap table — The heatmap table screen with a retail data set. *(not ported yet)*
-
-## App shell
-
-- AppShell — The outer frame of an application: header, navigation, content, and the responsive behaviour joining them. *(not ported yet)*
-- Layout — The content frame inside the shell — header, footer, panel and scrolling body. *(not ported yet)*
-- Section — A titled band of page content, with its own heading level and spacing. *(not ported yet)*
-- ResizeHandle — A draggable divider that resizes the panel beside it. *(not ported yet)*
-- Outline — An on-this-page table of contents, tracking the reader's position. *(not ported yet)*
-
-## Navigation
-
-- Breadcrumbs — The trail back up a hierarchy, collapsing in the middle when it will not fit. *(not ported yet)*
-- TopNav — A horizontal application bar, with menus and an optional mega menu. *(not ported yet)*
-- SideNav — A vertical navigation rail with sections, headings, and a collapsed state. *(not ported yet)*
-- MobileNav — The navigation drawer a narrow viewport gets instead of the rail. *(not ported yet)*
-- NavIcon — The icon slot in a navigation item, sized and aligned for the rail. *(not ported yet)*
-- NavHeadingMenu — A navigation heading that is itself a menu trigger. *(not ported yet)*
-- TabMenu — A tab whose selection opens a menu rather than switching a panel. *(not ported yet)*
-- MoreMenu — The overflow menu a toolbar or nav collapses its tail into. *(not ported yet)*
-- Toolbar — A horizontal band of controls, with arrow-key traversal as one tab stop. *(not ported yet)*
-- Pagination — Page-at-a-time controls for a list or table too long to scroll. *(not ported yet)*
-- SegmentedControl — A small set of mutually exclusive views, all labels visible at once. *(not ported yet)*
-- Link — Inline navigation in running text, with the visited and external affordances. *(not ported yet)*
 
 ## Date & time
 
