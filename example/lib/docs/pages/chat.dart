@@ -421,10 +421,18 @@ AstryxChatComposer(
         'Controls between the field and the send button.',
         defaultValue: 'const <Widget>[]',
       ),
-      DocProp('drawer', 'Widget?', 'Content above the field, in the same '
-          'surface.'),
-      DocProp('footer', 'Widget?', 'Content below the composer — a hint, a '
-          'count, a disclaimer.'),
+      DocProp(
+        'drawer',
+        'Widget?',
+        'Content above the field, in the same '
+            'surface.',
+      ),
+      DocProp(
+        'footer',
+        'Widget?',
+        'Content below the composer — a hint, a '
+            'count, a disclaimer.',
+      ),
       DocProp(
         'maxLines',
         'int',
@@ -615,7 +623,7 @@ const DocPage _chatDictationButton = DocPage(
   upstream: 'ChatDictationButton',
   upstreamPath: '/components/ChatDictationButton',
   blocks: <DocBlock>[
-    DocExample('chat_dictation_states'),
+    DocExample('chat_dictation_states', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxChatDictationButton(

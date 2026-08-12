@@ -24,7 +24,7 @@ final DocPage _text = DocPage(
   upstream: 'Text',
   upstreamPath: '/components/Text',
   blocks: <DocBlock>[
-    const DocExample('text_demo'),
+    const DocExample('text_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode('''
 const AstryxText('Requests are up 12% this week.')
@@ -70,7 +70,7 @@ const AstryxText(
       '`weight` overrides what the type would give. Prefer a different `type` '
       'where one fits: the scale already pairs weight with size and leading.',
     ),
-    const DocExample('text_weights'),
+    const DocExample('text_weights', align: DocExampleAlign.start),
     const DocHeading('Truncation'),
     const DocProse(
       'With `maxLines` set, overflow defaults to an ellipsis. '
@@ -79,7 +79,7 @@ const AstryxText(
       'already legible. It costs one text layout per build, so leave it off '
       'for text that cannot truncate.',
     ),
-    const DocExample('text_truncation'),
+    const DocExample('text_truncation', align: DocExampleAlign.start),
     const DocCallout.accessibility(
       'Truncation is a painting concern and never reaches the semantics tree: '
       'a screen reader always gets the whole string, ellipsis or not.',
@@ -89,14 +89,14 @@ const AstryxText(
       '`tabularNumbers` asks the font for fixed-width figures, so a column of '
       'numbers lines up. Fonts without the `tnum` feature render unchanged.',
     ),
-    const DocExample('text_numbers'),
+    const DocExample('text_numbers', align: DocExampleAlign.start),
     const DocHeading('Semantics'),
     const DocProse(
       '`semanticsLabel` replaces what is read aloud without changing what is '
       r'painted — for text a reader would mangle: `$1.2M`, an abbreviation, a '
       'glyph.',
     ),
-    const DocExample('text_semantics'),
+    const DocExample('text_semantics', align: DocExampleAlign.start),
     DocApi('AstryxText', _textProps),
     const DocHeading('Related'),
     const DocList(<String>[
@@ -221,7 +221,10 @@ const AstryxHeading('Members', level: 3)'''),
       'the rare case where the visual hierarchy and the document outline '
       'genuinely differ. Prefer fixing the design.',
     ),
-    const DocExample('heading_accessibility_level'),
+    const DocExample(
+      'heading_accessibility_level',
+      align: DocExampleAlign.start,
+    ),
     const DocCallout.accessibility(
       'Do not skip levels to get a size. An h2 followed by an h4 tells a '
       'screen-reader user a section is missing. Use `type` for the size and '
@@ -339,13 +342,13 @@ AstryxVStack(
       '`wrap: true` flows children onto further lines, spaced by `runGap` — '
       'the right shape for a bag of tags, and never for a form.',
     ),
-    const DocExample('stack_wrap'),
+    const DocExample('stack_wrap', align: DocExampleAlign.start),
     const DocHeading('Nesting'),
     const DocProse(
       'The everyday shape of a settings row: a spreading row holding a column '
       'that hugs.',
     ),
-    const DocExample('stack_nested'),
+    const DocExample('stack_nested', align: DocExampleAlign.start),
     DocApi(
       'AstryxHStack',
       _stackProps,
@@ -600,14 +603,14 @@ final DocPage _divider = DocPage(
       'labelled divider is announced; an unlabelled one is not, because a rule '
       'with nothing to say should not interrupt.',
     ),
-    const DocExample('divider_labelled'),
+    const DocExample('divider_labelled', align: DocExampleAlign.start),
     const DocHeading('Vertical'),
     const DocProse(
       'A vertical rule needs a bounded height from its parent — a stretched '
       'row, or an `IntrinsicHeight`. Without one it has nothing to measure and '
       'paints nothing.',
     ),
-    const DocExample('divider_vertical'),
+    const DocExample('divider_vertical', align: DocExampleAlign.start),
     DocApi('AstryxDivider', _dividerProps),
   ],
 );
@@ -646,7 +649,7 @@ final DocPage _icon = DocPage(
   upstream: 'Icon',
   upstreamPath: '/components/Icon',
   blocks: <DocBlock>[
-    const DocExample('icon_demo'),
+    const DocExample('icon_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode('''
 const AstryxIcon(AstryxIconName.success, color: AstryxIconColor.success)'''),
@@ -662,7 +665,7 @@ const AstryxIcon(AstryxIconName.success, color: AstryxIconColor.success)'''),
       'which is how a button sizes the icons in its slots — and why a spinner '
       'replacing one cannot shift the layout.',
     ),
-    const DocExample('icon_sizes'),
+    const DocExample('icon_sizes', align: DocExampleAlign.start),
     const DocHeading('Colours'),
     const DocProse(
       '`inherit` — the default — takes the colour from the enclosing text '
@@ -676,7 +679,7 @@ const AstryxIcon(AstryxIconName.success, color: AstryxIconColor.success)'''),
       'announced as an unnamed image. Set it when the icon is the only thing '
       'carrying the meaning.',
     ),
-    const DocExample('icon_labelled'),
+    const DocExample('icon_labelled', align: DocExampleAlign.start),
     const DocHeading('The registry'),
     const DocProse(
       'The 28 names the default registry knows. An application needing "edit" '
@@ -815,7 +818,7 @@ AstryxIconButton(
       'The hidden child below sits between the two badges, and the row is laid '
       'out exactly as it would be without it.',
     ),
-    const DocExample('visually_hidden_space'),
+    const DocExample('visually_hidden_space', align: DocExampleAlign.start),
     const DocProse(
       'A zero-sized box around a fully transparent child — not an `Offstage`, '
       'and not a `Visibility`. Both of those drop the subtree from the '

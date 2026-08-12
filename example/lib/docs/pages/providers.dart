@@ -233,7 +233,7 @@ const DocPage _layerProvider = DocPage(
       'dismissible layer registers while open, and only the top-most one '
       'answers.',
     ),
-    DocExample('provider_layer'),
+    DocExample('provider_layer', align: DocExampleAlign.start),
     DocProse(
       'Astryx overlays are `OverlayPortal`s rather than routes — deliberately, '
       'so a popover does not appear in the back stack and cannot be reached '
@@ -349,7 +349,7 @@ AstryxApp(
       'preview pane where links should do nothing, or an embedded document '
       'whose links resolve against another base.',
     ),
-    DocExample('provider_link'),
+    DocExample('provider_link', align: DocExampleAlign.start),
     DocHeading('The default'),
     DocProse(
       'With no delegate installed, `AstryxLinkDelegate.none` applies: it warns '

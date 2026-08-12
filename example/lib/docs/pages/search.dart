@@ -148,10 +148,18 @@ AstryxHotkeys(
     DocApi(
       'AstryxCommandItem',
       <DocProp>[
-        DocProp('label', 'String', 'What the command is called.',
-            required: true),
-        DocProp('onSelected', 'VoidCallback', 'What running it does.',
-            required: true),
+        DocProp(
+          'label',
+          'String',
+          'What the command is called.',
+          required: true,
+        ),
+        DocProp(
+          'onSelected',
+          'VoidCallback',
+          'What running it does.',
+          required: true,
+        ),
         DocProp('description', 'String?', 'A qualifying second line.'),
         DocProp('icon', 'AstryxIconName?', 'A glyph before the label.'),
         DocProp(
@@ -550,11 +558,19 @@ AstryxPowerSearch(
     DocApi(
       'AstryxSearchFilter',
       <DocProp>[
-        DocProp('field', 'String', 'What is being filtered on.',
-            required: true),
+        DocProp(
+          'field',
+          'String',
+          'What is being filtered on.',
+          required: true,
+        ),
         DocProp('value', 'String', 'What it is filtered to.', required: true),
-        DocProp('label', 'String?', 'How to write it. Defaults to '
-            '`field:value`.'),
+        DocProp(
+          'label',
+          'String?',
+          'How to write it. Defaults to '
+              '`field:value`.',
+        ),
         DocProp('icon', 'AstryxIconName?', 'A glyph on the chip.'),
       ],
       description:

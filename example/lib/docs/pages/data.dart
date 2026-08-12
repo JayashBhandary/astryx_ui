@@ -57,7 +57,7 @@ AstryxTabList<T>
       'has more. Arrowing to a tab that is off-screen scrolls it into view: a '
       'selection the user cannot see is worse than no selection at all.',
     ),
-    DocExample('tab_list_overflow'),
+    DocExample('tab_list_overflow', align: DocExampleAlign.start),
     DocCallout.note(
       'The overflow scrolls; it does not collapse into a "more" menu. If a '
       'strip needs sixteen tabs, the navigation probably needs rethinking '

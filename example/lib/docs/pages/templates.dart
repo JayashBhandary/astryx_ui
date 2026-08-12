@@ -592,7 +592,7 @@ const DocPage _settingsDialog = DocPage(
   source: 'example/lib/examples/template_settings_examples.dart',
   upstreamPath: '/templates/settings-dialog',
   blocks: <DocBlock>[
-    DocExample('template_settings_dialog'),
+    DocExample('template_settings_dialog', align: DocExampleAlign.stretch),
     DocHeading('Navigation inside a modal'),
     DocProse(
       'An [AstryxTabList](tab_list) reports a value and owns no panel, so the '
@@ -1271,6 +1271,10 @@ AstryxLayout(scrollable: false, padding: spacing0)
   ],
 );
 
+// ---------------------------------------------------------------------------
+// Applications
+// ---------------------------------------------------------------------------
+
 const DocPage _shellNav = DocPage(
   id: 'shell_nav',
   title: 'Shell navigation',
@@ -1480,6 +1484,10 @@ AstryxLayout(
     _notAWidget,
   ],
 );
+
+// ---------------------------------------------------------------------------
+// Reference
+// ---------------------------------------------------------------------------
 
 const DocPage _themeShowcase = DocPage(
   id: 'theme_showcase',

@@ -39,7 +39,7 @@ const DocPage _calendar = DocPage(
   upstream: 'Calendar',
   upstreamPath: '/components/Calendar',
   blocks: <DocBlock>[
-    DocExample('calendar_demo'),
+    DocExample('calendar_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxCalendar(
@@ -96,10 +96,10 @@ AstryxCalendar(
       '`onRangeChanged` does not fire for the first press. Half a range is a '
       'state the calendar owns, so no caller has to model "start but no end".',
     ),
-    DocExample('calendar_range'),
+    DocExample('calendar_range', align: DocExampleAlign.start),
     DocHeading('Bounds'),
     DocTable(headers: <String>['Property', 'Does'], rows: _boundsRows),
-    DocExample('calendar_bounds'),
+    DocExample('calendar_bounds', align: DocExampleAlign.start),
     DocCallout.accessibility(
       'Every cell announces its full date — "Tuesday, 4 August 2026" — because '
       'a grid of bare numbers is unusable through a screen reader. Today is '
@@ -178,12 +178,24 @@ AstryxCalendar(
     DocApi(
       'AstryxDateRange',
       <DocProp>[
-        DocProp('start', 'DateTime', 'The first day, at midnight.',
-            required: true),
-        DocProp('end', 'DateTime', 'The last day, at midnight. Inclusive.',
-            required: true),
-        DocProp('days', 'int', 'How many days the span covers, both ends '
-            'counted.'),
+        DocProp(
+          'start',
+          'DateTime',
+          'The first day, at midnight.',
+          required: true,
+        ),
+        DocProp(
+          'end',
+          'DateTime',
+          'The last day, at midnight. Inclusive.',
+          required: true,
+        ),
+        DocProp(
+          'days',
+          'int',
+          'How many days the span covers, both ends '
+              'counted.',
+        ),
         DocProp('isSingleDay', 'bool', 'Whether it covers exactly one day.'),
         DocProp('contains(day)', 'bool', 'Whether `day` falls inside it.'),
       ],
@@ -210,7 +222,7 @@ const DocPage _dateInput = DocPage(
   upstream: 'DateInput',
   upstreamPath: '/components/DateInput',
   blocks: <DocBlock>[
-    DocExample('date_input_demo'),
+    DocExample('date_input_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxDateInput(
@@ -260,14 +272,14 @@ AstryxDateInput(
         ],
       ],
     ),
-    DocExample('date_input_formats'),
+    DocExample('date_input_formats', align: DocExampleAlign.start),
     DocHeading('Bounds'),
     DocTable(headers: <String>['Property', 'Does'], rows: _boundsRows),
     DocProse(
       'Both apply to typing as well as to the grid: a day the calendar will '
       'not let you press is a day the field will not accept.',
     ),
-    DocExample('date_input_bounds'),
+    DocExample('date_input_bounds', align: DocExampleAlign.start),
     DocCallout.accessibility(
       'A rejection is **announced**, not just undone — the field has already '
       'put the old value back, so a screen-reader user would otherwise have no '
@@ -354,7 +366,7 @@ const DocPage _dateRangeInput = DocPage(
   upstream: 'DateRangeInput',
   upstreamPath: '/components/DateRangeInput',
   blocks: <DocBlock>[
-    DocExample('date_range_input_demo'),
+    DocExample('date_range_input_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxDateRangeInput(
@@ -394,7 +406,7 @@ AstryxDateRangeInput
       'over the widget’s own message, so a server-side error is not replaced '
       'by a local one.',
     ),
-    DocExample('date_range_input_bounds'),
+    DocExample('date_range_input_bounds', align: DocExampleAlign.start),
     DocCallout.accessibility(
       'Each half keeps its own accessible name — "Start date" and "End date", '
       'or whatever `startLabel` and `endLabel` say — because a reader landing '
@@ -470,7 +482,7 @@ const DocPage _dateTimeInput = DocPage(
   upstream: 'DateTimeInput',
   upstreamPath: '/components/DateTimeInput',
   blocks: <DocBlock>[
-    DocExample('date_time_input_demo'),
+    DocExample('date_time_input_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxDateTimeInput(
@@ -501,7 +513,7 @@ AstryxDateTimeInput(
       'Each half keeps its own format, and `firstDate` and `lastDate` apply to '
       'the date half — an instant is out of range because of its day.',
     ),
-    DocExample('date_time_input_clock'),
+    DocExample('date_time_input_clock', align: DocExampleAlign.start),
     DocApi('AstryxDateTimeInput', <DocProp>[
       DocProp('label', 'String', 'Names the pair.', required: true),
       DocProp(
@@ -570,7 +582,7 @@ const DocPage _timeInput = DocPage(
   upstream: 'TimeInput',
   upstreamPath: '/components/TimeInput',
   blocks: <DocBlock>[
-    DocExample('time_input_demo'),
+    DocExample('time_input_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxTimeInput(
@@ -610,7 +622,7 @@ AstryxTimeInput(
       '`earliest`–`latest` is **refused rather than wrapped**, so a field with '
       'a floor of 09:00 stops there instead of jumping to 23:45.',
     ),
-    DocExample('time_input_bounds'),
+    DocExample('time_input_bounds', align: DocExampleAlign.start),
     DocApi('AstryxTimeInput', <DocProp>[
       DocProp(
         'value',
@@ -656,8 +668,12 @@ AstryxTimeInput(
     DocApi(
       'AstryxTime',
       <DocProp>[
-        DocProp('hour', 'int', 'The hour on a 24-hour clock, 0–23.',
-            required: true),
+        DocProp(
+          'hour',
+          'int',
+          'The hour on a 24-hour clock, 0–23.',
+          required: true,
+        ),
         DocProp('minute', 'int', 'The minute, 0–59.', required: true),
         DocProp('minutesSinceMidnight', 'int', 'How far into the day this is.'),
         DocProp('hour12', 'int', 'The hour on a 12-hour clock, 1–12.'),
@@ -667,8 +683,12 @@ AstryxTimeInput(
           'AstryxTime',
           'This time moved by `n`, wrapping at midnight either way.',
         ),
-        DocProp('onDate(date)', 'DateTime', 'This time on `date`, as an '
-            'instant.'),
+        DocProp(
+          'onDate(date)',
+          'DateTime',
+          'This time on `date`, as an '
+              'instant.',
+        ),
       ],
       description:
           'An hour and a minute with no day attached — a shift start, an '
@@ -735,7 +755,7 @@ const DocPage _timestamp = DocPage(
         <String>['`dateTime`', '`04/08/2026 14:30`'],
       ],
     ),
-    DocExample('timestamp_formats'),
+    DocExample('timestamp_formats', align: DocExampleAlign.start),
     DocCallout.accessibility(
       'The exact instant is the widget’s **accessible name** — "Tuesday, 4 '
       'August 2026, 14:27" — so a screen reader never gets only a relative '
@@ -744,8 +764,12 @@ const DocPage _timestamp = DocPage(
       'never the only source of a fact.',
     ),
     DocApi('AstryxTimestamp', <DocProp>[
-      DocProp('value', 'DateTime', 'The instant being written.',
-          required: true),
+      DocProp(
+        'value',
+        'DateTime',
+        'The instant being written.',
+        required: true,
+      ),
       DocProp(
         'format',
         'AstryxTimestampFormat',

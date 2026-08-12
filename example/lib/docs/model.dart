@@ -155,14 +155,33 @@ class DocExample extends DocBlock {
 }
 
 /// How an example's preview is positioned.
+///
+/// **The choice belongs to the group, not to the example.** A reader scrolls a
+/// group, and a preview centred between two left-aligned ones reads as a
+/// mistake even when each one is defensible on its own:
+///
+/// - **Actions, Overlays and Status are centred.** Every example in them is a
+///   single control with no natural edge — a button, a trigger, a spinner.
+/// - **Every other group aligns to the reading start**, with [start] or
+///   [stretch] depending on whether the example wants the frame's full width.
+///   Both put the content's leading edge on the same line as the prose around
+///   it, which is the thing a reader actually notices.
+///
+/// `example_block_test.dart` enforces it, because the default is [center] and
+/// an omitted `align:` is how the rule gets broken by accident.
 enum DocExampleAlign {
   /// Centred, for a single control.
   center,
 
   /// Aligned to the reading start, for a form or a list.
+  ///
+  /// The preview keeps its own width — a 320-pixel field stays 320 wide.
   start,
 
   /// Stretched to the frame's full width, for a table or a banner.
+  ///
+  /// The child is given a *tight* width, so anything that limits its own
+  /// width — a `SizedBox`, an `AstryxCard.maxWidth` — wants [start] instead.
   stretch,
 }
 

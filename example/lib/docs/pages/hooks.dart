@@ -633,8 +633,12 @@ AstryxScrollOverflow(
         'Whether to draw a gradient at an edge with more past it.',
         defaultValue: 'true',
       ),
-      DocProp('fadeExtent', 'double', 'How wide a fade is.',
-          defaultValue: '24'),
+      DocProp(
+        'fadeExtent',
+        'double',
+        'How wide a fade is.',
+        defaultValue: '24',
+      ),
       DocProp(
         'fadeColor',
         'AstryxColorToken?',
@@ -1045,7 +1049,7 @@ const DocPage _useLayer = DocPage(
       '[the overlay layer](layer_provider): `AstryxOverlayStack` tracks the '
       'open dismissible layers so **Escape closes one, not all of them**.',
     ),
-    DocExample('provider_layer'),
+    DocExample('provider_layer', align: DocExampleAlign.start),
     DocHeading('Building your own layer'),
     DocCode('''
 final layer = AstryxOverlayController();
@@ -1237,7 +1241,7 @@ const DocPage _useInputContainer = DocPage(
         ],
       ],
     ),
-    DocExample('field_scope', align: DocExampleAlign.stretch),
+    DocExample('field_scope', align: DocExampleAlign.start),
     DocHeading('What the container guarantees'),
     DocList(<String>[
       '**A press anywhere focuses the control.** A user who clicks the padding '
@@ -1562,7 +1566,7 @@ const DocPage _useImageMode = DocPage(
       'resolved mode is already in scope — so this is one line and there is no '
       'widget to port.',
     ),
-    DocExample('hook_image_mode'),
+    DocExample('hook_image_mode', align: DocExampleAlign.start),
     DocCode('''
 final dark = AstryxTheme.of(context).mode == AstryxThemeMode.dark;
 

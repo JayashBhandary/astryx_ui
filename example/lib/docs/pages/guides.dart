@@ -590,7 +590,7 @@ const DocPage _color = DocPage(
       'Pairing them is the whole contract: change the accent and `onAccent` '
       'moves with it, so a label that was legible stays legible.',
     ),
-    DocExample('color_on_pairs'),
+    DocExample('color_on_pairs', align: DocExampleAlign.start),
     DocProse(
       '`onDark` and `onLight` are the same idea for content that sits on an '
       'inverted surface — a dark toast, a tooltip — where the page’s own text '
@@ -604,7 +604,7 @@ const DocPage _color = DocPage(
       'without anything above it rebuilding.',
     ),
     DocHeading('The ten categorical families'),
-    DocExample('color_palettes'),
+    DocExample('color_palettes', align: DocExampleAlign.start),
     DocProse(
       'These are the palettes upstream did the most colour work on: every one '
       'passes WCAG AA in both modes, on its own tinted background. They are '
@@ -1060,7 +1060,7 @@ const DocPage _elevation = DocPage(
       'elevation directly — a floating action needs it. Everything else picks '
       'its own from what it is: a dialog is `high` because it is a dialog.',
     ),
-    DocExample('elevation_button'),
+    DocExample('elevation_button', align: DocExampleAlign.start),
     DocCode('''
 AstryxButton(
   label: 'Compose',

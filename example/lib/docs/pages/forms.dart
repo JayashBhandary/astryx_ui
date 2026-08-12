@@ -80,7 +80,7 @@ const DocPage _field = DocPage(
   upstream: 'Field / FieldLabel / FieldStatus',
   upstreamPath: '/components/Field',
   blocks: <DocBlock>[
-    DocExample('field_demo'),
+    DocExample('field_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxField(
@@ -108,13 +108,13 @@ AstryxField
       'control reads it. So `enabled` and `status` set on the field reach the '
       'controls inside it without being passed down by hand.',
     ),
-    DocExample('field_scope'),
+    DocExample('field_scope', align: DocExampleAlign.start),
     DocHeading('Markers'),
     DocProse(
       'Mark whichever is the exception in your form. Marking every field as '
       'required says nothing at all.',
     ),
-    DocExample('field_markers'),
+    DocExample('field_markers', align: DocExampleAlign.start),
     DocHeading('Statuses'),
     DocProse(
       '`AstryxFieldStatus` has three types and a message. A null message '
@@ -122,7 +122,7 @@ AstryxField
       'field whose problem is described elsewhere, such as a summary at the '
       'top of the form.',
     ),
-    DocExample('field_statuses'),
+    DocExample('field_statuses', align: DocExampleAlign.start),
     DocTable(
       headers: <String>['Constructor', 'Type', 'Announced'],
       rows: <List<String>>[
@@ -210,7 +210,7 @@ final DocPage _textInput = DocPage(
   upstream: 'TextInput',
   upstreamPath: '/components/TextInput',
   blocks: <DocBlock>[
-    const DocExample('text_input_demo'),
+    const DocExample('text_input_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode('''
 AstryxTextInput(
@@ -234,42 +234,42 @@ AstryxTextInput(
       'The three control heights. A null `size` inherits from an enclosing '
       '`AstryxSizeScope`, the same cascade the buttons use.',
     ),
-    const DocExample('text_input_sizes'),
+    const DocExample('text_input_sizes', align: DocExampleAlign.start),
     const DocHeading('Validation'),
     const DocProse(
       'A status draws an inset ring in its colour, shows its icon in the '
       'trailing slot, and prints its message below — announced, not merely '
       'coloured.',
     ),
-    const DocExample('text_input_validation'),
+    const DocExample('text_input_validation', align: DocExampleAlign.start),
     const DocHeading('Affordances'),
     const DocProse(
       '`leading` and `trailing` take any widget. `showClear` adds a clear '
       'button that appears only when there is something to clear, and sits '
       'before the status icon.',
     ),
-    const DocExample('text_input_affordances'),
+    const DocExample('text_input_affordances', align: DocExampleAlign.start),
     const DocHeading('Formatters'),
     const DocProse(
       'The Flutter text-input machinery is exposed rather than wrapped: '
       '`inputFormatters`, `keyboardType`, `textInputAction`, `autofillHints` '
       'and `maxLength` all behave exactly as they do on `EditableText`.',
     ),
-    const DocExample('text_input_formatters'),
+    const DocExample('text_input_formatters', align: DocExampleAlign.start),
     const DocHeading('States'),
     const DocProse(
       'Read-only is not disabled. A read-only value still means something and '
       'is still selectable and copyable — it is simply not yours to change '
       'here — so it is not dimmed.',
     ),
-    const DocExample('text_input_states'),
+    const DocExample('text_input_states', align: DocExampleAlign.start),
     const DocHeading('Multi-line'),
     const DocProse(
       '`AstryxTextInput.multiline` grows from `minLines` to `maxLines`, then '
       'scrolls. [AstryxTextArea](text_area) is the friendlier name for the '
       'same control.',
     ),
-    const DocExample('text_input_multiline'),
+    const DocExample('text_input_multiline', align: DocExampleAlign.start),
     const DocCallout.accessibility(
       'The selection handles and the context menu are themed from the same '
       'tokens as everything else, and the toolbar’s labels are localised '
@@ -376,7 +376,7 @@ final DocPage _textArea = DocPage(
   upstream: 'TextArea',
   upstreamPath: '/components/TextArea',
   blocks: <DocBlock>[
-    const DocExample('text_area_demo'),
+    const DocExample('text_area_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode('''
 const AstryxTextArea(
@@ -391,13 +391,13 @@ const AstryxTextArea(
       'paragraph.',
     ),
     const DocHeading('Lines'),
-    const DocExample('text_area_lines'),
+    const DocExample('text_area_lines', align: DocExampleAlign.start),
     const DocHeading('Counting characters'),
     const DocProse(
       '`maxLength` stops the input; the count and the warning are yours to '
       'render, because where they belong depends on the form.',
     ),
-    const DocExample('text_area_counted'),
+    const DocExample('text_area_counted', align: DocExampleAlign.start),
     DocApi('AstryxTextArea', <DocProp>[
       ..._fieldProps(),
       const DocProp(
@@ -452,7 +452,7 @@ const DocPage _checkbox = DocPage(
   upstream: 'CheckboxInput',
   upstreamPath: '/components/CheckboxInput',
   blocks: <DocBlock>[
-    DocExample('checkbox_demo'),
+    DocExample('checkbox_demo', align: DocExampleAlign.start),
     DocHeading('Usage'),
     DocCode('''
 AstryxCheckbox(
@@ -474,7 +474,7 @@ AstryxCheckbox(
       'HTML behaviour and the expectation that pressing a half-filled "select '
       'all" selects all.',
     ),
-    DocExample('checkbox_tristate'),
+    DocExample('checkbox_tristate', align: DocExampleAlign.start),
     DocTable(
       headers: <String>['Value', 'Box', 'Pressing it gives'],
       rows: <List<String>>[
@@ -484,7 +484,7 @@ AstryxCheckbox(
       ],
     ),
     DocHeading('Sizes'),
-    DocExample('checkbox_sizes'),
+    DocExample('checkbox_sizes', align: DocExampleAlign.start),
     DocHeading('States'),
     DocProse(
       'A null `onChanged` makes the checkbox non-interactive **without dimming '
@@ -492,7 +492,7 @@ AstryxCheckbox(
       '`readOnly` says the same thing more loudly; `enabled: false` is the one '
       'that dims.',
     ),
-    DocExample('checkbox_states'),
+    DocExample('checkbox_states', align: DocExampleAlign.start),
     DocHeading('Keyboard'),
     DocTable(
       headers: <String>['Key', 'Does'],
@@ -738,7 +738,7 @@ AstryxSwitch(
       '`labelPosition: start` with `labelSpacing: spread` gives the settings '
       'row shape: label at the reading edge, control at the trailing one.',
     ),
-    DocExample('switch_settings_list'),
+    DocExample('switch_settings_list', align: DocExampleAlign.start),
     DocHeading('Sizes'),
     DocProse(
       'The thumb grows when the switch is on — upstream’s own behaviour, and '

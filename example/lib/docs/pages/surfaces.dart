@@ -22,7 +22,7 @@ final DocPage _card = DocPage(
   upstream: 'Card / ClickableCard',
   upstreamPath: '/components/Card',
   blocks: <DocBlock>[
-    const DocExample('card_demo'),
+    const DocExample('card_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode("import 'package:astryx_ui/astryx_ui.dart';"),
     const DocCode('''
@@ -42,7 +42,7 @@ AstryxCard
 ├── header    ← optional. A heading, a row, an image
 ├── child     ← the body. Required
 └── footer    ← optional. Usually actions'''),
-    const DocExample('card_slots'),
+    const DocExample('card_slots', align: DocExampleAlign.start),
     const DocHeading('Variants'),
     const DocProse(
       'Three neutral fills. `transparent` is for grouping without visual '
@@ -88,7 +88,7 @@ AstryxCard
       'header and the footer stay put. Without a height the card grows '
       'instead, and `scrollable` does nothing.',
     ),
-    const DocExample('card_scrollable'),
+    const DocExample('card_scrollable', align: DocExampleAlign.start),
     const DocHeading('Width'),
     const DocProse(
       'A card fills a definite width and shrinks to fit an indefinite one — '
@@ -318,7 +318,7 @@ AstryxSelectableCard
       '[checkbox](checkbox) comes in. With `padding` one step down it is what '
       'a card holding a single line wants, so the card is not mostly box.',
     ),
-    const DocExample('selectable_card_compact'),
+    const DocExample('selectable_card_compact', align: DocExampleAlign.start),
     const DocCallout.accessibility(
       '`label` is **required**, and is not painted. Without it a screen reader '
       'announces the card’s whole contents as the control’s name, which for a '
@@ -454,28 +454,28 @@ final DocPage _badge = DocPage(
   upstream: 'Badge',
   upstreamPath: '/components/Badge',
   blocks: <DocBlock>[
-    const DocExample('badge_demo'),
+    const DocExample('badge_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode(
       "const AstryxBadge('Healthy', variant: AstryxBadgeVariant.success)",
     ),
     const DocHeading('Variants'),
     const DocProse('Five semantic fills.'),
-    const DocExample('badge_variants'),
+    const DocExample('badge_variants', align: DocExampleAlign.start),
     const DocProse('Plus the ten categorical families.'),
-    const DocExample('badge_palettes'),
+    const DocExample('badge_palettes', align: DocExampleAlign.start),
     const DocHeading('Icons'),
     const DocProse(
       'An icon before the text does two jobs: it reads faster, and it means '
       'the badge is not relying on colour alone.',
     ),
-    const DocExample('badge_icons'),
+    const DocExample('badge_icons', align: DocExampleAlign.start),
     const DocHeading('Counts'),
     const DocProse(
       '"3" spoken aloud means nothing. `semanticsLabel` is what a screen '
       'reader hears instead of the bare number.',
     ),
-    const DocExample('badge_counts'),
+    const DocExample('badge_counts', align: DocExampleAlign.start),
     const DocCallout.accessibility(
       'A badge is not a button. It has no press state, no focus and no tap '
       'target — if it needs to be pressable, it is a [button](button) or a '

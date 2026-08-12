@@ -922,6 +922,17 @@ three in **Fixed**.
   the same held for anything a caller put in either slot. Only the editable is
   excluded now. Found while building `AstryxNumberInput`, whose steppers live in
   that slot.
+- **The documentation site's example previews aligned inconsistently.** Sixty-odd
+  examples were centred and two hundred were not, and the split did not follow
+  anything a reader could predict: `Text input` centred while `Radio list` sat at
+  the reading edge, `Timestamp` centred one example and stretched the next, and
+  `Settings dialog` was the one template of nineteen not stretched. The
+  alignment is now a property of the **group** rather than of the example —
+  Actions, Overlays and Status centre everything, because every example in them
+  is a single control with no natural edge, and every other group aligns to the
+  reading start. `example_block_test.dart` enforces it, which matters because
+  `center` is the default and an omitted `align:` is how the rule would break by
+  accident.
 - The documentation site's API tables keyed their rows by property name, so a
   class documenting two constructors with a parameter of the same name — the
   new group's `onChanged`, once per constructor — crashed the page with a

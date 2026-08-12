@@ -789,7 +789,7 @@ final DocPage _code = DocPage(
   upstream: 'Code',
   upstreamPath: '/components/Code',
   blocks: <DocBlock>[
-    const DocExample('code_demo'),
+    const DocExample('code_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode("const AstryxCode('AstryxSpacingToken.spacing4')"),
     const DocProse(
@@ -1004,7 +1004,7 @@ final DocPage _kbd = DocPage(
   upstream: 'Kbd',
   upstreamPath: '/components/Kbd',
   blocks: <DocBlock>[
-    const DocExample('kbd_demo'),
+    const DocExample('kbd_demo', align: DocExampleAlign.start),
     const DocHeading('Usage'),
     const DocCode('''
 AstryxKbd('K')

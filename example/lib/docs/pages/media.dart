@@ -428,8 +428,12 @@ AstryxCarousel(
     DocApi('AstryxCarousel', <DocProp>[
       DocProp('items', 'List<Widget>', 'The items, in order.', required: true),
       DocProp('label', 'String?', 'What the strip is.'),
-      DocProp('initialIndex', 'int', 'Which item to open on.',
-          defaultValue: '0'),
+      DocProp(
+        'initialIndex',
+        'int',
+        'Which item to open on.',
+        defaultValue: '0',
+      ),
       DocProp(
         'onIndexChanged',
         'ValueChanged<int>?',
@@ -530,8 +534,12 @@ AstryxLightbox(
         'The items, in order.',
         required: true,
       ),
-      DocProp('initialIndex', 'int', 'Which item to open on.',
-          defaultValue: '0'),
+      DocProp(
+        'initialIndex',
+        'int',
+        'Which item to open on.',
+        defaultValue: '0',
+      ),
       DocProp(
         'onIndexChanged',
         'ValueChanged<int>?',
@@ -547,8 +555,12 @@ AstryxLightbox(
     DocApi(
       'AstryxLightboxItem',
       <DocProp>[
-        DocProp('label', 'String', 'What it is. Never optional.',
-            required: true),
+        DocProp(
+          'label',
+          'String',
+          'What it is. Never optional.',
+          required: true,
+        ),
         DocProp('child', 'Widget', 'The media itself.', required: true),
         DocProp('caption', 'String?', 'A line under it.'),
       ],

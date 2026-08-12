@@ -275,7 +275,7 @@ const DocPage _statusDot = DocPage(
       'An 8px circle in one of five semantic colours. It exists to make a '
       'state **scannable** down a column of rows — not to state it.',
     ),
-    DocExample('status_dot_demo', align: DocExampleAlign.start),
+    DocExample('status_dot_demo'),
     DocHeading('Usage'),
     DocCode('''
 AstryxHStack(
@@ -329,7 +329,7 @@ AstryxHStack(
       'adds nothing to a single line of prose, and everything to forty rows '
       'somebody is looking down.',
     ),
-    DocExample('status_dot_in_place', align: DocExampleAlign.stretch),
+    DocExample('status_dot_in_place'),
     DocProse(
       '`pulsing` says the state is live rather than settled — a deploy in '
       'flight, a stream connected. Under reduced motion the dot holds still at '
@@ -346,8 +346,8 @@ AstryxHStack(
     DocProse(
       '[AstryxBadge](badge) carries its own text and can stand alone; a dot '
       'cannot. Reach for a dot when the words are already there — a table '
-      'cell, a list row, a header — and a badge when they are not. A dot beside a '
-      'badge saying the same thing is one of them too many.',
+      'cell, a list row, a header — and a badge when they are not. A dot '
+      'beside a badge saying the same thing is one of them too many.',
     ),
     DocCallout.note(
       "Upstream's `neutral` theme nudges this component's success, warning "

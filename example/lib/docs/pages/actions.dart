@@ -493,7 +493,7 @@ final DocPage _toggleButton = DocPage(
       'looks like a button and behaves like a setting: pressing it does not '
       'start something, it changes what is true.',
     ),
-    const DocExample('toggle_button_demo', align: DocExampleAlign.start),
+    const DocExample('toggle_button_demo'),
     const DocHeading('Usage'),
     const DocCode('''
 AstryxToggleButton(
@@ -564,7 +564,7 @@ AstryxToggleButton(
       'passing an already-coloured widget.',
     ),
     const DocHeading('States'),
-    const DocExample('toggle_button_states', align: DocExampleAlign.stretch),
+    const DocExample('toggle_button_states'),
     const DocProse(
       'Disabled and loading both refuse the press; loading also announces the '
       'wait and keeps the button’s width, so a toolbar does not jump. The '
@@ -714,7 +714,6 @@ final DocPage _toggleButtonGroup = DocPage(
     const DocHeading('At most one'),
     const DocExample(
       'toggle_button_group_single',
-      align: DocExampleAlign.start,
     ),
     const DocCode('''
 AstryxToggleButtonGroup.single(
@@ -736,7 +735,6 @@ AstryxToggleButtonGroup.single(
     const DocHeading('Any number'),
     const DocExample(
       'toggle_button_group_multiple',
-      align: DocExampleAlign.start,
     ),
     const DocCode('''
 AstryxToggleButtonGroup.multiple(

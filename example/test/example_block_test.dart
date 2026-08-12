@@ -7,6 +7,7 @@
 /// makes none.
 library;
 
+import 'package:example/docs/pages.dart';
 import 'package:example/docs_ui/docs_controller.dart';
 import 'package:example/docs_ui/docs_shell.dart';
 import 'package:example/docs_ui/example_block.dart';
@@ -152,5 +153,41 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(frameWidth(tester), lessThan(mobileWidth));
+  });
+
+  test('a group centres all of its examples, or none of them', () {
+    // The alignment belongs to the group rather than to the example: a reader
+    // scrolls a group, and one preview centred between two left-aligned ones
+    // reads as a mistake whatever the reason for it. `center` is also the
+    // default, so an omitted `align:` is how the rule gets broken by accident.
+    const centred = <String>{
+      DocGroup.actions,
+      DocGroup.overlays,
+      DocGroup.status,
+    };
+
+    final wrong = <String>[];
+    for (final page in docPages) {
+      for (final block in page.blocks) {
+        if (block is! DocExample) continue;
+        final isCentred = block.align == DocExampleAlign.center;
+        if (isCentred != centred.contains(page.group)) {
+          wrong.add(
+            '${page.id}/${block.snippetId}: ${block.align.name} in '
+            '"${page.group}"',
+          );
+        }
+      }
+    }
+
+    expect(
+      wrong,
+      isEmpty,
+      reason:
+          'Actions, Overlays and Status centre their examples — every example '
+          'in them is a single control with no natural edge. Every other group '
+          'aligns to the reading start, with `start` or `stretch`:\n'
+          '${wrong.join('\n')}',
+    );
   });
 }
