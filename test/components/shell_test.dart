@@ -241,5 +241,37 @@ void main() {
 
       expect(find.byType(Scrollable), findsNothing);
     });
+
+    testWidgets('a caller-owned controller drives the body', (tester) async {
+      // What an `AstryxOutline` in the panel needs: the body's scroll position
+      // belongs to the layout, and tracking the reader is impossible without
+      // it.
+      final controller = ScrollController();
+      addTearDown(controller.dispose);
+
+      await pumpAstryxWidget(
+        tester,
+        AstryxLayout(
+          header: const AstryxText('Deploys'),
+          scrollController: controller,
+          child: AstryxVStack(
+            gap: AstryxSpacingToken.spacing3,
+            align: AstryxStackAlign.stretch,
+            children: <Widget>[
+              for (var i = 0; i < 40; i++) AstryxText('Row $i'),
+            ],
+          ),
+        ),
+        surfaceSize: const Size(600, 400),
+      );
+
+      expect(controller.offset, 0);
+
+      controller.jumpTo(120);
+      await tester.pump();
+
+      expect(controller.offset, 120);
+      expect(tester.getRect(find.text('Row 0')).top, lessThan(0));
+    });
   });
 }

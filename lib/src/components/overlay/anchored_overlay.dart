@@ -195,6 +195,9 @@ class _AstryxAnchoredOverlayState extends State<AstryxAnchoredOverlay>
 
   bool _registered = false;
 
+  /// Whether a frame is being waited on for the anchor to have a size.
+  bool _awaitingAnchor = false;
+
   @override
   void initState() {
     super.initState();
@@ -313,7 +316,21 @@ class _AstryxAnchoredOverlayState extends State<AstryxAnchoredOverlay>
         ? anchorBox.localToGlobal(Offset.zero) & anchorBox.size
         : null;
     final anchor = widget.anchorRect ?? measured;
-    if (anchor == null) return const SizedBox.shrink();
+    if (anchor == null) {
+      // The anchor's render object is new this frame — a trigger whose subtree
+      // changed shape as the overlay opened — so there is nothing to measure
+      // against yet. One retry on the next frame, because without it the
+      // overlay stays empty for as long as it is open and the failure looks
+      // like the content, not the measurement.
+      if (!_awaitingAnchor) {
+        _awaitingAnchor = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          setState(() => _awaitingAnchor = false);
+        });
+      }
+      return const SizedBox.shrink();
+    }
 
     final media = MediaQuery.of(overlayContext);
     // The safe area, not the raw window. An overlay that flips up into the

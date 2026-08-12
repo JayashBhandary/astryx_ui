@@ -2,6 +2,7 @@
 library;
 
 import 'package:astryx_ui/src/components/layout/text.dart';
+import 'package:astryx_ui/src/foundation/hotkeys.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
@@ -33,6 +34,9 @@ enum AstryxKbdSize {
 /// because only the caller knows whether the shortcut it is describing is the
 /// platform's or the product's own — and a key cap that shows the wrong
 /// modifier is worse than one that shows a name.
+///
+/// The exception is [AstryxKbd.hotkey]: an `AstryxHotkey` already knows which
+/// modifier it resolved to, so there is nothing left to guess.
 class AstryxKbd extends StatelessWidget {
   /// Creates a single key cap.
   AstryxKbd(
@@ -40,7 +44,8 @@ class AstryxKbd extends StatelessWidget {
     super.key,
     this.size = AstryxKbdSize.md,
     this.semanticsLabel,
-  }) : keys = <String>[label];
+  }) : keys = <String>[label],
+       hotkey = null;
 
   /// Creates several caps, pressed together.
   const AstryxKbd.chord(
@@ -48,10 +53,28 @@ class AstryxKbd extends StatelessWidget {
     super.key,
     this.size = AstryxKbdSize.md,
     this.semanticsLabel,
-  });
+  }) : hotkey = null;
+
+  /// Creates the caps for a bound [AstryxHotkey], resolved for the platform.
+  ///
+  /// The one case where the glyphs are *not* the caller's: a hotkey knows which
+  /// modifier it resolved to, so `AstryxHotkey.mod` draws `⌘K` on a Mac and
+  /// `Ctrl+K` elsewhere — and it is drawn from the same object that gets bound,
+  /// so the hint and the shortcut cannot drift apart.
+  const AstryxKbd.hotkey(
+    this.hotkey, {
+    super.key,
+    this.size = AstryxKbdSize.md,
+    this.semanticsLabel,
+  }) : keys = const <String>[];
 
   /// The keys, in the order they are shown.
+  ///
+  /// Empty for [AstryxKbd.hotkey], which resolves its own at build time.
   final List<String> keys;
+
+  /// The shortcut being described, for [AstryxKbd.hotkey].
+  final AstryxHotkey? hotkey;
 
   /// How large the caps are drawn.
   final AstryxKbdSize size;
@@ -65,16 +88,28 @@ class AstryxKbd extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final shortcut = hotkey;
+
+    final caps = shortcut == null
+        ? keys
+        : shortcut.capsFor(theme.platform);
+    // The symbols are drawn and the words are spoken: `⌘ K` read out as a
+    // string of symbols is not a shortcut anybody can follow.
+    final spoken =
+        semanticsLabel ??
+        (shortcut == null
+            ? keys.join(' ')
+            : shortcut.describeFor(theme.platform));
 
     return Semantics(
       container: true,
-      label: semanticsLabel ?? keys.join(' '),
+      label: spoken,
       child: ExcludeSemantics(
         child: Row(
           mainAxisSize: MainAxisSize.min,
           spacing: theme.spacing(AstryxSpacingToken.spacing1),
           children: <Widget>[
-            for (final key in keys) _Cap(label: key, size: size),
+            for (final key in caps) _Cap(label: key, size: size),
           ],
         ),
       ),

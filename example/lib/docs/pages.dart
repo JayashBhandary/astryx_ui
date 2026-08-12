@@ -8,18 +8,23 @@ library;
 import 'package:example/docs/model.dart';
 import 'package:example/docs/pages/actions.dart';
 import 'package:example/docs/pages/app_shell.dart';
+import 'package:example/docs/pages/chat.dart';
 import 'package:example/docs/pages/data.dart';
 import 'package:example/docs/pages/data_lists.dart';
+import 'package:example/docs/pages/date_time.dart';
 import 'package:example/docs/pages/feedback.dart';
 import 'package:example/docs/pages/forms.dart';
 import 'package:example/docs/pages/guides.dart';
+import 'package:example/docs/pages/hooks.dart';
 import 'package:example/docs/pages/layout.dart';
+import 'package:example/docs/pages/media.dart';
 import 'package:example/docs/pages/navigation.dart';
 import 'package:example/docs/pages/overlays.dart';
 import 'package:example/docs/pages/planned/components.dart';
 import 'package:example/docs/pages/planned/guides.dart';
-import 'package:example/docs/pages/planned/hooks.dart';
 import 'package:example/docs/pages/planned/templates.dart';
+import 'package:example/docs/pages/providers.dart';
+import 'package:example/docs/pages/search.dart';
 import 'package:example/docs/pages/surfaces.dart';
 import 'package:example/docs/pages/templates.dart';
 
@@ -28,7 +33,9 @@ export 'package:example/docs/model.dart';
 
 /// Every page, in navigation order.
 ///
-/// The written pages first, then the placeholders. Order matters twice: a
+/// The written pages first, then the placeholders. There is no planned-hooks
+/// list any more: every upstream hook now has a written page, which is why that
+/// file is gone rather than empty. Order matters twice: a
 /// group's position in [docPagesByGroup] is where its first page appears, and a
 /// page's position within its group is its position here. Appending the planned
 /// lists therefore lands each placeholder underneath the written pages of the
@@ -39,6 +46,7 @@ final List<DocPage> docPages = <DocPage>[
   ...layoutPages,
   ...actionPages,
   ...formPages,
+  ...dateTimePages,
   ...feedbackPages,
   ...overlayPages,
   ...surfacePages,
@@ -46,10 +54,14 @@ final List<DocPage> docPages = <DocPage>[
   ...listPages,
   ...navigationPages,
   ...appShellPages,
+  ...mediaPages,
+  ...searchPages,
+  ...chatPages,
+  ...providerPages,
+  ...hookPages,
   ...templatePages,
   ...plannedGuidePages,
   ...plannedComponentPages,
-  ...plannedHookPages,
   ...plannedTemplatePages,
 ];
 

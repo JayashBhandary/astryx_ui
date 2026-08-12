@@ -52,9 +52,14 @@ class AstryxLayout extends StatelessWidget {
     this.panelSide = AstryxLayoutPanelSide.end,
     this.panelWidth = 320,
     this.scrollable = true,
+    this.scrollController,
     this.padding = AstryxSpacingToken.spacing6,
     this.maxContentWidth,
-  });
+  }) : assert(
+         scrollController == null || scrollable,
+         'A scrollController is meaningless with scrollable: false — the body '
+         'owns its own scroll view there, so give the controller to that.',
+       );
 
   /// The body, which is what scrolls.
   final Widget child;
@@ -88,6 +93,15 @@ class AstryxLayout extends StatelessWidget {
   /// inside one another is one too many.
   final bool scrollable;
 
+  /// The body's scroll controller.
+  ///
+  /// Needed by anything that has to know where the body has got to — an
+  /// `AstryxOutline` in [panel] tracking the reader's position cannot do it
+  /// without one, and the body's scroll view belongs to this widget.
+  ///
+  /// Only legal while [scrollable] is true.
+  final ScrollController? scrollController;
+
   /// The inset around the body, the header and the footer.
   final AstryxSpacingToken padding;
 
@@ -113,7 +127,9 @@ class AstryxLayout extends StatelessWidget {
       );
     }
 
-    if (scrollable) body = SingleChildScrollView(child: body);
+    if (scrollable) {
+      body = SingleChildScrollView(controller: scrollController, child: body);
+    }
 
     final panel = this.panel;
     if (panel != null) {

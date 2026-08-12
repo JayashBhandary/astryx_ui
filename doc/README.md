@@ -73,6 +73,15 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxInputGroup](components/input_group.md) — Adjacent inputs and affixes joined into one bordered control.
 - [AstryxFormLayout](components/form_layout.md) — The column and label geometry a form’s fields share.
 
+## Date & time
+
+- [AstryxCalendar](components/calendar.md) — A month grid for picking a date, keyboard-navigable.
+- [AstryxDateInput](components/date_input.md) — A text field that parses and formats a single date.
+- [AstryxDateRangeInput](components/date_range_input.md) — Two dates as one field, with the range validated across them.
+- [AstryxDateTimeInput](components/date_time_input.md) — A date and a time in one field.
+- [AstryxTimeInput](components/time_input.md) — A text field for a time of day.
+- [AstryxTimestamp](components/timestamp.md) — An absolute time rendered relative — "3 minutes ago" — and re-rendered as it ages.
+
 ## Status
 
 - [AstryxSpinner](components/spinner.md) — An indeterminate wait, in three sizes.
@@ -139,6 +148,69 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxResizeHandle](components/resize_handle.md) — A draggable divider that resizes the panel beside it.
 - [AstryxOutline](components/outline.md) — An on-this-page table of contents, tracking the reader’s position.
 
+## Media
+
+- [AstryxAvatar](components/avatar.md) — A person or entity as an image, initials or icon, with an optional status dot.
+- [AstryxAvatarGroup](components/avatar_group.md) — Overlapping avatars with a count for the ones that did not fit.
+- [AstryxThumbnail](components/thumbnail.md) — A small fixed-ratio preview of an image or file.
+- [AstryxAspectRatio](components/aspect_ratio.md) — A box that keeps its width-to-height ratio as it resizes.
+- [AstryxCarousel](components/carousel.md) — A horizontally paged strip of items, with the controls and keyboard traversal.
+- [AstryxLightbox](components/lightbox.md) — A full-screen media viewer, navigable between items.
+- [AstryxMediaTheme](components/media_theme.md) — The theme overrides that apply to media surfaces — captions and controls over an image.
+
+## Command & search
+
+- [AstryxCommandPalette](components/command_palette.md) — The keyboard-first command surface: a query, grouped results, and a footer of shortcuts.
+- [AstryxTypeahead](components/typeahead.md) — A text field that suggests completions as you type.
+- [AstryxBaseTypeahead](components/base_typeahead.md) — The unstyled typeahead the other search inputs are built from.
+- [AstryxPowerSearch](components/power_search.md) — A search input with structured filters alongside the free text.
+
+## Chat & AI
+
+- [AstryxChatLayout](components/chat_layout.md) — The frame of a conversation: a scrolling transcript and a pinned composer.
+- [AstryxChatMessage](components/chat_message.md) — One turn in a conversation — the bubble, its metadata, and the list that holds them.
+- [AstryxChatComposer](components/chat_composer.md) — The input a message is written in, with its drawer.
+- [AstryxTokenTextController](components/chat_composer_token.md) — A mention styled inside the text being typed.
+- [AstryxChatSendButton](components/chat_send_button.md) — The composer's submit control, reflecting sending and stop-generating.
+- [AstryxChatDictationButton](components/chat_dictation_button.md) — The composer's speech-to-text control.
+- [AstryxChatSystemMessage](components/chat_system_message.md) — A turn that came from the system rather than either participant.
+- [AstryxChatTokenizedText](components/chat_tokenized_text.md) — Message text with mentions and references rendered as tokens.
+- [AstryxChatToolCalls](components/chat_tool_calls.md) — The tool calls a model made, and their results, inside a turn.
+- [AstryxCitation](components/citation.md) — A numbered reference from generated text back to its source.
+- [AstryxMarkdown](components/markdown.md) — Rendered markdown, for model output and authored prose alike.
+- [AstryxTokenChip](components/token.md) — One inline chip standing for an entity inside a text field.
+- [AstryxTokenizer](components/tokenizer.md) — The field that turns typed text into tokens.
+
+## Providers
+
+- [AstryxThemeProvider](components/theme.md) — The provider that puts a resolved theme in scope — and everything else the widgets need.
+- [The overlay layer](components/layer_provider.md) — The stacking context overlays are raised into.
+- [AstryxLinkScope](components/link_provider.md) — How links navigate — supplied once, so components need not know the router.
+- [AstryxLocalizationsScope](components/internationalization_provider.md) — Locale, text direction and the strings, supplied to the tree.
+- [AstryxSyntaxTheme](components/syntax_theme.md) — The token colours a code block highlights with.
+
+## Hooks & controllers
+
+- [useTheme → AstryxTheme.of](components/use_theme.md) — Reading the theme in scope, and why there is no hook.
+- [useMediaQuery → MediaQuery](components/use_media_query.md) — Responding to viewport size, pointer, and motion preference.
+- [AstryxHotkeys](components/use_hotkeys.md) — Binding keyboard shortcuts to actions.
+- [AstryxFocusTrap](components/use_focus_trap.md) — Holding focus inside an open overlay, and giving it back.
+- [AstryxScrollLock](components/use_scroll_lock.md) — Freezing the page behind a modal.
+- [AstryxScrollOverflow](components/use_scroll_overflow.md) — Knowing whether a scroller has content beyond either edge, for fading its edges.
+- [useOverflow → AstryxOverflowList](components/use_overflow.md) — Measuring which children do not fit, so a component can collapse its tail.
+- [AstryxRovingFocus.list](components/use_list_focus.md) — Arrow-key traversal across a list as one tab stop.
+- [AstryxRovingFocus.grid](components/use_grid_focus.md) — Two-dimensional arrow-key traversal across a grid.
+- [useTreeFocus → AstryxTreeList](components/use_tree_focus.md) — Arrow-key traversal across a tree, including expand and collapse.
+- [useLayer → Overlay and the stack](components/use_layer.md) — Placing content in the overlay stack at the right depth.
+- [useClickableContainer → onPressed](components/use_clickable_container.md) — Making a container behave as one control without nesting interactive elements.
+- [useInputContainer → the field](components/use_input_container.md) — Sharing focus, hover and validation state between a field and its affixes.
+- [AstryxKeyboardHint](components/use_keyboard_hint.md) — Showing shortcut hints only once the user is navigating by keyboard.
+- [AstryxEntryAnimation](components/use_entry_animation.md) — Animating an element as it enters, respecting reduced-motion.
+- [AstryxContainerReveal](components/use_container_reveal.md) — Revealing content as its container scrolls into view.
+- [useImageMode → the resolved mode](components/use_image_mode.md) — Choosing the light or dark variant of an image.
+- [AstryxStreamingText](components/use_streaming_text.md) — Rendering text as it arrives token by token.
+- [useTranslator → AstryxLocalizations.of](components/use_translator.md) — Looking up a translated string.
+
 ## Templates
 
 - [Login](components/login.md) — A centred sign-in form, with the validation, error and loading states a real one has.
@@ -154,12 +226,14 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [Detail page](components/detail_page.md) — One record: header, status, tabs, metadata and actions.
 - [Dashboard](components/dashboard.md) — Summary tiles above a table of what needs attention.
 - [Table](components/table_template.md) — A data table as a screen: a toolbar, filtering, sorting, selection and row actions.
+- [Table page](components/table_page.md) — A table as a whole screen: filters in a pinned header, pagination in a pinned footer.
+- [Classic gallery](components/classic_gallery.md) — A uniform wall of media tiles, each opening the same viewer on the item that was pressed.
+- [AI chat](components/ai_chat.md) — A full conversation screen: transcript, composer, tool calls, and the empty state before the first turn.
+- [Shell navigation](components/shell_nav.md) — The application frame with both bars in place: a full-width header and a collapsible rail beside the content.
+- [Documentation](components/documentation.md) — A docs page: side navigation, a measured content column, and an on-this-page outline that tracks the reader.
 - [Theme showcase](components/theme_showcase.md) — One of everything on one screen, for judging a theme rather than imagining it.
-- AI chat — A full conversation screen: transcript, composer, and the empty state before the first turn. *(not ported yet)*
 - AI chat landing — The pre-conversation screen: prompt suggestions and a centred composer. *(not ported yet)*
-- Classic gallery — A uniform grid of media cards. *(not ported yet)*
 - Portfolio dashboard — A dashboard built around a chart and a holdings table. *(not ported yet)*
-- Documentation — A docs page: side navigation, content column, and an on-this-page outline. *(not ported yet)*
 - Design documentation — A docs page for a design topic, heavy on specimens. *(not ported yet)*
 - Technical documentation — A docs page for an API, heavy on code and property tables. *(not ported yet)*
 - Editor — A document editor: toolbar, canvas, and an inspector panel. *(not ported yet)*
@@ -174,84 +248,11 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - Product detail — Gallery, price, options, and the add-to-cart action. *(not ported yet)*
 - Product gallery — A filterable grid of products. *(not ported yet)*
 - Settings with sidebar — Settings sections reached from a sidebar. *(not ported yet)*
-- Shell navigation — The application shell with both bars in place. *(not ported yet)*
 - Shell with side nav — The shell with a vertical rail only. *(not ported yet)*
 - Shell with top nav — The shell with a horizontal bar only. *(not ported yet)*
 - Side gallery — A gallery with the selected item beside the strip. *(not ported yet)*
 - Grouped table — A table whose rows are grouped under collapsible headers. *(not ported yet)*
-- Table page — A table as a whole screen: filters, table, pagination. *(not ported yet)*
 - Table page with chart — A table screen with a summary chart above it. *(not ported yet)*
 - Table page with heatmap — A table screen whose cells carry heatmap and status colouring. *(not ported yet)*
 - Retail heatmap table — The heatmap table screen with a retail data set. *(not ported yet)*
-
-## Date & time
-
-- Calendar — A month grid for picking a date, keyboard-navigable. *(not ported yet)*
-- DateInput — A text field that parses and formats a single date. *(not ported yet)*
-- DateRangeInput — Two dates as one field, with the range validated across them. *(not ported yet)*
-- DateTimeInput — A date and a time in one field. *(not ported yet)*
-- TimeInput — A text field for a time of day. *(not ported yet)*
-- Timestamp — An absolute time rendered relative — "3 minutes ago" — and re-rendered as it ages. *(not ported yet)*
-
-## Command & search
-
-- CommandPalette — The keyboard-first command surface: a query, grouped results, and a footer of shortcuts. *(not ported yet)*
-- Typeahead — A text field that suggests completions as you type. *(not ported yet)*
-- BaseTypeahead — The unstyled typeahead the other search inputs are built from. *(not ported yet)*
-- PowerSearch — A search input with structured filters alongside the free text. *(not ported yet)*
-
-## Chat & AI
-
-- ChatLayout — The frame of a conversation: a scrolling transcript and a pinned composer. *(not ported yet)*
-- ChatMessage — One turn in a conversation — the bubble, its metadata, and the list that holds them. *(not ported yet)*
-- ChatComposer — The input a message is written in, with its drawer and inline tokens. *(not ported yet)*
-- ChatSendButton — The composer's submit control, reflecting sending and stop-generating. *(not ported yet)*
-- ChatDictationButton — The composer's speech-to-text control. *(not ported yet)*
-- ChatSystemMessage — A turn that came from the system rather than either participant. *(not ported yet)*
-- ChatTokenizedText — Message text with mentions and references rendered as tokens. *(not ported yet)*
-- ChatToolCalls — The tool calls a model made, and their results, inside a turn. *(not ported yet)*
-- Citation — A numbered reference from generated text back to its source. *(not ported yet)*
-- Markdown — Rendered markdown, for model output and authored prose alike. *(not ported yet)*
-- Token — One inline chip standing for an entity inside a text field. *(not ported yet)*
-- Tokenizer — The field that turns typed text into tokens. *(not ported yet)*
-
-## Media
-
-- Avatar — A person or entity as an image, initials or icon, with an optional status dot. *(not ported yet)*
-- AvatarGroup — Overlapping avatars with a count for the ones that did not fit. *(not ported yet)*
-- Thumbnail — A small fixed-ratio preview of an image or file. *(not ported yet)*
-- AspectRatio — A box that keeps its width-to-height ratio as it resizes. *(not ported yet)*
-- Carousel — A horizontally paged strip of items, with the controls and keyboard traversal. *(not ported yet)*
-- Lightbox — A full-screen media viewer, navigable between items. *(not ported yet)*
-- MediaTheme — The theme overrides that apply to media surfaces — captions and controls over an image. *(not ported yet)*
-
-## Providers
-
-- Theme — The provider that puts a resolved theme in scope. Ported as `AstryxThemeProvider`; this page records the upstream mapping. *(not ported yet)*
-- LayerProvider — The stacking context overlays are raised into. *(not ported yet)*
-- LinkProvider — How links navigate — supplied once, so components need not know the router. *(not ported yet)*
-- InternationalizationProvider — Locale, text direction and the translator, supplied to the tree. *(not ported yet)*
-- SyntaxTheme — The token colours a code block highlights with. *(not ported yet)*
-
-## Hooks & controllers
-
-- useTheme — Reading the theme in scope. In Flutter this is `AstryxTheme.of(context)` — the page records why there is no hook. *(not ported yet)*
-- useMediaQuery — Responding to viewport size. Flutter's `MediaQuery` covers it; the page records the mapping. *(not ported yet)*
-- useHotkeys — Binding keyboard shortcuts to actions. *(not ported yet)*
-- useFocusTrap — Holding focus inside an open overlay. *(not ported yet)*
-- useScrollLock — Freezing the page behind a modal. *(not ported yet)*
-- useScrollOverflow — Knowing whether a scroller has content beyond either edge, for fading its edges. *(not ported yet)*
-- useOverflow — Measuring which children do not fit, so a component can collapse its tail. *(not ported yet)*
-- useListFocus — Arrow-key traversal across a list as one tab stop. *(not ported yet)*
-- useGridFocus — Two-dimensional arrow-key traversal across a grid. *(not ported yet)*
-- useTreeFocus — Arrow-key traversal across a tree, including expand and collapse. *(not ported yet)*
-- useLayer — Placing content in the overlay stack at the right depth. *(not ported yet)*
-- useClickableContainer — Making a container behave as one control without nesting interactive elements. *(not ported yet)*
-- useInputContainer — Sharing focus, hover and validation state between a field and its affixes. *(not ported yet)*
-- useKeyboardHint — Showing shortcut hints only once the user is navigating by keyboard. *(not ported yet)*
-- useEntryAnimation — Animating an element as it enters, respecting reduced-motion. *(not ported yet)*
-- useContainerReveal — Revealing content as its container scrolls into view. *(not ported yet)*
-- useImageMode — Choosing the light or dark variant of an image. *(not ported yet)*
-- useStreamingText — Rendering text as it arrives token by token. *(not ported yet)*
-- useTranslator — Looking up a translated string. *(not ported yet)*
 

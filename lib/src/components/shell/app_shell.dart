@@ -123,8 +123,9 @@ class AstryxAppShell extends StatefulWidget {
   /// The navigation, beside the content when there is room and behind a drawer
   /// when there is not.
   ///
-  /// Any widget. This package has not ported a navigation rail yet, so what
-  /// goes here is yours — an `AstryxList` of `AstryxItem`s gets a long way.
+  /// Usually an `AstryxSideNav`, which is the rail this slot was shaped for —
+  /// but any widget will do, and an `AstryxList` of `AstryxItem`s gets a long
+  /// way.
   final Widget? sidebar;
 
   /// Drives the drawer from outside. Null keeps one inside the shell.

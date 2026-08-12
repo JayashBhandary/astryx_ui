@@ -7,6 +7,7 @@ import 'package:astryx_ui/src/theme/components/divider.dart';
 import 'package:astryx_ui/src/theme/components/icon.dart';
 import 'package:astryx_ui/src/theme/components/text.dart';
 import 'package:astryx_ui/src/theme/engine/define_theme.dart';
+import 'package:astryx_ui/src/theme/engine/syntax_theme.dart';
 import 'package:astryx_ui/src/theme/engine/token_resolver.dart';
 import 'package:astryx_ui/src/theme/font_stack.dart';
 import 'package:astryx_ui/src/theme/resolved_token_set.dart';
@@ -83,6 +84,10 @@ class AstryxThemeData {
     }
 
     convert(AstryxColorToken.values, colors, (v) => parseCssColor(v, mode));
+    // The syntax palette is outside the core token set — a theme either carries
+    // one or does not — so these land in the same map and are read back through
+    // a *nullable* accessor rather than the throwing one.
+    convert(AstryxSyntaxToken.values, colors, (v) => parseCssColor(v, mode));
     convert(AstryxSpacingToken.values, lengths, parseCssLength);
     convert(AstryxSizeToken.values, lengths, parseCssLength);
     convert(AstryxRadiusToken.values, lengths, parseCssLength);
@@ -306,6 +311,28 @@ class AstryxThemeData {
 
   /// The text style for heading [level], 1 through 6.
   TextStyle headingStyle(int level) => textStyle(AstryxTypeRole.heading(level));
+
+  /// The colour for syntax [token], or null when the theme carries no palette.
+  ///
+  /// Nullable, unlike every other accessor here, because a syntax palette is
+  /// **optional**: it sits outside the 184 core tokens, so an unthemed app has
+  /// none and throwing would punish a caller for a theme's silence. The
+  /// prebuilt themes all carry one.
+  Color? syntaxColor(AstryxSyntaxToken token) => _colors[token.cssName];
+
+  /// Whether the theme carries a syntax palette at all.
+  bool get hasSyntaxPalette =>
+      AstryxSyntaxToken.values.any((t) => _colors.containsKey(t.cssName));
+
+  /// The whole syntax palette, for handing to a highlighter in one go.
+  ///
+  /// Only the roles the theme actually defines are present, so a caller can
+  /// tell "this theme has no palette" from "this theme left one role out".
+  Map<AstryxSyntaxToken, Color> get syntaxPalette =>
+      Map<AstryxSyntaxToken, Color>.unmodifiable(<AstryxSyntaxToken, Color>{
+        for (final token in AstryxSyntaxToken.values)
+          if (_colors[token.cssName] != null) token: _colors[token.cssName]!,
+      });
 
   /// Returns a copy resolved for a different mode, platform or token set.
   ///

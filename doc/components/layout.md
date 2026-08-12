@@ -149,6 +149,7 @@ class LayoutPanelExample extends StatelessWidget {
 | --- | --- |
 | `scrollable: false` | The body scrolls itself — a table with a pinned header row, a transcript that stays at the bottom. Two scroll views inside one another is one too many. |
 | `maxContentWidth` | A page of prose or a single form, where a line running the width of a monitor is unreadable. Leave it null for a table. |
+| `scrollController` | Something beside the body needs its scroll position — an [AstryxOutline](outline.md) in the panel tracking the reader. The body’s scroll view belongs to this widget, so the controller is handed in rather than invented. See the [documentation](documentation.md) template. |
 
 ### AstryxLayout
 
@@ -161,6 +162,7 @@ class LayoutPanelExample extends StatelessWidget {
 | `panelSide` | `AstryxLayoutPanelSide` | `AstryxLayoutPanelSide.end` | Which edge the panel sits against. |
 | `panelWidth` | `double` | `320` | How wide the panel is. |
 | `scrollable` | `bool` | `true` | Whether the body scrolls. |
+| `scrollController` | `ScrollController?` | — | The body’s scroll controller, for anything that has to know where the body has got to — an outline in the panel. Only legal while `scrollable` is true. |
 | `padding` | `AstryxSpacingToken` | `AstryxSpacingToken.spacing6` | The inset around the body, the header and the footer. |
 | `maxContentWidth` | `double?` | — | A measure for the body. Null lets it fill. |
 

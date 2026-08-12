@@ -29,6 +29,11 @@ final List<DocPage> templatePages = <DocPage>[
   _detailPage,
   _dashboard,
   _table,
+  _tablePage,
+  _classicGallery,
+  _aiChat,
+  _shellNav,
+  _documentation,
   _themeShowcase,
 ];
 
@@ -931,17 +936,546 @@ AstryxHStack(wrap: true)
       'is the signal, and a screen reader gets the whole string either way.',
     ),
     DocCallout.warning(
-      '**No pagination, and no virtualisation.** `Pagination` is not ported '
-      'and `AstryxTable` does not virtualise rows: a `maxHeight` scrolls the '
-      'body, and a few hundred rows is fine. For thousands, paginate in your '
-      'own data layer — the footer line here counts what is shown against the '
-      'total, which is the least a screen owes the reader.',
+      '**No pagination here, and no virtualisation anywhere.** '
+      '`AstryxTable` does not virtualise rows: a `maxHeight` scrolls the body, '
+      'and a few hundred rows is fine. Past that, page in your own data layer '
+      '— the [table page](table_page) template is that screen, with '
+      '[AstryxPagination](pagination) in the footer.',
     ),
     DocHeading('Related'),
     DocList(<String>[
       '[AstryxTable](table) — every property, and the three width strategies.',
+      '[Table page](table_page) — the same table as a whole screen, paginated.',
       '[Dashboard](dashboard) — the same data, summarised.',
       '[Detail page](detail_page) — where a row leads.',
+    ]),
+    _notAWidget,
+  ],
+);
+
+const DocPage _tablePage = DocPage(
+  id: 'table_page',
+  title: 'Table page',
+  group: _group,
+  description:
+      'A table as a whole screen: filters in a pinned header, pagination in a '
+      'pinned footer.',
+  source: 'example/lib/examples/template_table_page_examples.dart',
+  upstreamPath: '/templates/table-page',
+  blocks: <DocBlock>[
+    DocExample(
+      'template_table_page',
+      align: DocExampleAlign.stretch,
+      note:
+          'Change the page size, sort a column, then filter: the reader lands '
+          'back on page one every time, and the range under the table says '
+          'what they are looking at.',
+    ),
+    DocHeading('Why this is not the table template'),
+    DocProse(
+      'The [table](table_template) template is a composition inside a page. '
+      'This is the page: the filters sit in an [AstryxLayout](layout) header '
+      'that does not scroll, the pagination sits in a footer that does not '
+      'scroll, and the only thing that moves is the rows. On a screen where '
+      'the table *is* the work, a filter you have to scroll up to reach is a '
+      'filter nobody reverts.',
+    ),
+    DocTree('''
+AstryxLayout(scrollable: false)
+├── header  ← title, search, state filter, "n of m"
+├── child   ← AstryxTable, scrolling its own body under a pinned header row
+└── footer  ← "15–28 of 38", rows-per-page, AstryxPagination'''),
+    DocCallout.warning(
+      '**`scrollable: false`.** `AstryxTable` scrolls its own body under its '
+      'header row. Leaving the layout scrollable puts one scroll view inside '
+      'another, and the inner one then measures unbounded — which is a '
+      'layout assertion rather than a subtle bug.',
+    ),
+    DocHeading('Sort the set, then cut the page'),
+    DocProse(
+      'Both the filtering and the **sorting** happen in the caller, in that '
+      'order, before the page is sliced out. This is the one thing a paginated '
+      'table gets wrong most often: hand `rows` a single page and let the '
+      'table sort it, and you have sorted fourteen rows out of thirty-eight — '
+      'a column that reorders within the page and never moves a row between '
+      'pages.',
+    ),
+    DocCode('''
+List<Run> get _matches {
+  final rows = runs.where(_passesFilters).toList();   // filter the whole set
+  if (_sort != null) rows.sort(_comparatorFor(_sort!));  // then sort it
+  return rows;
+}
+
+List<Run> get _rows {                                // then cut the window
+  final start = (_page - 1) * _pageSize;
+  if (start >= _matches.length) return const <Run>[];
+  return _matches.sublist(start, min(start + _pageSize, _matches.length));
+}'''),
+    DocHeading('Every filter resets the page'),
+    DocProse(
+      'Search, the state filter, the page size and the sort all go through one '
+      'helper that sets `_page = 1`. Without it, narrowing a 38-row set while '
+      'on page three shows an empty table — which reads as "no data" rather '
+      'than "you are past the end", and is the single most common bug on a '
+      'screen like this.',
+    ),
+    DocCode('''
+void _refilter(VoidCallback change) => setState(() {
+  change();
+  _page = 1;      // ← the whole point
+});'''),
+    DocHeading('The footer counts, it does not just number'),
+    DocProse(
+      '"Page 2 of 3" tells a reader nothing about how much they have not seen. '
+      '"15–28 of 38" does, and it is the only line on the screen that '
+      'distinguishes a filter that matched nothing from a data set that is '
+      'empty. Both states are handled: the range collapses to "Nothing to '
+      'show" and the table draws its own `emptyState` offering to clear the '
+      'filters.',
+    ),
+    DocCallout.accessibility(
+      'Row actions are always visible, never on hover — touch has no hover, '
+      'and the density system suppresses hover styling there. `rowLabelOf` is '
+      'what names each row for the action beside it: "Actions" repeated '
+      'fourteen times is fourteen identical announcements.',
+    ),
+    DocCallout.note(
+      '**Rows per page is a selector, not a switch or a segmented control.** '
+      'It picks a value out of several and shows the current one, which is the '
+      'line between [AstryxSelector](selector) and the other two.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[AstryxPagination](pagination) — pages are one-based, the ends are '
+          'always shown, and the arrows disable rather than disappear.',
+      '[AstryxTable](table) — the table itself, and the three width '
+          'strategies.',
+      '[Table](table_template) — the same data as a composition rather than a '
+          'page.',
+    ]),
+    _notAWidget,
+  ],
+);
+
+const DocPage _classicGallery = DocPage(
+  id: 'classic_gallery',
+  title: 'Classic gallery',
+  group: _group,
+  description:
+      'A uniform wall of media tiles, each opening the same viewer on the item '
+      'that was pressed.',
+  source: 'example/lib/examples/template_gallery_examples.dart',
+  upstreamPath: '/templates/classic-gallery',
+  blocks: <DocBlock>[
+    DocExample(
+      'template_classic_gallery',
+      align: DocExampleAlign.stretch,
+      note:
+          'Press a tile: the viewer opens on that one. Page it with the arrow '
+          'keys and close it with Escape. Filter by album and the viewer '
+          'follows the filtered set.',
+    ),
+    DocHeading('One viewer, not one per tile'),
+    DocProse(
+      'The [AstryxLightbox](lightbox) sits beside the wall of tiles and takes '
+      'the whole list. A tile does not own an overlay — it sets an index and '
+      'shows the shared one. Eight tiles with eight lightboxes is eight '
+      'overlay controllers, eight focus traps and eight chances for two of '
+      'them to be open at once.',
+    ),
+    DocCode('''
+void _open(int index) {
+  setState(() => _index = index);   // which item the viewer starts on
+  _viewer.show();
+}
+
+AstryxLightbox(
+  controller: _viewer,
+  initialIndex: _index,             // read every time it opens, not once
+  items: items,
+)'''),
+    DocHeading('A picture is not the thing’s name'),
+    DocProse(
+      'Every tile carries its name in text as well as in the picture, and the '
+      'card announces `"{name}, {album}"`. That is not a courtesy: a thumbnail '
+      'that has not loaded, or a reader who cannot see it, leaves the name as '
+      'the only thing there is — which is why the name is required on '
+      '[AstryxThumbnail](thumbnail) and [AstryxAvatar](avatar) rather than '
+      'optional.',
+    ),
+    DocHeading('Anything over media goes through AstryxMediaTheme'),
+    DocProse(
+      'The caption sits on the picture, so it cannot use the page’s text '
+      'colour — the picture is whatever colour it is. '
+      '[AstryxMediaTheme](media_theme) forces the on-dark tokens and puts a '
+      'scrim behind them, and the text inside it asks for '
+      '`AstryxTextColor.inherit` so that both the caption and the glyph beside '
+      'it take that colour without either naming it.',
+    ),
+    DocCallout.warning(
+      '**The wall is a wrapping row of fixed-width tiles, not an '
+      '[AstryxGrid](grid).** A grid gives every cell in a row the height of '
+      'the tallest, which means measuring each cell intrinsically — and a '
+      'pressable tile sits inside the touch-target wrapper, which cannot '
+      'answer that measurement in touch density. Uniform tiles look identical '
+      'either way; a grid is right for cells of text and figures, like the '
+      '[dashboard](dashboard) tiles.',
+    ),
+    DocCallout.accessibility(
+      'The tile is one tab stop and announces its name once. The caption over '
+      'the picture is inside the same card, so a second announcement of the '
+      'same words would be noise — the card’s `semanticsLabel` is the '
+      'sentence, and the visible caption is what a sighted reader gets '
+      'instead.',
+    ),
+    DocProse(
+      'Filtering by album rebuilds both the wall and the viewer’s list from '
+      'the same `_shown`, so the counter inside the viewer says "3 of 5" about '
+      'the set the reader is actually looking at. A viewer paging through '
+      'hidden items is a filter that did not apply.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[AstryxLightbox](lightbox) — the viewer, its paging and its focus trap.',
+      '[AstryxAspectRatio](aspect_ratio) — the box, the ground and the clip.',
+      '[AstryxMediaTheme](media_theme) — the scrim and the on-dark tokens.',
+      '[AstryxThumbnail](thumbnail) — the smaller tile, with a caption and a '
+          'selected state built in.',
+    ]),
+    _notAWidget,
+  ],
+);
+
+const DocPage _aiChat = DocPage(
+  id: 'ai_chat',
+  title: 'AI chat',
+  group: _group,
+  description:
+      'A full conversation screen: transcript, composer, tool calls, and the '
+      'empty state before the first turn.',
+  source: 'example/lib/examples/template_chat_examples.dart',
+  upstreamPath: '/templates/ai-chat',
+  blocks: <DocBlock>[
+    DocExample(
+      'template_ai_chat',
+      align: DocExampleAlign.stretch,
+      note:
+          'Send something to see the waiting state, then **Skip the wait** for '
+          'the reply. **New chat** empties the transcript, which is how to see '
+          'the empty state and its suggestions.',
+    ),
+    DocHeading('Four states, not one screen'),
+    DocTable(
+      headers: <String>['State', 'Shown by', 'Why'],
+      rows: <List<String>>[
+        <String>[
+          'Nothing said yet',
+          '`empty:` on [AstryxChatLayout](chat_layout)',
+          'It is the first thing most people see, so it is a slot rather than '
+              'a blank — and centred, which a transcript could not manage on '
+              'its own.',
+        ],
+        <String>[
+          'Waiting for the answer',
+          '`generating: true` on the composer',
+          'The send button becomes stop. A spinner beside a live send button '
+              'invites a second request nobody wanted.',
+        ],
+        <String>[
+          'Answered',
+          '[AstryxMarkdown](markdown) plus '
+              '[AstryxChatToolCalls](chat_tool_calls)',
+          'The reply arrives as markdown and the work behind it is '
+              'summarised, collapsed, underneath it.',
+        ],
+        <String>[
+          'Answered from sources',
+          '[AstryxCitation](citation) spans',
+          'The marker is a number, but its **name** is the source — a row of '
+              'bare numerals is a puzzle, not a bibliography.',
+        ],
+      ],
+    ),
+    DocHeading('The user’s words are never markdown'),
+    DocProse(
+      'The transcript renders the assistant’s turn with '
+      '[AstryxMarkdown](markdown) and the user’s turn with plain '
+      '[AstryxText](text). That asymmetry is deliberate. Rendering what '
+      'somebody typed changes what they said: an underscore around a variable '
+      'name becomes italics, and a line starting with `#` becomes a heading.',
+    ),
+    DocCode('''
+Widget _turnMessage(_Turn turn) {
+  if (turn.role == AstryxChatRole.user) {
+    return AstryxChatMessage(
+      role: AstryxChatRole.user,
+      author: 'You',
+      child: AstryxText(turn.text),          // ← their words, as typed
+    );
+  }
+  return AstryxChatMessage(
+    author: 'Assistant',
+    footer: AstryxChatToolCalls(calls: turn.calls),
+    child: AstryxMarkdown(turn.text, onLinkPressed: _open),
+  );
+}'''),
+    DocHeading('Suggestions are buttons'),
+    DocProse(
+      'The empty state offers three prompts and each one is an '
+      '[AstryxButton](button) that sends itself. A suggestion you have to '
+      'retype is a suggestion nobody uses, and placeholder text that '
+      'disappears the moment you type is not a suggestion at all.',
+    ),
+    DocHeading('Composition'),
+    DocTree('''
+AstryxLayout(scrollable: false, padding: spacing0)
+├── header ← title, turn count, model selector, "New chat"
+└── AstryxChatLayout
+    ├── messages  ← AstryxChatMessage per turn
+    │   ├── actions: copy / good / bad     ← always visible
+    │   ├── footer:  AstryxChatToolCalls   ← collapsed
+    │   └── child:   AstryxMarkdown + AstryxCitation spans
+    ├── empty     ← heading, line, three prompt buttons
+    └── composer  ← AstryxChatComposer(generating:, onStop:)'''),
+    DocCallout.warning(
+      '**Bound the height and turn the layout’s scrolling off.** '
+      '`AstryxChatLayout` divides what it is given between the transcript and '
+      'the composer, so it needs a bounded height and it owns the scrolling '
+      'itself. Inside a scrollable [AstryxLayout](layout) it would be a scroll '
+      'view inside a scroll view, and inside a bare column it would be handed '
+      'an unbounded height it cannot divide.',
+    ),
+    DocCallout.accessibility(
+      'The per-message actions — copy, good answer, bad answer — are visible '
+      'at all times and each names *which* answer it acts on. Feedback buttons '
+      'that appear on hover are feedback no touch user can give.',
+    ),
+    DocProse(
+      'The composer’s footer carries the disclaimer. It belongs there rather '
+      'than in a [toast](toast) or a [banner](banner) at the top: it is a '
+      'standing fact about every answer, and the moment it matters is the '
+      'moment somebody is about to ask.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[AstryxChatLayout](chat_layout) — the transcript, the scroll behaviour '
+          'and the empty slot.',
+      '[AstryxChatComposer](chat_composer) — Enter, Shift+Enter, generating '
+          'and stop.',
+      '[AstryxChatToolCalls](chat_tool_calls) — what the model did, '
+          'summarised.',
+      '[AstryxMarkdown](markdown) — what it renders, and what it does not.',
+    ]),
+    _notAWidget,
+  ],
+);
+
+const DocPage _shellNav = DocPage(
+  id: 'shell_nav',
+  title: 'Shell navigation',
+  group: _group,
+  description:
+      'The application frame with both bars in place: a full-width header and '
+      'a collapsible rail beside the content.',
+  source: 'example/lib/examples/template_shell_examples.dart',
+  upstreamPath: '/templates/shell-nav',
+  blocks: <DocBlock>[
+    DocExample(
+      'template_shell_nav',
+      align: DocExampleAlign.stretch,
+      note:
+          'Collapse the rail with the control in its header, or narrow the '
+          'browser window past 720 pixels to send it behind the drawer the '
+          'menu button opens.',
+    ),
+    DocHeading('Two bars, one list of destinations'),
+    DocProse(
+      'The header is an [AstryxTopNav](top_nav) and the rail is an '
+      '[AstryxSideNav](side_nav), and they are not the same navigation twice. '
+      'The bar carries the areas of the product — application, docs, status — '
+      'while the rail carries the sections *inside* the area you are in. Both '
+      'are containers for one `AstryxNavEntry` list, which is why a section, a '
+      'divider and a badge look right in either.',
+    ),
+    DocTree('''
+AstryxAppShell(compactBelow: 720)
+├── header  ← AstryxTopNav: brand, areas, search, account
+├── sidebar ← AstryxSideNav: sections, heading menu, account row
+└── child   ← AstryxLayout: breadcrumbs, title, actions, body'''),
+    DocHeading('The header asks the shell where the navigation went'),
+    DocProse(
+      'A header cannot know whether to draw a menu button without knowing '
+      'whether the rail is beside the content or behind the drawer, and that '
+      'answer belongs to the shell. `AstryxAppShell.of(context)` is the port '
+      'of upstream’s `useAppShellMobile`; measuring the window a second time '
+      'in the header is how the two disagree at exactly the threshold.',
+    ),
+    DocCode('''
+final shell = AstryxAppShell.of(context);
+
+if (shell.compact)
+  AstryxIconButton(
+    icon: AstryxIconName.menu,
+    label: 'Open navigation',
+    onPressed: shell.controller.toggle,
+  ),'''),
+    DocCallout.note(
+      '**`compactBelow` is a number, not a breakpoint.** The width at which '
+      '*your* navigation stops fitting is a fact about your navigation. A '
+      'global breakpoint table means every screen has to agree about a number '
+      'none of them chose.',
+    ),
+    DocHeading('Collapsed is narrower, not quieter'),
+    DocProse(
+      'Collapsing the rail takes the labels off the screen and leaves them in '
+      'the semantics tree, with a tooltip that shows on focus as well as '
+      'hover. The shell’s `sidebarWidth` moves with it — the rail does not '
+      'decide its own width, because the content column is the other half of '
+      'that decision.',
+    ),
+    DocHeading('Three layers of "where am I"'),
+    DocTable(
+      headers: <String>['Layer', 'Widget', 'Answers'],
+      rows: <List<String>>[
+        <String>[
+          'Which product area',
+          '[AstryxTopNav](top_nav) selection',
+          'Application, docs, status.',
+        ],
+        <String>[
+          'Which section of it',
+          '[AstryxSideNav](side_nav) selection',
+          'Deploys, incidents, services.',
+        ],
+        <String>[
+          'Where in the hierarchy',
+          '[AstryxBreadcrumbs](breadcrumbs)',
+          'Acme Corp › Production › Deploys. The last crumb has no link: a '
+              'link to the page you are on is how a trail stops telling you '
+              'where you are.',
+        ],
+      ],
+    ),
+    DocCallout.accessibility(
+      'The drawer is a real [AstryxOverlay](overlay): it traps focus, closes '
+      'on Escape or a press on the scrim, and hands focus back to the button '
+      'that opened it. A shell that hides navigation without any of that loses '
+      'keyboard users at the first tap.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[AstryxAppShell](app_shell) — the frame, and the compact behaviour.',
+      '[AstryxSideNav](side_nav) — the rail, its sections and its collapsed '
+          'state.',
+      '[AstryxTopNav](top_nav) — the bar, its menus and the mega menu.',
+      '[Documentation](documentation) — the same frame with an outline in the '
+          'panel.',
+    ]),
+    _notAWidget,
+  ],
+);
+
+const DocPage _documentation = DocPage(
+  id: 'documentation',
+  title: 'Documentation',
+  group: _group,
+  description:
+      'A docs page: side navigation, a measured content column, and an '
+      'on-this-page outline that tracks the reader.',
+  source: 'example/lib/examples/template_shell_examples.dart',
+  upstreamPath: '/templates/documentation',
+  blocks: <DocBlock>[
+    DocExample(
+      'template_documentation',
+      align: DocExampleAlign.stretch,
+      note:
+          'Scroll the middle column: the outline on the right follows. Press '
+          'an outline entry and the page scrolls to that heading.',
+    ),
+    DocHeading('Two different questions'),
+    DocProse(
+      'The rail answers "where am I in the site" and the outline answers '
+      '"where am I on the page". They look similar and they are not '
+      'interchangeable: a docs site with only the first makes a long page '
+      'unnavigable, and one with only the second makes the site '
+      'unbrowsable.',
+    ),
+    DocTree('''
+AstryxAppShell(compactBelow: 840)
+├── header  ← brand, search with its shortcut, version badge
+├── sidebar ← AstryxSideNav: the site
+└── child   ← AstryxLayout(maxContentWidth: 720)
+    ├── header ← AstryxBreadcrumbs
+    ├── child  ← AstryxSection per heading, each with an anchor key
+    ├── panel  ← AstryxOutline: the page
+    └── footer ← previous / next'''),
+    DocHeading('The outline needs the body’s scroll controller'),
+    DocProse(
+      'An outline tracks the reader by watching where the headings *are*, not '
+      'by dividing the scroll offset — so it needs the scroll position of the '
+      'view the anchors live in, and that view belongs to '
+      '[AstryxLayout](layout). Hand the same `ScrollController` to both and '
+      'the tracking is automatic; give the outline nothing and it is a list of '
+      'links with `activeId` for you to set.',
+    ),
+    DocCode('''
+final _scroll = ScrollController();
+final _anchors = <String, GlobalKey>{for (final s in sections) s.id: GlobalKey()};
+
+AstryxLayout(
+  scrollController: _scroll,          // the body's scroll view
+  panel: AstryxOutline(
+    controller: _scroll,              // ← the same one
+    entries: <AstryxOutlineEntry>[
+      for (final s in sections)
+        AstryxOutlineEntry(id: s.id, label: s.title, anchor: _anchors[s.id]),
+    ],
+  ),
+  child: AstryxVStack(
+    children: <Widget>[
+      for (final s in sections)
+        AstryxSection(title: s.title, headerKey: _anchors[s.id], child: …),
+    ],
+  ),
+)'''),
+    DocProse(
+      'The `anchor` is doing both halves of the job. Without it the outline '
+      'cannot know where a heading is, and pressing an entry has nowhere to '
+      'scroll to. Upstream gets the same thing from the DOM id it links to.',
+    ),
+    DocCallout.note(
+      '**`maxContentWidth: 720`.** Prose is the content here, and a paragraph '
+      'that runs the width of a monitor is a paragraph nobody finishes. Leave '
+      'the measure off for a table, which has its own reasons to be wide.',
+    ),
+    DocHeading('The sections carry their own heading level'),
+    DocProse(
+      '[AstryxSection](section) works out its level from how deeply it is '
+      'nested, so the outline’s indents and the document’s heading structure '
+      'cannot drift apart. A page whose headings jump from `h1` to `h4` is a '
+      'page a screen reader cannot summarise.',
+    ),
+    DocCallout.accessibility(
+      'The search control shows its own shortcut with '
+      '[AstryxKbd.hotkey](kbd), which resolves to ⌘K on a Mac and Ctrl+K '
+      'elsewhere — the same `AstryxHotkey` the handler listens for, so the cap '
+      'cannot claim a chord the application does not answer.',
+    ),
+    DocProse(
+      'The footer is the previous and next page rather than the actions a form '
+      'would have. It is pinned for the same reason a Save button is: at the '
+      'bottom of a long page, the way onward is the one thing the reader is '
+      'looking for.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[AstryxOutline](outline) — the tracking, the anchors and `topOffset`.',
+      '[AstryxSection](section) — the titled band, and how it picks its level.',
+      '[AstryxLayout](layout) — the header, panel, footer and '
+          '`scrollController`.',
+      '[Shell navigation](shell_nav) — the same frame around an application '
+          'rather than a document.',
     ]),
     _notAWidget,
   ],

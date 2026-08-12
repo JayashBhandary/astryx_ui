@@ -244,13 +244,17 @@ class _Footer extends StatelessWidget {
           );
         }
 
+        // Flexible, not bare: two long titles — `AstryxLocalizationsScope` next
+        // to `useTranslator → AstryxLocalizations.of` — still exceed a wide
+        // column, and a footer is not worth an overflow. Bounded, the button
+        // truncates its own label instead.
         return AstryxHStack(
           gap: AstryxSpacingToken.spacing3,
           justify: AstryxStackJustify.between,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            backButton ?? const SizedBox.shrink(),
-            forwardButton ?? const SizedBox.shrink(),
+            Flexible(child: backButton ?? const SizedBox.shrink()),
+            Flexible(child: forwardButton ?? const SizedBox.shrink()),
           ],
         );
       },

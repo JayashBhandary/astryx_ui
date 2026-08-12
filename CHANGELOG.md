@@ -7,11 +7,374 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-Forty-four new components, and the documentation for them. **Navigation is
-complete**: every component upstream ships in that group is ported. Two
-existing widgets changed — both fixes, both in **Fixed**.
+Eighty-two new components, five new templates, and the documentation for them.
+**Navigation, Date & time, Providers and Hooks & controllers are complete**:
+every component and hook upstream ships in those groups now has a written page,
+and **Chat & AI, Command & search and Media are complete too**. Two package
+widgets changed and the documentation site got a layout fix of its own — all
+three in **Fixed**.
 
 ### Added
+
+- **Five template screens**, each assembled only from what the package exports:
+  **Shell navigation** (`AstryxAppShell` with `AstryxTopNav` above
+  `AstryxSideNav`), **Documentation** (a rail, a measured column, and an
+  `AstryxOutline` that tracks the reader), **AI chat** (transcript, tool calls,
+  citations, composer, and the empty state before the first turn), **Table page**
+  (filters pinned above, `AstryxPagination` pinned below) and **Classic
+  gallery** (a wall of media tiles over one shared `AstryxLightbox`). They
+  graduated out of `planned/templates.dart` now that the shell, chat, pagination
+  and media components have landed; the four screens still listed there are
+  blocked on row grouping, drag-and-drop, or a charting widget the package does
+  not intend to ship.
+- **`AstryxLayout.scrollController`** — the body's scroll controller, for
+  anything beside the body that has to know where it has got to. An
+  `AstryxOutline` in the `panel` tracks the reader by watching where the headings
+  *are*, which needs the scroll position of the view the anchors live in, and
+  that view belongs to the layout. Asserts when paired with
+  `scrollable: false`, where the body owns its own scroll view instead.
+- **The Media group** — `AstryxAvatar` with `AstryxAvatarGroup`,
+  `AstryxThumbnail`, `AstryxAspectRatio`, `AstryxCarousel`, `AstryxLightbox` and
+  `AstryxMediaTheme`, covering ten upstream components.
+  - Two rules run through all of it. **A picture of a thing is not the thing's
+    name**, so `AstryxAvatar.name` and `AstryxThumbnail.label` are required and
+    are the accessible names — an avatar without one is an unlabelled image, and
+    a row of them is a row of unlabelled images. And a picture is whatever
+    colour it happens to be, so anything drawn over one goes through
+    `AstryxMediaTheme`.
+  - **`AstryxAvatar`** folds in `AvatarStatusDot`, because a dot *beside* an
+    avatar is two things a reader has to associate. Fallbacks run image →
+    initials → icon, and a **failed** image falls back to initials rather than a
+    broken glyph. A `status` without a `statusLabel` asserts: a coloured dot
+    alone says nothing to a screen reader.
+  - **`AstryxAvatarGroup`** keeps the overflow chip rather than shipping it
+    separately: "+4" is the only thing saying the row is a sample rather than
+    the whole set, so it is pressable, and the group is announced as a group
+    with the names and the remainder.
+  - **`AstryxCarousel`** is **one tab stop**, disables its controls at the ends
+    rather than hiding them, and puts the position in the container's semantics
+    value. There is **no autoplay and no way to ask for one**: content that
+    moves on its own must be pausable (WCAG 2.2.1), and the pause control is
+    invariably the least obvious thing on screen.
+  - **`AstryxLightbox`** is `AstryxOverlay` plus paging, a counter and a
+    caption. It opens on `initialIndex` **every time** — a thumbnail grid opens
+    the thumbnail that was pressed — and a single item drops the paging
+    furniture entirely.
+  - **`AstryxMediaTheme`** forces the `onDark` tokens and a scrim for its
+    subtree and **changes nothing else**: spacing, radius, type and motion stay
+    put, because the foreground colour and the ground behind it are the only two
+    things a picture underneath can break.
+  - **`AstryxAspectRatio`** does not replace Flutter's — it adds the radius, the
+    ground and the clip from the token layer. The ground is the point: an
+    unloaded image leaves a hole, and a hole reads as a bug rather than a wait.
+- `AstryxLocalizations.avatarGroupMore`, `avatarGroupCount`,
+  `carouselPrevious`, `carouselNext`, `carouselPosition`, `carouselLabel`,
+  `lightboxLabel`, `lightboxClose`, `lightboxPrevious`, `lightboxNext` and
+  `lightboxPosition`.
+- **The Command & search group** — `AstryxBaseTypeahead`, `AstryxTypeahead`,
+  `AstryxCommandPalette` and `AstryxPowerSearch`, covering twelve upstream
+  components. One engine and three surfaces on it.
+  - **`AstryxBaseTypeahead`** owns what is the same whatever a search input
+    looks like: the query, the debounce, the request, the keyboard, the overlay
+    and the announcements. **The field never loses focus** — arrows move an
+    active index while the caret stays put, which is the ARIA combobox pattern
+    and the only arrangement where typing, correcting and choosing are one
+    gesture.
+    - A **stale response cannot overwrite a newer one**: each call carries a
+      generation, so the slow first request landing after the fast second is
+      dropped rather than showing results for what was typed three keystrokes
+      ago.
+    - `Enter` with nothing highlighted is **left to the form**, because a
+      typeahead must not swallow the key that submits the search. A source that
+      throws leaves an empty list rather than taking the screen down.
+    - The result count is announced through a live region: a dropdown appearing
+      is silent to a screen reader, so there is otherwise no way to know a
+      search answered.
+  - **`AstryxTypeahead`** is that engine with this package's field and rows on
+    it, and it is **not** `AstryxSelector`: a selector picks from a set it can
+    show you, a typeahead searches one it cannot.
+  - **`AstryxCommandPalette`** folds in upstream's input, list, group, item,
+    empty state and footer, because a palette assembled from six pieces is six
+    chances to get the keyboard wrong. Queries match keywords as well as
+    labels — a command nobody can find by the word they thought of is a command
+    that is not there — the highlight returns to the top on each keystroke, and
+    each row draws its shortcut from the `AstryxHotkey` that is actually bound.
+  - **`AstryxPowerSearch`** puts filters **beside** the text as chips rather
+    than inside it as syntax: `status:failed` typed into a box is a thing to
+    learn, get wrong and be told off about, and the error message for a mistyped
+    query is a feature nobody budgets for. `AstryxSearchQuery` is the whole
+    state as one comparable value.
+- `AstryxLocalizations.typeaheadLabel`, `typeaheadPlaceholder`,
+  `typeaheadSearching`, `typeaheadResults`, `commandPaletteLabel`,
+  `commandPalettePlaceholder`, `commandPaletteNoResults`,
+  `commandPaletteNavigate`, `commandPaletteRun`, `commandPaletteClose`,
+  `powerSearchLabel`, `powerSearchPlaceholder`, `powerSearchAddFilter`,
+  `powerSearchClear` and `powerSearchFilters`.
+- **Ten more Chat & AI components**, which finishes the group's first pass —
+  `AstryxTokenChip` and `AstryxTokenizer`, `AstryxTokenTextController` and
+  `AstryxChatTokenizedText`, `AstryxChatSendButton` and
+  `AstryxChatDictationButton`, `AstryxChatSystemMessage`,
+  `AstryxChatToolCalls` and `AstryxMarkdown`, plus `AstryxCitation`.
+  - **`AstryxTokenChip`** carries `Chip` on the end because `AstryxToken` is
+    already the design-token interface every token enum implements: a design
+    system cannot have two things called Token, and the older one is
+    load-bearing in every theme. Its remove button is named after *what it
+    removes*, since a row of five buttons all called "Remove" is a row a
+    screen-reader user cannot choose from.
+  - **`AstryxTokenizer`** commits on Enter or a delimiter, and takes the last
+    token back on Backspace. A pasted list commits as **one** change: `values`
+    is the parent's list and does not update until it rebuilds, so committing
+    twice in a frame built the second value on a stale list and threw the first
+    away.
+  - **`AstryxTokenTextController`** is the honest port of
+    `ChatComposerTokenElement`. Upstream puts a real element in a
+    `contenteditable`; `EditableText` edits a `String`, and a `WidgetSpan` in an
+    editable's span tree breaks the caret, the selection maths and backspace. So
+    a token being *typed* is styled text — every character still counts as
+    itself — and `AstryxChatTokenizedText` draws real chips once the message is
+    sent and there is no caret to protect.
+  - **`AstryxChatSendButton`** is now public rather than private to the
+    composer, because send-becomes-stop is a component upstream ships on its own
+    and two implementations of it would eventually disagree. The composer builds
+    one.
+  - **`AstryxChatDictationButton`** does **no speech recognition** — there is no
+    platform channel here and no dependency that would bring one. It is the
+    control and its states, and `unavailableReason` is its tooltip, because a
+    control dim for no stated reason is one a user assumes is broken.
+  - **`AstryxChatToolCalls`** is collapsed and summarised in the row: what a
+    reader wants from a tool call is usually "did it work" rather than the JSON.
+    Every status is paired with its word, and `running` is a labelled spinner
+    rather than a bare one.
+  - **`AstryxCitation`** is named for its source, not its number: "Source 1:
+    scheduler/health.md" rather than "1". A row of bare numerals is a puzzle
+    instead of a bibliography, and the source is in the accessible name whether
+    or not the pointer ever finds the tooltip.
+  - **`AstryxMarkdown`** renders headings, paragraphs, lists, fenced code,
+    blockquotes, rules and inline spans with the design system's own widgets.
+    Tables, images, footnotes, nested lists, task lists, inline HTML and
+    cross-block selection are **absent rather than half-drawn**: a table
+    rendered as run-together text is worse than one nobody rendered, because the
+    reader cannot tell it was a table. Unsupported input degrades to paragraphs
+    and never throws, which is what matters for arbitrary model output.
+- `AstryxLocalizations.chatDictationStart`, `chatDictationStop`, `tokenRemove`,
+  `tokenizerLabel`, `tokenizerPlaceholder`, `tokenizerValue`, `citationLabel`,
+  `citationLabelled`, `toolCallsLabel`, `toolCallRunning`, `toolCallSucceeded`,
+  `toolCallFailed` and `toolCallPending`.
+- **The first three Chat & AI components** — `AstryxChatLayout`,
+  `AstryxChatMessage` with `AstryxChatMessageList`, and `AstryxChatComposer`,
+  absorbing eight upstream widgets between them. The group is a large family
+  and this is the start of it; each page says what is not there yet.
+  - **`AstryxChatLayout`** builds the transcript **reversed**, so the newest
+    turn sits at offset zero. Growing content therefore cannot move what is on
+    screen — no scroll correction, no post-frame `jumpTo`, none of the jitter
+    those produce — and a reader who scrolled up to re-read something is left
+    where they are. A jump-to-latest button appears once they are away from the
+    bottom. Reversed in the widget tree, **oldest-first on screen**, so
+    semantics traversal reads the conversation the way it happened.
+    - It asserts a readable message when given an unbounded height. The raw
+      failure is a `RenderFlex … unbounded` from three widgets down, which says
+      nothing about what to do.
+  - **`AstryxChatMessage`** gives a bubble to `AstryxChatRole.user` and not to
+    `assistant`: an answer is the content of the page, often with a code block
+    in it, and wrapping that in a rounded box makes it read as an aside. Every
+    turn is announced with who said it, because layout carries that for a
+    sighted reader and carries nothing at all for anybody else.
+    - **A turn's actions are always visible.** Upstream reveals them on hover;
+      this widget set cannot, because touch has no hover and the density system
+      suppresses hover styling there.
+  - **`AstryxChatComposer`** — Enter sends, Shift+Enter starts a line, and an
+    Enter that could not send is still claimed so it cannot silently insert
+    one. One control sends and becomes *stop generating*, with a name that
+    changes with it; it is always present, because on a touch keyboard there is
+    no Shift to hold and the button is the only way to send. The drawer sits
+    inside the composer's own surface, so what is about to be sent is
+    unmistakable.
+    - Inline tokens are **not** ported: upstream's `ChatComposerTokenElement`
+      needs a rich-text editing controller this package does not have, and a
+      version that let a caret walk into the middle of a chip would be worse
+      than the gap. It has a planned page of its own now rather than being
+      folded into a claim the composer does not honour.
+- `AstryxLocalizations.chatTranscript`, `chatComposerLabel`,
+  `chatComposerPlaceholder`, `chatSend`, `chatStop`, `chatScrollToLatest`,
+  `chatFromUser`, `chatFromAssistant` and `chatSystemMessage`.
+
+- **`AstryxEntryAnimation`**, with `AstryxEntryTransition` — content animated in
+  once, from **tokens**, obeying reduced motion by not animating rather than by
+  animating quickly. It runs once per element, so replaying it is a `key`
+  change: a new key says "this is new content", which is what the animation is
+  saying too. The transition widgets are dropped once it finishes rather than
+  left as an opacity layer on every card that ever entered.
+- **`AstryxContainerReveal`** — an entry animation triggered the first time its
+  child is scrolled into view. Flutter has no `IntersectionObserver`, so it
+  watches the enclosing `Scrollable` and compares its own bounds against the
+  viewport's.
+  - The child is **laid out before it is revealed**, so the page height and the
+    scrollbar are right from the start.
+  - The check is posted to the *end* of the frame: a scroll position notifies
+    before the frame that moves anything, so measuring inside the callback reads
+    the previous frame's geometry — and a reveal that checks a position its
+    child has already left never fires.
+  - With no enclosing scrollable it reveals immediately. Content that never
+    appears because a widget was looking for a viewport that does not exist is
+    the worse failure by a wide margin.
+- **`AstryxKeyboardHint`** — a hint that appears while the user is navigating by
+  keyboard and steps back on a pointer, reading the same last-input signal as
+  the focus ring so the two can never disagree. It keeps its space by default: a
+  hint that appears on the first keystroke and shoves a row sideways draws the
+  eye to the wrong thing at the wrong moment. It hides a *hint*, never a
+  control.
+- **`AstryxStreamingText`** — text revealed at a steady rate as it arrives, so a
+  model's bursty output reads as typing rather than twitching. It never rewinds:
+  a non-continuation is a rewrite and is swapped in whole. **The whole text is
+  the accessible name from the first frame** — a live region firing per token
+  would restart the sentence eighty times a second, which is not a reading
+  experience.
+- **The Hooks & controllers group is finished**: `useInputContainer`,
+  `useKeyboardHint`, `useEntryAnimation`, `useContainerReveal`, `useImageMode`,
+  `useStreamingText` and `useTranslator`. Three resolve to things that already
+  existed — the internal input container behind `AstryxField` and
+  `AstryxInputGroup`, one line of `AstryxTheme.of(context).mode`, and
+  `AstryxLocalizations.of` — and each page says so under the upstream name.
+  `example/lib/docs/pages/planned/hooks.dart` is gone rather than empty.
+
+- **`AstryxRovingFocus`**, with `.list` and `.grid` — a set of items that is
+  **one tab stop**, traversed with the arrow keys. The ARIA composite pattern as
+  a primitive, for building a composite this package does not ship; the ones it
+  does ship already behave this way.
+  - Roving focus is not selection: `onActivate` commits on `Enter` and `Space`
+    (a menu, a grid), `onActiveChanged` selects as the focus moves (a radio
+    group). `isEnabled` marks the items movement skips.
+  - `.list` wraps at the ends and `.grid` does not, because wrapping off the end
+    of a row is right for a menu and wrong for a calendar, where it silently
+    changes the week. In a grid, `Home` and `End` are the ends of **that row**.
+  - Nothing an `itemBuilder` returns may be focusable — that would be a second
+    tab stop, and the thing the widget exists to prevent. `AstryxRovingFocusItem
+    .showsFocusRing` carries both ring conditions so a caller cannot get the
+    pair wrong.
+- **`AstryxScrollOverflow`** and `AstryxScrollEdges` — whether a scroller has
+  content past either edge, with optional edge fades. A clipped edge with
+  nothing at it looks like the end of the content, and a user who cannot tell
+  the difference stops scrolling.
+  - Listens to scroll notifications rather than owning a controller, so it works
+    over any scrollable without being handed one — including a
+    `ScrollMetricsNotification`, which is the resize case a listener on the
+    offset alone misses.
+  - The fades never hit-test, and the content behind them stays in the semantics
+    tree: a fade is an extra, never a gate.
+- **The rest of the Hooks & controllers group is documented**:
+  `useScrollOverflow`, `useOverflow`, `useListFocus`, `useGridFocus`,
+  `useTreeFocus`, `useLayer` and `useClickableContainer`. Four resolve to things
+  that already existed — `AstryxOverflowList`, `AstryxTreeList`, Flutter's
+  `Overlay` plus `AstryxOverlayStack`, and a non-null `onPressed` — and each
+  page says so under the upstream name, including *why* a tree's arrows are not
+  a flat list's and why there is no `ClickableCard`.
+
+- **`AstryxHotkeys`** and `AstryxHotkey` — keyboard shortcuts, bound in the
+  widget tree rather than in a hook whose scope is invisible. A hotkey takes a
+  `LogicalKeyboardKey`, not upstream's `'mod+k'` string: a typo in a string is a
+  shortcut that silently never fires.
+  - **`AstryxHotkey.mod` is Command on a Mac and Control everywhere else**, so
+    one definition is correct on both — and because the hotkey knows which
+    modifier it resolved to, **`AstryxKbd.hotkey`** draws `⌘K` or `Ctrl+K` from
+    the same object that was bound. One definition, bound and displayed; the
+    hint cannot describe a key that is not the one bound.
+  - `autofocus` exists because key events walk *up* from whatever holds focus:
+    an application-wide scope with nothing focused beneath it would swallow
+    `⌘K` silently. The node stays skipped by Tab, so it costs no tab stop.
+- **`AstryxScrollLock`**, with `AstryxScrollLock.whileModalIsOpen` — the page
+  behind a modal, frozen. A scrim blocks presses and a wheel is not a press, so
+  without this the content behind an open dialog still scrolls under the
+  pointer.
+  - Not wired in by default: the lock belongs to the scrollable a product wants
+    frozen, and this package cannot know which that is. One
+    `whileModalIsOpen` near the root is the whole setup.
+  - A locked subtree takes **no pointer events at all**. That is not
+    over-reach: a page-level `ListView` is `primary: true`, and `ScrollView`
+    wraps the ambient physics in `AlwaysScrollableScrollPhysics` for that case,
+    which overrules anything handed down through `ScrollConfiguration`.
+- `AstryxOverlayStack.openLayers` and `modalLayers` — the dismiss stack as
+  something to listen to, and the distinction the scroll lock needed. A layer is
+  modal when it **dims the page**; a popover, a menu and a tooltip are not, and
+  freezing a page because a tooltip appeared would be a bug with a very
+  confusing report.
+- **The Hooks & controllers group is documented**: `useTheme`,
+  `useMediaQuery`, `useHotkeys`, `useFocusTrap` and `useScrollLock`, each on a
+  page carrying the upstream name — because a reader arriving from
+  `useScrollLock` is searching for a word that does not appear in this API. Two
+  of the five resolve to things that already existed (`AstryxTheme.of`,
+  `MediaQuery` and `LayoutBuilder`), one to `AstryxFocusTrap`, and two are the
+  widgets above.
+
+- **`AstryxSyntaxToken`**, and `AstryxThemeData.syntaxColor`,
+  `hasSyntaxPalette` and `syntaxPalette` — the syntax palette a theme carries,
+  read back as `Color`s instead of as the raw CSS strings behind
+  `AstryxThemeData.tokens`. All seven prebuilt themes ship a palette.
+  - `syntaxColor` is **nullable**, alone among the accessors on that class: a
+    palette sits outside the 184 core tokens, so a theme either carries one or
+    does not, and throwing would punish a caller for the theme's silence.
+  - Nothing in the package paints with these. `AstryxCodeBlock` still does not
+    highlight — shipping a tokeniser for every language somebody might paste is
+    not a design system's job — so this is the seam for a highlighter a caller
+    wires themselves, and the reason it can take its colours from the theme
+    rather than from fourteen hex values beside it.
+- **The Providers group is documented**: `AstryxThemeProvider` and the four
+  scopes it installs, the overlay layer and its dismiss stack,
+  `AstryxLinkScope`, `AstryxLocalizationsScope`, and `AstryxSyntaxTheme`. Each
+  page records the upstream → Flutter mapping, including the one provider that
+  **does not exist here**: upstream's `LayerProvider` is Flutter's own
+  `Overlay`, and what the port adds is `AstryxOverlayStack`, so Escape closes
+  one layer rather than all of them.
+
+- **The date and time set** — `AstryxCalendar`, `AstryxDateInput`,
+  `AstryxDateRangeInput`, `AstryxDateTimeInput`, `AstryxTimeInput` and
+  `AstryxTimestamp`, with the value types `AstryxDateRange`, `AstryxTime` and
+  `AstryxWeekday`. No `intl` dependency: the month and weekday names are
+  `AstryxLocalizations` strings like every other, and the part order is a
+  field's own `AstryxDateFormat` rather than the locale's, because the place a
+  form is used is not always the place its data came from.
+  - **`AstryxCalendar`** — a month grid, six rows always, so paging never moves
+    what is below it. **One tab stop**: the arrows move a roving focus, `Home`
+    and `End` walk the week, `Page Up`/`Page Down` the month and `Shift` with
+    them the year, and nothing is picked until `Enter`. Every cell announces its
+    full date, and today is *named* as well as ringed.
+    `AstryxCalendar.range` takes two presses in either order — pressing the
+    earlier day second completes the range backwards rather than starting over.
+  - **`AstryxDateInput`** — a text field first, with the calendar behind a
+    button, because a picker that can only be clicked is slower than a keyboard
+    for anybody who knows the date they want. Parsing is forgiving about shape
+    and strict about meaning: `4-8-26` commits, and `31/02/2026` is **refused
+    rather than rolled over** to the 3rd of March. A rejection reverts *and is
+    announced* — `AstryxNumberInput`'s contract, for the same WCAG 3.3.1
+    reason.
+  - **`AstryxDateRangeInput`** — two fields joined by `AstryxInputGroup` into
+    one control with one label. The validation belongs to **the pair**: an end
+    before its start is a bad pair rather than a bad date, so the message sits
+    under the group and the ends are not silently swapped. Nothing is reported
+    until both are readable and in order, so no caller models "start but no
+    end".
+  - **`AstryxDateTimeInput`** — a date beside a time. A date picked on its own
+    commits at `defaultTime`; a time on its own commits nothing, because "the
+    4th" is a thing people mean and "half past two, some day" is not.
+  - **`AstryxTimeInput`** — `9`, `930`, `9:30`, `9.30` and `2:30 pm` all
+    commit, on **either clock whichever one is shown**, and the value is written
+    back on the field's own. The arrow keys step by `stepMinutes`, and a step
+    that would leave `earliest`–`latest` is refused rather than wrapped past
+    midnight.
+  - **`AstryxTimestamp`** — relative, and re-rendered as it ages by a
+    single-shot timer that re-books itself at a distance matching how fast the
+    text can change: thirty seconds while it is minutes old, an hour once it is
+    days old. Past `threshold` it writes the date instead. The exact instant is
+    the **accessible name**, so a screen reader never gets only a relative
+    phrase whose anchor it cannot see.
+- `AstryxLocalizations.monthNames`, `monthNamesShort`, `weekdayNames`,
+  `weekdayNamesShort`, `timeAnteMeridiem`, `timePostMeridiem`, `calendarLabel`,
+  `calendarPreviousMonth`, `calendarNextMonth`, `calendarToday`,
+  `calendarRangeStart`, `calendarRangeEnd`, `dateInputOpenCalendar`,
+  `dateInputRejected`, `timeInputRejected`, `dateRangeStartLabel`,
+  `dateRangeEndLabel`, `dateRangeInvalid`, `dateTimeInputDateLabel`,
+  `dateTimeInputTimeLabel`, `timestampJustNow`, `timestampMinutesAgo`,
+  `timestampHoursAgo`, `timestampDaysAgo`, `timestampInMinutes`,
+  `timestampInHours` and `timestampInDays`.
 
 - **`AstryxLink`**, with `AstryxLinkUnderline` — text that goes somewhere. An
   `href` is handed to the `AstryxLinkDelegate` and this package never decides
@@ -528,6 +891,19 @@ existing widgets changed — both fixes, both in **Fixed**.
   and the old expression could open a group with nothing to count.
 
 ### Fixed
+
+- An anchored overlay whose trigger subtree **changed shape on the frame it
+  opened** measured a render object that had not been laid out yet, returned an
+  empty surface, and never retried — so the content stayed invisible for as long
+  as the overlay was open, and the failure looked like the content rather than
+  the measurement. It now waits one frame and measures again. Found while
+  building the typeahead, whose live-region announcement was doing exactly that.
+
+- The docs site's previous/next footer no longer overflows when both page titles
+  are long. It stacked below 520px already; above that the two buttons were
+  unbounded, and a pair like `AstryxLocalizationsScope` and
+  `useTranslator → AstryxLocalizations.of` exceeded even a wide column by a few
+  pixels. They are `Flexible` now, so a long title truncates instead.
 
 - **`AstryxInputGroup` exposed a latent layout fault in the affix.** Stretching
   the joined row handed every child an infinite height, which the affix's own

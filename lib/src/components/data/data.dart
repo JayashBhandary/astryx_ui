@@ -11,6 +11,7 @@ export 'kbd.dart';
 export 'list.dart';
 export 'metadata_list.dart';
 export 'overflow_list.dart';
+export 'streaming_text.dart';
 export 'tab_list.dart';
 export 'table.dart';
 export 'table_column.dart';

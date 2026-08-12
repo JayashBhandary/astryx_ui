@@ -245,6 +245,12 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxComplexSelector` | A selector with a trigger this package draws and a surface you draw. | `references/forms.md` |
 | `AstryxInputGroup` | Adjacent inputs and affixes joined into one bordered control. | `references/forms.md` |
 | `AstryxFormLayout` | The column and label geometry a form’s fields share. | `references/forms.md` |
+| `AstryxCalendar` | A month grid for picking a date, keyboard-navigable. | `references/date_time.md` |
+| `AstryxDateInput` | A text field that parses and formats a single date. | `references/date_time.md` |
+| `AstryxDateRangeInput` | Two dates as one field, with the range validated across them. | `references/date_time.md` |
+| `AstryxDateTimeInput` | A date and a time in one field. | `references/date_time.md` |
+| `AstryxTimeInput` | A text field for a time of day. | `references/date_time.md` |
+| `AstryxTimestamp` | An absolute time rendered relative — "3 minutes ago" — and re-rendered as it ages. | `references/date_time.md` |
 | `AstryxSpinner` | An indeterminate wait, in three sizes. | `references/status.md` |
 | `AstryxSkeleton` | A placeholder in the shape of the content that is coming. | `references/status.md` |
 | `AstryxProgressBar` | A determinate or indeterminate bar, with an announced label. | `references/status.md` |
@@ -293,6 +299,54 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxSection` | A titled band of page content, with its own heading level and spacing. | `references/app_shell.md` |
 | `AstryxResizeHandle` | A draggable divider that resizes the panel beside it. | `references/app_shell.md` |
 | `AstryxOutline` | An on-this-page table of contents, tracking the reader’s position. | `references/app_shell.md` |
+| `AstryxAvatar` | A person or entity as an image, initials or icon, with an optional status dot. | `references/media.md` |
+| `AstryxAvatarGroup` | Overlapping avatars with a count for the ones that did not fit. | `references/media.md` |
+| `AstryxThumbnail` | A small fixed-ratio preview of an image or file. | `references/media.md` |
+| `AstryxAspectRatio` | A box that keeps its width-to-height ratio as it resizes. | `references/media.md` |
+| `AstryxCarousel` | A horizontally paged strip of items, with the controls and keyboard traversal. | `references/media.md` |
+| `AstryxLightbox` | A full-screen media viewer, navigable between items. | `references/media.md` |
+| `AstryxMediaTheme` | The theme overrides that apply to media surfaces — captions and controls over an image. | `references/media.md` |
+| `AstryxCommandPalette` | The keyboard-first command surface: a query, grouped results, and a footer of shortcuts. | `references/command_search.md` |
+| `AstryxTypeahead` | A text field that suggests completions as you type. | `references/command_search.md` |
+| `AstryxBaseTypeahead` | The unstyled typeahead the other search inputs are built from. | `references/command_search.md` |
+| `AstryxPowerSearch` | A search input with structured filters alongside the free text. | `references/command_search.md` |
+| `AstryxChatLayout` | The frame of a conversation: a scrolling transcript and a pinned composer. | `references/chat.md` |
+| `AstryxChatMessage` | One turn in a conversation — the bubble, its metadata, and the list that holds them. | `references/chat.md` |
+| `AstryxChatComposer` | The input a message is written in, with its drawer. | `references/chat.md` |
+| `AstryxTokenTextController` | A mention styled inside the text being typed. | `references/chat.md` |
+| `AstryxChatSendButton` | The composer's submit control, reflecting sending and stop-generating. | `references/chat.md` |
+| `AstryxChatDictationButton` | The composer's speech-to-text control. | `references/chat.md` |
+| `AstryxChatSystemMessage` | A turn that came from the system rather than either participant. | `references/chat.md` |
+| `AstryxChatTokenizedText` | Message text with mentions and references rendered as tokens. | `references/chat.md` |
+| `AstryxChatToolCalls` | The tool calls a model made, and their results, inside a turn. | `references/chat.md` |
+| `AstryxCitation` | A numbered reference from generated text back to its source. | `references/chat.md` |
+| `AstryxMarkdown` | Rendered markdown, for model output and authored prose alike. | `references/chat.md` |
+| `AstryxTokenChip` | One inline chip standing for an entity inside a text field. | `references/chat.md` |
+| `AstryxTokenizer` | The field that turns typed text into tokens. | `references/chat.md` |
+| `AstryxThemeProvider` | The provider that puts a resolved theme in scope — and everything else the widgets need. | `references/providers.md` |
+| `The overlay layer` | The stacking context overlays are raised into. | `references/providers.md` |
+| `AstryxLinkScope` | How links navigate — supplied once, so components need not know the router. | `references/providers.md` |
+| `AstryxLocalizationsScope` | Locale, text direction and the strings, supplied to the tree. | `references/providers.md` |
+| `AstryxSyntaxTheme` | The token colours a code block highlights with. | `references/providers.md` |
+| `useTheme → AstryxTheme.of` | Reading the theme in scope, and why there is no hook. | `references/hooks.md` |
+| `useMediaQuery → MediaQuery` | Responding to viewport size, pointer, and motion preference. | `references/hooks.md` |
+| `AstryxHotkeys` | Binding keyboard shortcuts to actions. | `references/hooks.md` |
+| `AstryxFocusTrap` | Holding focus inside an open overlay, and giving it back. | `references/hooks.md` |
+| `AstryxScrollLock` | Freezing the page behind a modal. | `references/hooks.md` |
+| `AstryxScrollOverflow` | Knowing whether a scroller has content beyond either edge, for fading its edges. | `references/hooks.md` |
+| `useOverflow → AstryxOverflowList` | Measuring which children do not fit, so a component can collapse its tail. | `references/hooks.md` |
+| `AstryxRovingFocus.list` | Arrow-key traversal across a list as one tab stop. | `references/hooks.md` |
+| `AstryxRovingFocus.grid` | Two-dimensional arrow-key traversal across a grid. | `references/hooks.md` |
+| `useTreeFocus → AstryxTreeList` | Arrow-key traversal across a tree, including expand and collapse. | `references/hooks.md` |
+| `useLayer → Overlay and the stack` | Placing content in the overlay stack at the right depth. | `references/hooks.md` |
+| `useClickableContainer → onPressed` | Making a container behave as one control without nesting interactive elements. | `references/hooks.md` |
+| `useInputContainer → the field` | Sharing focus, hover and validation state between a field and its affixes. | `references/hooks.md` |
+| `AstryxKeyboardHint` | Showing shortcut hints only once the user is navigating by keyboard. | `references/hooks.md` |
+| `AstryxEntryAnimation` | Animating an element as it enters, respecting reduced-motion. | `references/hooks.md` |
+| `AstryxContainerReveal` | Revealing content as its container scrolls into view. | `references/hooks.md` |
+| `useImageMode → the resolved mode` | Choosing the light or dark variant of an image. | `references/hooks.md` |
+| `AstryxStreamingText` | Rendering text as it arrives token by token. | `references/hooks.md` |
+| `useTranslator → AstryxLocalizations.of` | Looking up a translated string. | `references/hooks.md` |
 | `Login` | A centred sign-in form, with the validation, error and loading states a real one has. | `references/templates.md` |
 | `Login card` | Sign-in inside a bordered card, using all three card slots. | `references/templates.md` |
 | `SSO login` | Sign-in through identity providers, with an email link as the fallback. | `references/templates.md` |
@@ -306,6 +360,11 @@ Open the reference before writing a component you have not written before. Each 
 | `Detail page` | One record: header, status, tabs, metadata and actions. | `references/templates.md` |
 | `Dashboard` | Summary tiles above a table of what needs attention. | `references/templates.md` |
 | `Table` | A data table as a screen: a toolbar, filtering, sorting, selection and row actions. | `references/templates.md` |
+| `Table page` | A table as a whole screen: filters in a pinned header, pagination in a pinned footer. | `references/templates.md` |
+| `Classic gallery` | A uniform wall of media tiles, each opening the same viewer on the item that was pressed. | `references/templates.md` |
+| `AI chat` | A full conversation screen: transcript, composer, tool calls, and the empty state before the first turn. | `references/templates.md` |
+| `Shell navigation` | The application frame with both bars in place: a full-width header and a collapsible rail beside the content. | `references/templates.md` |
+| `Documentation` | A docs page: side navigation, a measured content column, and an on-this-page outline that tracks the reader. | `references/templates.md` |
 | `Theme showcase` | One of everything on one screen, for judging a theme rather than imagining it. | `references/templates.md` |
 
 ## Guides
@@ -344,12 +403,18 @@ Open the reference before writing a component you have not written before. Each 
 - `references/layout.md` — Layout & typography.
 - `references/actions.md` — Actions.
 - `references/forms.md` — Forms.
+- `references/date_time.md` — Date & time.
 - `references/status.md` — Status.
 - `references/overlays.md` — Overlays.
 - `references/surfaces.md` — Surfaces.
 - `references/data.md` — Data display.
 - `references/navigation.md` — Navigation.
 - `references/app_shell.md` — App shell.
+- `references/media.md` — Media.
+- `references/command_search.md` — Command & search.
+- `references/chat.md` — Chat & AI.
+- `references/providers.md` — Providers.
+- `references/hooks.md` — Hooks & controllers.
 - `references/templates.md` — Templates.
 
 The prose versions of these pages, for a human, are in `doc/` at the repository root. The live site is `example/`.

@@ -165,6 +165,339 @@ class AstryxLocalizations {
   String fileInputTooMany(int limit) => 'Maximum $limit files allowed';
 
   // ---------------------------------------------------------------------------
+  // Date and time
+  //
+  // The package has no `intl` dependency, so the month and weekday names live
+  // here — which also makes them the seam a product overrides to reword or
+  // translate them, the same as every other string.
+  // ---------------------------------------------------------------------------
+
+  /// The months, January first.
+  ///
+  /// Twelve entries, in calendar order. A calendar's heading and every day
+  /// cell's accessible name read from this list.
+  List<String> get monthNames => const <String>[
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  /// The months abbreviated, January first. Twelve entries.
+  List<String> get monthNamesShort => const <String>[
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  /// The days of the week, **Monday first** — ISO order, so index `n` is
+  /// `DateTime.weekday == n + 1`.
+  ///
+  /// Monday-first regardless of which day a calendar starts its week on: the
+  /// list is indexed by [DateTime.weekday], and the calendar rotates it.
+  List<String> get weekdayNames => const <String>[
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  /// The days of the week abbreviated, Monday first. Seven entries.
+  ///
+  /// The column headings of a month grid, where there is room for three
+  /// characters and not for nine.
+  List<String> get weekdayNamesShort => const <String>[
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
+  ];
+
+  /// The morning half of a twelve-hour clock.
+  ///
+  /// Also read when parsing, so a field accepts what it prints.
+  String get timeAnteMeridiem => 'am';
+
+  /// The afternoon half of a twelve-hour clock.
+  String get timePostMeridiem => 'pm';
+
+  /// The fallback accessible name for a calendar.
+  String get calendarLabel => 'Calendar';
+
+  /// Moves a calendar back one month.
+  String get calendarPreviousMonth => 'Previous month';
+
+  /// Moves a calendar forward one month.
+  String get calendarNextMonth => 'Next month';
+
+  /// Said after today's date in a calendar.
+  ///
+  /// Today is marked with a ring, which a screen-reader user cannot see — so
+  /// the word goes in the cell's name as well.
+  String get calendarToday => 'today';
+
+  /// Said after the first day of a range being picked.
+  String get calendarRangeStart => 'start of the range';
+
+  /// Said after the last day of a range being picked.
+  String get calendarRangeEnd => 'end of the range';
+
+  /// Opens the calendar attached to the field named [label].
+  String dateInputOpenCalendar(String label) =>
+      label.isEmpty ? 'Choose a date' : 'Choose a date for $label';
+
+  /// Announces that a typed date was refused and the old value put back.
+  ///
+  /// The counterpart of [numberInputRejected]: reverting silently leaves a
+  /// screen-reader user with no idea their entry was thrown away — WCAG 3.3.1.
+  String dateInputRejected(String input) => '$input is not a date';
+
+  /// Announces that a typed time was refused and the old value put back.
+  String timeInputRejected(String input) => '$input is not a time';
+
+  /// The accessible name of a range's first field.
+  String get dateRangeStartLabel => 'Start date';
+
+  /// The accessible name of a range's second field.
+  String get dateRangeEndLabel => 'End date';
+
+  /// Rejects a range whose end falls before its start.
+  String get dateRangeInvalid => 'The end date is before the start date';
+
+  /// The accessible name of the date half of a date-and-time field.
+  String get dateTimeInputDateLabel => 'Date';
+
+  /// The accessible name of the time half of a date-and-time field.
+  String get dateTimeInputTimeLabel => 'Time';
+
+  /// A moment ago, in either direction.
+  String get timestampJustNow => 'just now';
+
+  /// [count] minutes in the past.
+  String timestampMinutesAgo(int count) =>
+      '$count ${count == 1 ? 'minute' : 'minutes'} ago';
+
+  /// [count] hours in the past.
+  String timestampHoursAgo(int count) =>
+      '$count ${count == 1 ? 'hour' : 'hours'} ago';
+
+  /// [count] days in the past.
+  String timestampDaysAgo(int count) =>
+      '$count ${count == 1 ? 'day' : 'days'} ago';
+
+  /// [count] minutes from now.
+  String timestampInMinutes(int count) =>
+      'in $count ${count == 1 ? 'minute' : 'minutes'}';
+
+  /// [count] hours from now.
+  String timestampInHours(int count) =>
+      'in $count ${count == 1 ? 'hour' : 'hours'}';
+
+  /// [count] days from now.
+  String timestampInDays(int count) =>
+      'in $count ${count == 1 ? 'day' : 'days'}';
+
+  // ---------------------------------------------------------------------------
+  // Chat
+  // ---------------------------------------------------------------------------
+
+  /// The fallback accessible name for a conversation transcript.
+  String get chatTranscript => 'Conversation';
+
+  /// The accessible name of the composer's field.
+  String get chatComposerLabel => 'Message';
+
+  /// The placeholder in an empty composer.
+  String get chatComposerPlaceholder => 'Send a message…';
+
+  /// Sends the draft. Label and tooltip on the composer's send control.
+  String get chatSend => 'Send';
+
+  /// Stops a reply that is being generated.
+  ///
+  /// The same control as [chatSend], which is why the two are separate strings:
+  /// a button whose meaning changes needs a name that changes with it.
+  String get chatStop => 'Stop generating';
+
+  /// Returns the transcript to the newest turn.
+  String get chatScrollToLatest => 'Jump to latest';
+
+  /// The fallback accessible name for a turn from the person using the app.
+  String get chatFromUser => 'You';
+
+  /// The fallback accessible name for a turn from the assistant.
+  String get chatFromAssistant => 'Assistant';
+
+  /// Names a turn that came from neither participant.
+  String get chatSystemMessage => 'System message';
+
+  /// Begins speech-to-text.
+  String get chatDictationStart => 'Dictate';
+
+  /// Ends speech-to-text.
+  ///
+  /// Separate from [chatDictationStart]: the control is the same button, and a
+  /// button whose meaning changes needs a name that changes with it.
+  String get chatDictationStop => 'Stop dictating';
+
+  /// Removes the token named [label].
+  ///
+  /// Named for what it removes: a row of five buttons all called "Remove" is a
+  /// row a screen-reader user cannot choose from.
+  String tokenRemove(String label) => 'Remove $label';
+
+  /// The fallback accessible name for a tokenizing field.
+  String get tokenizerLabel => 'Values';
+
+  /// The placeholder in an empty tokenizing field.
+  String get tokenizerPlaceholder => 'Type and press Enter…';
+
+  /// Summarises how many values a tokenizing field holds.
+  String tokenizerValue(int count) =>
+      '$count ${count == 1 ? 'value' : 'values'}';
+
+  /// Names a citation marker that has no source to name.
+  String citationLabel(int number) => 'Source $number';
+
+  /// Names a citation marker and what it points at.
+  String citationLabelled(int number, String source) =>
+      'Source $number: $source';
+
+  /// The fallback accessible name for a run of tool calls.
+  String get toolCallsLabel => 'Tool calls';
+
+  /// A tool call that has not finished.
+  String get toolCallRunning => 'Running';
+
+  /// A tool call that finished.
+  String get toolCallSucceeded => 'Finished';
+
+  /// A tool call that failed.
+  String get toolCallFailed => 'Failed';
+
+  /// A tool call that was never started.
+  String get toolCallPending => 'Pending';
+
+  // ---------------------------------------------------------------------------
+  // Command and search
+  // ---------------------------------------------------------------------------
+
+  /// The fallback accessible name for a typeahead's suggestion list.
+  String get typeaheadLabel => 'Suggestions';
+
+  /// The placeholder in an empty typeahead.
+  String get typeaheadPlaceholder => 'Search…';
+
+  /// Announced while a search is in flight.
+  String get typeaheadSearching => 'Searching';
+
+  /// Announces how many suggestions a search returned.
+  ///
+  /// A dropdown appearing is silent to a screen reader, so the count is said
+  /// instead — otherwise there is no way to know a search answered at all.
+  String typeaheadResults(int count) =>
+      '$count ${count == 1 ? 'result' : 'results'}';
+
+  /// The fallback accessible name for a command palette.
+  String get commandPaletteLabel => 'Commands';
+
+  /// The placeholder in an empty command palette.
+  String get commandPalettePlaceholder => 'Type a command or search…';
+
+  /// Shown when a palette query matches no command.
+  String get commandPaletteNoResults => 'No commands match';
+
+  /// The hint on a palette's footer: how to move.
+  String get commandPaletteNavigate => 'to navigate';
+
+  /// The hint on a palette's footer: how to run.
+  String get commandPaletteRun => 'to run';
+
+  /// The hint on a palette's footer: how to leave.
+  String get commandPaletteClose => 'to close';
+
+  /// The fallback accessible name for a power search field.
+  String get powerSearchLabel => 'Search';
+
+  /// The placeholder in an empty power search field.
+  String get powerSearchPlaceholder => 'Search, or add a filter…';
+
+  /// Opens the menu of filters that can be added.
+  String get powerSearchAddFilter => 'Add a filter';
+
+  /// Removes every filter and the query.
+  String get powerSearchClear => 'Clear the search';
+
+  /// Summarises how many filters are applied.
+  String powerSearchFilters(int count) =>
+      '$count ${count == 1 ? 'filter' : 'filters'}';
+
+  // ---------------------------------------------------------------------------
+  // Media
+  // ---------------------------------------------------------------------------
+
+  /// Names the avatars an overflow chip stands for.
+  ///
+  /// Deliberately not [overflowMore]: that one names items that did not fit in
+  /// a row, this one names *people*, and the two are not the same sentence in
+  /// every language.
+  String avatarGroupMore(int count) => '$count more';
+
+  /// Announces how many people an avatar group holds.
+  String avatarGroupCount(int count) =>
+      '$count ${count == 1 ? 'person' : 'people'}';
+
+  /// Moves a carousel back one slide.
+  String get carouselPrevious => 'Previous';
+
+  /// Moves a carousel on one slide.
+  String get carouselNext => 'Next';
+
+  /// Says where in a carousel the reader is.
+  String carouselPosition(int index, int count) => 'Item $index of $count';
+
+  /// The fallback accessible name for a carousel.
+  String get carouselLabel => 'Carousel';
+
+  /// The fallback accessible name for a lightbox.
+  String get lightboxLabel => 'Media viewer';
+
+  /// Closes a lightbox.
+  String get lightboxClose => 'Close the viewer';
+
+  /// Moves a lightbox back one item.
+  String get lightboxPrevious => 'Previous item';
+
+  /// Moves a lightbox on one item.
+  String get lightboxNext => 'Next item';
+
+  /// Says where in a lightbox the reader is.
+  String lightboxPosition(int index, int count) => '$index of $count';
+
+  // ---------------------------------------------------------------------------
   // Text selection
   //
   // Astryx builds its own selection toolbar rather than Material's, so these

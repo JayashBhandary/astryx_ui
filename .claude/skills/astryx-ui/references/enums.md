@@ -6,20 +6,24 @@
      Regenerate: cd example && dart run tool/gen_skill.dart
 -->
 
-Scraped from the package source, so this is what the analyser will accept. 77 public enums.
+Scraped from the package source, so this is what the analyser will accept. 88 public enums.
 
 | Enum | Values |
 | --- | --- |
+| `AstryxAvatarShape` | `circle`, `rounded` |
+| `AstryxAvatarSize` | `xs`, `sm`, `md`, `lg`, `xl` |
 | `AstryxBannerStatus` | `info`, `warning`, `error`, `success` |
 | `AstryxBorderToken` | `width` |
 | `AstryxButtonSize` | `sm`, `md`, `lg` |
 | `AstryxButtonVariant` | `primary`, `secondary`, `ghost`, `destructive` |
 | `AstryxCenterAxis` | `both`, `horizontal`, `vertical` |
+| `AstryxChatRole` | `user`, `assistant`, `system` |
 | `AstryxCheckboxListDensity` | `compact`, `balanced` |
 | `AstryxCheckboxValue` | `unchecked`, `checked`, `indeterminate` |
 | `AstryxColorMode` | `system`, `light`, `dark` |
 | `AstryxColorToken` | `accent`, `accentMuted`, `onAccent`, `neutral`, `backgroundSurface`, `backgroundBody`, `overlay`, `overlayHover`, `overlayPressed`, `backgroundMuted`, `textPrimary`, `textSecondary`, `textDisabled`, `textAccent`, `onDark`, `onLight`, `iconAccent`, `iconPrimary`, `iconSecondary`, `iconDisabled`, `backgroundCard`, `backgroundPopover`, `backgroundInverted`, `backgroundErrorInverted`, `success`, `successMuted`, `onSuccess`, `error`, `errorMuted`, `onError`, `warning`, `warningMuted`, `onWarning`, `border`, `borderEmphasized`, `skeleton`, `track`, `shadow`, `tintHover`, `backgroundBlue`, `borderBlue`, `iconBlue`, `textBlue`, `backgroundCyan`, `borderCyan`, `iconCyan`, `textCyan`, `backgroundGray`, `borderGray`, `iconGray`, `textGray`, `backgroundGreen`, `borderGreen`, `iconGreen`, `textGreen`, `backgroundOrange`, `borderOrange`, `iconOrange`, `textOrange`, `backgroundPink`, `borderPink`, `iconPink`, `textPink`, `backgroundPurple`, `borderPurple`, `iconPurple`, `textPurple`, `backgroundRed`, `borderRed`, `iconRed`, `textRed`, `backgroundTeal`, `borderTeal`, `iconTeal`, `textTeal`, `backgroundYellow`, `borderYellow`, `iconYellow`, `textYellow` |
 | `AstryxContrastLevel` | `standard`, `high` |
+| `AstryxDateFormat` | `dayMonthYear`, `monthDayYear`, `yearMonthDay` |
 | `AstryxDensity` | `pointer`, `touch` |
 | `AstryxDerivedExpansion` | `container` |
 | `AstryxDividerVariant` | `subtle`, `strong` |
@@ -28,6 +32,7 @@ Scraped from the package source, so this is what the analyser will accept. 77 pu
 | `AstryxElementSize` | `sm`, `md`, `lg` |
 | `AstryxElevation` | `none`, `low`, `med`, `high` |
 | `AstryxEmptyStateSize` | `compact`, `standard` |
+| `AstryxEntryTransition` | `fade`, `fadeUp`, `fadeScale` |
 | `AstryxFieldStatusType` | `error`, `warning`, `success` |
 | `AstryxFileInputMode` | `input`, `dropzone` |
 | `AstryxFontWeightToken` | `normal`, `medium`, `semibold`, `bold` |
@@ -44,6 +49,7 @@ Scraped from the package source, so this is what the analyser will accept. 77 pu
 | `AstryxKbdSize` | `sm`, `md` |
 | `AstryxLayoutPanelSide` | `start`, `end` |
 | `AstryxLinkUnderline` | `always`, `hover`, `never` |
+| `AstryxMediaScrim` | `none`, `bottom`, `top`, `full` |
 | `AstryxMetadataListDirection` | `stacked`, `inline` |
 | `AstryxMultiSelectorTriggerDisplay` | `badges`, `count` |
 | `AstryxNeutralStyle` | `warm`, `cool`, `neutral` |
@@ -69,6 +75,7 @@ Scraped from the package source, so this is what the analyser will accept. 77 pu
 | `AstryxStackJustify` | `start`, `center`, `end`, `between`, `around`, `evenly` |
 | `AstryxStatusDotVariant` | `success`, `warning`, `error`, `accent`, `neutral` |
 | `AstryxSurface` | `dark`, `light` |
+| `AstryxSyntaxToken` | `keyword`, `string`, `comment`, `number`, `function`, `type`, `variable`, `operator`, `constant`, `tag`, `attribute`, `property`, `punctuation`, `background` |
 | `AstryxTabSize` | `sm`, `md`, `lg` |
 | `AstryxTableAlignment` | `start`, `center`, `end` |
 | `AstryxTableDensity` | `compact`, `balanced`, `spacious` |
@@ -79,14 +86,18 @@ Scraped from the package source, so this is what the analyser will accept. 77 pu
 | `AstryxTextType` | `body`, `large`, `label`, `supporting`, `code`, `display1`, `display2`, `display3` |
 | `AstryxTextWeight` | `normal`, `medium`, `semibold`, `bold` |
 | `AstryxThemeMode` | `light`, `dark` |
+| `AstryxTimeFormat` | `h12`, `h24` |
+| `AstryxTimestampFormat` | `relative`, `date`, `time`, `dateTime` |
 | `AstryxToastPosition` | `bottomEnd`, `bottomStart`, `topEnd`, `topStart` |
 | `AstryxToastType` | `neutral`, `error` |
 | `AstryxToggleLabelPosition` | `end`, `start` |
 | `AstryxToggleLabelSpacing` | `hug`, `spread` |
 | `AstryxToggleSize` | `sm`, `md` |
+| `AstryxToolCallStatus` | `pending`, `running`, `succeeded`, `failed` |
 | `AstryxTypeRole` | `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, `heading6`, `body`, `large`, `label`, `code`, `supporting`, `display1`, `display2`, `display3` |
 | `AstryxTypeToken` | `heading1Size`, `heading1Weight`, `heading1Leading`, `heading2Size`, `heading2Weight`, `heading2Leading`, `heading3Size`, `heading3Weight`, `heading3Leading`, `heading4Size`, `heading4Weight`, `heading4Leading`, `heading5Size`, `heading5Weight`, `heading5Leading`, `heading6Size`, `heading6Weight`, `heading6Leading`, `bodySize`, `bodyWeight`, `bodyLeading`, `largeSize`, `largeWeight`, `largeLeading`, `labelSize`, `labelWeight`, `labelLeading`, `codeSize`, `codeWeight`, `codeLeading`, `supportingSize`, `supportingWeight`, `supportingLeading`, `display1Size`, `display1Weight`, `display1Leading`, `display2Size`, `display2Weight`, `display2Leading`, `display3Size`, `display3Weight`, `display3Leading` |
 | `AstryxTypographyToken` | `body`, `code`, `heading` |
+| `AstryxWeekday` | `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday` |
 
 ## Notes
 

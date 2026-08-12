@@ -185,7 +185,9 @@ class _AstryxOverlayState extends State<AstryxOverlay>
     }
     _portal.show();
     if (widget.escapeDismissible && !_registered) {
-      AstryxOverlayStack.push(_dismissEntry);
+      // Modal when it dims the page: the scrim is the claim that everything
+      // behind it is inert, and that claim is what a scroll lock keys off.
+      AstryxOverlayStack.push(_dismissEntry, modal: widget.showScrim);
       _registered = true;
     }
     _animation

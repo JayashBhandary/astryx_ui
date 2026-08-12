@@ -8,24 +8,23 @@
 /// `scrape/completesite_map.md`, then maintained by hand: a page
 /// graduates out of here when someone writes it.
 ///
-/// The fourteen written ones are in `pages/templates.dart`. What is left is
-/// here because it is *blocked*, not because nobody got to it — each of these
-/// screens needs a component this port does not have yet:
+/// The nineteen written ones are in `pages/templates.dart`. What is left is
+/// here because nobody has written it yet, or because it is still *blocked* on
+/// something the package does not have:
 ///
-/// - **`AppShell` / `SideNav` / `TopNav` / `Outline`** — `shell_nav`,
-///   `shell_side_nav`, `shell_top_nav`, `settings_sidebar`, `documentation`,
-///   `documentation_design`, `documentation_technical`, `library`,
-///   `incident_console`.
-/// - **The chat components** — `ai_chat`, `ai_chat_landing`,
-///   `messaging_shell`.
-/// - **`Avatar` / `Thumbnail` / `AspectRatio` / `Carousel` / `Lightbox`** —
-///   `classic_gallery`, `mixed_gallery`, `side_gallery`, `gallery_hero`,
-///   `product_gallery`, `product_detail`.
-/// - **`Pagination`** — `table_page`, and the three screens built on it.
-/// - **`TreeList` and grouped table rows** — `file_explorer`, `ide`,
-///   `editor`, `kanban_board`, `table_grouped`.
+/// - **Written** — `shell_nav`, `documentation`, `ai_chat`, `table_page` and
+///   `classic_gallery` graduated once the shell, chat, pagination and media
+///   components landed. Their neighbours below are now unblocked too: they need
+///   writing, not waiting.
+/// - **Grouped table rows** — `table_grouped`. `AstryxTable` has no row
+///   grouping, and faking it with a header row that is not a header row is
+///   worse than a placeholder.
+/// - **Drag and drop** — `kanban_board`. Nothing in this package moves under a
+///   pointer, and a board whose cards can only be moved by a menu is a
+///   different screen.
 /// - **A charting widget**, which the package does not intend to ship —
-///   `dashboard_portfolio`, `table_page_chart`.
+///   `dashboard_portfolio`, `table_page_chart`, `table_page_heatmap_status`,
+///   `table_page_shoe_store_heatmap`.
 ///
 /// Writing one of these before its components land would mean either faking
 /// the missing widget or documenting a screen nobody can build, and a template
@@ -39,15 +38,6 @@ import 'package:example/docs/pages/_stub.dart';
 /// Every page template, alphabetical by upstream slug.
 final List<DocPage> plannedTemplatePages = <DocPage>[
   stubPage(
-    id: 'ai_chat',
-    title: 'AI chat',
-    group: DocGroup.templates,
-    description:
-        'A full conversation screen: transcript, composer, and the '
-        'empty state before the first turn.',
-    upstreamPath: '/templates/ai-chat',
-  ),
-  stubPage(
     id: 'ai_chat_landing',
     title: 'AI chat landing',
     group: DocGroup.templates,
@@ -57,27 +47,11 @@ final List<DocPage> plannedTemplatePages = <DocPage>[
     upstreamPath: '/templates/ai-chat-landing',
   ),
   stubPage(
-    id: 'classic_gallery',
-    title: 'Classic gallery',
-    group: DocGroup.templates,
-    description: 'A uniform grid of media cards.',
-    upstreamPath: '/templates/classic-gallery',
-  ),
-  stubPage(
     id: 'dashboard_portfolio',
     title: 'Portfolio dashboard',
     group: DocGroup.templates,
     description: 'A dashboard built around a chart and a holdings table.',
     upstreamPath: '/templates/dashboard-portfolio',
-  ),
-  stubPage(
-    id: 'documentation',
-    title: 'Documentation',
-    group: DocGroup.templates,
-    description:
-        'A docs page: side navigation, content column, and an '
-        'on-this-page outline.',
-    upstreamPath: '/templates/documentation',
   ),
   stubPage(
     id: 'documentation_design',
@@ -182,13 +156,6 @@ final List<DocPage> plannedTemplatePages = <DocPage>[
     upstreamPath: '/templates/settings-sidebar',
   ),
   stubPage(
-    id: 'shell_nav',
-    title: 'Shell navigation',
-    group: DocGroup.templates,
-    description: 'The application shell with both bars in place.',
-    upstreamPath: '/templates/shell-nav',
-  ),
-  stubPage(
     id: 'shell_side_nav',
     title: 'Shell with side nav',
     group: DocGroup.templates,
@@ -215,13 +182,6 @@ final List<DocPage> plannedTemplatePages = <DocPage>[
     group: DocGroup.templates,
     description: 'A table whose rows are grouped under collapsible headers.',
     upstreamPath: '/templates/table-grouped',
-  ),
-  stubPage(
-    id: 'table_page',
-    title: 'Table page',
-    group: DocGroup.templates,
-    description: 'A table as a whole screen: filters, table, pagination.',
-    upstreamPath: '/templates/table-page',
   ),
   stubPage(
     id: 'table_page_chart',

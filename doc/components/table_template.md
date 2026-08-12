@@ -357,11 +357,12 @@ The selection bar appears once something is ticked and says how many. **Resolve*
 
 > **Careful**
 >
-> **No pagination, and no virtualisation.** `Pagination` is not ported and `AstryxTable` does not virtualise rows: a `maxHeight` scrolls the body, and a few hundred rows is fine. For thousands, paginate in your own data layer — the footer line here counts what is shown against the total, which is the least a screen owes the reader.
+> **No pagination here, and no virtualisation anywhere.** `AstryxTable` does not virtualise rows: a `maxHeight` scrolls the body, and a few hundred rows is fine. Past that, page in your own data layer — the [table page](table_page.md) template is that screen, with [AstryxPagination](pagination.md) in the footer.
 
 ## Related
 
 - [AstryxTable](table.md) — every property, and the three width strategies.
+- [Table page](table_page.md) — the same table as a whole screen, paginated.
 - [Dashboard](dashboard.md) — the same data, summarised.
 - [Detail page](detail_page.md) — where a row leads.
 

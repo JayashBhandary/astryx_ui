@@ -13,6 +13,7 @@
 library;
 
 import 'package:astryx_ui/src/theme/engine/token_value.dart';
+import 'package:astryx_ui/src/theme/tokens/token.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
@@ -20,6 +21,9 @@ import 'package:meta/meta.dart';
 const String astryxSyntaxTokenPrefix = '--color-syntax-';
 
 /// The fourteen syntax token keys upstream defines.
+///
+/// The same fourteen as [AstryxSyntaxToken], as bare strings — which is the
+/// shape [AstryxSyntaxTheme.tokens] is keyed by. A test pins the two together.
 const List<String> astryxSyntaxTokenKeys = <String>[
   'keyword',
   'string',
@@ -36,6 +40,70 @@ const List<String> astryxSyntaxTokenKeys = <String>[
   'punctuation',
   'background',
 ];
+
+/// One role in a syntax palette, as a token.
+///
+/// The typed counterpart of [astryxSyntaxTokenKeys]: a theme's palette is
+/// written into the token map under [astryxSyntaxTokenPrefix], and these are
+/// the names it lands under — so `AstryxThemeData.syntaxColor` can hand back a
+/// `Color` rather than leaving a caller to build the string themselves.
+///
+/// **Nothing in this package paints with these.** `AstryxCodeBlock` does not
+/// highlight, by decision rather than omission: shipping a tokeniser for every
+/// language a caller might paste is not a design system's job. The palette is
+/// here so that a caller who *does* wire a highlighter colours it from the
+/// theme instead of hard-coding fourteen colours beside it.
+enum AstryxSyntaxToken implements AstryxToken {
+  /// `if`, `return`, `class`.
+  keyword('keyword'),
+
+  /// A string literal.
+  string('string'),
+
+  /// A comment.
+  comment('comment'),
+
+  /// A numeric literal.
+  number('number'),
+
+  /// A function or method name.
+  function('function'),
+
+  /// A type name.
+  type('type'),
+
+  /// A variable or parameter name.
+  variable('variable'),
+
+  /// An operator — `+`, `=>`, `??`.
+  operator('operator'),
+
+  /// A constant, including a language literal such as `null`.
+  constant('constant'),
+
+  /// A markup tag name.
+  tag('tag'),
+
+  /// A markup attribute name.
+  attribute('attribute'),
+
+  /// An object property or field name.
+  property('property'),
+
+  /// Brackets, commas, semicolons.
+  punctuation('punctuation'),
+
+  /// The fill behind highlighted code.
+  background('background');
+
+  const AstryxSyntaxToken(this.key);
+
+  /// The short name this role is keyed by in [AstryxSyntaxTheme.tokens].
+  final String key;
+
+  @override
+  String get cssName => '$astryxSyntaxTokenPrefix$key';
+}
 
 /// A named syntax highlighting palette.
 @immutable

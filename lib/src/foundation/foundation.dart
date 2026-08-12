@@ -9,14 +9,20 @@
 library;
 
 export 'density.dart';
+export 'entry_animation.dart';
 export 'focus_ring.dart';
 export 'focus_trap.dart';
 export 'focus_visible.dart';
+export 'hotkeys.dart';
+export 'keyboard_hint.dart';
 export 'link_delegate.dart';
 export 'motion.dart';
 export 'overlay_positioner.dart';
 export 'overlay_stack.dart';
+export 'roving_focus.dart';
 export 'rtl.dart';
+export 'scroll_lock.dart';
+export 'scroll_overflow.dart';
 export 'semantics.dart';
 export 'size_scope.dart';
 export 'states_controller.dart';

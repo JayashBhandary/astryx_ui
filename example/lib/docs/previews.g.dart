@@ -19,8 +19,10 @@ import 'package:example/examples/banner_examples.dart';
 import 'package:example/examples/blockquote_examples.dart';
 import 'package:example/examples/button_examples.dart';
 import 'package:example/examples/button_group_examples.dart';
+import 'package:example/examples/calendar_examples.dart';
 import 'package:example/examples/card_examples.dart';
 import 'package:example/examples/center_examples.dart';
+import 'package:example/examples/chat_examples.dart';
 import 'package:example/examples/checkbox_examples.dart';
 import 'package:example/examples/code_examples.dart';
 import 'package:example/examples/collapsible_examples.dart';
@@ -28,6 +30,9 @@ import 'package:example/examples/collapsible_group_examples.dart';
 import 'package:example/examples/color_examples.dart';
 import 'package:example/examples/context_menu_examples.dart';
 import 'package:example/examples/core_examples.dart';
+import 'package:example/examples/date_input_examples.dart';
+import 'package:example/examples/date_range_input_examples.dart';
+import 'package:example/examples/date_time_input_examples.dart';
 import 'package:example/examples/dialog_examples.dart';
 import 'package:example/examples/divider_examples.dart';
 import 'package:example/examples/dropdown_menu_examples.dart';
@@ -38,6 +43,7 @@ import 'package:example/examples/forms_advanced_examples.dart';
 import 'package:example/examples/forms_group_examples.dart';
 import 'package:example/examples/grid_examples.dart';
 import 'package:example/examples/heading_examples.dart';
+import 'package:example/examples/hooks_examples.dart';
 import 'package:example/examples/hover_card_examples.dart';
 import 'package:example/examples/icon_button_examples.dart';
 import 'package:example/examples/icon_examples.dart';
@@ -45,6 +51,7 @@ import 'package:example/examples/icons_examples.dart';
 import 'package:example/examples/item_examples.dart';
 import 'package:example/examples/layout_examples.dart';
 import 'package:example/examples/list_examples.dart';
+import 'package:example/examples/media_examples.dart';
 import 'package:example/examples/metadata_list_examples.dart';
 import 'package:example/examples/motion_examples.dart';
 import 'package:example/examples/navigation_controls_examples.dart';
@@ -54,7 +61,9 @@ import 'package:example/examples/overlay_examples.dart';
 import 'package:example/examples/platform_examples.dart';
 import 'package:example/examples/popover_examples.dart';
 import 'package:example/examples/progress_bar_examples.dart';
+import 'package:example/examples/provider_examples.dart';
 import 'package:example/examples/radio_list_examples.dart';
+import 'package:example/examples/search_examples.dart';
 import 'package:example/examples/section_examples.dart';
 import 'package:example/examples/selectable_card_examples.dart';
 import 'package:example/examples/selector_examples.dart';
@@ -68,15 +77,21 @@ import 'package:example/examples/styling_examples.dart';
 import 'package:example/examples/switch_examples.dart';
 import 'package:example/examples/tab_list_examples.dart';
 import 'package:example/examples/table_examples.dart';
+import 'package:example/examples/template_chat_examples.dart';
 import 'package:example/examples/template_form_examples.dart';
+import 'package:example/examples/template_gallery_examples.dart';
 import 'package:example/examples/template_login_examples.dart';
 import 'package:example/examples/template_screen_examples.dart';
 import 'package:example/examples/template_settings_examples.dart';
+import 'package:example/examples/template_shell_examples.dart';
+import 'package:example/examples/template_table_page_examples.dart';
 import 'package:example/examples/text_area_examples.dart';
 import 'package:example/examples/text_examples.dart';
 import 'package:example/examples/text_input_examples.dart';
 import 'package:example/examples/themes_examples.dart';
 import 'package:example/examples/theming_examples.dart';
+import 'package:example/examples/time_input_examples.dart';
+import 'package:example/examples/timestamp_examples.dart';
 import 'package:example/examples/toast_examples.dart';
 import 'package:example/examples/toggle_button_examples.dart';
 import 'package:example/examples/tooltip_examples.dart';
@@ -119,6 +134,9 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'button_group_detached': (_) => const ButtonGroupDetachedExample(),
   'button_group_inherited': (_) => const ButtonGroupInheritedExample(),
   'button_group_vertical': (_) => const ButtonGroupVerticalExample(),
+  'calendar_demo': (_) => const CalendarDemoExample(),
+  'calendar_range': (_) => const CalendarRangeExample(),
+  'calendar_bounds': (_) => const CalendarBoundsExample(),
   'card_demo': (_) => const CardDemoExample(),
   'card_slots': (_) => const CardSlotsExample(),
   'card_variants': (_) => const CardVariantsExample(),
@@ -130,6 +148,22 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'center_demo': (_) => const CenterDemoExample(),
   'center_axis': (_) => const CenterAxisExample(),
   'center_measure': (_) => const CenterMeasureExample(),
+  'chat_layout_demo': (_) => const ChatLayoutDemoExample(),
+  'chat_layout_empty': (_) => const ChatLayoutEmptyExample(),
+  'chat_message_roles': (_) => const ChatMessageRolesExample(),
+  'chat_message_streaming': (_) => const ChatMessageStreamingExample(),
+  'chat_composer_demo': (_) => const ChatComposerDemoExample(),
+  'chat_composer_drawer': (_) => const ChatComposerDrawerExample(),
+  'token_demo': (_) => const TokenDemoExample(),
+  'tokenizer_demo': (_) => const TokenizerDemoExample(),
+  'chat_composer_token': (_) => const ChatComposerTokenExample(),
+  'chat_tokenized_text_demo': (_) => const ChatTokenizedTextDemoExample(),
+  'chat_dictation_states': (_) => const ChatDictationStatesExample(),
+  'chat_send_button_states': (_) => const ChatSendButtonStatesExample(),
+  'chat_system_message_demo': (_) => const ChatSystemMessageDemoExample(),
+  'chat_tool_calls_demo': (_) => const ChatToolCallsDemoExample(),
+  'citation_demo': (_) => const CitationDemoExample(),
+  'markdown_demo': (_) => const MarkdownDemoExample(),
   'checkbox_demo': (_) => const CheckboxDemoExample(),
   'checkbox_tristate': (_) => const CheckboxTristateExample(),
   'checkbox_sizes': (_) => const CheckboxSizesExample(),
@@ -149,6 +183,13 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'context_menu_demo': (_) => const ContextMenuDemoExample(),
   'context_menu_sections': (_) => const ContextMenuSectionsExample(),
   'core_pipeline': (_) => const CorePipelineExample(),
+  'date_input_demo': (_) => const DateInputDemoExample(),
+  'date_input_bounds': (_) => const DateInputBoundsExample(),
+  'date_input_formats': (_) => const DateInputFormatsExample(),
+  'date_range_input_demo': (_) => const DateRangeInputDemoExample(),
+  'date_range_input_bounds': (_) => const DateRangeInputBoundsExample(),
+  'date_time_input_demo': (_) => const DateTimeInputDemoExample(),
+  'date_time_input_clock': (_) => const DateTimeInputClockExample(),
   'dialog_demo': (_) => const DialogDemoExample(),
   'dialog_form': (_) => const DialogFormExample(),
   'dialog_scrolling': (_) => const DialogScrollingExample(),
@@ -194,6 +235,21 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'heading_levels': (_) => const HeadingLevelsExample(),
   'heading_display': (_) => const HeadingDisplayExample(),
   'heading_accessibility_level': (_) => const HeadingAccessibilityLevelExample(),
+  'hook_theme': (_) => const HookThemeExample(),
+  'hook_media_query': (_) => const HookMediaQueryExample(),
+  'hook_hotkeys': (_) => const HookHotkeysExample(),
+  'hook_focus_trap': (_) => const HookFocusTrapExample(),
+  'hook_scroll_lock': (_) => const HookScrollLockExample(),
+  'hook_scroll_overflow': (_) => const HookScrollOverflowExample(),
+  'hook_list_focus': (_) => const HookListFocusExample(),
+  'hook_grid_focus': (_) => const HookGridFocusExample(),
+  'hook_clickable_container': (_) => const HookClickableContainerExample(),
+  'hook_entry_animation': (_) => const HookEntryAnimationExample(),
+  'hook_container_reveal': (_) => const HookContainerRevealExample(),
+  'hook_keyboard_hint': (_) => const HookKeyboardHintExample(),
+  'hook_streaming_text': (_) => const HookStreamingTextExample(),
+  'hook_image_mode': (_) => const HookImageModeExample(),
+  'hook_translator': (_) => const HookTranslatorExample(),
   'hover_card_demo': (_) => const HoverCardDemoExample(),
   'hover_card_timing': (_) => const HoverCardTimingExample(),
   'hover_card_sides': (_) => const HoverCardSidesExample(),
@@ -215,6 +271,13 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'list_demo': (_) => const ListDemoExample(),
   'list_density': (_) => const ListDensityExample(),
   'list_empty': (_) => const ListEmptyExample(),
+  'avatar_demo': (_) => const AvatarDemoExample(),
+  'avatar_group_demo': (_) => const AvatarGroupDemoExample(),
+  'aspect_ratio_demo': (_) => const AspectRatioDemoExample(),
+  'thumbnail_demo': (_) => const ThumbnailDemoExample(),
+  'carousel_demo': (_) => const CarouselDemoExample(),
+  'lightbox_demo': (_) => const LightboxDemoExample(),
+  'media_theme_demo': (_) => const MediaThemeDemoExample(),
   'metadata_list_demo': (_) => const MetadataListDemoExample(),
   'metadata_list_inline': (_) => const MetadataListInlineExample(),
   'motion_durations': (_) => const MotionDurationsExample(),
@@ -242,11 +305,20 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'progress_indeterminate': (_) => const ProgressIndeterminateExample(),
   'progress_labels': (_) => const ProgressLabelsExample(),
   'progress_live': (_) => const ProgressLiveExample(),
+  'provider_theme': (_) => const ProviderThemeExample(),
+  'provider_layer': (_) => const ProviderLayerExample(),
+  'provider_link': (_) => const ProviderLinkExample(),
+  'provider_localizations': (_) => const ProviderLocalizationsExample(),
+  'provider_syntax': (_) => const ProviderSyntaxExample(),
   'radio_list_demo': (_) => const RadioListDemoExample(),
   'radio_list_horizontal': (_) => const RadioListHorizontalExample(),
   'radio_list_validation': (_) => const RadioListValidationExample(),
   'radio_list_sizes': (_) => const RadioListSizesExample(),
   'radio_list_disabled': (_) => const RadioListDisabledExample(),
+  'typeahead_demo': (_) => const TypeaheadDemoExample(),
+  'base_typeahead_demo': (_) => const BaseTypeaheadDemoExample(),
+  'command_palette_demo': (_) => const CommandPaletteDemoExample(),
+  'power_search_demo': (_) => const PowerSearchDemoExample(),
   'section_demo': (_) => const SectionDemoExample(),
   'section_nesting': (_) => const SectionNestingExample(),
   'resize_handle_demo': (_) => const ResizeHandleDemoExample(),
@@ -295,9 +367,11 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'table_density': (_) => const TableDensityExample(),
   'table_widths': (_) => const TableWidthsExample(),
   'table_empty': (_) => const TableEmptyExample(),
+  'template_ai_chat': (_) => const AiChatTemplate(),
   'template_contact_form': (_) => const ContactFormTemplate(),
   'template_form_two_column': (_) => const FormTwoColumnTemplate(),
   'template_payment_form': (_) => const PaymentFormTemplate(),
+  'template_classic_gallery': (_) => const ClassicGalleryTemplate(),
   'template_login': (_) => const LoginTemplate(),
   'template_login_card': (_) => const LoginCardTemplate(),
   'template_login_sso': (_) => const LoginSsoTemplate(),
@@ -309,6 +383,9 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'template_theme_showcase': (_) => const ThemeShowcaseTemplate(),
   'template_settings': (_) => const SettingsTemplate(),
   'template_settings_dialog': (_) => const SettingsDialogTemplate(),
+  'template_shell_nav': (_) => const ShellNavTemplate(),
+  'template_documentation': (_) => const DocumentationTemplate(),
+  'template_table_page': (_) => const TablePageTemplate(),
   'text_area_demo': (_) => const TextAreaDemoExample(),
   'text_area_lines': (_) => const TextAreaLinesExample(),
   'text_area_counted': (_) => const TextAreaCountedExample(),
@@ -337,6 +414,10 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'theming_density': (_) => const ThemingDensityExample(),
   'theming_rtl': (_) => const ThemingRtlExample(),
   'theming_type_scale': (_) => const ThemingTypeScaleExample(),
+  'time_input_demo': (_) => const TimeInputDemoExample(),
+  'time_input_bounds': (_) => const TimeInputBoundsExample(),
+  'timestamp_demo': (_) => const TimestampDemoExample(),
+  'timestamp_formats': (_) => const TimestampFormatsExample(),
   'toast_demo': (_) => const ToastDemoExample(),
   'toast_types': (_) => const ToastTypesExample(),
   'toast_action': (_) => const ToastActionExample(),

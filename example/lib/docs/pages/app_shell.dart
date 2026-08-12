@@ -233,6 +233,14 @@ AstryxLayout
           'A page of prose or a single form, where a line running the width '
               'of a monitor is unreadable. Leave it null for a table.',
         ],
+        <String>[
+          '`scrollController`',
+          'Something beside the body needs its scroll position — an '
+              '[AstryxOutline](outline) in the panel tracking the reader. The '
+              'body’s scroll view belongs to this widget, so the controller is '
+              'handed in rather than invented. See the '
+              '[documentation](documentation) template.',
+        ],
       ],
     ),
     DocApi('AstryxLayout', _layoutProps),
@@ -285,6 +293,13 @@ final List<DocProp> _layoutProps = <DocProp>[
     'bool',
     'Whether the body scrolls.',
     defaultValue: 'true',
+  ),
+  const DocProp(
+    'scrollController',
+    'ScrollController?',
+    'The body’s scroll controller, for anything that has to know where the '
+        'body has got to — an outline in the panel. Only legal while '
+        '`scrollable` is true.',
   ),
   const DocProp(
     'padding',
