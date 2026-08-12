@@ -1,8 +1,10 @@
 /// The assistant screen: a transcript, a composer, and the empty state that
-/// comes before either of them exists.
+/// comes before either of them exists — plus the *landing*, which is the
+/// screen you get when that empty state is the whole product rather than a
+/// slot inside it.
 ///
-/// Not exported. A composition worth copying, built from nothing but what
-/// `astryx_ui` ships.
+/// Neither is exported. Both are compositions worth copying, built from
+/// nothing but what `astryx_ui` ships.
 library;
 
 import 'package:astryx_ui/astryx_ui.dart';
@@ -361,6 +363,232 @@ class _ChatHeader extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+// #end
+
+// #example template_ai_chat_landing -> AiChatLandingTemplate
+/// One offered prompt, and what it is for.
+typedef Prompt = ({String group, String label, String text});
+
+class AiChatLandingTemplate extends StatefulWidget {
+  const AiChatLandingTemplate({super.key});
+
+  @override
+  State<AiChatLandingTemplate> createState() => _AiChatLandingTemplateState();
+}
+
+class _AiChatLandingTemplateState extends State<AiChatLandingTemplate> {
+  static const List<Prompt> _prompts = <Prompt>[
+    (
+      group: 'Diagnose',
+      label: 'Why did the last deploy fail?',
+      text: 'Why did the 14:02 deploy fail?',
+    ),
+    (
+      group: 'Diagnose',
+      label: 'What changed before the latency spike?',
+      text: 'What changed in the hour before the 13:40 latency spike?',
+    ),
+    (
+      group: 'Summarise',
+      label: 'Last night’s on-call',
+      text: 'Summarise last night’s on-call in five bullets.',
+    ),
+    (
+      group: 'Summarise',
+      label: 'This week’s incidents',
+      text: 'Summarise every incident opened this week, worst first.',
+    ),
+    (
+      group: 'Write',
+      label: 'Draft a post-mortem',
+      text: 'Draft a post-mortem for INC-4102 from the timeline.',
+    ),
+  ];
+
+  static const List<String> _recent = <String>[
+    'Why did 14:02 fail?',
+    'Scheduler bind times, last 30 days',
+    'Who owns the artifacts service?',
+  ];
+
+  final TextEditingController _draft = TextEditingController();
+
+  /// The one turn the conversation has, once it has one.
+  String? _asked;
+
+  @override
+  void dispose() {
+    _draft.dispose();
+    super.dispose();
+  }
+
+  void _send(String text) {
+    if (text.trim().isEmpty) return;
+    setState(() {
+      _asked = text.trim();
+      _draft.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 560,
+      child: _asked == null ? _landing(context) : _conversation(context),
+    );
+  }
+
+  /// Before the first turn: the composer is the middle of the page.
+  ///
+  /// That is the whole difference between this and the `empty:` slot of
+  /// [AiChatTemplate]. A slot sits above a composer pinned to the bottom; a
+  /// landing puts the composer where the reader is already looking, because
+  /// there is no transcript for it to be beneath.
+  Widget _landing(BuildContext context) {
+    final groups = <String>{for (final prompt in _prompts) prompt.group};
+
+    return SingleChildScrollView(
+      child: AstryxCenter(
+        maxWidth: 680,
+        child: AstryxVStack(
+          gap: AstryxSpacingToken.spacing6,
+          align: AstryxStackAlign.stretch,
+          children: <Widget>[
+            const AstryxVStack(
+              gap: AstryxSpacingToken.spacing2,
+              align: AstryxStackAlign.center,
+              children: <Widget>[
+                AstryxHeading(
+                  'What do you want to know?',
+                  level: 1,
+                  type: AstryxHeadingType.display3,
+                  justify: AstryxTextJustify.center,
+                ),
+                AstryxText(
+                  'Logs, timings and health checks for the last 30 days.',
+                  type: AstryxTextType.large,
+                  color: AstryxTextColor.secondary,
+                  justify: AstryxTextJustify.center,
+                ),
+              ],
+            ),
+            // The same widget the conversation ends up using. A landing that
+            // drew its own input would be a second field with its own
+            // shortcuts, its own send button and its own bugs.
+            AstryxChatComposer(
+              controller: _draft,
+              placeholder: 'Ask about a deploy, a service or an incident',
+              label: 'Ask a question',
+              onSubmit: _send,
+              leading: <Widget>[
+                AstryxIconButton(
+                  icon: AstryxIconName.copy,
+                  label: 'Attach a file',
+                  variant: AstryxButtonVariant.ghost,
+                  onPressed: () {},
+                ),
+              ],
+              footer: const AstryxText(
+                'Answers cite the logs they came from. Check anything you are '
+                'about to act on.',
+                type: AstryxTextType.supporting,
+                color: AstryxTextColor.secondary,
+              ),
+            ),
+            // Suggestions are grouped, and every one of them is a button that
+            // sends itself. A prompt the reader has to retype is a prompt
+            // nobody uses; a wall of twelve ungrouped ones is a menu nobody
+            // reads.
+            for (final group in groups)
+              AstryxSection(
+                title: group,
+                level: 2,
+                gap: AstryxSpacingToken.spacing2,
+                child: AstryxHStack(
+                  gap: AstryxSpacingToken.spacing2,
+                  wrap: true,
+                  runGap: AstryxSpacingToken.spacing2,
+                  children: <Widget>[
+                    for (final prompt in _prompts.where(
+                      (prompt) => prompt.group == group,
+                    ))
+                      AstryxButton(
+                        label: prompt.label,
+                        size: AstryxButtonSize.sm,
+                        onPressed: () => _send(prompt.text),
+                      ),
+                  ],
+                ),
+              ),
+            const AstryxDivider(),
+            AstryxSection(
+              title: 'Recent',
+              level: 2,
+              gap: AstryxSpacingToken.spacing2,
+              child: AstryxList(
+                label: 'Recent conversations',
+                density: AstryxItemDensity.compact,
+                showDividers: true,
+                children: <Widget>[
+                  for (final thread in _recent)
+                    AstryxItem(
+                      label: thread,
+                      leading: const AstryxIcon(AstryxIconName.clock),
+                      trailing: const AstryxIcon(AstryxIconName.chevronRight),
+                      onPressed: () => _send(thread),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// After the first turn: the same composer, now pinned under a transcript.
+  Widget _conversation(BuildContext context) {
+    return AstryxLayout(
+      padding: AstryxSpacingToken.spacing0,
+      scrollable: false,
+      header: AstryxHStack(
+        gap: AstryxSpacingToken.spacing3,
+        justify: AstryxStackJustify.between,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          const Flexible(child: AstryxHeading('Atlas assistant', level: 1)),
+          AstryxButton(
+            label: 'New chat',
+            size: AstryxButtonSize.sm,
+            onPressed: () => setState(() => _asked = null),
+          ),
+        ],
+      ),
+      child: AstryxChatLayout(
+        messages: <Widget>[
+          AstryxChatMessage(
+            role: AstryxChatRole.user,
+            author: 'You',
+            child: AstryxText(_asked!),
+          ),
+          const AstryxChatMessage(
+            author: 'Assistant',
+            child: AstryxText(
+              'The landing has handed over. From here the screen is the '
+              'ai_chat template — same composer, now at the bottom of a '
+              'transcript that owns its own scrolling.',
+            ),
+          ),
+        ],
+        composer: AstryxChatComposer(
+          controller: _draft,
+          placeholder: 'Ask a follow-up',
+          onSubmit: _send,
+        ),
+      ),
     );
   }
 }

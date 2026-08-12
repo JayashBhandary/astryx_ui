@@ -346,6 +346,9 @@ class _ChatHeader extends StatelessWidget {
               label: 'Model',
               labelHidden: true,
               value: model,
+              // A field stretches to whatever it is given, and a hugging row
+              // gives it nothing to stretch to — so the width is stated here.
+              width: 168,
               size: AstryxInputSize.sm,
               onChanged: onModelChanged,
               options: const <AstryxSelectorOption<String>>[

@@ -7,7 +7,9 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-Eighty-two new components, five new templates, and the documentation for them.
+Eighty-two new components, twenty-eight new templates, and the documentation for
+them. **Every template upstream ships now has a written page** —
+`planned/templates.dart` is gone rather than empty.
 **Navigation, Date & time, Providers and Hooks & controllers are complete**:
 every component and hook upstream ships in those groups now has a written page,
 and **Chat & AI, Command & search and Media are complete too**. Two package
@@ -24,9 +26,72 @@ three in **Fixed**.
   (filters pinned above, `AstryxPagination` pinned below) and **Classic
   gallery** (a wall of media tiles over one shared `AstryxLightbox`). They
   graduated out of `planned/templates.dart` now that the shell, chat, pagination
-  and media components have landed; the four screens still listed there are
-  blocked on row grouping, drag-and-drop, or a charting widget the package does
-  not intend to ship.
+  and media components have landed.
+- **Seventeen more template screens**, which empties `planned/templates.dart` of
+  everything that was waiting on an author rather than on a component. Every one
+  is extracted from a compiling widget in `example/lib/examples/template_*.dart`
+  and built from nothing but what the package exports:
+  - **Shell with side nav** and **Shell with top nav** — the two halves of
+    `shell_nav`. The rail-only shell has no `header:` at all, so the drawer
+    toggle moves into the page's own header via `AstryxMobileNavToggle`; the
+    bar-only shell has no `sidebar:`, so there is no drawer and the bar scrolls
+    its own destinations instead.
+  - **Design documentation** and **Technical documentation** — specimens drawn
+    straight from `theme.color`, and an API reference whose property table is an
+    `AstryxTable`.
+  - **Editor**, **IDE** and **File explorer** — a markdown canvas with an
+    `AstryxToolbar` that edits the document rather than styling a hidden model,
+    two `AstryxResizeHandle`s with the sizes owned by the caller, and an
+    `AstryxTreeList` beside a table.
+  - **Gallery hero**, **Mixed gallery** and **Side gallery** — media as
+    evidence, media at sizes that differ on purpose, and one item at a time with
+    the rest beside it.
+  - **Product gallery** and **Product detail** — filters beside a wall that does
+    not filter itself, and a page where exactly one control spends money.
+  - **Library** and **Messaging shell** — one selection shared between a grid
+    and a table, and a list that selects rather than filters.
+  - **Incident console**, **Settings with sidebar** and **AI chat landing** — a
+    wall display whose relative stamps keep ticking from one captured instant, a
+    settings area reached from an `AstryxSideNav`, and the composer in the
+    middle of the page before it moves to the bottom of a transcript.
+- **A landing page.** The site opens on a front door rather than on the first
+  page of the registry: a hero, four counts read out of `docPages` rather than
+  typed, six feature cards each carrying a live specimen, and a footer. It links
+  to [pub.dev](https://pub.dev/packages/astryx_ui), the
+  [repository](https://github.com/JayashBhandary/astryx_ui) and upstream
+  Astryx. Like everything else here it is built from `astryx_ui` and nothing
+  else, which makes it the largest single specimen on the site. The brand in the
+  top bar is the way back to it, the sidebar is absent while it is showing, and
+  any URL naming a page — `/card` — still opens that page directly.
+
+- **The last six template screens**, each of which needs something the package
+  does not have. None of them fakes it: every page names the gap, fills it from
+  `flutter/widgets` or from the token layer in as few lines as the screen needs,
+  and marks the seam where a real implementation goes.
+  - **Portfolio dashboard** and **Table page with chart** — the package ships no
+    charting widget and does not intend to, so both draw a `TrendChart` from a
+    forty-line `CustomPainter`. It resolves every colour through
+    `AstryxTheme.of(context).color(…)` and takes a required `label` *and* a
+    required `semanticsValue`, because a picture of a trend announces nothing.
+    The headline figure is still text above the curve.
+  - **Kanban board** — dragging is a gesture rather than a surface, so this uses
+    the framework's own `Draggable` and `DragTarget`. The drag is the
+    *enhancement*: every card also carries a move menu naming the other columns,
+    both routes call the same function, and both confirm with a toast. A board
+    only a pointer can rearrange is a board much of a team cannot use.
+  - **Grouped table** — `AstryxTable` has no row grouping, and a data row drawn
+    to look like a header is announced as data, sorted into the middle of the
+    set and offered to the checkbox column. So it is one table per group inside
+    an `AstryxCollapsible`, sharing one sort and one selection, with the columns
+    declared once and given fixed widths so they line up down the screen.
+  - **Table page with heatmap** and **Retail heatmap table** — the ten
+    `AstryxPalette` families are categorical, so none of them is a ramp. A
+    `HeatCell` lerps between `--color-background-muted` and a semantic token,
+    switching to that token's paired foreground past the midpoint, and puts text
+    on it through `DefaultTextStyle.merge` plus `AstryxTextColor.inherit`. Every
+    cell prints its own figure and every screen carries a legend: latency runs
+    toward `error`, sales toward `success`, and a hue does not imply a
+    direction.
 - **`AstryxLayout.scrollController`** — the body's scroll controller, for
   anything beside the body that has to know where it has got to. An
   `AstryxOutline` in the `panel` tracks the reader by watching where the headings
@@ -859,6 +924,11 @@ three in **Fixed**.
 
 ### Changed
 
+- **Sidebar groups stay collapsed.** They were collapsed by default already, but
+  two things kept reopening one: the URL's page on boot, and every navigation
+  after it — including into a group the reader had just closed. Neither does
+  now. A non-empty filter query still forces every group open, because a search
+  whose matches stay hidden has not searched anything.
 - **`AstryxDialog` is now `AstryxOverlay` plus a panel.** The portal, the
   dismissal stack, the focus trap, the barrier and the animation moved into the
   primitive, so the two cannot drift; `AstryxDialogController` extends

@@ -22,7 +22,6 @@ import 'package:example/docs/pages/navigation.dart';
 import 'package:example/docs/pages/overlays.dart';
 import 'package:example/docs/pages/planned/components.dart';
 import 'package:example/docs/pages/planned/guides.dart';
-import 'package:example/docs/pages/planned/templates.dart';
 import 'package:example/docs/pages/providers.dart';
 import 'package:example/docs/pages/search.dart';
 import 'package:example/docs/pages/surfaces.dart';
@@ -33,14 +32,14 @@ export 'package:example/docs/model.dart';
 
 /// Every page, in navigation order.
 ///
-/// The written pages first, then the placeholders. There is no planned-hooks
-/// list any more: every upstream hook now has a written page, which is why that
-/// file is gone rather than empty. Order matters twice: a
+/// The written pages first, then the placeholders. Two planned lists are gone
+/// rather than empty: every upstream hook has a written page, and so does every
+/// upstream template — `planned/hooks.dart` and `planned/templates.dart` were
+/// deleted when the last entry in each graduated. Order matters twice: a
 /// group's position in [docPagesByGroup] is where its first page appears, and a
 /// page's position within its group is its position here. Appending the planned
 /// lists therefore lands each placeholder underneath the written pages of the
-/// same group, and puts the groups that are entirely unwritten — `Navigation`,
-/// `Chat & AI`, `Templates` — after the ones that are not.
+/// same group.
 final List<DocPage> docPages = <DocPage>[
   ...guidePages,
   ...layoutPages,
@@ -62,7 +61,6 @@ final List<DocPage> docPages = <DocPage>[
   ...templatePages,
   ...plannedGuidePages,
   ...plannedComponentPages,
-  ...plannedTemplatePages,
 ];
 
 /// The pages with content — what `doc/` and the agent skill are built from.

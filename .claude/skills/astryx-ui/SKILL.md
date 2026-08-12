@@ -356,15 +356,38 @@ Open the reference before writing a component you have not written before. Each 
 | `Payment form` | Card details, a billing address, and the summary beside them. | `references/templates.md` |
 | `Settings` | Grouped preference rows with inline controls, each applying the moment it changes. | `references/templates.md` |
 | `Settings dialog` | Settings inside a modal, with its own navigation. | `references/templates.md` |
+| `Settings with sidebar` | Settings sections reached from a sidebar. | `references/templates.md` |
 | `Centred hero` | A headline, a supporting line, and one action. | `references/templates.md` |
+| `Gallery hero` | A hero whose supporting content is a media grid. | `references/templates.md` |
 | `Detail page` | One record: header, status, tabs, metadata and actions. | `references/templates.md` |
 | `Dashboard` | Summary tiles above a table of what needs attention. | `references/templates.md` |
+| `Portfolio dashboard` | A dashboard built around a chart and a holdings table. | `references/templates.md` |
 | `Table` | A data table as a screen: a toolbar, filtering, sorting, selection and row actions. | `references/templates.md` |
+| `Grouped table` | A table whose rows are grouped under collapsible headers. | `references/templates.md` |
 | `Table page` | A table as a whole screen: filters in a pinned header, pagination in a pinned footer. | `references/templates.md` |
+| `Table page with chart` | A table screen with a summary chart above it. | `references/templates.md` |
+| `Table page with heatmap` | A table screen whose cells carry heatmap and status colouring. | `references/templates.md` |
+| `Retail heatmap table` | The heatmap table screen with a retail data set. | `references/templates.md` |
+| `Kanban board` | Columns of draggable cards. | `references/templates.md` |
+| `Incident console` | A live operations view: severity, timeline, and the current on-call. | `references/templates.md` |
 | `Classic gallery` | A uniform wall of media tiles, each opening the same viewer on the item that was pressed. | `references/templates.md` |
+| `Mixed gallery` | A gallery of items at mixed sizes. | `references/templates.md` |
+| `Side gallery` | A gallery with the selected item beside the strip. | `references/templates.md` |
+| `Product gallery` | A filterable grid of products. | `references/templates.md` |
+| `Product detail` | Gallery, price, options, and the add-to-cart action. | `references/templates.md` |
 | `AI chat` | A full conversation screen: transcript, composer, tool calls, and the empty state before the first turn. | `references/templates.md` |
+| `AI chat landing` | The pre-conversation screen: prompt suggestions and a centred composer. | `references/templates.md` |
 | `Shell navigation` | The application frame with both bars in place: a full-width header and a collapsible rail beside the content. | `references/templates.md` |
+| `Shell with side nav` | The shell with a vertical rail only. | `references/templates.md` |
+| `Shell with top nav` | The shell with a horizontal bar only. | `references/templates.md` |
 | `Documentation` | A docs page: side navigation, a measured content column, and an on-this-page outline that tracks the reader. | `references/templates.md` |
+| `Design documentation` | A docs page for a design topic, heavy on specimens. | `references/templates.md` |
+| `Technical documentation` | A docs page for an API, heavy on code and property tables. | `references/templates.md` |
+| `Editor` | A document editor: toolbar, canvas, and an inspector panel. | `references/templates.md` |
+| `File explorer` | A tree of folders beside a list of files. | `references/templates.md` |
+| `IDE` | A code workspace: file tree, tabbed editors, and a panel. | `references/templates.md` |
+| `Library` | A browsable collection with filters beside the results. | `references/templates.md` |
+| `Messaging shell` | A conversation list beside the open conversation. | `references/templates.md` |
 | `Theme showcase` | One of everything on one screen, for judging a theme rather than imagining it. | `references/templates.md` |
 
 ## Guides

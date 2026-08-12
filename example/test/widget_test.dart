@@ -2,17 +2,49 @@ import 'package:example/docs/pages.dart';
 import 'package:example/docs/previews.g.dart';
 import 'package:example/docs/snippets.g.dart';
 import 'package:example/docs_ui/docs_controller.dart';
+import 'package:example/docs_ui/docs_landing.dart';
 import 'package:example/docs_ui/docs_shell.dart';
 import 'package:example/main.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('the docs app boots on the first page', (tester) async {
+  testWidgets('the docs app boots on the landing page', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     await tester.pumpWidget(const DocsApp());
     await tester.pumpAndSettle();
 
-    expect(find.text(docPages.first.title), findsWidgets);
+    final controller = DocsScope.of(tester.element(find.byType(DocsShell)));
+    expect(controller.onLanding, isTrue);
+    // The front door, not the first page in the registry: somebody arriving
+    // from a search result is asking what this is, not how `AstryxText` works.
+    expect(find.byType(DocsLanding), findsOneWidget);
+    expect(find.text('Get started'), findsWidgets);
+  });
+
+  testWidgets('a landing action opens a page, and the brand goes back', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(const DocsApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Get started').first);
+    await tester.pumpAndSettle();
+
+    final controller = DocsScope.of(tester.element(find.byType(DocsShell)));
+    expect(controller.onLanding, isFalse);
+    expect(controller.pageId, 'installation');
+
+    // The brand in the bar is the way home, which is where every site puts it.
+    await tester.tap(find.text('astryx_ui').first);
+    await tester.pumpAndSettle();
+
+    expect(controller.onLanding, isTrue);
   });
 
   test('every example referenced by a page exists', () {

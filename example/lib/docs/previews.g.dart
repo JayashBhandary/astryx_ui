@@ -77,14 +77,25 @@ import 'package:example/examples/styling_examples.dart';
 import 'package:example/examples/switch_examples.dart';
 import 'package:example/examples/tab_list_examples.dart';
 import 'package:example/examples/table_examples.dart';
+import 'package:example/examples/template_board_examples.dart';
+import 'package:example/examples/template_chart_examples.dart';
 import 'package:example/examples/template_chat_examples.dart';
+import 'package:example/examples/template_commerce_examples.dart';
+import 'package:example/examples/template_console_examples.dart';
+import 'package:example/examples/template_docs_examples.dart';
 import 'package:example/examples/template_form_examples.dart';
 import 'package:example/examples/template_gallery_examples.dart';
+import 'package:example/examples/template_grouped_table_examples.dart';
+import 'package:example/examples/template_heatmap_examples.dart';
 import 'package:example/examples/template_login_examples.dart';
+import 'package:example/examples/template_media_examples.dart';
 import 'package:example/examples/template_screen_examples.dart';
 import 'package:example/examples/template_settings_examples.dart';
 import 'package:example/examples/template_shell_examples.dart';
+import 'package:example/examples/template_shell_variant_examples.dart';
+import 'package:example/examples/template_split_examples.dart';
 import 'package:example/examples/template_table_page_examples.dart';
+import 'package:example/examples/template_workspace_examples.dart';
 import 'package:example/examples/text_area_examples.dart';
 import 'package:example/examples/text_examples.dart';
 import 'package:example/examples/text_input_examples.dart';
@@ -367,15 +378,30 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'table_density': (_) => const TableDensityExample(),
   'table_widths': (_) => const TableWidthsExample(),
   'table_empty': (_) => const TableEmptyExample(),
+  'template_kanban_board': (_) => const KanbanBoardTemplate(),
+  'template_dashboard_portfolio': (_) => const PortfolioDashboardTemplate(),
+  'template_table_page_chart': (_) => const TablePageChartTemplate(),
   'template_ai_chat': (_) => const AiChatTemplate(),
+  'template_ai_chat_landing': (_) => const AiChatLandingTemplate(),
+  'template_product_detail': (_) => const ProductDetailTemplate(),
+  'template_product_gallery': (_) => const ProductGalleryTemplate(),
+  'template_incident_console': (_) => const IncidentConsoleTemplate(),
+  'template_documentation_design': (_) => const DocumentationDesignTemplate(),
+  'template_documentation_technical': (_) => const DocumentationTechnicalTemplate(),
   'template_contact_form': (_) => const ContactFormTemplate(),
   'template_form_two_column': (_) => const FormTwoColumnTemplate(),
   'template_payment_form': (_) => const PaymentFormTemplate(),
   'template_classic_gallery': (_) => const ClassicGalleryTemplate(),
+  'template_table_grouped': (_) => const GroupedTableTemplate(),
+  'template_table_page_heatmap_status': (_) => const HeatmapStatusTablePageTemplate(),
+  'template_table_page_shoe_store_heatmap': (_) => const ShoeStoreHeatmapTemplate(),
   'template_login': (_) => const LoginTemplate(),
   'template_login_card': (_) => const LoginCardTemplate(),
   'template_login_sso': (_) => const LoginSsoTemplate(),
   'template_login_split': (_) => const LoginSplitTemplate(),
+  'template_gallery_hero': (_) => const GalleryHeroTemplate(),
+  'template_mixed_gallery': (_) => const MixedGalleryTemplate(),
+  'template_side_gallery': (_) => const SideGalleryTemplate(),
   'template_centered_hero': (_) => const CenteredHeroTemplate(),
   'template_detail_page': (_) => const DetailPageTemplate(),
   'template_dashboard': (_) => const DashboardTemplate(),
@@ -383,9 +409,17 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'template_theme_showcase': (_) => const ThemeShowcaseTemplate(),
   'template_settings': (_) => const SettingsTemplate(),
   'template_settings_dialog': (_) => const SettingsDialogTemplate(),
+  'template_settings_sidebar': (_) => const SettingsSidebarTemplate(),
   'template_shell_nav': (_) => const ShellNavTemplate(),
   'template_documentation': (_) => const DocumentationTemplate(),
+  'template_shell_side_nav': (_) => const ShellSideNavTemplate(),
+  'template_shell_top_nav': (_) => const ShellTopNavTemplate(),
+  'template_library': (_) => const LibraryTemplate(),
+  'template_messaging_shell': (_) => const MessagingShellTemplate(),
   'template_table_page': (_) => const TablePageTemplate(),
+  'template_editor': (_) => const EditorTemplate(),
+  'template_file_explorer': (_) => const FileExplorerTemplate(),
+  'template_ide': (_) => const IdeTemplate(),
   'text_area_demo': (_) => const TextAreaDemoExample(),
   'text_area_lines': (_) => const TextAreaLinesExample(),
   'text_area_counted': (_) => const TextAreaCountedExample(),

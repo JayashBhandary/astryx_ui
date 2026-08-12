@@ -71,11 +71,30 @@ enum DocsPreviewWidth {
 /// It feeds `AstryxThemeProvider` directly, so the docs exercise the same path
 /// an application takes rather than a parallel one.
 class DocsController extends ChangeNotifier {
-  /// Opens the group holding whichever page the URL asked for.
-  DocsController() {
-    final page = docPageOrNull(_pageId);
-    if (page != null) _openGroups.add(page.group);
-  }
+  /// Creates the controller.
+  ///
+  /// Every sidebar group starts collapsed, including the one holding whichever
+  /// page the URL asked for. Opening a group is the reader's to do.
+  DocsController();
+
+  /// Whether the landing page is showing rather than a documentation page.
+  ///
+  /// True when the URL named no page — `/`, or anything that is not a page id.
+  /// Somebody arriving from a search result or a package listing has one
+  /// question first, and the sidebar is not an answer to it.
+  bool get onLanding => _onLanding;
+  bool _onLanding = _pageIdFromUrl() == null;
+
+  /// Goes back to the landing page.
+  void goHome() => _set(() {
+    _onLanding = true;
+    unawaited(
+      SystemNavigator.routeInformationUpdated(
+        uri: Uri(path: '/'),
+        replace: true,
+      ),
+    );
+  }, _onLanding);
 
   DocsTheme get theme => _theme;
   DocsTheme _theme = DocsTheme.neutral;
@@ -116,10 +135,12 @@ class DocsController extends ChangeNotifier {
   String _pageId = _pageFromUrl();
   set pageId(String value) => _set(() {
     _pageId = value;
-    // Keep the sidebar showing where you are, whether you arrived by clicking
-    // the item, by the previous/next footer, or by a link inside the prose.
-    final page = docPageOrNull(value);
-    if (page != null) _openGroups.add(page.group);
+    // Choosing a page leaves the front door, wherever the choice came from.
+    _onLanding = false;
+    // Navigating does not open anything. A group the reader closed stays
+    // closed, whether they arrived by pressing an item, by the previous/next
+    // footer, or by a link inside the prose — a sidebar that reopens a group
+    // behind you is a sidebar you cannot keep tidy.
     // Keeps the address bar in step on the web — `/card`, because the app
     // installs the path URL strategy. A no-op elsewhere, and nothing depends on
     // the platform having answered.
@@ -135,13 +156,19 @@ class DocsController extends ChangeNotifier {
         replace: true,
       ),
     );
-  }, _pageId == value);
+  }, _pageId == value && !_onLanding);
 
   /// The page the current URL asks for, or the first page.
   ///
   /// Reads the path first and the fragment second: `/#card` links were shared
   /// before the switch to path URLs, and breaking them would be rude.
-  static String _pageFromUrl() {
+  static String _pageFromUrl() => _pageIdFromUrl() ?? docPages.first.id;
+
+  /// The page the current URL asks for, or null when it names none.
+  ///
+  /// Null is the whole point: it is what tells the landing page from a page
+  /// that happens to be first in the registry.
+  static String? _pageIdFromUrl() {
     final segments = Uri.base.pathSegments.where((s) => s.isNotEmpty).toList();
     final path = segments.isEmpty ? '' : segments.last;
     if (docPageOrNull(path) != null) return path;
@@ -149,7 +176,7 @@ class DocsController extends ChangeNotifier {
     final fragment = Uri.base.fragment.replaceAll('/', '');
     if (docPageOrNull(fragment) != null) return fragment;
 
-    return docPages.first.id;
+    return null;
   }
 
   /// The sidebar filter.
@@ -170,10 +197,13 @@ class DocsController extends ChangeNotifier {
 
   /// The sidebar groups that are expanded.
   ///
-  /// Collapsed by default, because seventeen groups of two hundred pages is not
-  /// a list anyone reads. The group holding the current page starts open, and
-  /// opens again whenever the page changes, so navigating never leaves the
-  /// sidebar pointing at nothing.
+  /// Empty until somebody presses a heading. Seventeen groups of two hundred
+  /// pages is not a list anyone reads, so **every group is collapsed** — on
+  /// first load, and after every navigation. Nothing but a press opens one.
+  ///
+  /// The one exception is not here: a non-empty filter query forces every group
+  /// open in the sidebar itself, because a search whose matches stay hidden has
+  /// not searched anything.
   final Set<String> _openGroups = <String>{};
 
   /// Whether [group] is expanded.

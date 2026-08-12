@@ -222,37 +222,37 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [Payment form](components/payment_form.md) — Card details, a billing address, and the summary beside them.
 - [Settings](components/settings.md) — Grouped preference rows with inline controls, each applying the moment it changes.
 - [Settings dialog](components/settings_dialog.md) — Settings inside a modal, with its own navigation.
+- [Settings with sidebar](components/settings_sidebar.md) — Settings sections reached from a sidebar.
 - [Centred hero](components/centered_hero.md) — A headline, a supporting line, and one action.
+- [Gallery hero](components/gallery_hero.md) — A hero whose supporting content is a media grid.
 - [Detail page](components/detail_page.md) — One record: header, status, tabs, metadata and actions.
 - [Dashboard](components/dashboard.md) — Summary tiles above a table of what needs attention.
+- [Portfolio dashboard](components/dashboard_portfolio.md) — A dashboard built around a chart and a holdings table.
 - [Table](components/table_template.md) — A data table as a screen: a toolbar, filtering, sorting, selection and row actions.
+- [Grouped table](components/table_grouped.md) — A table whose rows are grouped under collapsible headers.
 - [Table page](components/table_page.md) — A table as a whole screen: filters in a pinned header, pagination in a pinned footer.
+- [Table page with chart](components/table_page_chart.md) — A table screen with a summary chart above it.
+- [Table page with heatmap](components/table_page_heatmap_status.md) — A table screen whose cells carry heatmap and status colouring.
+- [Retail heatmap table](components/table_page_shoe_store_heatmap.md) — The heatmap table screen with a retail data set.
+- [Kanban board](components/kanban_board.md) — Columns of draggable cards.
+- [Incident console](components/incident_console.md) — A live operations view: severity, timeline, and the current on-call.
 - [Classic gallery](components/classic_gallery.md) — A uniform wall of media tiles, each opening the same viewer on the item that was pressed.
+- [Mixed gallery](components/mixed_gallery.md) — A gallery of items at mixed sizes.
+- [Side gallery](components/side_gallery.md) — A gallery with the selected item beside the strip.
+- [Product gallery](components/product_gallery.md) — A filterable grid of products.
+- [Product detail](components/product_detail.md) — Gallery, price, options, and the add-to-cart action.
 - [AI chat](components/ai_chat.md) — A full conversation screen: transcript, composer, tool calls, and the empty state before the first turn.
+- [AI chat landing](components/ai_chat_landing.md) — The pre-conversation screen: prompt suggestions and a centred composer.
 - [Shell navigation](components/shell_nav.md) — The application frame with both bars in place: a full-width header and a collapsible rail beside the content.
+- [Shell with side nav](components/shell_side_nav.md) — The shell with a vertical rail only.
+- [Shell with top nav](components/shell_top_nav.md) — The shell with a horizontal bar only.
 - [Documentation](components/documentation.md) — A docs page: side navigation, a measured content column, and an on-this-page outline that tracks the reader.
+- [Design documentation](components/documentation_design.md) — A docs page for a design topic, heavy on specimens.
+- [Technical documentation](components/documentation_technical.md) — A docs page for an API, heavy on code and property tables.
+- [Editor](components/editor.md) — A document editor: toolbar, canvas, and an inspector panel.
+- [File explorer](components/file_explorer.md) — A tree of folders beside a list of files.
+- [IDE](components/ide.md) — A code workspace: file tree, tabbed editors, and a panel.
+- [Library](components/library.md) — A browsable collection with filters beside the results.
+- [Messaging shell](components/messaging_shell.md) — A conversation list beside the open conversation.
 - [Theme showcase](components/theme_showcase.md) — One of everything on one screen, for judging a theme rather than imagining it.
-- AI chat landing — The pre-conversation screen: prompt suggestions and a centred composer. *(not ported yet)*
-- Portfolio dashboard — A dashboard built around a chart and a holdings table. *(not ported yet)*
-- Design documentation — A docs page for a design topic, heavy on specimens. *(not ported yet)*
-- Technical documentation — A docs page for an API, heavy on code and property tables. *(not ported yet)*
-- Editor — A document editor: toolbar, canvas, and an inspector panel. *(not ported yet)*
-- File explorer — A tree of folders beside a list of files. *(not ported yet)*
-- Gallery hero — A hero whose supporting content is a media grid. *(not ported yet)*
-- IDE — A code workspace: file tree, tabbed editors, and a panel. *(not ported yet)*
-- Incident console — A live operations view: severity, timeline, and the current on-call. *(not ported yet)*
-- Kanban board — Columns of draggable cards. *(not ported yet)*
-- Library — A browsable collection with filters beside the results. *(not ported yet)*
-- Messaging shell — A conversation list beside the open conversation. *(not ported yet)*
-- Mixed gallery — A gallery of items at mixed sizes. *(not ported yet)*
-- Product detail — Gallery, price, options, and the add-to-cart action. *(not ported yet)*
-- Product gallery — A filterable grid of products. *(not ported yet)*
-- Settings with sidebar — Settings sections reached from a sidebar. *(not ported yet)*
-- Shell with side nav — The shell with a vertical rail only. *(not ported yet)*
-- Shell with top nav — The shell with a horizontal bar only. *(not ported yet)*
-- Side gallery — A gallery with the selected item beside the strip. *(not ported yet)*
-- Grouped table — A table whose rows are grouped under collapsible headers. *(not ported yet)*
-- Table page with chart — A table screen with a summary chart above it. *(not ported yet)*
-- Table page with heatmap — A table screen whose cells carry heatmap and status colouring. *(not ported yet)*
-- Retail heatmap table — The heatmap table screen with a retail data set. *(not ported yet)*
 

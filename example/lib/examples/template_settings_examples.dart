@@ -333,3 +333,288 @@ class _SectionHeader extends StatelessWidget {
     );
   }
 }
+
+// #example template_settings_sidebar -> SettingsSidebarTemplate
+class SettingsSidebarTemplate extends StatefulWidget {
+  const SettingsSidebarTemplate({super.key});
+
+  @override
+  State<SettingsSidebarTemplate> createState() =>
+      _SettingsSidebarTemplateState();
+}
+
+class _SettingsSidebarTemplateState extends State<SettingsSidebarTemplate> {
+  /// The sections, as navigation rather than as headings on one long page.
+  ///
+  /// Past about four sections a settings page stops being scannable, and the
+  /// reader is scrolling to find out what exists. A rail answers that question
+  /// without scrolling anything.
+  static const List<AstryxNavEntry> _sections = <AstryxNavEntry>[
+    AstryxNavSection(
+      label: 'You',
+      items: <AstryxNavItem>[
+        AstryxNavItem(
+          id: 'profile',
+          label: 'Profile',
+          icon: AstryxNavIcon(AstryxIcon(AstryxIconName.check)),
+        ),
+        AstryxNavItem(
+          id: 'notifications',
+          label: 'Notifications',
+          icon: AstryxNavIcon(AstryxIcon(AstryxIconName.info)),
+          trailing: AstryxBadge('2'),
+        ),
+        AstryxNavItem(
+          id: 'appearance',
+          label: 'Appearance',
+          icon: AstryxNavIcon(AstryxIcon(AstryxIconName.viewColumns)),
+        ),
+      ],
+    ),
+    AstryxNavSection(
+      label: 'Workspace',
+      items: <AstryxNavItem>[
+        AstryxNavItem(
+          id: 'members',
+          label: 'Members',
+          icon: AstryxNavIcon(AstryxIcon(AstryxIconName.checkDouble)),
+        ),
+        AstryxNavItem(
+          id: 'security',
+          label: 'Security',
+          icon: AstryxNavIcon(AstryxIcon(AstryxIconName.eyeSlash)),
+        ),
+      ],
+    ),
+    AstryxNavDivider(),
+    AstryxNavItem(
+      id: 'danger',
+      label: 'Delete workspace',
+      icon: AstryxNavIcon(AstryxIcon(AstryxIconName.warning)),
+    ),
+  ];
+
+  static const Map<String, ({String title, String description})> _headings =
+      <String, ({String title, String description})>{
+        'profile': (
+          title: 'Profile',
+          description: 'How you appear to everyone else in the workspace.',
+        ),
+        'notifications': (
+          title: 'Notifications',
+          description: 'What reaches you, and how loudly.',
+        ),
+        'appearance': (
+          title: 'Appearance',
+          description: 'Yours only. Nobody else sees these.',
+        ),
+        'members': (
+          title: 'Members',
+          description: 'Who is in this workspace, and what they may do.',
+        ),
+        'security': (
+          title: 'Security',
+          description: 'Sign-in, sessions and tokens.',
+        ),
+        'danger': (
+          title: 'Delete workspace',
+          description: 'Everything in it goes, thirty days later.',
+        ),
+      };
+
+  final Set<String> _on = <String>{'mentions', 'incidents', 'digest'};
+  final AstryxDialogController _confirm = AstryxDialogController();
+
+  String _section = 'notifications';
+  String? _theme = 'system';
+
+  @override
+  void dispose() {
+    _confirm.dispose();
+    super.dispose();
+  }
+
+  /// Every control here applies the moment it moves, so every one of them
+  /// confirms. There is no Save button anywhere on this screen — adding one
+  /// would make every switch a lie.
+  void _toggle(String id, String label, {required bool value}) {
+    setState(() {
+      if (value) {
+        _on.add(id);
+      } else {
+        _on.remove(id);
+      }
+    });
+    AstryxToastScope.of(context).show(
+      AstryxToast(message: '$label ${value ? 'on' : 'off'}'),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final heading = _headings[_section]!;
+
+    // The rail sits *beside* the layout rather than in its `panel`. A panel is
+    // wrapped in a scroll view, so it is handed an unbounded height — and an
+    // `AstryxSideNav` pins its own footer with an `Expanded`, which cannot be
+    // laid out against one. Beside it, the rail gets the height of the frame,
+    // which is what it wants.
+    return SizedBox(
+      height: 560,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(
+            width: 232,
+            // A rail of sections, not a tab strip: these are *places* in a
+            // settings area rather than views of one thing, and there are
+            // more of them than a strip can hold without scrolling sideways.
+            child: AstryxSideNav(
+              label: 'Settings sections',
+              entries: _sections,
+              selectedId: _section,
+              onSelected: (id) => setState(() => _section = id),
+            ),
+          ),
+          const AstryxDivider(axis: Axis.vertical),
+          Expanded(
+            child: AstryxLayout(
+              maxContentWidth: 620,
+              header: AstryxVStack(
+                gap: AstryxSpacingToken.spacing1,
+                children: <Widget>[
+                  AstryxHeading(heading.title, level: 1),
+                  AstryxText(
+                    heading.description,
+                    type: AstryxTextType.supporting,
+                    color: AstryxTextColor.secondary,
+                  ),
+                ],
+              ),
+              child: switch (_section) {
+                'notifications' => _notifications(),
+                'appearance' => _appearance(),
+                'danger' => _danger(context),
+                _ => _placeholder(heading.title),
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _notifications() {
+    return AstryxCard(
+      padding: AstryxSpacingToken.spacing0,
+      child: AstryxVStack(
+        gap: AstryxSpacingToken.spacing0,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          for (final row in const <List<String>>[
+            <String>['mentions', 'Mentions', 'When someone @s you'],
+            <String>[
+              'incidents',
+              'Incidents',
+              'Every Sev-1, however it was raised',
+            ],
+            <String>['digest', 'Weekly digest', 'Monday morning, once'],
+            <String>['marketing', 'Product news', 'Roughly monthly'],
+          ])
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: AstryxSwitch(
+                label: row[1],
+                description: row[2],
+                value: _on.contains(row[0]),
+                labelPosition: AstryxToggleLabelPosition.start,
+                labelSpacing: AstryxToggleLabelSpacing.spread,
+                onChanged: (value) => _toggle(row[0], row[1], value: value),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _appearance() {
+    return AstryxCard(
+      child: AstryxSelector<String>(
+        label: 'Theme',
+        description: 'Applies as soon as it is chosen.',
+        value: _theme,
+        onChanged: (value) => setState(() => _theme = value),
+        options: const <AstryxSelectorOption<String>>[
+          AstryxSelectorOption(value: 'system', label: 'Match the system'),
+          AstryxSelectorOption(value: 'light', label: 'Light'),
+          AstryxSelectorOption(value: 'dark', label: 'Dark'),
+        ],
+      ),
+    );
+  }
+
+  /// The destructive section is a destination of its own here, rather than the
+  /// bottom of a long page — which is the one thing a sidebar changes about
+  /// the [SettingsTemplate] shape.
+  Widget _danger(BuildContext context) {
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        const AstryxBanner(
+          status: AstryxBannerStatus.warning,
+          title: 'This cannot be undone after thirty days',
+          description:
+              'Drafts, saved views and every uploaded asset go with the '
+              'workspace.',
+          announce: false,
+        ),
+        AstryxCard(
+          variant: const AstryxCardVariant.palette(AstryxPalette.red),
+          child: AstryxHStack(
+            gap: AstryxSpacingToken.spacing3,
+            justify: AstryxStackJustify.between,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              const Flexible(
+                child: AstryxText(
+                  'Deleting removes the workspace for all eleven members.',
+                ),
+              ),
+              AstryxButton(
+                label: 'Delete workspace',
+                variant: AstryxButtonVariant.destructive,
+                onPressed: _confirm.show,
+              ),
+            ],
+          ),
+        ),
+        // The button is not the confirmation; the dialog is, and it states
+        // what is actually lost rather than asking "are you sure?".
+        AstryxAlertDialog(
+          controller: _confirm,
+          title: 'Delete this workspace?',
+          description:
+              'Eleven members lose access immediately. Everything in the '
+              'workspace is deleted permanently after thirty days.',
+          confirmLabel: 'Delete workspace',
+          destructive: true,
+          onConfirm: () => AstryxToastScope.of(context).show(
+            const AstryxToast(message: 'Workspace scheduled for deletion'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _placeholder(String title) {
+    return AstryxCard(
+      child: AstryxText(
+        'The $title section would go here. It is one field of state and a '
+        '`switch` expression away — which is exactly what makes a settings '
+        'area with a rail no harder than one without.',
+      ),
+    );
+  }
+}
+// #end

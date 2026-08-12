@@ -2,6 +2,7 @@ import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs/pages.dart';
 import 'package:example/docs_ui/doc_page_view.dart';
 import 'package:example/docs_ui/docs_controller.dart';
+import 'package:example/docs_ui/docs_landing.dart';
 import 'package:example/docs_ui/segmented.dart';
 import 'package:flutter/widgets.dart';
 
@@ -27,25 +28,31 @@ class DocsShell extends StatelessWidget {
         builder: (context, constraints) {
           final wide = constraints.maxWidth >= _wide;
 
+          // The landing page keeps the bar and drops the sidebar. Two hundred
+          // rows of things you would only look up once you had decided are not
+          // an answer to "what is this", and they are the first thing on the
+          // screen when they are there.
           return AstryxVStack(
             align: AstryxStackAlign.stretch,
             children: <Widget>[
               _TopBar(wide: wide),
               const AstryxDivider(),
               Expanded(
-                child: AstryxHStack(
-                  align: AstryxStackAlign.stretch,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    if (wide) ...<Widget>[
-                      const _Sidebar(),
-                      const AstryxDivider(axis: Axis.vertical),
-                    ],
-                    Expanded(
-                      child: _Content(pageId: controller.pageId),
-                    ),
-                  ],
-                ),
+                child: controller.onLanding
+                    ? const _LandingContent()
+                    : AstryxHStack(
+                        align: AstryxStackAlign.stretch,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          if (wide) ...<Widget>[
+                            const _Sidebar(),
+                            const AstryxDivider(axis: Axis.vertical),
+                          ],
+                          Expanded(
+                            child: _Content(pageId: controller.pageId),
+                          ),
+                        ],
+                      ),
               ),
             ],
           );
@@ -80,8 +87,16 @@ class _TopBar extends StatelessWidget {
           AstryxHStack(
             gap: AstryxSpacingToken.spacing2,
             children: <Widget>[
-              if (!wide) const _NavigationMenu(),
-              const AstryxHeading('astryx_ui', level: 5),
+              if (!wide && !controller.onLanding) const _NavigationMenu(),
+              // The brand is the way back to the front door, which is where
+              // every site puts it and therefore where it is looked for.
+              AstryxButton(
+                label: 'astryx_ui',
+                variant: AstryxButtonVariant.ghost,
+                size: AstryxButtonSize.sm,
+                enabled: !controller.onLanding,
+                onPressed: controller.goHome,
+              ),
               const AstryxBadge('docs', variant: AstryxBadgeVariant.info),
             ],
           ),
@@ -508,6 +523,32 @@ class _ContentState extends State<_Content> {
       ),
     );
   }
+}
+
+/// The landing page, with its own scroll position.
+///
+/// Separate from `_Content` because it is not a `DocPage`: it has no previous
+/// or next, no measure of 900, and nothing to scroll back to the top of when
+/// the page id changes.
+class _LandingContent extends StatefulWidget {
+  const _LandingContent();
+
+  @override
+  State<_LandingContent> createState() => _LandingContentState();
+}
+
+class _LandingContentState extends State<_LandingContent> {
+  final ScrollController _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      _Scroller(controller: _scroll, child: const DocsLanding());
 }
 
 /// Vertical scrolling with a scrollbar that is always reachable.

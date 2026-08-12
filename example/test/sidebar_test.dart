@@ -16,7 +16,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  /// Pumps the app wide enough for the sidebar to exist.
+  /// Pumps the app wide enough for the sidebar to exist, on a page.
+  ///
+  /// The site opens on the landing page, which has no sidebar — so every test
+  /// here has to open a page first. Which page does not matter; the first one
+  /// keeps it stable.
   Future<DocsController> pumpDocs(WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 1000));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -24,14 +28,18 @@ void main() {
     await tester.pumpWidget(const DocsApp());
     await tester.pumpAndSettle();
 
-    return DocsScope.of(tester.element(find.byType(DocsShell)));
+    final controller = DocsScope.of(tester.element(find.byType(DocsShell)))
+      ..pageId = docPages.first.id;
+    await tester.pumpAndSettle();
+
+    return controller;
   }
 
   /// Expands [group] if it is not already open.
   ///
-  /// Not `toggleGroup`: the group holding the current page starts open, so
-  /// toggling it blindly closes it and the test asserts against an empty
-  /// sidebar.
+  /// Not `toggleGroup`: a group another test has already opened would be
+  /// closed by toggling it blindly, and the test would then assert against an
+  /// empty sidebar.
   Future<void> ensureOpen(
     WidgetTester tester,
     DocsController controller,
@@ -42,21 +50,33 @@ void main() {
   }
 
   /// A page in a group that starts collapsed, and the group it is in.
+  ///
+  /// Every group starts collapsed, so any page will do — this picks one
+  /// outside the first group so the assertions cannot pass by accident.
   ({DocPage page, String group}) aCollapsedPage() {
-    final open = docPages.first.group;
-    final page = docPages.firstWhere((page) => page.group != open);
+    final first = docPages.first.group;
+    final page = docPages.firstWhere((page) => page.group != first);
     return (page: page, group: page.group);
   }
 
-  testWidgets('a group other than the current one starts collapsed', (
+  testWidgets('every group starts collapsed, including the current one', (
     tester,
   ) async {
-    await pumpDocs(tester);
+    final controller = await pumpDocs(tester);
     final target = aCollapsedPage();
 
     // The heading is there; its pages are not.
     expect(find.text(target.group), findsOneWidget);
     expect(find.text(target.page.title), findsNothing);
+
+    // Not even the group holding the page that is showing.
+    for (final group in <String>{for (final page in docPages) page.group}) {
+      expect(
+        controller.isGroupOpen(group),
+        isFalse,
+        reason: '$group opened without anybody pressing it',
+      );
+    }
   });
 
   testWidgets('pressing a group heading reveals its pages', (tester) async {
@@ -68,19 +88,25 @@ void main() {
     expect(find.text(target.page.title), findsWidgets);
   });
 
-  testWidgets('navigating to a page opens the group holding it', (
+  testWidgets('navigating to a page leaves every group as it was', (
     tester,
   ) async {
     final controller = await pumpDocs(tester);
     final target = aCollapsedPage();
+    final opened = docPages.first.group;
 
+    await ensureOpen(tester, controller, opened);
     expect(controller.isGroupOpen(target.group), isFalse);
 
     controller.pageId = target.page.id;
     await tester.pumpAndSettle();
 
-    expect(controller.isGroupOpen(target.group), isTrue);
-    expect(find.text(target.page.title), findsWidgets);
+    // The group holding the new page does not open itself — the title is on
+    // screen because it is the page now showing, not because the sidebar
+    // revealed it.
+    expect(controller.isGroupOpen(target.group), isFalse);
+    // ...and the one the reader opened by hand is still open.
+    expect(controller.isGroupOpen(opened), isTrue);
   });
 
   testWidgets('exactly the visible placeholders are badged', (tester) async {

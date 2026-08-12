@@ -211,7 +211,8 @@ class _TablePageTemplateState extends State<TablePageTemplate> {
                     AstryxSegment(value: 'failed', label: 'Failed'),
                   ],
                 ),
-                const Spacer(),
+                // No `Spacer` in a wrapping row: `wrap: true` lays the children
+                // out as a `Wrap`, and a `Spacer` is a `Flex` child.
                 AstryxText(
                   '${matches.length} of ${runs.length} runs',
                   type: AstryxTextType.supporting,
