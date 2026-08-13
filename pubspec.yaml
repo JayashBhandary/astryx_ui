@@ -2,7 +2,7 @@ name: astryx_ui
 description: >-
   A Flutter design system, token-compatible with Astryx. Faithful theme engine,
   themeable components, built on flutter/widgets.
-version: 0.0.6-dev
+version: 0.0.7-dev
 homepage: https://astryxui.web.app/
 repository: https://github.com/JayashBhandary/astryx_ui
 issue_tracker: https://github.com/JayashBhandary/astryx_ui/issues

@@ -1,7 +1,7 @@
 {
   "name": "astryx-ui",
   "displayName": "astryx_ui",
-  "version": "0.0.6-dev",
+  "version": "0.0.7-dev",
   "description": "Write and review Flutter UI built with the astryx_ui design system: all 30 components, the token system, density, RTL and the accessibility rules the widget set enforces.",
   "author": {
     "name": "Jayash Bhandary",
