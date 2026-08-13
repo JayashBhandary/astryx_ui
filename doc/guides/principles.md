@@ -62,3 +62,6 @@ This site is built out of `astryx_ui` — the navigation is a column of cards, t
 - [Accessibility](accessibility.md) — the rules, and what enforces each.
 - [Theming](theming.md) — the seven themes, and defining your own.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Principles&component=Docs%3A+Principles) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Principles&area=Docs%3A+Principles) — both templates arrive with the page filled in.

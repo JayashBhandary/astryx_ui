@@ -308,3 +308,6 @@ Which control the card draws, and therefore what it means.
 - [AstryxRadioList](radio_list.md) — one choice out of several, as rows.
 - [AstryxCheckboxList](checkbox_list.md) — independent choices, as rows.
 
+---
+
+Something wrong with `AstryxSelectableCard`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxSelectableCard&component=AstryxSelectableCard) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxSelectableCard&area=AstryxSelectableCard) — both templates arrive with the component filled in.

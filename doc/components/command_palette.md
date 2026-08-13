@@ -191,3 +191,6 @@ One command. `AstryxCommandGroup` is a label and a list of these.
 - [AstryxKbd](kbd.md) — the caps on each row.
 - [AstryxDropdownMenu](dropdown_menu.md) — for a short list of actions attached to a control rather than to the application.
 
+---
+
+Something wrong with `AstryxCommandPalette`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxCommandPalette&component=AstryxCommandPalette) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxCommandPalette&area=AstryxCommandPalette) — both templates arrive with the component filled in.

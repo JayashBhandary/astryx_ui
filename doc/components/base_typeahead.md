@@ -141,3 +141,6 @@ What both builders are told, and everything they can do.
 - [AstryxTypeahead](typeahead.md) — this with a field and rows already drawn.
 - [AstryxComplexSelector](complex_selector.md) — the same split for a selector: a trigger this package draws and a surface you do.
 
+---
+
+Something wrong with `AstryxBaseTypeahead`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxBaseTypeahead&component=AstryxBaseTypeahead) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxBaseTypeahead&area=AstryxBaseTypeahead) — both templates arrive with the component filled in.

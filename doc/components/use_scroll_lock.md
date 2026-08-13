@@ -126,3 +126,6 @@ The two counters this reads. Listen to them directly for anything else that shou
 - [AstryxFocusTrap](use_focus_trap.md) — the other half of taking over a page.
 - [AstryxDialog](dialog.md) — the layer this is usually locking behind.
 
+---
+
+Something wrong with `AstryxScrollLock`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxScrollLock&component=AstryxScrollLock) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxScrollLock&area=AstryxScrollLock) — both templates arrive with the component filled in.

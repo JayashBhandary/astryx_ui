@@ -191,3 +191,6 @@ A `ChangeNotifier`. Dispose one you own.
 - [AstryxCollapsibleGroup](collapsible_group.md) — several of these as one section.
 - [AstryxTabList](tab_list.md) — when the sections are alternatives rather than details.
 
+---
+
+Something wrong with `AstryxCollapsible`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxCollapsible&component=AstryxCollapsible) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxCollapsible&area=AstryxCollapsible) — both templates arrive with the component filled in.

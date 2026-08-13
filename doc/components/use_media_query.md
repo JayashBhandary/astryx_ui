@@ -100,3 +100,6 @@ AstryxGrid(
 - [Motion](../guides/motion.md) — what must not move when motion is reduced.
 - [AstryxAppShell](app_shell.md) — where a width threshold actually lives.
 
+---
+
+Something wrong with `useMediaQuery → MediaQuery`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+useMediaQuery+%E2%86%92+MediaQuery&component=useMediaQuery+%E2%86%92+MediaQuery) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+useMediaQuery+%E2%86%92+MediaQuery&area=useMediaQuery+%E2%86%92+MediaQuery) — both templates arrive with the component filled in.

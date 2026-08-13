@@ -138,3 +138,6 @@ Once it has finished, the transition widgets are dropped from the tree rather th
 - [useContainerReveal](use_container_reveal.md) — the same entry, triggered by a scroll.
 - [Motion](../guides/motion.md) — the tokens, and what must not move.
 
+---
+
+Something wrong with `AstryxEntryAnimation`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxEntryAnimation&component=AstryxEntryAnimation) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxEntryAnimation&area=AstryxEntryAnimation) — both templates arrive with the component filled in.

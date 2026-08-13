@@ -193,3 +193,6 @@ if (kIsWeb) await BrowserContextMenu.disableContextMenu();
 
 - [AstryxDropdownMenu](dropdown_menu.md) — the discoverable version, and where the row types are documented.
 
+---
+
+Something wrong with `AstryxContextMenu`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxContextMenu&component=AstryxContextMenu) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxContextMenu&area=AstryxContextMenu) — both templates arrive with the component filled in.

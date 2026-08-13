@@ -234,3 +234,6 @@ class FieldStatusesExample extends StatelessWidget {
 - [AstryxTextInput](text_input.md) — a control that wraps itself in a field.
 - [AstryxSelector](selector.md) — likewise.
 
+---
+
+Something wrong with `AstryxField`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxField&component=AstryxField) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxField&area=AstryxField) — both templates arrive with the component filled in.

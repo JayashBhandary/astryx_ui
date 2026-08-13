@@ -158,3 +158,6 @@ final acmeDense = defineTheme(
 - [AstryxGrid](../components/grid.md) — `gap` and `runGap` on a tile wall.
 - [Design tokens](tokens.md) — the other token families.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Spacing&component=Docs%3A+Spacing) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Spacing&area=Docs%3A+Spacing) — both templates arrive with the page filled in.

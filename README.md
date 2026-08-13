@@ -110,7 +110,7 @@ rebuilding anything.
 
 ### A custom theme
 
-Themes are *defined*, not hard-coded. `defineAstryxTheme` runs the same
+Themes are *defined*, not hard-coded. `defineTheme` runs the same
 expansion the React version does — the HCT colour model, the type, radius and
 motion scales, the derived-variable registry — so a theme defined here and the
 same theme defined in TypeScript produce identical token values:

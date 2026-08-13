@@ -157,3 +157,6 @@ An hour and a minute with no day attached — a shift start, an office closing t
 - [AstryxDateTimeInput](date_time_input.md) — a day and a time together.
 - [AstryxNumberInput](number_input.md) — the field this borrows its reject-rather-than-clamp contract from.
 
+---
+
+Something wrong with `AstryxTimeInput`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTimeInput&component=AstryxTimeInput) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTimeInput&area=AstryxTimeInput) — both templates arrive with the component filled in.

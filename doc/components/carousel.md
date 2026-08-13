@@ -99,3 +99,6 @@ One tab stop for the whole strip: a carousel of forty screenshots is otherwise f
 - [AstryxTabList](tab_list.md) — when the items are alternatives rather than a sequence.
 - [AstryxScrollOverflow](use_scroll_overflow.md) — for a strip that scrolls freely rather than paging.
 
+---
+
+Something wrong with `AstryxCarousel`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxCarousel&component=AstryxCarousel) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxCarousel&area=AstryxCarousel) — both templates arrive with the component filled in.

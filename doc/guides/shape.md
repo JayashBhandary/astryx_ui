@@ -175,3 +175,6 @@ Upstream documents the multiplier’s range as 0–2. Because the whole set move
 - [Elevation](elevation.md) — the other property a surface carries.
 - [Design tokens](tokens.md) — the other token families.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Shape&component=Docs%3A+Shape) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Shape&area=Docs%3A+Shape) — both templates arrive with the page filled in.

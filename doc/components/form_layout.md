@@ -115,3 +115,6 @@ class FormLayoutLabelsExample extends StatelessWidget {
 - [AstryxGrid](grid.md) — for laying out anything that is not a form.
 - [Two-column form](form_two_column.md) — a whole screen, assembled.
 
+---
+
+Something wrong with `AstryxFormLayout`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxFormLayout&component=AstryxFormLayout) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxFormLayout&area=AstryxFormLayout) — both templates arrive with the component filled in.

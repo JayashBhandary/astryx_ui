@@ -102,3 +102,6 @@ It reads the same last-input-device signal as the focus ring (`AstryxFocusVisibl
 - [AstryxKbd](kbd.md) — drawing the keys.
 - [AstryxSideNav](side_nav.md) — the one place hover is allowed to reveal something, and why.
 
+---
+
+Something wrong with `AstryxKeyboardHint`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxKeyboardHint&component=AstryxKeyboardHint) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxKeyboardHint&area=AstryxKeyboardHint) — both templates arrive with the component filled in.

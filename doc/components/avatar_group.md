@@ -95,3 +95,6 @@ Every avatar takes the group’s `size`, whatever its own says: avatars of diffe
 - [AstryxAvatar](avatar.md) — one, and where the name rule is documented.
 - [AstryxOverflowList](overflow_list.md) — when the row is items rather than people, and the tail should stay reachable.
 
+---
+
+Something wrong with `AstryxAvatarGroup`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxAvatarGroup&component=AstryxAvatarGroup) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxAvatarGroup&area=AstryxAvatarGroup) — both templates arrive with the component filled in.

@@ -127,3 +127,6 @@ Upstream’s layout page also covers the navigation itself — the nav bar, the 
 - [Dashboard](../components/dashboard.md) — a whole screen, assembled.
 - [Two-column form](../components/form_two_column.md) — the `LayoutBuilder` pattern in full.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Layout&component=Docs%3A+Layout) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Layout&area=Docs%3A+Layout) — both templates arrive with the page filled in.

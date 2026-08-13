@@ -336,3 +336,6 @@ class TextInputMultilineExample extends StatelessWidget {
 | `maxLines` | `int` | `6` | The maximum visible lines before scrolling. `.multiline` only. |
 
 
+---
+
+Something wrong with `AstryxTextInput`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTextInput&component=AstryxTextInput) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTextInput&area=AstryxTextInput) — both templates arrive with the component filled in.

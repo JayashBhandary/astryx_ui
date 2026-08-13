@@ -138,3 +138,6 @@ class _CollapsibleGroupExclusiveExampleState
 
 - [AstryxCollapsible](collapsible.md) — one section, and where the header is documented.
 
+---
+
+Something wrong with `AstryxCollapsibleGroup`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxCollapsibleGroup&component=AstryxCollapsibleGroup) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxCollapsibleGroup&area=AstryxCollapsibleGroup) — both templates arrive with the component filled in.

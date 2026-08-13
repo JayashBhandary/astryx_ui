@@ -195,3 +195,6 @@ class TooltipWrappingExample extends StatelessWidget {
 | `excludeFromSemantics` | `bool` | `false` | Whether to leave the message out of the trigger’s semantics. |
 
 
+---
+
+Something wrong with `AstryxTooltip`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTooltip&component=AstryxTooltip) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTooltip&area=AstryxTooltip) — both templates arrive with the component filled in.

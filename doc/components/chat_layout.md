@@ -196,3 +196,6 @@ class _ChatLayoutEmptyExampleState extends State<ChatLayoutEmptyExample> {
 - [AstryxChatComposer](chat_composer.md) — the input at the foot.
 - [AstryxLayout](layout.md) — the frame for a page that is not a conversation.
 
+---
+
+Something wrong with `AstryxChatLayout`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxChatLayout&component=AstryxChatLayout) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxChatLayout&area=AstryxChatLayout) — both templates arrive with the component filled in.

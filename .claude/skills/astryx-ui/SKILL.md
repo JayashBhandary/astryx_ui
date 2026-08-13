@@ -417,6 +417,7 @@ Open the reference before writing a component you have not written before. Each 
 | Migration | Coming from Material or Cupertino: what maps, what does not, and what to stop doing. | `references/guides.md` |
 | Working with AI | The generated agent skill, what it contains, and how to keep it current. | `references/guides.md` |
 | Themes | The eight themes side by side, and the same components rendered in each. | `references/guides.md` |
+| Showcase | Apps built with astryx_ui, and how to add yours. | `references/guides.md` |
 
 ## All references
 

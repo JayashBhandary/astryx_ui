@@ -196,3 +196,6 @@ The status banner takes `announce: false`. It is part of the page’s initial st
 >
 > None of this is exported. `LoginTemplate` and the rest live in the documentation site, not in the package — copy the composition into your own widget and rename it. A design system that shipped your login screen would be shipping your product.
 
+---
+
+Something wrong with `Detail page`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Detail+page&component=Detail+page) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Detail+page&area=Detail+page) — both templates arrive with the component filled in.

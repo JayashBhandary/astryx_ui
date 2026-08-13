@@ -98,3 +98,6 @@ A scroll position notifies its listeners *before* the frame that moves anything,
 - [AstryxEntryAnimation](use_entry_animation.md) — the entry this runs, and its transitions.
 - [AstryxScrollOverflow](use_scroll_overflow.md) — the other thing worth knowing about a scroller.
 
+---
+
+Something wrong with `AstryxContainerReveal`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxContainerReveal&component=AstryxContainerReveal) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxContainerReveal&area=AstryxContainerReveal) — both templates arrive with the component filled in.

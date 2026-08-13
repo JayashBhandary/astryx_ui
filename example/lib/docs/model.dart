@@ -290,6 +290,27 @@ class DocProp {
   final bool required;
 }
 
+/// A call to action that leaves the site.
+///
+/// A button on the site, a link in the markdown. It exists because a page that
+/// asks the reader to do something — submit the app they built, request the
+/// component they need — should carry the thing that does it rather than a URL
+/// to copy out. Build [url] with `issue_links.dart` rather than by hand, so the
+/// issue form arrives prefilled.
+class DocAction extends DocBlock {
+  /// Creates a call to action.
+  const DocAction(this.label, this.url, {this.note});
+
+  /// The button's label. A verb — `Submit an app`, not `Submission form`.
+  final String label;
+
+  /// Where it goes. Absolute, and off this site.
+  final String url;
+
+  /// A line under the button, for what happens next. Supports inline markup.
+  final String? note;
+}
+
 /// A free-form table — enum values, token names, keyboard shortcuts.
 class DocTable extends DocBlock {
   /// Creates a table.

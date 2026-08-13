@@ -92,3 +92,6 @@ It is also why an item is declared twice — a widget for the row, a label for t
 - [AstryxMoreMenu](more_menu.md) — the overflow trigger on its own.
 - [AstryxBreadcrumbs](breadcrumbs.md) — a trail that collapses in the middle rather than at the end.
 
+---
+
+Something wrong with `useOverflow → AstryxOverflowList`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+useOverflow+%E2%86%92+AstryxOverflowList&component=useOverflow+%E2%86%92+AstryxOverflowList) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+useOverflow+%E2%86%92+AstryxOverflowList&area=useOverflow+%E2%86%92+AstryxOverflowList) — both templates arrive with the component filled in.

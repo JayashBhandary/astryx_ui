@@ -217,3 +217,6 @@ class _ChatComposerDrawerExampleState extends State<ChatComposerDrawerExample> {
 - [AstryxTextArea](text_area.md) — the growing field underneath it.
 - [AstryxFileInput](file_input.md) — for attachments outside a conversation.
 
+---
+
+Something wrong with `AstryxChatComposer`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxChatComposer&component=AstryxChatComposer) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxChatComposer&area=AstryxChatComposer) — both templates arrive with the component filled in.

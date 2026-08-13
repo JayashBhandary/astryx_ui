@@ -112,3 +112,6 @@ It goes in [AstryxSideNav](side_nav.md)’s `header`, and takes the rail’s `co
 - [AstryxNavSection](side_nav.md) — for a heading that only labels a group.
 - [AstryxDropdownMenu](dropdown_menu.md) — the menu this opens.
 
+---
+
+Something wrong with `AstryxNavHeadingMenu`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxNavHeadingMenu&component=AstryxNavHeadingMenu) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxNavHeadingMenu&area=AstryxNavHeadingMenu) — both templates arrive with the component filled in.

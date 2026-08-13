@@ -184,3 +184,6 @@ This documentation site is the package running in Flutter web, in eight themes a
 - [Typography](typography.md) — the font stacks that resolve per platform.
 - [The token engine](core.md) — where platform resolution happens.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Platform+support&component=Docs%3A+Platform+support) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Platform+support&area=Docs%3A+Platform+support) — both templates arrive with the page filled in.

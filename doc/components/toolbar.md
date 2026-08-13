@@ -107,3 +107,6 @@ The children stay ordinary, traversable widgets — that is how Tab *enters* on 
 - [AstryxOverflowList](overflow_list.md) — which measures the row and decides what that tail is.
 - [AstryxButtonGroup](button_group.md) — buttons joined into one visual control, which is a different thing: a group is *drawn* together, a toolbar is *operated* together.
 
+---
+
+Something wrong with `AstryxToolbar`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxToolbar&component=AstryxToolbar) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxToolbar&area=AstryxToolbar) — both templates arrive with the component filled in.

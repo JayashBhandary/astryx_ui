@@ -116,3 +116,6 @@ That is the whole difference, and it is confined to the composer. Once a message
 - [AstryxTokenChip](token.md) — the chip itself.
 - [AstryxChatComposer](chat_composer.md) — where this controller usually goes.
 
+---
+
+Something wrong with `AstryxTokenTextController`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTokenTextController&component=AstryxTokenTextController) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTokenTextController&area=AstryxTokenTextController) — both templates arrive with the component filled in.

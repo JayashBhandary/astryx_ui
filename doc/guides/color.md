@@ -271,3 +271,6 @@ Three things are deliberately *not* derived from the seed: the status colours, t
 - [Theming](theming.md) — where a colour configuration goes.
 - [AstryxBadge](../components/badge.md) — the categorical palettes in use.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Colour&component=Docs%3A+Colour) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Colour&area=Docs%3A+Colour) — both templates arrive with the page filled in.

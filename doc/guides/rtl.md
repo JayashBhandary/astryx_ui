@@ -82,3 +82,6 @@ Directionality(
 
 Use the LTR/RTL switch at the top of this page on any component page. Every example on this site is written without a single reference to direction, which is the point — if one of them looks wrong in RTL, that is a bug in the widget, not in the example.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Right-to-left&component=Docs%3A+Right-to-left) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Right-to-left&area=Docs%3A+Right-to-left) — both templates arrive with the page filled in.

@@ -222,3 +222,6 @@ class _AlertDialogExtraExampleState extends State<AlertDialogExtraExample> {
 - [AstryxDialog](dialog.md) — for anything with more than one outcome.
 - [AstryxOverlay](overlay.md) — the layer both are built on.
 
+---
+
+Something wrong with `AstryxAlertDialog`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxAlertDialog&component=AstryxAlertDialog) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxAlertDialog&area=AstryxAlertDialog) — both templates arrive with the component filled in.

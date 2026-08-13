@@ -154,3 +154,6 @@ An entry’s `anchor` earns its keep twice: without it the outline cannot know w
 - [AstryxSection](section.md) — what the entries point at.
 - [AstryxLayout](layout.md) — its `panel` is where an outline usually goes.
 
+---
+
+Something wrong with `AstryxOutline`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxOutline&component=AstryxOutline) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxOutline&area=AstryxOutline) — both templates arrive with the component filled in.

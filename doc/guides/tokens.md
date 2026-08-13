@@ -203,3 +203,6 @@ AnimatedContainer(
 >
 > The token names are the upstream CSS custom properties, one for one: `AstryxColorToken.backgroundCard` is `--color-background-card`. When in doubt, the enum value’s own documentation names the property.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Design+tokens&component=Docs%3A+Design+tokens) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Design+tokens&area=Docs%3A+Design+tokens) — both templates arrive with the page filled in.

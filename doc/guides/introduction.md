@@ -42,3 +42,6 @@ Every example is a real widget in `example/lib/examples/`, and the code under ea
 - [Density](density.md) — how pointer and touch differ.
 - [AstryxButton](../components/button.md) — or just start reading components.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+astryx_ui&component=Docs%3A+astryx_ui) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+astryx_ui&area=Docs%3A+astryx_ui) — both templates arrive with the page filled in.

@@ -137,3 +137,6 @@ class DividerVerticalExample extends StatelessWidget {
 | `theme` | `AstryxDividerTheme?` | — | Visual overrides, merged over `AstryxThemeData.divider`. |
 
 
+---
+
+Something wrong with `AstryxDivider`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxDivider&component=AstryxDivider) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxDivider&area=AstryxDivider) — both templates arrive with the component filled in.

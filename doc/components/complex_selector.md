@@ -126,3 +126,6 @@ The builder is handed one `AstryxComplexSelectorState`: the current value, a cal
 - [AstryxPopover](popover.md) — the overlay this is built on, for a surface that is not a field.
 - [AstryxSelector](selector.md) — when a list of options is all you need.
 
+---
+
+Something wrong with `AstryxComplexSelector`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxComplexSelector&component=AstryxComplexSelector) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxComplexSelector&area=AstryxComplexSelector) — both templates arrive with the component filled in.

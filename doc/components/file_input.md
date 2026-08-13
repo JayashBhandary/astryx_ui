@@ -169,3 +169,6 @@ A chosen file, as the field understands it.
 - [AstryxField](field.md) — the label, description and status this reuses.
 - [AstryxButton](button.md) — the chooser, and the `AstryxLinkDelegate` seam that `onPick` is modelled on.
 
+---
+
+Something wrong with `AstryxFileInput`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxFileInput&component=AstryxFileInput) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxFileInput&area=AstryxFileInput) — both templates arrive with the component filled in.

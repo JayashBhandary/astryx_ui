@@ -197,3 +197,6 @@ class _DateInputBoundsExampleState extends State<DateInputBoundsExample> {
 - [AstryxDateRangeInput](date_range_input.md) — two dates as one field.
 - [AstryxDateTimeInput](date_time_input.md) — a date and a time.
 
+---
+
+Something wrong with `AstryxDateInput`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxDateInput&component=AstryxDateInput) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxDateInput&area=AstryxDateInput) — both templates arrive with the component filled in.

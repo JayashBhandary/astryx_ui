@@ -118,3 +118,6 @@ Nested the other way the semantics node keeps the child’s small bounds, so ass
 - [AstryxItem](item.md) — the row the lists are built from.
 - [Accessibility](../guides/accessibility.md) — the nesting rule, in context.
 
+---
+
+Something wrong with `useClickableContainer → onPressed`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+useClickableContainer+%E2%86%92+onPressed&component=useClickableContainer+%E2%86%92+onPressed) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+useClickableContainer+%E2%86%92+onPressed&area=useClickableContainer+%E2%86%92+onPressed) — both templates arrive with the component filled in.

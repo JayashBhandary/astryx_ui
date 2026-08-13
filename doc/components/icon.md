@@ -195,3 +195,6 @@ Directional glyphs mirror under RTL automatically — chevrons and arrows do, a 
 - [AstryxIconButton](icon_button.md) — an icon that does something.
 - [Theming](../guides/theming.md) — how to install a different registry.
 
+---
+
+Something wrong with `AstryxIcon`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxIcon&component=AstryxIcon) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxIcon&area=AstryxIcon) — both templates arrive with the component filled in.

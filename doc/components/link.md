@@ -111,3 +111,6 @@ Navigation is the application’s concern, so an `href` is handed to the `Astryx
 - [AstryxButton](button.md) — for an action. A link goes somewhere; a button does something, and the two are different promises.
 - [AstryxCode](code.md) — the other widget with a `span`.
 
+---
+
+Something wrong with `AstryxLink`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxLink&component=AstryxLink) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxLink&area=AstryxLink) — both templates arrive with the component filled in.

@@ -84,3 +84,6 @@ It matters more than it looks. An image that has not loaded yet leaves a hole, a
 - [AstryxThumbnail](thumbnail.md) — this with a picture and a name.
 - [AstryxSkeleton](skeleton.md) — a placeholder for a wait whose shape is known but whose ratio is not.
 
+---
+
+Something wrong with `AstryxAspectRatio`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxAspectRatio&component=AstryxAspectRatio) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxAspectRatio&area=AstryxAspectRatio) — both templates arrive with the component filled in.

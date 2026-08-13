@@ -152,3 +152,6 @@ class _SliderRangeExampleState extends State<SliderRangeExample> {
 - [AstryxNumberInput](number_input.md) — for a value that must be exact.
 - [AstryxProgressBar](progress_bar.md) — which looks similar and is not a control: progress is reported, not chosen.
 
+---
+
+Something wrong with `AstryxSlider`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxSlider&component=AstryxSlider) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxSlider&area=AstryxSlider) — both templates arrive with the component filled in.

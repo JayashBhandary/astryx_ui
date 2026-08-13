@@ -163,3 +163,6 @@ What is *not* ported is the mouse wheel changing a focused field’s value. Upst
 - [AstryxTextInput](text_input.md) — what this is built on.
 - [AstryxVisuallyHidden](visually_hidden.md) — how the rejection is announced.
 
+---
+
+Something wrong with `AstryxNumberInput`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxNumberInput&component=AstryxNumberInput) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxNumberInput&area=AstryxNumberInput) — both templates arrive with the component filled in.

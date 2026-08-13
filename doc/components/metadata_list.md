@@ -122,3 +122,6 @@ class MetadataListInlineExample extends StatelessWidget {
 | `semanticsValue` | `String?` | — | What a screen reader reads as the value. Required in practice whenever `value` is not plain text. |
 
 
+---
+
+Something wrong with `AstryxMetadataList`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxMetadataList&component=AstryxMetadataList) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxMetadataList&area=AstryxMetadataList) — both templates arrive with the component filled in.

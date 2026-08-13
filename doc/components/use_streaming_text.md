@@ -122,3 +122,6 @@ More text extends what is shown. Text that is *not* a continuation of what was s
 - [AstryxSkeleton](skeleton.md) — a wait whose result has a known shape.
 - [AstryxText](text.md) — everything about type and colour.
 
+---
+
+Something wrong with `AstryxStreamingText`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxStreamingText&component=AstryxStreamingText) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxStreamingText&area=AstryxStreamingText) — both templates arrive with the component filled in.

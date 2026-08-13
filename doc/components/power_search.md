@@ -155,3 +155,6 @@ One applied filter. `AstryxSearchFilterOption` is the offer — a field, its lab
 - [AstryxTypeahead](typeahead.md) — when the query is a lookup rather than a filter.
 - [AstryxTable](table.md) — what a power search usually narrows.
 
+---
+
+Something wrong with `AstryxPowerSearch`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxPowerSearch&component=AstryxPowerSearch) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxPowerSearch&area=AstryxPowerSearch) — both templates arrive with the component filled in.

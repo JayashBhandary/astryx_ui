@@ -231,6 +231,8 @@ const List<DocBlock> changelogBlocks = <DocBlock>[
     '**`AstryxCollapsible`**, with `AstryxCollapsibleController` — a disclosure whose **whole header** is the button, carrying `expanded` in its semantics rather than leaving a rotated chevron to say it. Collapsed content is not in the tree at all: no layout, no semantics, no focus stops behind a closed section.',
     '**`AstryxCollapsibleGroup`** — sections as one block, and `exclusive: true` for an accordion, where the group owns which one is open. Not the default, and documented as such: it saves space by removing the one thing a set of sections is good for.',
     '`AstryxLocalizations.alertDialogCancel` — "Cancel". Separate from `dialogClose`, which is the same gesture but not the same sentence.',
+    '**`.github/` — four issue templates, a pull request template, a contributing guide and a code of conduct.** The bug form asks for the four things that decide whether a widget bug reproduces — theme, brightness, density, text direction — because a report without them is a guess; the others cover a feature, a component that has no page yet, and an app someone has built with the package.',
+    '**A Showcase page, and a `Report a bug` / `Request a change` pair at the foot of every page.** The links are built from the page itself, so the form arrives with the component already named — `issue_links.dart` holds the coupling to the template field ids, and `tool/gen_docs_md.dart` builds the same URLs, so the markdown in `doc/` and the live site point at the same prefilled form. The showcase itself is empty and says so: submissions land there as they arrive.',
   ]),
   DocHeading('Changed', level: 3),
   DocList(<String>[

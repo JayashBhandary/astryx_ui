@@ -182,3 +182,6 @@ A long-press opens it, and — because touch has no pointer-exit to close it wit
 - [AstryxTooltip](tooltip.md) — for a phrase, not a panel.
 - [AstryxPopover](popover.md) — when a press should open it and keep it open.
 
+---
+
+Something wrong with `AstryxHoverCard`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxHoverCard&component=AstryxHoverCard) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxHoverCard&area=AstryxHoverCard) — both templates arrive with the component filled in.

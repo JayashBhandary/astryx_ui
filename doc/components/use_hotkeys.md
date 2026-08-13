@@ -147,3 +147,6 @@ An immutable value, `const`-constructible, and equal by key and modifiers — so
 - [AstryxDropdownMenu](dropdown_menu.md) — where a shortcut hint usually sits.
 - [Accessibility](../guides/accessibility.md) — the rule above, in context.
 
+---
+
+Something wrong with `AstryxHotkeys`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxHotkeys&component=AstryxHotkeys) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxHotkeys&area=AstryxHotkeys) — both templates arrive with the component filled in.

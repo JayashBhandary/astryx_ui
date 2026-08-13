@@ -198,3 +198,6 @@ A theme definition also takes a `components:` map of CSS-style property override
 - [Design tokens](tokens.md) — what the escape hatches resolve to.
 - [Shape](shape.md) — the radius scale, for the square-corners case.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Styling&component=Docs%3A+Styling) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Styling&area=Docs%3A+Styling) — both templates arrive with the page filled in.

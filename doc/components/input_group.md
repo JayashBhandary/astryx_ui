@@ -126,3 +126,6 @@ Each child is wrapped in an `AstryxInputGroupScope` carrying its position, and t
 - [AstryxButtonGroup](button_group.md) — the same idea for actions.
 - [AstryxNumberInput](number_input.md) — which has a `units` slot already, for when a whole group is more than you need.
 
+---
+
+Something wrong with `AstryxInputGroup`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxInputGroup&component=AstryxInputGroup) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxInputGroup&area=AstryxInputGroup) — both templates arrive with the component filled in.

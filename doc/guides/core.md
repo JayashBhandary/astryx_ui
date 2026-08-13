@@ -176,3 +176,6 @@ tokens.forMode(AstryxThemeMode.dark);                          // the whole map
 - [Design tokens](tokens.md) — what the output is made of.
 - [Styling](styling.md) — the escape hatches at each layer.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+The+token+engine&component=Docs%3A+The+token+engine) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+The+token+engine&area=Docs%3A+The+token+engine) — both templates arrive with the page filled in.

@@ -87,3 +87,6 @@ What one entity in a run of text stands for.
 - [AstryxTokenChip](token.md) — the chip on its own.
 - [AstryxMarkdown](markdown.md) — for an answer whose structure matters more than its mentions.
 
+---
+
+Something wrong with `AstryxChatTokenizedText`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxChatTokenizedText&component=AstryxChatTokenizedText) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxChatTokenizedText&area=AstryxChatTokenizedText) — both templates arrive with the component filled in.

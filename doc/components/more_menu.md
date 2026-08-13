@@ -99,3 +99,6 @@ One widget rather than an [AstryxIconButton](icon_button.md) plus an [AstryxDrop
 | `controller` | `AstryxOverlayController?` | — | Drives the menu from outside. |
 
 
+---
+
+Something wrong with `AstryxMoreMenu`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxMoreMenu&component=AstryxMoreMenu) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxMoreMenu&area=AstryxMoreMenu) — both templates arrive with the component filled in.

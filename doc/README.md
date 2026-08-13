@@ -30,6 +30,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [Working with AI](guides/working_with_ai.md) — The generated agent skill, what it contains, and how to keep it current.
 - [Themes](guides/themes.md) — The eight themes side by side, and the same components rendered in each.
 - [Changelog](guides/changelog.md) — What changed in each release. Rendered from `CHANGELOG.md`.
+- [Showcase](guides/showcase.md) — Apps built with astryx_ui, and how to add yours.
 - [Community](guides/community.md) — The repository, the issue tracker, and how to contribute a component.
 - Styling libraries — Upstream covers integrating StyleX with other CSS-in-JS libraries. There is no Flutter counterpart. *(not planned)*
 - The Astryx CLI — Upstream ships a Node CLI for agents and scaffolding. This port has no Dart equivalent; the agent skill covers the same ground. *(not planned)*

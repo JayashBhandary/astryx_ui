@@ -186,3 +186,6 @@ AstryxOverlay
 - [AstryxDialog](dialog.md) — this, with a panel.
 - [AstryxAlertDialog](alert_dialog.md) — that, with the answers.
 
+---
+
+Something wrong with `AstryxOverlay`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxOverlay&component=AstryxOverlay) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxOverlay&area=AstryxOverlay) — both templates arrive with the component filled in.

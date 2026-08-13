@@ -1,5 +1,6 @@
 import 'package:example/docs/changelog.g.dart';
 import 'package:example/docs/groups.dart';
+import 'package:example/docs/issue_links.dart';
 import 'package:example/docs/model.dart';
 import 'package:example/docs/version.g.dart';
 
@@ -30,6 +31,7 @@ final List<DocPage> guidePages = <DocPage>[
   // The chrome pages, last, in the order upstream's own header lists them.
   _themes,
   _changelog,
+  _showcase,
   _community,
 ];
 
@@ -2837,6 +2839,74 @@ const DocPage _changelog = DocPage(
   ],
 );
 
+const DocPage _showcase = DocPage(
+  id: 'showcase',
+  title: 'Showcase',
+  group: _group,
+  description: 'Apps built with astryx_ui, and how to add yours.',
+  blocks: <DocBlock>[
+    DocProse(
+      'Every screen on this site was written to demonstrate a widget, which '
+      'makes it the least interesting evidence there is: the examples were '
+      'built by the person who built the components, against the cases the '
+      'components already handle. What people build without that advantage is '
+      'the real test, and it is also the argument for finishing one component '
+      'before another. So: if you have shipped something with `astryx_ui`, put '
+      'it here.',
+    ),
+    DocAction(
+      'Submit an app',
+      showcaseIssueUrl,
+      note:
+          'Opens a **showcase** issue on GitHub with the form ready. Nothing '
+          'is published until you have ticked the two permission boxes at the '
+          'bottom of it.',
+    ),
+    DocHeading('What is worth submitting'),
+    DocProse(
+      'Anything real. An internal tool three colleagues use is a better '
+      'submission than a polished landing page, because internal tools are '
+      'what this design system is for. Prototypes, dashboards, side projects '
+      'and things you abandoned all count.',
+    ),
+    DocList(<String>[
+      '**Screenshots.** Two or three screens. Blur or replace anything '
+          'confidential first — only send what you are free to publish.',
+      '**Where it runs.** Web, macOS, Windows, Linux, iOS, Android. A '
+          'component that is fine on a monitor and wrong on a phone is a bug '
+          'worth knowing about.',
+      '**The theme.** One of the seven, or the accent you gave `defineTheme`. '
+          'Custom themes are the ones the engine has the least evidence about.',
+      '**What was awkward.** The component you wanted and could not find, the '
+          'API that read backwards, the workaround you are carrying. This is '
+          'the field that changes the package.',
+    ]),
+    DocCallout.note(
+      'No public link needed. Most of what this package is for lives behind a '
+      'login and cannot be demonstrated — a screenshot and a description are '
+      'a complete submission, and the form leaves the link field optional for '
+      'exactly that reason.',
+    ),
+    DocHeading('What is here so far'),
+    DocProse(
+      'Nothing yet. The package is pre-alpha and this page is being put up '
+      'before there is anything to put on it, which is the honest order: an '
+      'invented showcase would be the one page on this site not built from '
+      'something real. Submissions land here as they arrive, newest first, '
+      'with whatever credit you ask for and none if you would rather have '
+      'none.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[Community](community) — the tracker, and the four templates.',
+      '[Shell navigation](shell_nav) — one of the template screens assembled '
+          'from nothing but what the package exports, if you are looking for a '
+          'starting point rather than an audience.',
+      '[Changelog](changelog) — what shipped, and what broke.',
+    ]),
+  ],
+);
+
 const DocPage _community = DocPage(
   id: 'community',
   title: 'Community',
@@ -2908,12 +2978,10 @@ const DocPage _community = DocPage(
     DocHeading('Show what you built'),
     DocProse(
       'Shipped something with `astryx_ui` — an internal tool, a dashboard, a '
-      'side project, a prototype that never went anywhere? Open a **showcase** '
-      'issue. A screenshot of a real screen is worth more here than any '
-      'example this site can write for itself, and what people build decides '
-      'which components get finished next. The form asks what was awkward '
-      'along the way; that field changes the package more than the rest of it '
-      'does.',
+      'side project, a prototype that never went anywhere? A screenshot of a '
+      'real screen is worth more here than any example this site can write for '
+      'itself, and what people build decides which components get finished '
+      'next. [Showcase](showcase) has the form and what to put in it.',
     ),
     DocHeading('Contributing a component'),
     DocProse(

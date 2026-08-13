@@ -305,3 +305,6 @@ class DropdownMenuPlacementExample extends StatelessWidget {
 | `submenu` | `List<AstryxMenuEntry>` | `const <AstryxMenuEntry>[]` | Nested entries. A non-empty list turns this row into a submenu. |
 
 
+---
+
+Something wrong with `AstryxDropdownMenu`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxDropdownMenu&component=AstryxDropdownMenu) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxDropdownMenu&area=AstryxDropdownMenu) — both templates arrive with the component filled in.

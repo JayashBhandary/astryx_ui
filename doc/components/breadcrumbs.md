@@ -103,3 +103,6 @@ A step with no `onPressed` is a label rather than a link. The step the reader is
 - [AstryxLayout](layout.md) — a trail usually sits in its `header`.
 - [AstryxOverflowList](overflow_list.md) — the same trick for a row of anything.
 
+---
+
+Something wrong with `AstryxBreadcrumbs`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxBreadcrumbs&component=AstryxBreadcrumbs) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxBreadcrumbs&area=AstryxBreadcrumbs) — both templates arrive with the component filled in.

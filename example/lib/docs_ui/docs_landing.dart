@@ -13,6 +13,7 @@
 library;
 
 import 'package:astryx_ui/astryx_ui.dart';
+import 'package:example/docs/issue_links.dart';
 import 'package:example/docs/pages.dart';
 import 'package:example/docs_ui/docs_controller.dart';
 import 'package:flutter/widgets.dart';
@@ -21,10 +22,14 @@ import 'package:flutter/widgets.dart';
 const String pubUrl = 'https://pub.dev/packages/astryx_ui';
 
 /// The repository.
-const String repoUrl = 'https://github.com/JayashBhandary/astryx_ui';
+///
+/// From `docs/issue_links.dart`, which builds the per-page issue links off the
+/// same value: two spellings of the repository is one typo away from a footer
+/// that points somewhere else than the pages do.
+const String repoUrl = astryxRepoUrl;
 
 /// The design system this one tracks.
-const String upstreamUrl = 'https://astryx.atmeta.com';
+const String upstreamUrl = astryxUpstreamUrl;
 
 /// The site's front page.
 class DocsLanding extends StatelessWidget {

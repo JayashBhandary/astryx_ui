@@ -150,3 +150,6 @@ class StatusDotInPlaceExample extends StatelessWidget {
 - [AstryxBanner](banner.md) — a state that needs a sentence and an action.
 - [Colour](../guides/color.md) — why a categorical palette is never severity.
 
+---
+
+Something wrong with `AstryxStatusDot`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxStatusDot&component=AstryxStatusDot) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxStatusDot&area=AstryxStatusDot) — both templates arrive with the component filled in.

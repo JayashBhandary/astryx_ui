@@ -255,3 +255,6 @@ Reach it with `AstryxToastScope.of(context)`, or `maybeOf(context)` where a scop
 | `clear()` | `void` | — | Removes everything. |
 
 
+---
+
+Something wrong with `AstryxToast`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxToast&component=AstryxToast) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxToast&area=AstryxToast) — both templates arrive with the component filled in.

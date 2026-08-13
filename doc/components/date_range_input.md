@@ -151,3 +151,6 @@ class _DateRangeInputBoundsExampleState
 - [AstryxCalendar](calendar.md) — `AstryxCalendar.range` is the grid this opens.
 - [AstryxDateInput](date_input.md) — one date, and where the parsing rules are documented.
 
+---
+
+Something wrong with `AstryxDateRangeInput`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxDateRangeInput&component=AstryxDateRangeInput) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxDateRangeInput&area=AstryxDateRangeInput) — both templates arrive with the component filled in.

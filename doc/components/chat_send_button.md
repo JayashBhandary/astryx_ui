@@ -99,3 +99,6 @@ The thing you press to start a reply is the thing you press to stop it, in the p
 - [AstryxChatComposer](chat_composer.md) — where it sits, and the Enter key.
 - [AstryxChatDictationButton](chat_dictation_button.md) — the other control beside the field.
 
+---
+
+Something wrong with `AstryxChatSendButton`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxChatSendButton&component=AstryxChatSendButton) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxChatSendButton&area=AstryxChatSendButton) — both templates arrive with the component filled in.

@@ -129,3 +129,6 @@ The top level is 2, because 1 belongs to the page’s own title — usually in [
 - [AstryxOutline](outline.md) — the same structure, read back as a table of contents.
 - [AstryxCard](card.md) — for a band that is a *surface* rather than a part of the document.
 
+---
+
+Something wrong with `AstryxSection`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxSection&component=AstryxSection) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxSection&area=AstryxSection) — both templates arrive with the component filled in.

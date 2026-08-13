@@ -129,3 +129,6 @@ One suggestion.
 - [AstryxSelector](selector.md) — when the options can be shown.
 - [AstryxPowerSearch](power_search.md) — when the query needs filters as well as text.
 
+---
+
+Something wrong with `AstryxTypeahead`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTypeahead&component=AstryxTypeahead) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTypeahead&area=AstryxTypeahead) — both templates arrive with the component filled in.

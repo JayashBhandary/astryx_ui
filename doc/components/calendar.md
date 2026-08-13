@@ -199,3 +199,6 @@ A span of days, inclusive at both ends. Both ends are normalised to midnight, so
 - [AstryxDateInput](date_input.md) — one date in a form.
 - [AstryxDateRangeInput](date_range_input.md) — a span in a form.
 
+---
+
+Something wrong with `AstryxCalendar`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxCalendar&component=AstryxCalendar) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxCalendar&area=AstryxCalendar) — both templates arrive with the component filled in.

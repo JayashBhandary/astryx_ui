@@ -158,3 +158,6 @@ A zero-sized box around a fully transparent child — not an `Offstage`, and not
 - [AstryxField](field.md) — labelling anything, including a control the package does not supply.
 - [Migration](../guides/migration.md) — the other React and Material habits that do not carry over.
 
+---
+
+Something wrong with `AstryxVisuallyHidden`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxVisuallyHidden&component=AstryxVisuallyHidden) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxVisuallyHidden&area=AstryxVisuallyHidden) — both templates arrive with the component filled in.

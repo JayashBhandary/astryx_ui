@@ -1593,3 +1593,13 @@ class ThemesGalleryExample extends StatelessWidget {
 
 ---
 
+## Showcase
+
+Apps built with astryx_ui, and how to add yours.
+
+**Rules**
+
+- **Note:** No public link needed. Most of what this package is for lives behind a login and cannot be demonstrated — a screenshot and a description are a complete submission, and the form leaves the link field optional for exactly that reason.
+
+---
+

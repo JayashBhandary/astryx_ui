@@ -199,3 +199,6 @@ Disabled and loading both refuse the press; loading also announces the wait and 
 - [AstryxButton](button.md) — the action that does not stay pressed.
 - [AstryxSwitch](switch.md) — the setting that does not look like a button.
 
+---
+
+Something wrong with `AstryxToggleButton`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxToggleButton&component=AstryxToggleButton) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxToggleButton&area=AstryxToggleButton) — both templates arrive with the component filled in.

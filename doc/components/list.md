@@ -181,3 +181,6 @@ class _ListEmptyExampleState extends State<ListEmptyExample> {
 - [AstryxTreeList](tree_list.md) — when the rows nest.
 - [AstryxTable](table.md) — when the rows have columns.
 
+---
+
+Something wrong with `AstryxList`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxList&component=AstryxList) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxList&area=AstryxList) — both templates arrive with the component filled in.

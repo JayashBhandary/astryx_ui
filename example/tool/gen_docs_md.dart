@@ -20,6 +20,7 @@ library;
 
 import 'dart:io';
 
+import 'package:example/docs/issue_links.dart';
 import 'package:example/docs/pages.dart';
 import 'package:example/docs/snippets.g.dart';
 
@@ -113,7 +114,28 @@ String _render(DocPage page) {
     out.writeln(_block(page, block));
   }
 
+  out.write(_issueFooter(page));
+
   return out.toString();
+}
+
+/// Where to report what this page documents.
+///
+/// The live version of this page ends with the same two links, built by the
+/// same `issue_links.dart`, so a reader who found the markdown first is not
+/// left hunting the tracker for the right template.
+String _issueFooter(DocPage page) {
+  final isGuide = page.group == _guideGroup;
+  final area = isGuide ? 'Docs: ${page.title}' : page.title;
+  final subject = isGuide ? 'this page' : '`${page.title}`';
+
+  return '---\n\n'
+      'Something wrong with $subject, or missing from it? '
+      '[${isGuide ? 'Report a problem' : 'Report a bug'}]'
+      '(${bugReportUrl(area)}) · '
+      '[${isGuide ? 'Suggest a change' : 'Request a change'}]'
+      '(${featureRequestUrl(area)}) — both templates arrive with '
+      '${isGuide ? 'the page' : 'the component'} filled in.\n';
 }
 
 String _block(DocPage page, DocBlock block) => switch (block) {
@@ -127,7 +149,19 @@ String _block(DocPage page, DocBlock block) => switch (block) {
     '> **${block.kind.label}**\n>\n> ${_links(page, block.text)}\n',
   DocApi() => _api(page, block),
   DocTable() => _table(page, block.headers, block.rows, title: block.title),
+  DocAction() => _action(page, block),
 };
+
+/// A [DocAction]. A button on the site; here, the link it would have opened.
+String _action(DocPage page, DocAction block) {
+  final out = StringBuffer('**[${block.label}](${block.url})**\n');
+  if (block.note case final String note) {
+    out
+      ..writeln()
+      ..writeln(_links(page, note));
+  }
+  return out.toString();
+}
 
 String _list(DocPage page, DocList block) {
   final out = StringBuffer();

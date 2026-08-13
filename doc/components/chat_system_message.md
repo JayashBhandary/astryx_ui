@@ -76,3 +76,6 @@ It is [AstryxChatMessage](chat_message.md) with `AstryxChatRole.system` and a sh
 - [AstryxChatMessage](chat_message.md) — the three roles, and what each is drawn as.
 - [AstryxBanner](banner.md) — for a message about the *page* rather than the conversation.
 
+---
+
+Something wrong with `AstryxChatSystemMessage`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxChatSystemMessage&component=AstryxChatSystemMessage) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxChatSystemMessage&area=AstryxChatSystemMessage) — both templates arrive with the component filled in.

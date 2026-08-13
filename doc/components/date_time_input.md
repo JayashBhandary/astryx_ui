@@ -137,3 +137,6 @@ class _DateTimeInputClockExampleState extends State<DateTimeInputClockExample> {
 - [AstryxDateInput](date_input.md) — when the time of day does not matter.
 - [AstryxTimeInput](time_input.md) — when the day does not.
 
+---
+
+Something wrong with `AstryxDateTimeInput`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxDateTimeInput&component=AstryxDateTimeInput) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxDateTimeInput&area=AstryxDateTimeInput) — both templates arrive with the component filled in.

@@ -168,3 +168,6 @@ The trigger’s width depends on the count it shows, and the count depends on ho
 | `enabled` | `bool` | `true` | Whether the menu row can be chosen. |
 
 
+---
+
+Something wrong with `AstryxOverflowList`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxOverflowList&component=AstryxOverflowList) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxOverflowList&area=AstryxOverflowList) — both templates arrive with the component filled in.

@@ -131,3 +131,6 @@ The destinations hug the leading edge and `actions` the trailing one, so adding 
 - [AstryxSideNav](side_nav.md) — the same entries as a rail.
 - [AstryxTabList](tab_list.md) — for switching views *within* a page, which is not navigation.
 
+---
+
+Something wrong with `AstryxTopNav`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTopNav&component=AstryxTopNav) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTopNav&area=AstryxTopNav) — both templates arrive with the component filled in.

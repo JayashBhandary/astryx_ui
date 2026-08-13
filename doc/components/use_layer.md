@@ -123,3 +123,6 @@ Order is push order, and that is sound rather than lucky: a Flutter overlay open
 - [AstryxOverlay](overlay.md) — the scrim-and-layer widget.
 - [AstryxScrollLock](use_scroll_lock.md) — what a modal layer should freeze behind it.
 
+---
+
+Something wrong with `useLayer → Overlay and the stack`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+useLayer+%E2%86%92+Overlay+and+the+stack&component=useLayer+%E2%86%92+Overlay+and+the+stack) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+useLayer+%E2%86%92+Overlay+and+the+stack&area=useLayer+%E2%86%92+Overlay+and+the+stack) — both templates arrive with the component filled in.

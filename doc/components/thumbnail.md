@@ -96,3 +96,6 @@ A file that cannot be previewed gets a glyph rather than a rendering of its firs
 - [AstryxAspectRatio](aspect_ratio.md) — the box underneath it.
 - [AstryxFileInput](file_input.md) — choosing the files these preview.
 
+---
+
+Something wrong with `AstryxThumbnail`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxThumbnail&component=AstryxThumbnail) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxThumbnail&area=AstryxThumbnail) — both templates arrive with the component filled in.

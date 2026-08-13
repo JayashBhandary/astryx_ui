@@ -350,3 +350,6 @@ That is the `acme` in the picker above, and in every gallery on this page. [Them
 - [Colour](color.md) — the seventy-nine tokens, and what is guaranteed.
 - [Theme showcase](../components/theme_showcase.md) — one of every component, on one screen, for judging a theme.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Themes&component=Docs%3A+Themes) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Themes&area=Docs%3A+Themes) — both templates arrive with the page filled in.

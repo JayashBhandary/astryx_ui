@@ -418,3 +418,6 @@ When every tab is closed the editor shows an [AstryxEmptyState](empty_state.md) 
 >
 > None of this is exported. `LoginTemplate` and the rest live in the documentation site, not in the package — copy the composition into your own widget and rename it. A design system that shipped your login screen would be shipping your product.
 
+---
+
+Something wrong with `IDE`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+IDE&component=IDE) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+IDE&area=IDE) — both templates arrive with the component filled in.

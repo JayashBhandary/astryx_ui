@@ -73,3 +73,6 @@ class FieldScopeExample extends StatelessWidget {
 - [AstryxInputGroup](input_group.md) — adjacent controls as one box.
 - [AstryxTextInput](text_input.md) — the field the container was built for.
 
+---
+
+Something wrong with `useInputContainer → the field`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+useInputContainer+%E2%86%92+the+field&component=useInputContainer+%E2%86%92+the+field) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+useInputContainer+%E2%86%92+the+field&area=useInputContainer+%E2%86%92+the+field) — both templates arrive with the component filled in.

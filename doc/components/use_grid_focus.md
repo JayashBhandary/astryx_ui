@@ -126,3 +126,6 @@ The default layout is rows of `columns` items. Pass `layoutBuilder` where the ge
 - [AstryxCalendar](calendar.md) — the grid this package already ships.
 - [AstryxGrid](grid.md) — laying a wall out, which is a different question.
 
+---
+
+Something wrong with `AstryxRovingFocus.grid`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxRovingFocus.grid&component=AstryxRovingFocus.grid) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxRovingFocus.grid&area=AstryxRovingFocus.grid) — both templates arrive with the component filled in.

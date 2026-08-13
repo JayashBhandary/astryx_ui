@@ -128,3 +128,6 @@ The drag target is `thickness` wide — wider than the hairline it draws, becaus
 | `bottom` | `AstryxResizeEdge` | — | A band at the bottom. |
 
 
+---
+
+Something wrong with `AstryxResizeHandle`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxResizeHandle&component=AstryxResizeHandle) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxResizeHandle&area=AstryxResizeHandle) — both templates arrive with the component filled in.

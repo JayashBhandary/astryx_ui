@@ -205,3 +205,6 @@ AstryxThemeProvider(
 - [Icons](icons.md) — the registry, and the rule above.
 - [Styling](styling.md) — the narrower escape hatches.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Theming&component=Docs%3A+Theming) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Theming&area=Docs%3A+Theming) — both templates arrive with the page filled in.

@@ -74,3 +74,6 @@ Astryx ships a Node CLI for agents and scaffolding, with editor integrations aro
 - [Migration](migration.md) — what an agent trained on Material must unlearn.
 - [Community](community.md) — the repository the skill is released from.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Working+with+AI&component=Docs%3A+Working+with+AI) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Working+with+AI&area=Docs%3A+Working+with+AI) — both templates arrive with the page filled in.

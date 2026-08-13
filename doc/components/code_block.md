@@ -88,3 +88,6 @@ class CodeBlockNumbersExample extends StatelessWidget {
 | `semanticsLabel` | `String?` | — | What a screen reader announces instead of the code. |
 
 
+---
+
+Something wrong with `AstryxCodeBlock`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxCodeBlock&component=AstryxCodeBlock) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxCodeBlock&area=AstryxCodeBlock) — both templates arrive with the component filled in.

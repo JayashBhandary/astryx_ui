@@ -148,3 +148,6 @@ AstryxScrollOverflow(
 - [AstryxTabList](tab_list.md) — a strip that scrolls and fades.
 - [useOverflow](use_overflow.md) — when the tail should move into a menu instead of scrolling.
 
+---
+
+Something wrong with `AstryxScrollOverflow`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxScrollOverflow&component=AstryxScrollOverflow) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxScrollOverflow&area=AstryxScrollOverflow) — both templates arrive with the component filled in.

@@ -123,3 +123,6 @@ The fallbacks run image → initials → icon. A **failed** image falls back to 
 - [AstryxStatusDot](status_dot.md) — the dot, and the pair-it-with-text rule.
 - [AstryxThumbnail](thumbnail.md) — a picture of a *thing* rather than a person.
 
+---
+
+Something wrong with `AstryxAvatar`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxAvatar&component=AstryxAvatar) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxAvatar&area=AstryxAvatar) — both templates arrive with the component filled in.

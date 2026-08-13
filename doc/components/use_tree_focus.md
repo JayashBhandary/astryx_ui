@@ -62,3 +62,6 @@ Two of the four arrows therefore do a *different job* from their list counterpar
 - [useListFocus](use_list_focus.md) — the flat case, and the primitive.
 - [AstryxCollapsible](collapsible.md) — one disclosure rather than a tree of them.
 
+---
+
+Something wrong with `useTreeFocus → AstryxTreeList`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+useTreeFocus+%E2%86%92+AstryxTreeList&component=useTreeFocus+%E2%86%92+AstryxTreeList) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+useTreeFocus+%E2%86%92+AstryxTreeList&area=useTreeFocus+%E2%86%92+AstryxTreeList) — both templates arrive with the component filled in.

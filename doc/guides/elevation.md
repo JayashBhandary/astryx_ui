@@ -130,3 +130,6 @@ A shadow is a `light-dark()` pair like every other colour value, and the dark ha
 - [AstryxPopover](../components/popover.md) — the `low` surface in use.
 - [AstryxDialog](../components/dialog.md) — the `high` one.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Elevation&component=Docs%3A+Elevation) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Elevation&area=Docs%3A+Elevation) — both templates arrive with the page filled in.

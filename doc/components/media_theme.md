@@ -144,3 +144,6 @@ A scrim rather than a shadow on the text: a drop shadow under white type is a tr
 - [Colour](../guides/color.md) — where `onDark` sits among the roles.
 - [Accessibility](../guides/accessibility.md) — the contrast rules this exists to keep.
 
+---
+
+Something wrong with `AstryxMediaTheme`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxMediaTheme&component=AstryxMediaTheme) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxMediaTheme&area=AstryxMediaTheme) — both templates arrive with the component filled in.

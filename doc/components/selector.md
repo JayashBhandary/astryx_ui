@@ -307,3 +307,6 @@ class SelectorStatesExample extends StatelessWidget {
 - [AstryxRadioList](radio_list.md) — the same choice, all options visible.
 - [AstryxDropdownMenu](dropdown_menu.md) — for *actions*, not for a value.
 
+---
+
+Something wrong with `AstryxSelector`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxSelector&component=AstryxSelector) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxSelector&area=AstryxSelector) — both templates arrive with the component filled in.

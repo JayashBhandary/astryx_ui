@@ -265,3 +265,6 @@ A `ChangeNotifier`. The same controller drives the popover, the dropdown menu an
 - [AstryxDropdownMenu](dropdown_menu.md) — for a list of actions.
 - [AstryxDialog](dialog.md) — for something that must be dealt with.
 
+---
+
+Something wrong with `AstryxPopover`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxPopover&component=AstryxPopover) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxPopover&area=AstryxPopover) — both templates arrive with the component filled in.

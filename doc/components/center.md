@@ -146,3 +146,6 @@ class CenterMeasureExample extends StatelessWidget {
 - [AstryxHStack & AstryxVStack](stack.md) — for more than one child.
 - [AstryxTable](table.md) — whose `emptyState` this usually holds.
 
+---
+
+Something wrong with `AstryxCenter`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxCenter&component=AstryxCenter) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxCenter&area=AstryxCenter) — both templates arrive with the component filled in.

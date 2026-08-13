@@ -102,3 +102,6 @@ if (density.supportsHover && _hovered) {
 
 48px is the strictest of the three guidelines that apply — Apple’s HIG and WCAG 2.5.5 both say 44, Material says 48. Meeting the strictest means one number satisfies every platform, rather than a control that passes on iOS and fails on Android.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Density&component=Docs%3A+Density) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Density&area=Docs%3A+Density) — both templates arrive with the page filled in.

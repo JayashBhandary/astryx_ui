@@ -110,3 +110,6 @@ Subclass it for anything with state — analytics, a confirmation before leaving
 - [AstryxLink](link.md) — the widget that calls the delegate.
 - [AstryxBreadcrumbs](breadcrumbs.md) — a trail of them.
 
+---
+
+Something wrong with `AstryxLinkScope`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxLinkScope&component=AstryxLinkScope) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxLinkScope&area=AstryxLinkScope) — both templates arrive with the component filled in.

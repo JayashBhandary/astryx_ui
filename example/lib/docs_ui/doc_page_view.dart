@@ -1,4 +1,6 @@
 import 'package:astryx_ui/astryx_ui.dart';
+import 'package:example/docs/groups.dart';
+import 'package:example/docs/issue_links.dart';
 import 'package:example/docs/model.dart';
 import 'package:example/docs_ui/api_table.dart';
 import 'package:example/docs_ui/code_block.dart';
@@ -35,6 +37,7 @@ class DocsPageView extends StatelessWidget {
         _Masthead(page: page),
         for (final block in page.blocks) _block(context, theme, block),
         const AstryxDivider(),
+        _Issues(page: page, onNavigate: onNavigate),
         _Footer(previous: previous, next: next, onNavigate: onNavigate),
       ],
     );
@@ -66,6 +69,7 @@ class DocsPageView extends StatelessWidget {
     DocCallout() => _Callout(callout: block),
     DocApi() => DocsApiTable(block),
     DocTable() => DocsDataTable(block),
+    DocAction() => _Action(block: block, onNavigate: onNavigate),
   };
 }
 
@@ -195,6 +199,132 @@ class _Callout extends StatelessWidget {
       content: DocsInlineText(callout.text),
     );
   }
+}
+
+/// A [DocAction]: the button that does what the prose just asked for.
+class _Action extends StatelessWidget {
+  const _Action({required this.block, required this.onNavigate});
+
+  final DocAction block;
+  final ValueChanged<String> onNavigate;
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing2,
+      children: <Widget>[
+        AstryxButton(
+          label: block.label,
+          variant: AstryxButtonVariant.primary,
+          // Trailing, and this icon: the button leaves the site, and saying so
+          // before the click is cheaper than a reader losing their place.
+          trailing: const AstryxIcon(AstryxIconName.externalLink),
+          onPressed: () => onNavigate(block.url),
+        ),
+        if (block.note case final String note)
+          DocsInlineText(
+            note,
+            type: AstryxTextType.supporting,
+            color: AstryxTextColor.secondary,
+            onLinkPressed: onNavigate,
+          ),
+      ],
+    );
+  }
+}
+
+/// Where to report what this page documents.
+///
+/// Every page ends with it, so the reader who has just found a wrong colour or
+/// a missing keyboard shortcut does not have to go and work out where to say
+/// so. The templates take the component name as a prefilled field, which is why
+/// this is built from the page rather than being one link in the footer: an
+/// issue that already names the widget is one round trip shorter.
+class _Issues extends StatelessWidget {
+  const _Issues({required this.page, required this.onNavigate});
+
+  final DocPage page;
+  final ValueChanged<String> onNavigate;
+
+  @override
+  Widget build(BuildContext context) {
+    // A guide is not a component, and `component: Theming` in a bug report
+    // reads as a widget nobody can find. Prefixed, it sorts with the other
+    // documentation reports instead.
+    final isGuide = page.group == DocGroup.gettingStarted;
+    final area = isGuide ? 'Docs: ${page.title}' : page.title;
+
+    final (String prompt, List<Widget> actions) = page.isWritten
+        ? (
+            isGuide
+                ? 'Something wrong on this page, or missing from it?'
+                : 'Something wrong with `${page.title}`, or missing from it?',
+            <Widget>[
+              _IssueButton(
+                label: isGuide ? 'Report a problem' : 'Report a bug',
+                url: bugReportUrl(area),
+                onNavigate: onNavigate,
+              ),
+              _IssueButton(
+                label: isGuide ? 'Suggest a change' : 'Request a change',
+                url: featureRequestUrl(area),
+                onNavigate: onNavigate,
+              ),
+            ],
+          )
+        : (
+            '`${page.title}` is not written yet. A request that says what you '
+                'need it for is what moves it up the order.',
+            <Widget>[
+              _IssueButton(
+                label: 'Ask for this component',
+                url: componentRequestUrl(
+                  page.upstream ?? page.title,
+                  upstreamPath: page.upstreamPath,
+                ),
+                onNavigate: onNavigate,
+              ),
+            ],
+          );
+
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing2,
+      children: <Widget>[
+        DocsInlineText(
+          prompt,
+          type: AstryxTextType.supporting,
+          color: AstryxTextColor.secondary,
+        ),
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing2,
+          wrap: true,
+          runGap: AstryxSpacingToken.spacing2,
+          children: actions,
+        ),
+      ],
+    );
+  }
+}
+
+class _IssueButton extends StatelessWidget {
+  const _IssueButton({
+    required this.label,
+    required this.url,
+    required this.onNavigate,
+  });
+
+  final String label;
+  final String url;
+  final ValueChanged<String> onNavigate;
+
+  @override
+  Widget build(BuildContext context) => AstryxButton(
+    label: label,
+    variant: AstryxButtonVariant.ghost,
+    size: AstryxButtonSize.sm,
+    trailing: const AstryxIcon(AstryxIconName.externalLink),
+    onPressed: () => onNavigate(url),
+  );
 }
 
 class _Footer extends StatelessWidget {

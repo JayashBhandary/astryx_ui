@@ -57,3 +57,6 @@ For real artwork, add `flutter_svg` to *your* application and put the asset wher
 - [Centred hero](../components/centered_hero.md) — the same shape, as a template.
 - [Icons](icons.md) — what does ship, and how to swap it.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Illustrations&component=Docs%3A+Illustrations) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Illustrations&area=Docs%3A+Illustrations) — both templates arrive with the page filled in.

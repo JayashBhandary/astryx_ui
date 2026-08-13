@@ -294,3 +294,6 @@ class _TabListOverflowExampleState extends State<TabListOverflowExample> {
 
 - [AstryxButtonGroup](button_group.md) — for actions, not for views.
 
+---
+
+Something wrong with `AstryxTabList`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTabList&component=AstryxTabList) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTabList&area=AstryxTabList) — both templates arrive with the component filled in.

@@ -156,3 +156,6 @@ The same two names `AstryxCheckboxList` uses, because they mean the same thing.
 - [AstryxTreeList](tree_list.md) — the same row, nested.
 - [AstryxDropdownMenu](dropdown_menu.md) — rows in a menu, which carry their own highlight and submenu state and so are drawn by the menu.
 
+---
+
+Something wrong with `AstryxItem`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxItem&component=AstryxItem) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxItem&area=AstryxItem) — both templates arrive with the component filled in.

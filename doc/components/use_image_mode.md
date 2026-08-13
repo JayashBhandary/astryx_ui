@@ -89,3 +89,6 @@ Image.asset(dark ? 'assets/logo_dark.png' : 'assets/logo_light.png')
 - [Colour](../guides/color.md) — the semantic roles, which almost always beat swapping an asset.
 - [Illustrations](../guides/illustrations.md) — the upstream set, and what a port would need.
 
+---
+
+Something wrong with `useImageMode → the resolved mode`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+useImageMode+%E2%86%92+the+resolved+mode&component=useImageMode+%E2%86%92+the+resolved+mode) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+useImageMode+%E2%86%92+the+resolved+mode&area=useImageMode+%E2%86%92+the+resolved+mode) — both templates arrive with the component filled in.

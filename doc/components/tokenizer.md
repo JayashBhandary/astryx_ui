@@ -92,3 +92,6 @@ A batch commits as **one** change. That is not a detail: `values` is the parent�
 - [AstryxMultiSelector](multi_selector.md) — when the values come from a list.
 - [AstryxField](field.md) — the label and validation wrapper around it.
 
+---
+
+Something wrong with `AstryxTokenizer`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxTokenizer&component=AstryxTokenizer) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxTokenizer&area=AstryxTokenizer) — both templates arrive with the component filled in.

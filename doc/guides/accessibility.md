@@ -57,3 +57,6 @@ Every animation goes through `AstryxMotion`, which honours `MediaQuery.disableAn
 
 The status icons are stroked, not solid. Upstream fills them for legibility at small sizes; Lucide ships no filled variants. Swap the icon registry if this matters to you.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Accessibility&component=Docs%3A+Accessibility) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Accessibility&area=Docs%3A+Accessibility) — both templates arrive with the page filled in.

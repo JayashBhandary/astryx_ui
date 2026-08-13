@@ -146,3 +146,6 @@ The `Staging` badge takes `AstryxBadgeVariant.warning` rather than a palette col
 >
 > None of this is exported. `LoginTemplate` and the rest live in the documentation site, not in the package — copy the composition into your own widget and rename it. A design system that shipped your login screen would be shipping your product.
 
+---
+
+Something wrong with `Login card`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Login+card&component=Login+card) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Login+card&area=Login+card) — both templates arrive with the component filled in.

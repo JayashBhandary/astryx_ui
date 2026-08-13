@@ -247,3 +247,6 @@ class RadioListDisabledExample extends StatelessWidget {
 
 - [AstryxSelector](selector.md) — the same choice, collapsed into a dropdown. Past about seven options, prefer it.
 
+---
+
+Something wrong with `AstryxRadioList`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxRadioList&component=AstryxRadioList) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxRadioList&area=AstryxRadioList) — both templates arrive with the component filled in.

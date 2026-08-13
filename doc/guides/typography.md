@@ -191,3 +191,6 @@ final acmeTheme = defineTheme(
 - [AstryxHeading](../components/heading.md) — levels, display sizes, and the outline.
 - [Design tokens](tokens.md) — the other token families.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Typography&component=Docs%3A+Typography) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Typography&area=Docs%3A+Typography) — both templates arrive with the page filled in.

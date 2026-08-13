@@ -335,3 +335,6 @@ AstryxThemeProvider(
 - [AstryxButtonGroup](button_group.md) — join or space a set of them.
 - [AstryxSpinner](spinner.md) — what `loading` puts in the leading slot.
 
+---
+
+Something wrong with `AstryxButton`, or missing from it? [Report a bug](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+AstryxButton&component=AstryxButton) · [Request a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+AstryxButton&area=AstryxButton) — both templates arrive with the component filled in.

@@ -34,7 +34,7 @@ A widget bug in this package is nearly always a bug in one configuration and not
 
 ## Show what you built
 
-Shipped something with `astryx_ui` — an internal tool, a dashboard, a side project, a prototype that never went anywhere? Open a **showcase** issue. A screenshot of a real screen is worth more here than any example this site can write for itself, and what people build decides which components get finished next. The form asks what was awkward along the way; that field changes the package more than the rest of it does.
+Shipped something with `astryx_ui` — an internal tool, a dashboard, a side project, a prototype that never went anywhere? A screenshot of a real screen is worth more here than any example this site can write for itself, and what people build decides which components get finished next. [Showcase](showcase.md) has the form and what to put in it.
 
 ## Contributing a component
 
@@ -79,3 +79,6 @@ MIT. The repository’s `NOTICE` records what is derived from upstream, under wh
 - [Changelog](changelog.md) — what shipped, and what broke.
 - [Working with AI](working_with_ai.md) — the generators, and the skill they produce.
 
+---
+
+Something wrong with this page, or missing from it? [Report a problem](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml&title=%5Bbug%5D+Docs%3A+Community&component=Docs%3A+Community) · [Suggest a change](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml&title=%5Bfeature%5D+Docs%3A+Community&area=Docs%3A+Community) — both templates arrive with the page filled in.
