@@ -1,6 +1,6 @@
 ---
 title: astryx_ui
-description: An unofficial Flutter port of Astryx, Meta’s design system for internal tools.
+description: A Flutter design system for internal tools, token-compatible with Astryx.
 group: Getting started
 ---
 
@@ -13,18 +13,18 @@ Astryx is a React and StyleX design system. `astryx_ui` reimplements it for Flut
 
 > **Careful**
 >
-> Pre-alpha. Not affiliated with, endorsed by, or supported by Meta Platforms, Inc. The API is unstable.
+> Pre-alpha. Until 0.1.0 the API may change without a major version bump, so pin an exact version if that matters to you.
 
 ## What this is
 
-- **A faithful theme engine.** Astryx’s token defaults, scale expanders, HCT colour model and contrast maths, ported to Dart and verified against the upstream test suite. A theme defined here produces the same values the TypeScript version does.
+- **A faithful theme engine.** Astryx’s token defaults, scale expanders, HCT colour model and contrast maths, implemented in Dart and verified against the upstream test suite. A theme defined here produces the same values the TypeScript version does.
 - **All seven prebuilt themes** — neutral, matcha, stone, gothic, chocolate, y2k, butter.
 - **Components built on `flutter/widgets`**, not Material. Every widget is themeable through the same token layer.
 - **Every platform.** Pointer and touch are both first-class: dual density, platform-appropriate tap targets, and a gesture path for every hover interaction.
 
 ## What this is not
 
-- A 1:1 port of all ~100 Astryx components. Roughly 30 are in scope for 1.0 — the ones on the left of this page.
+- A 1:1 reimplementation of all ~100 Astryx components. Roughly 30 are in scope for 1.0 — the ones on the left of this page.
 - A Material replacement. It composes *with* Material: `AstryxThemeProvider` works inside a `MaterialApp`, which is the incremental adoption path.
 
 ## This site

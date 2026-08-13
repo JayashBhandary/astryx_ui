@@ -244,7 +244,7 @@ const String _generatedNote = '''
 const String _preamble = '''
 # astryx_ui
 
-An unofficial Flutter port of Astryx, Meta's design system for internal tools.
+A Flutter design system for internal tools, token-compatible with Astryx.
 Built on `flutter/widgets`, **not Material**. Roughly 30 components, all
 themeable through one token layer.
 

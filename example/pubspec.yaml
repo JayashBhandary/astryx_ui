@@ -27,4 +27,10 @@ dev_dependencies:
   very_good_analysis: ">=10.0.0 <11.0.0"
 
 flutter:
-  uses-material-design: true
+  # False, and it saves 1.6 MB. This app imports no Material and uses no
+  # `Icons.*` — `AstryxIconRegistry` resolves every glyph through Lucide — but
+  # `uses-material-design: true` ships `MaterialIcons-Regular.otf` regardless,
+  # and Flutter web downloads every font in `FontManifest.json` before it
+  # paints its first frame. A font nobody draws with is 543 KB of gzip on the
+  # critical path.
+  uses-material-design: false

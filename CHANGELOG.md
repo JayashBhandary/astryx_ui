@@ -924,6 +924,17 @@ three in **Fixed**.
 
 ### Changed
 
+- **The documentation site loads about 30% less.** Two changes, both to the
+  build rather than to any widget. `uses-material-design: false`: nothing in the
+  site imports Material or draws an `Icons.*` glyph — `AstryxIconRegistry`
+  resolves everything through Lucide — but the flag shipped
+  `MaterialIcons-Regular.otf` anyway, and Flutter web downloads **every** font
+  in `FontManifest.json` before it paints its first frame. And the Firebase
+  predeploy now builds with `--wasm`: `skwasm.wasm` is 1.5 MB gzipped against
+  CanvasKit's 2.8 MB, and a browser without WasmGC still gets the JS build
+  Flutter emits alongside it. Measured before first frame, gzipped: 6.1 MB →
+  4.3 MB.
+
 - **Sidebar groups stay collapsed.** They were collapsed by default already, but
   two things kept reopening one: the URL's page on boot, and every navigation
   after it — including into a group the reader had just closed. Neither does

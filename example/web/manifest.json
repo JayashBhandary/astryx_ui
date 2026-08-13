@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#f1f1f1",
     "theme_color": "#f1f1f1",
-    "description": "Documentation for astryx_ui — an unofficial Flutter port of Astryx, Meta's design system for internal tools. Every component, live, in eight themes.",
+    "description": "Documentation for astryx_ui — a Flutter design system for internal tools, token-compatible with Astryx. Every component, live, in eight themes.",
     "orientation": "any",
     "prefer_related_applications": false,
     "icons": [

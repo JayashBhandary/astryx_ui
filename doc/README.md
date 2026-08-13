@@ -6,7 +6,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 
 ## Getting started
 
-- [astryx_ui](guides/introduction.md) — An unofficial Flutter port of Astryx, Meta’s design system for internal tools.
+- [astryx_ui](guides/introduction.md) — A Flutter design system for internal tools, token-compatible with Astryx.
 - [Installation](guides/installation.md) — Add the package, wrap your app once, and you are done.
 - [Principles](guides/principles.md) — What the design system optimises for, and the decisions that follow from it.
 - [Theming](guides/theming.md) — Seven themes, two brightnesses, and an engine for your own.

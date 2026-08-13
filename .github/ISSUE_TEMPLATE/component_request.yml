@@ -1,0 +1,84 @@
+name: Component request
+description: Ask for a component that is not in the package yet.
+title: "[component] "
+labels: ["component", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Roughly 30 components are in scope for 1.0, and the sidebar at
+        [astryxui.web.app](https://astryxui.web.app/) is the list — pages marked **Soon** are planned and each
+        one names the Astryx page it will be written from. Asking for one of those moves it up the order; asking
+        for one that is not listed is how the list changes.
+
+        Requesting a **new behaviour on a component that already exists** instead? Use the feature request
+        template.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before filing
+      options:
+        - label: I checked the sidebar and this component has no written page yet.
+          required: true
+        - label: I searched the existing issues for it.
+          required: true
+
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: The name in Astryx, if it has one there. Otherwise describe it in a few words.
+      placeholder: SegmentedControl
+    validations:
+      required: true
+
+  - type: input
+    id: upstream-page
+    attributes:
+      label: Its Astryx page
+      description: The reference the Flutter version would be written from, if it exists.
+      placeholder: https://astryx.atmeta.com/components/segmented-control
+    validations:
+      required: false
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Is it marked *Soon* in the sidebar?
+      options:
+        - "Yes — it is planned, I am asking for it sooner"
+        - "No — it is not listed at all"
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What you need it for
+      description: |
+        The screen you are building and where this component sits in it. This decides the order more than
+        anything else in the form does — a component two people are blocked on beats one that would be nice to
+        have.
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What you are doing instead today
+      description: |
+        Composing it out of other Astryx widgets, dropping to `flutter/widgets`, or borrowing from Material.
+        If a composition already gets you most of the way there, say what it is missing — that is often a
+        smaller change than a whole component.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contributing it
+      options:
+        - label: I would be willing to open the PR myself, given the checklist in CONTRIBUTING.md.
+          required: false

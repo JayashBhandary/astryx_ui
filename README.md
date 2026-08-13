@@ -4,8 +4,9 @@
 [![docs](https://img.shields.io/badge/docs-astryxui.web.app-blue)](https://astryxui.web.app/)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-An unofficial Flutter port of [Astryx](https://github.com/facebook/astryx), Meta's
-design system for building internal tools and products.
+A Flutter design system for building internal tools and products, whose theme
+engine is token-compatible with [Astryx](https://github.com/facebook/astryx): a
+theme defined here produces the same values the TypeScript version does.
 
 **Documentation: [astryxui.web.app](https://astryxui.web.app/)** — every
 component, live, in eight themes.
@@ -16,12 +17,13 @@ component, live, in eight themes.
 
 ## What this is
 
-Astryx is a React + StyleX design system. `astryx_ui` reimplements it for
-Flutter:
+Astryx is a React + StyleX design system. `astryx_ui` is its Flutter
+counterpart:
 
 - **A faithful theme engine.** Astryx's token defaults, scale expanders, HCT
-  color model, and contrast math ported to Dart, verified against the upstream
-  test suite. Custom themes generate the same values the React version does.
+  color model, and contrast math, implemented in Dart and verified against the
+  upstream test suite. Custom themes generate the same values the React version
+  does.
 - **All seven prebuilt themes** — neutral, matcha, stone, gothic, chocolate,
   y2k, butter.
 - **Components built on `flutter/widgets`**, not Material. Every widget is
@@ -32,9 +34,9 @@ Flutter:
 
 ## What this is not
 
-- Not affiliated with, endorsed by, or supported by Meta Platforms, Inc.
-- Not a 1:1 port of all ~100 Astryx components. Roughly 30 are in scope for
-  1.0 — the ones listed at [astryxui.web.app](https://astryxui.web.app/).
+- Not a 1:1 reimplementation of all ~100 Astryx components. Roughly 30 are in
+  scope for 1.0 — the ones listed at
+  [astryxui.web.app](https://astryxui.web.app/).
 
 ## Installation
 
@@ -221,14 +223,28 @@ same content in plain markdown.
 
 ## Contributing
 
-Issues and pull requests: [github.com/JayashBhandary/astryx_ui](https://github.com/JayashBhandary/astryx_ui).
+[`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) is the guide: how the
+generated documentation fits together, the component checklist, and what gets
+merged. There are four issue templates —
+[bug report](https://github.com/JayashBhandary/astryx_ui/issues/new?template=bug_report.yml),
+[feature request](https://github.com/JayashBhandary/astryx_ui/issues/new?template=feature_request.yml),
+[component request](https://github.com/JayashBhandary/astryx_ui/issues/new?template=component_request.yml)
+and [show what you built](https://github.com/JayashBhandary/astryx_ui/issues/new?template=showcase.yml).
 
-Two things worth reading first. [`example/README.md`](example/README.md) explains
-how the documentation is built — every example is a compiling widget, and the
-snippets, the markdown in [`doc/`](doc/README.md) and the agent skill are all
+Two things worth reading before you open an editor. [`example/README.md`](example/README.md)
+explains how the documentation is built — every example is a compiling widget, and
+the snippets, the markdown in [`doc/`](doc/README.md) and the agent skill are all
 generated from it, so a documentation change starts there. And every widget's own
-doc comment states its limitations and the upstream decision it ports, which is
+doc comment states its limitations and the Astryx decision behind it, which is
 usually the answer to "why is it like this".
+
+### Built something with it?
+
+Open a
+[showcase issue](https://github.com/JayashBhandary/astryx_ui/issues/new?template=showcase.yml).
+Internal tools and half-finished side projects count. What people actually build
+decides which components get finished next, so the rough edges you hit on the way
+are the useful part.
 
 ## License
 

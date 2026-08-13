@@ -21,7 +21,7 @@ description: >-
 
 # astryx_ui
 
-An unofficial Flutter port of Astryx, Meta's design system for internal tools.
+A Flutter design system for internal tools, token-compatible with Astryx.
 Built on `flutter/widgets`, **not Material**. Roughly 30 components, all
 themeable through one token layer.
 
@@ -394,7 +394,7 @@ Open the reference before writing a component you have not written before. Each 
 
 | Topic | Covers | Reference |
 | --- | --- | --- |
-| astryx_ui | An unofficial Flutter port of Astryx, Meta’s design system for internal tools. | `references/guides.md` |
+| astryx_ui | A Flutter design system for internal tools, token-compatible with Astryx. | `references/guides.md` |
 | Installation | Add the package, wrap your app once, and you are done. | `references/guides.md` |
 | Principles | What the design system optimises for, and the decisions that follow from it. | `references/guides.md` |
 | Theming | Seven themes, two brightnesses, and an engine for your own. | `references/guides.md` |

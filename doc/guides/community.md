@@ -9,18 +9,19 @@ group: Getting started
      Regenerate: cd example && dart run tool/gen_docs_md.dart
 -->
 
-This is an unofficial port, maintained in the open by one person. There is no forum, no chat and no support contract — the repository is the whole of it, and an issue is the fastest way to be heard.
+The repository is the whole of it: no forum, no chat, no support contract, and an issue is the fastest way to be heard. Four templates cover everything worth filing — a bug, a feature, a component that is missing, and something you have built with the package.
 
 | Where | For |
 | --- | --- |
 | [The repository](https://github.com/JayashBhandary/astryx_ui) | The package, this site, the tests and the generators. |
-| [Issues](https://github.com/JayashBhandary/astryx_ui/issues) | Bugs, divergences from upstream, and a component you need that is still marked *Soon*. |
+| [Issues](https://github.com/JayashBhandary/astryx_ui/issues) | Bugs, divergences from upstream, a component you need that is still marked *Soon*, and apps built with the package. |
+| [Contributing](https://github.com/JayashBhandary/astryx_ui/blob/main/.github/CONTRIBUTING.md) | The setup, the generators, the review checklist, and what is unlikely to be accepted. |
 | [pub.dev](https://pub.dev/packages/astryx_ui) | Releases, the API reference generated from the source, and the version constraint to copy. |
-| [Upstream](https://astryx.atmeta.com) | Meta’s own Astryx: the React design system this ports, and the reference every disagreement is settled against. |
+| [Upstream](https://astryx.atmeta.com) | Meta’s own Astryx: the React design system this one tracks, and the reference every disagreement is settled against. |
 
 ## Reporting something
 
-A widget bug in this package is nearly always a bug in one configuration and not another, so the configuration is most of the report:
+A widget bug in this package is nearly always a bug in one configuration and not another, so the configuration is most of the report. The bug template asks for exactly this:
 
 - The **theme**, the **brightness**, the **density** and the **text direction** — the four pickers at the top of this site. Reproduce it here first if you can; a page URL plus four settings is a complete report.
 - The **platform** and the Flutter version, from `flutter doctor`.
@@ -29,7 +30,11 @@ A widget bug in this package is nearly always a bug in one configuration and not
 
 > **Note**
 >
-> Where this port and upstream disagree, upstream wins, even when upstream is wrong: the `stone` theme’s 1.00:1 `--color-on-error` is reproduced and pinned by a test rather than corrected. A divergence is a bug; a faithfully reproduced defect is a documented limitation. [Principles](principles.md) explains why that trade is made.
+> Where this package and upstream disagree, upstream wins, even when upstream is wrong: the `stone` theme’s 1.00:1 `--color-on-error` is reproduced and pinned by a test rather than corrected. A divergence is a bug; a faithfully reproduced defect is a documented limitation. [Principles](principles.md) explains why that trade is made.
+
+## Show what you built
+
+Shipped something with `astryx_ui` — an internal tool, a dashboard, a side project, a prototype that never went anywhere? Open a **showcase** issue. A screenshot of a real screen is worth more here than any example this site can write for itself, and what people build decides which components get finished next. The form asks what was awkward along the way; that field changes the package more than the rest of it does.
 
 ## Contributing a component
 
@@ -62,11 +67,11 @@ Fewer components, finished, rather than many that are nearly right. A component 
 - It reads correctly in all eight themes, in both brightnesses.
 - Its limitations are written down, in the doc comment and on its page.
 
-What is unlikely to be accepted is invention: a component upstream does not have, or a "better" value than the one the engine derives. The value of a port is that it is one. Improvements belong upstream, where both implementations can inherit them.
+What is unlikely to be accepted is invention: a component upstream does not have, or a "better" value than the one the engine derives. The value of matching an existing design system is that it matches. Improvements to the design language belong upstream, where both implementations can inherit them.
 
 ## Licence
 
-MIT. Not affiliated with, endorsed by, or supported by Meta Platforms, Inc. — the name and the design decisions are theirs, the Dart is not. The repository’s `NOTICE` records what is derived from upstream and under what terms.
+MIT. The repository’s `NOTICE` records what is derived from upstream, under what terms, and where the trademarks stand — the name and the design decisions are Meta’s, the Dart is not.
 
 ## Related
 

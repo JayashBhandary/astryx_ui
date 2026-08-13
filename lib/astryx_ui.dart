@@ -1,4 +1,4 @@
-/// astryx_ui — an unofficial Flutter port of Astryx, Meta's design system.
+/// astryx_ui — a Flutter design system, token-compatible with Astryx.
 ///
 /// Import this library to get the full public surface: the theme engine, the
 /// prebuilt themes, and every component.

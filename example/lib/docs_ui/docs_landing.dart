@@ -23,7 +23,7 @@ const String pubUrl = 'https://pub.dev/packages/astryx_ui';
 /// The repository.
 const String repoUrl = 'https://github.com/JayashBhandary/astryx_ui';
 
-/// The design system this is a port of.
+/// The design system this one tracks.
 const String upstreamUrl = 'https://astryx.atmeta.com';
 
 /// The site's front page.
@@ -75,7 +75,7 @@ class _Hero extends StatelessWidget {
         align: AstryxStackAlign.center,
         children: <Widget>[
           const AstryxBadge(
-            'Unofficial port · 0.0.6-dev',
+            'Pre-alpha · 0.0.6-dev',
             variant: AstryxBadgeVariant.info,
             icon: AstryxIcon(AstryxIconName.info),
           ),
@@ -89,10 +89,10 @@ class _Hero extends StatelessWidget {
             justify: AstryxTextJustify.center,
           ),
           const AstryxText(
-            'A Flutter port of Astryx — Meta’s design system for internal '
-            'tools. Built on flutter/widgets, not Material: every colour, '
-            'gap, radius and duration comes from one token layer, and every '
-            'control brings its own accessible name.',
+            'A Flutter design system for internal tools, token-compatible '
+            'with Astryx. Built on flutter/widgets, not Material: every '
+            'colour, gap, radius and duration comes from one token layer, and '
+            'every control brings its own accessible name.',
             type: AstryxTextType.large,
             color: AstryxTextColor.secondary,
             justify: AstryxTextJustify.center,
@@ -721,7 +721,7 @@ class _Footer extends StatelessWidget {
             // parent data — a flex child inside one is an error rather than a
             // layout.
             const AstryxText(
-              'An unofficial port. Not affiliated with Meta.',
+              'An independent implementation. MIT licensed.',
               type: AstryxTextType.supporting,
               color: AstryxTextColor.secondary,
             ),

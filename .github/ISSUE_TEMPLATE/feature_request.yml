@@ -1,0 +1,80 @@
+name: Feature request
+description: New behaviour on an existing component, the theme engine, or the tooling.
+title: "[feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a component the package does not have at all, use the **component request** template instead.
+
+        One thing worth knowing before you write: where this package and Astryx disagree, Astryx wins. A
+        "better" value than the one the theme engine derives, or a prop Astryx does not have, is unlikely to be
+        accepted here — the value of matching an existing design system is that it matches. If the change would
+        improve Astryx itself, it belongs
+        [upstream](https://github.com/facebook/astryx), where both implementations inherit it. Gaps that are
+        genuinely Flutter-shaped — a Dart API that fights the framework, a missing `ScrollController` hook, a
+        platform behaviour React never had to have — are exactly right for this tracker.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before filing
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: I checked the component's page, in case this is a stated limitation rather than an oversight.
+          required: true
+
+  - type: input
+    id: area
+    attributes:
+      label: Component or area
+      placeholder: AstryxTable, defineTheme, or the doc generators
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to build, and where the package stops you. Write the problem, not the solution — the solution may not be the one you expect.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you have in mind
+      description: A rough API sketch is welcome. It does not have to be right.
+      render: dart
+    validations:
+      required: false
+
+  - type: dropdown
+    id: upstream
+    attributes:
+      label: Does Astryx do this?
+      description: If it does, this is a fidelity gap and it goes to the front. Link the page in the field below.
+      options:
+        - "Yes — Astryx has this and the Flutter version does not"
+        - "No — this is specific to Flutter or to this package"
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: upstream-page
+    attributes:
+      label: The Astryx page, if there is one
+      placeholder: https://astryx.atmeta.com/components/table
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried
+      description: Compositions, wrappers, a fork, or dropping to `flutter/widgets` for this one thing. Knowing what does not work narrows the fix.
+    validations:
+      required: false

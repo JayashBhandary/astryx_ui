@@ -8,11 +8,11 @@
 
 ## astryx_ui
 
-An unofficial Flutter port of Astryx, Meta’s design system for internal tools.
+A Flutter design system for internal tools, token-compatible with Astryx.
 
 **Rules**
 
-- **Careful:** Pre-alpha. Not affiliated with, endorsed by, or supported by Meta Platforms, Inc. The API is unstable.
+- **Careful:** Pre-alpha. Until 0.1.0 the API may change without a major version bump, so pin an exact version if that matters to you.
 
 ---
 

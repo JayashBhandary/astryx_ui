@@ -40,8 +40,8 @@ const DocPage _introduction = DocPage(
   title: 'astryx_ui',
   group: _group,
   description:
-      'An unofficial Flutter port of Astryx, Meta’s design system for '
-      'internal tools.',
+      'A Flutter design system for internal tools, token-compatible with '
+      'Astryx.',
   upstreamPath: '/',
   blocks: <DocBlock>[
     DocProse(
@@ -50,15 +50,15 @@ const DocPage _introduction = DocPage(
       'set built on `flutter/widgets` rather than Material.',
     ),
     DocCallout.warning(
-      'Pre-alpha. Not affiliated with, endorsed by, or supported by Meta '
-      'Platforms, Inc. The API is unstable.',
+      'Pre-alpha. Until 0.1.0 the API may change without a major version '
+      'bump, so pin an exact version if that matters to you.',
     ),
     DocHeading('What this is'),
     DocList(<String>[
       '**A faithful theme engine.** Astryx’s token defaults, scale expanders, '
-          'HCT colour model and contrast maths, ported to Dart and verified '
-          'against the upstream test suite. A theme defined here produces the '
-          'same values the TypeScript version does.',
+          'HCT colour model and contrast maths, implemented in Dart and '
+          'verified against the upstream test suite. A theme defined here '
+          'produces the same values the TypeScript version does.',
       '**All seven prebuilt themes** — neutral, matcha, stone, gothic, '
           'chocolate, y2k, butter.',
       '**Components built on `flutter/widgets`**, not Material. Every widget '
@@ -69,8 +69,8 @@ const DocPage _introduction = DocPage(
     ]),
     DocHeading('What this is not'),
     DocList(<String>[
-      'A 1:1 port of all ~100 Astryx components. Roughly 30 are in scope for '
-          '1.0 — the ones on the left of this page.',
+      'A 1:1 reimplementation of all ~100 Astryx components. Roughly 30 are '
+          'in scope for 1.0 — the ones on the left of this page.',
       'A Material replacement. It composes *with* Material: '
           '`AstryxThemeProvider` works inside a `MaterialApp`, which is the '
           'incremental adoption path.',
@@ -2847,9 +2847,10 @@ const DocPage _community = DocPage(
   upstreamPath: '/community',
   blocks: <DocBlock>[
     DocProse(
-      'This is an unofficial port, maintained in the open by one person. There '
-      'is no forum, no chat and no support contract — the repository is the '
-      'whole of it, and an issue is the fastest way to be heard.',
+      'The repository is the whole of it: no forum, no chat, no support '
+      'contract, and an issue is the fastest way to be heard. Four templates '
+      'cover everything worth filing — a bug, a feature, a component that is '
+      'missing, and something you have built with the package.',
     ),
     DocTable(
       headers: <String>['Where', 'For'],
@@ -2860,8 +2861,13 @@ const DocPage _community = DocPage(
         ],
         <String>[
           '[Issues](https://github.com/JayashBhandary/astryx_ui/issues)',
-          'Bugs, divergences from upstream, and a component you need that is '
-              'still marked *Soon*.',
+          'Bugs, divergences from upstream, a component you need that is '
+              'still marked *Soon*, and apps built with the package.',
+        ],
+        <String>[
+          '[Contributing](https://github.com/JayashBhandary/astryx_ui/blob/main/.github/CONTRIBUTING.md)',
+          'The setup, the generators, the review checklist, and what is '
+              'unlikely to be accepted.',
         ],
         <String>[
           '[pub.dev](https://pub.dev/packages/astryx_ui)',
@@ -2870,8 +2876,8 @@ const DocPage _community = DocPage(
         ],
         <String>[
           '[Upstream](https://astryx.atmeta.com)',
-          'Meta’s own Astryx: the React design system this ports, and the '
-              'reference every disagreement is settled against.',
+          'Meta’s own Astryx: the React design system this one tracks, and '
+              'the reference every disagreement is settled against.',
         ],
       ],
     ),
@@ -2879,7 +2885,7 @@ const DocPage _community = DocPage(
     DocProse(
       'A widget bug in this package is nearly always a bug in one '
       'configuration and not another, so the configuration is most of the '
-      'report:',
+      'report. The bug template asks for exactly this:',
     ),
     DocList(<String>[
       'The **theme**, the **brightness**, the **density** and the **text '
@@ -2893,11 +2899,21 @@ const DocPage _community = DocPage(
           'is fidelity rather than a bug — see below.',
     ]),
     DocCallout.note(
-      'Where this port and upstream disagree, upstream wins, even when '
+      'Where this package and upstream disagree, upstream wins, even when '
       'upstream is wrong: the `stone` theme’s 1.00:1 `--color-on-error` is '
       'reproduced and pinned by a test rather than corrected. A divergence is '
       'a bug; a faithfully reproduced defect is a documented limitation. '
       '[Principles](principles) explains why that trade is made.',
+    ),
+    DocHeading('Show what you built'),
+    DocProse(
+      'Shipped something with `astryx_ui` — an internal tool, a dashboard, a '
+      'side project, a prototype that never went anywhere? Open a **showcase** '
+      'issue. A screenshot of a real screen is worth more here than any '
+      'example this site can write for itself, and what people build decides '
+      'which components get finished next. The form asks what was awkward '
+      'along the way; that field changes the package more than the rest of it '
+      'does.',
     ),
     DocHeading('Contributing a component'),
     DocProse(
@@ -2952,15 +2968,15 @@ flutter test && (cd .. && flutter test)''', language: 'bash'),
     DocProse(
       'What is unlikely to be accepted is invention: a component upstream does '
       'not have, or a "better" value than the one the engine derives. The '
-      'value of a port is that it is one. Improvements belong upstream, where '
-      'both implementations can inherit them.',
+      'value of matching an existing design system is that it matches. '
+      'Improvements to the design language belong upstream, where both '
+      'implementations can inherit them.',
     ),
     DocHeading('Licence'),
     DocProse(
-      'MIT. Not affiliated with, endorsed by, or supported by Meta Platforms, '
-      'Inc. — the name and the design decisions are theirs, the Dart is not. '
-      'The repository’s `NOTICE` records what is derived from upstream and '
-      'under what terms.',
+      'MIT. The repository’s `NOTICE` records what is derived from upstream, '
+      'under what terms, and where the trademarks stand — the name and the '
+      'design decisions are Meta’s, the Dart is not.',
     ),
     DocHeading('Related'),
     DocList(<String>[

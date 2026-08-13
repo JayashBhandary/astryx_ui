@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://astryxui.web.app/
+    about: Every component, live, in eight themes — with the keyboard map, the accessibility rules and the API reference for each one.
+  - name: Releases and version constraints
+    url: https://pub.dev/packages/astryx_ui
+    about: Published versions, the generated API reference, and the constraint to copy into your pubspec.
+  - name: Changelog
+    url: https://astryxui.web.app/changelog
+    about: What each release contains, and what broke. Check here before reporting a behaviour change.
+  - name: Astryx itself
+    url: https://astryx.atmeta.com
+    about: Meta's own Astryx. The reference this package's tokens and component behaviour are checked against — matching it is intentional, including where it is surprising.

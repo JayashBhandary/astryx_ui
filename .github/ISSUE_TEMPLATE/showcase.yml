@@ -1,0 +1,114 @@
+name: Show what you built
+description: You shipped something with astryx_ui — submit it to be featured.
+title: "[showcase] "
+labels: ["showcase"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If you built something with `astryx_ui`, this is where to say so. Internal tools, side projects,
+        dashboards, prototypes and half-finished things all count — a screenshot of a real screen is worth more
+        to this project than any example it can write for itself, because a design system is only as good as
+        what people manage to build with it.
+
+        Two things this gets used for: a showcase in the documentation, and evidence. What people actually build
+        decides which components get finished next, so the rough edges you hit on the way are the most useful
+        part of this form.
+
+  - type: input
+    id: name
+    attributes:
+      label: What is it called
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What it does
+      description: A couple of sentences. Who uses it and what for.
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: Where to see it
+      description: |
+        A web build, a store listing, a repository, a landing page — whatever exists. If it is an internal tool
+        with nothing public, leave this out and attach screenshots below instead; that is the common case and it
+        is entirely welcome.
+      placeholder: https://
+    validations:
+      required: false
+
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: Platforms it runs on
+      multiple: true
+      options:
+        - Web
+        - macOS
+        - Windows
+        - Linux
+        - iOS
+        - Android
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: |
+        Drag the images in. Two or three screens is plenty. Blur or replace anything confidential first — only
+        submit what you have the right to publish.
+    validations:
+      required: true
+
+  - type: input
+    id: theme
+    attributes:
+      label: Theme
+      description: One of the seven prebuilt themes, or a custom one — and if it is custom, the accent you gave `defineTheme`.
+      placeholder: matcha, or custom with accent #0F62FE
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: astryx_ui version
+      placeholder: 0.0.6-dev
+    validations:
+      required: false
+
+  - type: textarea
+    id: experience
+    attributes:
+      label: What was awkward
+      description: |
+        The component you wanted and could not find, the thing you had to work around, the part of the API that
+        read backwards, the place the documentation left you guessing. This is the half of the form that changes
+        the package — say it plainly, it will not be taken badly.
+    validations:
+      required: false
+
+  - type: input
+    id: credit
+    attributes:
+      label: How to credit you
+      description: A name, a handle, a company, or a link. Leave blank to be listed without attribution.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: Permission
+      options:
+        - label: I have the right to share these screenshots and this description publicly.
+          required: true
+        - label: The project may feature it — the name, the description, the screenshots and the link — in its documentation, README and release notes.
+          required: true

@@ -5,7 +5,7 @@ This product includes software derived from Astryx, a design system published
 by Meta Platforms, Inc.
 
   Upstream project: https://github.com/facebook/astryx
-  Version ported:   0.3.0
+  Version tracked:  0.3.0
   Upstream license: MIT
 
 Derived material includes, but is not limited to:
@@ -47,5 +47,5 @@ Trademarks
 ----------
 
 "Astryx" and "Meta" are marks of Meta Platforms, Inc. The MIT license grants no
-trademark rights. astryx_ui is an independent, unofficial port. It is not
+trademark rights. astryx_ui is an independent implementation. It is not
 affiliated with, endorsed by, or supported by Meta Platforms, Inc.
