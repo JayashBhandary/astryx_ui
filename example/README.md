@@ -183,12 +183,46 @@ repository root, answering:
 - site: `astryxui`
 
 Worth adding by hand afterwards: a predeploy hook that builds the bundle, so a
-deploy can never ship a stale one, and `no-cache` headers on `/`,
-`**/index.html`, `flutter_bootstrap.js`, `flutter_service_worker.js`,
-`main.dart.js`, `version.json` and `manifest.json`, so a redeploy is visible at
-once. Leave everything else on Hosting's default hour — Flutter web asset URLs
-are not content-hashed, so a long immutable TTL would serve stale asset
-manifests after a deploy.
+deploy can never ship a stale one, and `no-cache` headers on `/`, `**/*.html`,
+`flutter_bootstrap.js`, `flutter_service_worker.js`, `main.dart.js`,
+`version.json` and `manifest.json`, so a redeploy is visible at once. Leave
+everything else on Hosting's default hour — Flutter web asset URLs are not
+content-hashed, so a long immutable TTL would serve stale asset manifests after
+a deploy.
+
+Two more entries, both required by the link previews described below — without
+them the site still works, but every shared URL loses its card:
+
+```jsonc
+"cleanUrls": true,          // serves /button from button.html, with no redirect
+"predeploy": [
+  "cd example && flutter build web --release --wasm",
+  "cd example && dart run tool/gen_og.dart"
+]
+```
+
+`**/*.html` rather than `**/index.html` for the no-cache header, because the
+per-route files below are `.html` files at the root and a stale one would serve
+an old card long after a redeploy.
+
+### Link previews
+
+`tool/gen_og.dart` gives each route its own Open Graph card. It runs from the
+`predeploy` hook above, so a normal deploy needs nothing extra.
+
+It has to be static. The site is a single-page app behind a `**` →
+`/index.html` rewrite, so every route serves the same HTML, and a crawler never
+runs the Dart that would pick the page — one card for the whole site, or none.
+So the script writes a real file per route, copied from the *built*
+`index.html` — base href already substituted — with only its `<title>`,
+description and Open Graph block changed. `cleanUrls` serves those at `/button`
+and `/table`; a route without a file falls through to the rewrite exactly as
+before.
+
+**A route gets its own card when `marketing/<id>/<id>-light.png` exists**, where
+`<id>` is the page's route segment. Add a shot to [`marketing/`](../marketing),
+redeploy, and that route has a card; nothing lists components by hand. Routes
+without one take the site-wide default.
 
 Then, from the repository root:
 

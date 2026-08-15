@@ -48,3 +48,6 @@ migrate_working_dir/
 .firebaserc
 firebase.json
 .firebase-cache/
+
+
+/marketing
