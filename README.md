@@ -4,52 +4,30 @@
 [![docs](https://img.shields.io/badge/docs-astryxui.web.app-blue)](https://astryxui.web.app/)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A Flutter design system for building internal tools and products, whose theme
-engine is token-compatible with [Astryx](https://github.com/facebook/astryx): a
-theme defined here produces the same values the TypeScript version does.
+**The Flutter design system for the app you have to ship this quarter.** 111
+components, 42 whole screens, one token layer, and no Material anywhere in the
+tree. Add one dependency and the buttons, tables, dialogs, menus, toasts, date
+pickers, command palette and chat surfaces are already designed — in seven
+themes, light and dark, on a mouse and on a thumb.
 
-**Documentation: [astryxui.web.app](https://astryxui.web.app/)** — every
-component, live, in eight themes.
+**[See every component, live, in seven themes → astryxui.web.app](https://astryxui.web.app/)**
 
 > **Status: pre-alpha.** Published as a development preview; the API is unstable
 > and may change without a major version bump until 0.1.0. See the
 > [changelog](CHANGELOG.md) for what each release contains.
 
-## What this is
+## Install
 
-Astryx is a React + StyleX design system. `astryx_ui` is its Flutter
-counterpart:
-
-- **A faithful theme engine.** Astryx's token defaults, scale expanders, HCT
-  color model, and contrast math, implemented in Dart and verified against the
-  upstream test suite. Custom themes generate the same values the React version
-  does.
-- **All seven prebuilt themes** — neutral, matcha, stone, gothic, chocolate,
-  y2k, butter.
-- **Components built on `flutter/widgets`**, not Material. Every widget is
-  themeable through the same token layer.
-- **Every platform.** Pointer and touch are both first-class: dual density,
-  platform-appropriate touch targets, and a gesture path for every hover
-  interaction.
-
-## What this is not
-
-- Not a 1:1 reimplementation of all ~100 Astryx components. Roughly 30 are in
-  scope for 1.0 — the ones listed at
-  [astryxui.web.app](https://astryxui.web.app/).
-
-## Installation
-
-```yaml
-dependencies:
-  astryx_ui: ^0.0.6-dev
+```sh
+flutter pub add astryx_ui:^0.0.7-dev
 ```
 
 Pre-release versions are not selected by a bare `flutter pub add`, so name the
-version — or run:
+version — or write it out:
 
-```sh
-flutter pub add astryx_ui:^0.0.6-dev
+```yaml
+dependencies:
+  astryx_ui: ^0.0.7-dev
 ```
 
 To track the repository instead of a release:
@@ -59,6 +37,52 @@ dependencies:
   astryx_ui:
     git: https://github.com/JayashBhandary/astryx_ui.git
 ```
+
+## What you get
+
+- **111 components.** Buttons, fields, selects, tables, tabs, menus, dialogs,
+  toasts, banners, calendars, date and time inputs, avatars, carousels, a
+  command palette, a typeahead, an app shell and a full chat surface. Not a
+  starting point — the set an internal tool actually needs.
+- **42 whole screens.** Sign-in, settings, dashboards, tables with filters and
+  pagination, kanban boards, editors, an IDE, galleries, storefronts, an
+  incident console, AI chat. Each one is extracted from a widget that compiles,
+  so the code you copy is the screen you looked at.
+- **19 controllers and mixins**, where upstream ships a React hook.
+- **Seven themes, and an engine for yours.** `defineTheme` runs the same HCT
+  colour model and contrast maths as the TypeScript original, so a theme defined
+  in Dart produces the same values the React version does. Give it one hex
+  accent and it derives the palette, including the foregrounds that guarantee
+  contrast.
+- **Never a raw colour or a magic number.** Every value resolves through the
+  token layer, so changing your brand is changing one theme rather than running
+  a search-and-replace across your codebase.
+- **Pointer and touch, both first class.** Touch density raises every tap target
+  to 48 logical pixels and suppresses hover styling, because hover does not
+  exist there. Nothing is ever behind it.
+- **Accessibility that is not optional.** Every control requires an accessible
+  name, keeps a visible focus ring for keyboard users, and states its keyboard
+  map in its own documentation. An icon-only button takes its label as a
+  required argument — the compiler asks for it, not the code review.
+- **A skill your coding agent can read.** The whole widget set, every enum and
+  the rules that are not guessable from the API, generated from the same source
+  as the docs.
+
+## Why not Material
+
+Material is a brand, and `ThemeData` is its API. Every internal tool built on it
+starts by fighting the parts of that brand it did not choose — the ripples, the
+elevation, the shape defaults, the `ColorScheme` mapping that never quite covers
+what a design has.
+
+`astryx_ui` is built on `flutter/widgets`, which is Flutter without the opinion.
+Colours, spacing, radii, type and motion come from one token layer that is
+value-compatible with [Astryx](https://github.com/facebook/astryx), Meta's React
++ StyleX design system. A team running Astryx on the web and this in the app
+ships one design language rather than two that drift.
+
+It also composes rather than converts: adopt it a subtree at a time inside the
+`MaterialApp` you already have. Nothing here asks you to start again.
 
 ## Setup
 
@@ -163,11 +187,13 @@ Stated up front rather than discovered:
   expandable rows, and sorts one column at a time.
 - **`AstryxTabList` scrolls its overflow** rather than collapsing it into a
   menu.
+- **No charting widget**, and none is planned. The dashboard templates draw
+  their own from a `CustomPainter` over the token layer, and show you where a
+  real charting package goes.
 - **The status icons are stroked, not solid.** Upstream fills them for
   legibility at small sizes; Lucide ships no filled variants. Swap the icon
   registry if this matters to you.
-- Roughly 70 of upstream's ~100 components are out of scope for 1.0. What *is*
-  in scope is exactly what [the documentation](https://astryxui.web.app/) lists.
+- **The API is unstable until 0.1.0.** Pin the version you build against.
 
 Each widget's own limitations are stated in its doc comment too, so you do not
 have to come back here.
@@ -213,7 +239,7 @@ in one step:
 /plugin install astryx-ui@astryx-ui
 ```
 
-Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.3-dev` — and
+Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.7-dev` — and
 pick up later ones with `/plugin marketplace update`. Claude Code loads the skill
 automatically inside this repository whether or not the plugin is installed.
 

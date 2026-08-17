@@ -81,6 +81,31 @@ releases, `### Added` sections, wrapped bullets) into `lib/docs/changelog.g.dart
 as `DocBlock`s, and the `changelog` page is that list behind a short preamble.
 Run it after editing the changelog, before `gen_docs_md.dart`.
 
+The landing page reads the newest release out of the same file — the release
+name, its summary and its first few entries — so the front door cannot be a
+release behind the package.
+
+## The landing page
+
+The front page is not written in `docs_landing.dart` either. The claims, the
+install commands, the limitations and the agent section come from the
+repository's `README.md`:
+
+```sh
+dart run tool/gen_readme.dart
+```
+
+`tool/gen_readme.dart` parses `../README.md` into `lib/docs/readme.g.dart` —
+`readmeIntro` for everything above the first heading, and `readmeSections` keyed
+by heading, with each `###` an entry of its own as well as part of its parent.
+`docs_landing.dart` then picks the sections it wants by name. Relative links
+(`CHANGELOG.md`, `doc/README.md`) are rewritten to absolute repository URLs on
+the way through, because the site is not served from the repository root.
+
+Everything else the page states in numbers — components, whole screens,
+controllers — is counted from `docPages` at build time. A figure typed into a
+landing page is wrong by the next release.
+
 ## Markdown output
 
 The page model in `lib/docs/pages/` is pure Dart — no `flutter` import — so a
@@ -140,10 +165,13 @@ lib/
 │   ├── pages/             the content: one file per group
 │   ├── snippets.g.dart    generated — every example's source
 │   ├── previews.g.dart    generated — every example's builder
-│   └── changelog.g.dart   generated — ../CHANGELOG.md as DocBlocks
+│   ├── changelog.g.dart   generated — ../CHANGELOG.md as DocBlocks
+│   └── readme.g.dart      generated — ../README.md as DocBlocks
 ├── docs_ui/               the chrome, built from astryx_ui
 │   ├── docs_shell.dart    sidebar, top bar, page area
+│   ├── docs_landing.dart  the front page, mostly compiled from ../README.md
 │   ├── doc_page_view.dart renders a DocPage
+│   ├── doc_blocks.dart    renders a DocBlock, for the pages and the landing
 │   ├── example_block.dart the Preview / Code card, and the width switch
 │   ├── segmented.dart     the button-group picker both of those use
 │   ├── code_block.dart    Dart highlighting, from theme tokens
@@ -154,15 +182,17 @@ lib/
 tool/
 ├── gen_snippets.dart      lib/examples/ → snippets.g.dart, previews.g.dart
 ├── gen_changelog.dart     ../CHANGELOG.md → changelog.g.dart
+├── gen_readme.dart        ../README.md → readme.g.dart
 ├── gen_docs_md.dart       the page model → ../doc/
 └── gen_skill.dart         the page model → ../.claude/skills/astryx-ui/
 ```
 
-After changing any page or example, all four:
+After changing any page or example, all five:
 
 ```sh
 dart run tool/gen_snippets.dart && \
   dart run tool/gen_changelog.dart && \
+  dart run tool/gen_readme.dart && \
   dart run tool/gen_docs_md.dart && \
   dart run tool/gen_skill.dart
 ```
@@ -248,7 +278,11 @@ Cheap insurance rather than ceremony:
   rather than the code, names itself and its glyphs to a screen reader, is not
   offered where it would make no difference, is remembered across every example
   and across navigation, and gives way rather than overflowing if the window is
-  narrowed after it has been used.
+  narrowed after it has been used;
+- **the landing page quotes the generated version rather than a typed one**,
+  names where pub.dev and GitHub go in the accessible name of the card that
+  goes there, counts its figures out of the registry, and survives a phone's
+  width.
 
 The layout ones are what catch an overflowing row in an example nobody has
 looked at lately — including at phone width, which is where the page footer was

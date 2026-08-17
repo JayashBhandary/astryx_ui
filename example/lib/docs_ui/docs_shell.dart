@@ -504,20 +504,10 @@ class _ContentState extends State<_Content> {
             page: ref.page,
             previous: ref.previous,
             next: ref.next,
-            onNavigate: (target) {
-              if (docPageOrNull(target) != null) {
-                controller.pageId = target;
-                return;
-              }
-              // Not a page id, so it is a link off the site — the upstream
-              // page a component ports, the repository, the issue tracker.
-              // It goes to the delegate the app installed, which is the seam
-              // the package's own `destination:` parameters use.
-              final uri = Uri.tryParse(target);
-              if (uri != null && uri.hasScheme) {
-                AstryxLinkDelegate.of(context).followLink(uri);
-              }
-            },
+            // A page id navigates; anything else is a link off the site — the
+            // upstream page a component ports, the repository, the issue
+            // tracker — and goes to the delegate the app installed.
+            onNavigate: (target) => docsFollow(context, target),
           ),
         ),
       ),

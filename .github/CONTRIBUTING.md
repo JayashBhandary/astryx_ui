@@ -84,6 +84,7 @@ The loop is short because everything downstream of the widget is generated:
 cd example
 dart run tool/gen_snippets.dart      # lib/examples/ → snippets.g.dart, previews.g.dart
 dart run tool/gen_changelog.dart     # ../CHANGELOG.md → changelog.g.dart
+dart run tool/gen_readme.dart        # ../README.md → readme.g.dart
 dart run tool/gen_docs_md.dart       # the page model → ../doc/
 dart run tool/gen_skill.dart         # the page model → ../.claude/skills/astryx-ui/
 flutter test && (cd .. && flutter test)

@@ -7,6 +7,79 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+Documentation and marketing only. No library code changed, so nothing here can
+break a consumer.
+
+### Added
+
+- **The landing page now carries the README.** `tool/gen_readme.dart` parses
+  `../README.md` into `lib/docs/readme.g.dart` as `DocBlock`s, the same way
+  `gen_changelog.dart` has always parsed the changelog, and the front page
+  renders the sections a first-time reader needs — **Install**, **What you
+  get**, **Why not Material**, **What is not in 1.0** and **For AI coding
+  agents** — rather than paraphrasing them into a third copy that goes stale.
+  Relative links in the markdown (`CHANGELOG.md`, `doc/README.md`) are rewritten
+  to absolute repository URLs at generation time, because the site is not
+  served from the repository root.
+- **`lib/docs_ui/doc_blocks.dart`** — the block renderer, lifted out of
+  `DocsPageView` so the landing page and the documentation pages draw a
+  `DocBlock` the same way. `DocsPageView` now calls it rather than owning a
+  private copy of the switch.
+- **The install command is on the front page**, above the fold and with a copy
+  button, next to what it gets you. The first thing a package page should
+  answer is how to add it.
+- **What is new, on the front page.** The newest release's summary and its first
+  few entries, read out of `changelogBlocks` — so the front door says what
+  shipped without anyone remembering to update it.
+
+### Changed
+
+- **pub.dev and GitHub are now the largest things on the landing page after the
+  hero.** They were two supporting-sized links in a wrapping row under the
+  buttons, at the size the page uses for footnotes — the two destinations
+  somebody arriving from a search result is most likely to want, drawn as the
+  least visible thing on the screen. They are full pressable cards now, with an
+  icon, a heading, a line saying what is on the other side and an external-link
+  glyph, sitting directly under the hero and repeated as large buttons in the
+  closing call to action.
+- **The landing page states what the package covers in numbers it counts
+  itself** — 111 components, 42 whole screens, 19 controllers — read from
+  `docPages` rather than typed, so the claim cannot outlive the registry.
+- **`README.md` leads with the install.** It also drops two claims that stopped
+  being true several releases ago: *roughly 30 components are in scope for 1.0*
+  (there are 111 written pages) and the *what this is not* framing that opened
+  the file. Added a **Why not Material** section, because that is the question
+  the package exists to answer.
+- **The site's own link preview says what the package is** rather than that it
+  is documentation. Somebody following a shared link is usually deciding
+  whether to add the dependency, not looking up a parameter — so
+  `example/web/index.html` carries that description and the title
+  `astryx_ui — a Flutter design system`, and `gen_og.dart` copies both into the
+  home page's Open Graph card.
+
+### Fixed
+
+- **The landing hero quoted a version by hand**, and quoted the wrong one:
+  `Pre-alpha · 0.0.6-dev` while `pubspec.yaml` said `0.0.7-dev`. It reads
+  `astryxVersion` now, which is generated from the pubspec.
+- **A feature card claimed eight built-in themes.** Seven ship with the package;
+  the eighth in the site's picker is `acmeTheme`, defined in
+  `lib/examples/theming_examples.dart` to prove the engine works.
+- **The 0.0.7-dev release had no changelog heading.** Everything it contained
+  was still filed under **Unreleased** after the tag, so this file and the
+  published version disagreed about what shipped.
+- **Nothing on the landing page was measured.** Every column on it asked for a
+  maximum width and none of them got one, so the hero paragraph ran the full
+  width of the window. `AstryxCenter` puts its `ConstrainedBox` *outside* its
+  `Align`, and a `ConstrainedBox` handed tight constraints — which is what a
+  scroll view's cross axis hands down — has its maximum enforced away to the
+  parent's width. The page now measures itself with an `Align` above a
+  `ConstrainedBox`, which is the order that works. **The widget is unchanged**:
+  the same fault is in every `AstryxCenter(maxWidth:)` inside a scroll view,
+  and fixing it is a library change with its own goldens to regenerate.
+
+## [0.0.7-dev]
+
 Eighty-two new components, twenty-eight new templates, and the documentation for
 them. **Every template upstream ships now has a written page** —
 `planned/templates.dart` is gone rather than empty.
@@ -1259,7 +1332,8 @@ version bump until 0.1.0.
 - Secondary entry point `package:astryx_ui/theme.dart` for the theme layer
   without components.
 
-[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.6-dev...HEAD
+[Unreleased]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.7-dev...HEAD
+[0.0.7-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.6-dev...v0.0.7-dev
 [0.0.6-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.5-dev...v0.0.6-dev
 [0.0.5-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.4-dev...v0.0.5-dev
 [0.0.4-dev]: https://github.com/JayashBhandary/astryx_ui/compare/v0.0.3-dev...v0.0.4-dev

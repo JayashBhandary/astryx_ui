@@ -246,3 +246,25 @@ class DocsScope extends InheritedNotifier<DocsController> {
   static DocsController? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<DocsScope>()?.notifier;
 }
+
+/// Follows a link [target] from documentation content.
+///
+/// The same string can be either of two things, and only the registry knows
+/// which: a page id — `card`, `theming` — navigates within the site, and
+/// anything carrying a scheme goes to the `AstryxLinkDelegate` the app
+/// installed, which is the seam the package's own `href:` parameters use.
+///
+/// One function rather than one per surface: the shell, the landing page and
+/// the page view all render the same prose, and a link that worked on one page
+/// and did nothing on another would be a real bug hiding behind three copies.
+void docsFollow(BuildContext context, String target) {
+  if (docPageOrNull(target) != null) {
+    DocsScope.of(context).pageId = target;
+    return;
+  }
+
+  final uri = Uri.tryParse(target);
+  if (uri != null && uri.hasScheme) {
+    AstryxLinkDelegate.of(context).followLink(uri);
+  }
+}
