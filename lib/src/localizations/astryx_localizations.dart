@@ -69,6 +69,12 @@ class AstryxLocalizations {
   /// Dismisses a toast. Screen-reader label on its close button.
   String get toastDismiss => 'Dismiss notification';
 
+  /// Closes one tab. Screen-reader label on a closable tab's close button.
+  ///
+  /// Named, because a strip of open files is a row of identical "Close"
+  /// buttons otherwise.
+  String tabClose(String label) => 'Close $label';
+
   // ---------------------------------------------------------------------------
   // Status
   // ---------------------------------------------------------------------------

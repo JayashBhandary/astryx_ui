@@ -156,6 +156,11 @@ curl https://api.foundry.example/v1/runs \
                 // code block that has to be read for them.
                 AstryxHStack(
                   gap: AstryxSpacingToken.spacing2,
+                  // The method, the path and the guarantee are three separate
+                  // facts, so a narrow page takes them on separate lines
+                  // rather than choosing which one to cut off.
+                  wrap: true,
+                  runGap: AstryxSpacingToken.spacing2,
                   children: <Widget>[
                     AstryxBadge('POST', variant: AstryxBadgeVariant.success),
                     AstryxCode('/v1/runs'),

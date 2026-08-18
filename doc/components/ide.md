@@ -20,7 +20,7 @@ class IdeTemplate extends StatefulWidget {
 }
 
 class _IdeTemplateState extends State<IdeTemplate> {
-  static const List<AstryxTreeNode> _tree = <AstryxTreeNode>[
+  static const List<AstryxTreeNode> _nodes = <AstryxTreeNode>[
     AstryxTreeNode(
       id: 'lib',
       label: 'lib',
@@ -104,76 +104,114 @@ void main() {
     // so it hands that body an unbounded height — and every region here is an
     // `Expanded` or a fixed band measured against the frame. The bounded
     // `SizedBox` is what the whole layout is built against.
-    return SizedBox(
-      height: 520,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  width: _treeWidth,
-                  child: AstryxVStack(
-                    gap: AstryxSpacingToken.spacing0,
-                    align: AstryxStackAlign.stretch,
+    //
+    // The `LayoutBuilder` is what decides whether there are three regions or
+    // one. A resizable tree needs a window to be resized *within*: at 390
+    // logical pixels the handle's own minimum of 140 is more than a third of
+    // the screen, and what is left is not a narrow editor but no editor.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 640;
+
+        return SizedBox(
+          // The bands do not shrink — a tab strip and a status bar cost what
+          // they cost — so a narrow frame is a taller one rather than an
+          // overflowing one.
+          height: compact ? 620 : 520,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // Narrow, the tree is a disclosure above the editor rather than a
+              // column beside it: the same nodes, the same selection, and the
+              // editor keeps the whole width once a file is chosen.
+              if (compact) ...<Widget>[
+                AstryxCollapsible(
+                  title: 'Explorer',
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 180),
+                    child: SingleChildScrollView(child: _tree(context)),
+                  ),
+                ),
+                const AstryxDivider(),
+                Expanded(child: _editor(context)),
+              ] else
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: AstryxText(
-                          'Explorer',
-                          type: AstryxTextType.supporting,
-                          color: AstryxTextColor.secondary,
+                      SizedBox(
+                        width: _treeWidth,
+                        child: AstryxVStack(
+                          gap: AstryxSpacingToken.spacing0,
+                          align: AstryxStackAlign.stretch,
+                          children: <Widget>[
+                            const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: AstryxText(
+                                'Explorer',
+                                type: AstryxTextType.supporting,
+                                color: AstryxTextColor.secondary,
+                              ),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: _tree(context),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: AstryxTreeList(
-                            label: 'Files',
-                            nodes: _tree,
-                            initiallyExpanded: const <String>{
-                              'lib',
-                              'components',
-                            },
-                            density: AstryxItemDensity.compact,
-                            selected: _file,
-                            onSelectedChanged: _openFile,
-                          ),
-                        ),
+                      // Tab reaches the handle and the arrows move it. A
+                      // divider only a pointer can drag is a layout only some
+                      // people can use, which is the part hand-rolled
+                      // splitters always miss.
+                      AstryxResizeHandle(
+                        label: 'Resize the file tree',
+                        size: _treeWidth,
+                        min: 140,
+                        max: 320,
+                        onResize: (width) => setState(() => _treeWidth = width),
                       ),
+                      Expanded(child: _editor(context)),
                     ],
                   ),
                 ),
-                // Tab reaches the handle and the arrows move it. A divider
-                // only a pointer can drag is a layout only some people can
-                // use, which is the part hand-rolled splitters always miss.
+              // Nothing to drag on a touch screen with no pointer to spare, so
+              // narrow the drawer is a fixed band and the handle goes away
+              // rather than becoming a control that cannot be used.
+              if (!compact)
                 AstryxResizeHandle(
-                  label: 'Resize the file tree',
-                  size: _treeWidth,
-                  min: 140,
-                  max: 320,
-                  onResize: (width) => setState(() => _treeWidth = width),
-                ),
-                Expanded(child: _editor(context)),
-              ],
-            ),
+                  label: 'Resize the panel',
+                  edge: AstryxResizeEdge.bottom,
+                  size: _drawerHeight,
+                  min: 80,
+                  max: 260,
+                  onResize: (height) => setState(() => _drawerHeight = height),
+                )
+              else
+                const AstryxDivider(),
+              SizedBox(
+                height: compact ? 132 : _drawerHeight,
+                child: _panel(context),
+              ),
+              const AstryxDivider(),
+              _statusBar(context, compact: compact),
+            ],
           ),
-          AstryxResizeHandle(
-            label: 'Resize the panel',
-            edge: AstryxResizeEdge.bottom,
-            size: _drawerHeight,
-            min: 80,
-            max: 260,
-            onResize: (height) => setState(() => _drawerHeight = height),
-          ),
-          SizedBox(height: _drawerHeight, child: _panel(context)),
-          const AstryxDivider(),
-          _statusBar(context),
-        ],
-      ),
+        );
+      },
     );
   }
+
+  /// The file tree, shared by the column and the disclosure.
+  Widget _tree(BuildContext context) => AstryxTreeList(
+    label: 'Files',
+    nodes: _nodes,
+    initiallyExpanded: const <String>{'lib', 'components'},
+    density: AstryxItemDensity.compact,
+    selected: _file,
+    onSelectedChanged: _openFile,
+  );
 
   /// Opens [id] in a tab, if it is a file rather than a folder.
   void _openFile(String id) {
@@ -181,6 +219,21 @@ void main() {
     setState(() {
       if (!_open.contains(id)) _open.add(id);
       _file = id;
+    });
+  }
+
+  /// Closes [id], and hands the editor whatever tab is left beside it.
+  void _closeFile(String id) {
+    setState(() {
+      final index = _open.indexOf(id);
+      if (index < 0) return;
+      _open.removeAt(index);
+      if (_file != id) return;
+      // The neighbour, not the last tab: closing the file you were reading
+      // should not throw you to the other end of the strip.
+      _file = _open.isEmpty
+          ? ''
+          : _open[index < _open.length ? index : _open.length - 1];
     });
   }
 
@@ -204,7 +257,12 @@ void main() {
                 size: AstryxTabSize.sm,
                 onChanged: (value) => setState(() => _file = value),
                 tabs: <AstryxTab<String>>[
-                  for (final file in _open) AstryxTab(value: file, label: file),
+                  for (final file in _open)
+                    AstryxTab(
+                      value: file,
+                      label: file,
+                      onClose: () => _closeFile(file),
+                    ),
                 ],
               ),
             ),
@@ -212,10 +270,9 @@ void main() {
               label: 'Editor actions',
               entries: <AstryxMenuEntry>[
                 AstryxMenuItem(
-                  label: 'Close $_file',
+                  label: 'Close others',
                   onSelected: () => setState(() {
-                    _open.remove(_file);
-                    _file = _open.isEmpty ? '' : _open.last;
+                    _open.removeWhere((file) => file != _file);
                   }),
                 ),
                 AstryxMenuItem(
@@ -312,29 +369,39 @@ void main() {
   }
 
   /// The band along the bottom: branch, problems, and where the caret is.
-  Widget _statusBar(BuildContext context) {
+  ///
+  /// Narrow, the caret position goes rather than being squeezed: it is the one
+  /// item here a reader can get from the editor itself, and a status bar that
+  /// wraps onto two lines has stopped being a band.
+  Widget _statusBar(BuildContext context, {required bool compact}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: AstryxHStack(
-        gap: AstryxSpacingToken.spacing4,
+        gap: compact
+            ? AstryxSpacingToken.spacing3
+            : AstryxSpacingToken.spacing4,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const AstryxStatusDot(
             AstryxStatusDotVariant.success,
             label: 'Analyser is clean',
           ),
-          const AstryxText(
-            'main',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
+          const Flexible(
+            child: AstryxText(
+              'main',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+              maxLines: 1,
+            ),
           ),
           const Spacer(),
-          const AstryxText(
-            'Ln 41, Col 12',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-            tabularNumbers: true,
-          ),
+          if (!compact)
+            const AstryxText(
+              'Ln 41, Col 12',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+              tabularNumbers: true,
+            ),
           AstryxText(
             _file.isEmpty ? '—' : 'Dart',
             type: AstryxTextType.supporting,

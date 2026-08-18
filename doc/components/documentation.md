@@ -139,6 +139,11 @@ class _DocumentationTemplateState extends State<DocumentationTemplate> {
             gap: AstryxSpacingToken.spacing3,
             justify: AstryxStackJustify.between,
             mainAxisSize: MainAxisSize.max,
+            // Two pagers whose labels are page titles, and page titles are as
+            // long as they are. Narrow, they take a line each — the chevrons
+            // still say which way each one goes.
+            wrap: true,
+            runGap: AstryxSpacingToken.spacing2,
             children: <Widget>[
               AstryxButton(
                 label: 'Concepts',
@@ -249,24 +254,45 @@ class _DocsBar extends StatelessWidget {
               size: AstryxButtonSize.sm,
               onPressed: shell.controller.toggle,
             ),
-          const AstryxText('Atlas docs', type: AstryxTextType.label),
-          const Spacer(),
-          AstryxButton(
-            label: 'Search',
-            size: AstryxButtonSize.sm,
-            leading: const AstryxIcon(
-              AstryxIconName.search,
-              size: AstryxIconSize.sm,
+          const Flexible(
+            child: AstryxText(
+              'Atlas docs',
+              type: AstryxTextType.label,
+              maxLines: 1,
             ),
-            // `mod` is ⌘ on a Mac and Ctrl everywhere else, and the cap says
-            // whichever one this platform actually listens for.
-            trailing: const AstryxKbd.hotkey(
-              AstryxHotkey.mod(LogicalKeyboardKey.keyK),
-              size: AstryxKbdSize.sm,
-            ),
-            onPressed: () {},
           ),
-          const AstryxBadge('v4.2'),
+          const Spacer(),
+          // A phone has no keyboard to press ⌘K on and no room for the cap
+          // that says so, so the search collapses to its glyph. The name it is
+          // announced by does not collapse with it — an icon button with no
+          // label is a button screen readers call "button".
+          if (shell.compact)
+            AstryxIconButton(
+              icon: AstryxIconName.search,
+              label: 'Search the documentation',
+              tooltip: 'Search',
+              variant: AstryxButtonVariant.ghost,
+              size: AstryxButtonSize.sm,
+              onPressed: () {},
+            )
+          else ...<Widget>[
+            AstryxButton(
+              label: 'Search',
+              size: AstryxButtonSize.sm,
+              leading: const AstryxIcon(
+                AstryxIconName.search,
+                size: AstryxIconSize.sm,
+              ),
+              // `mod` is ⌘ on a Mac and Ctrl everywhere else, and the cap says
+              // whichever one this platform actually listens for.
+              trailing: const AstryxKbd.hotkey(
+                AstryxHotkey.mod(LogicalKeyboardKey.keyK),
+                size: AstryxKbdSize.sm,
+              ),
+              onPressed: () {},
+            ),
+            const AstryxBadge('v4.2'),
+          ],
         ],
       ),
     );

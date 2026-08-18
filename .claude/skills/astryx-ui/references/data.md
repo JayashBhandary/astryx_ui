@@ -54,6 +54,7 @@ class _TabListDemoExampleState extends State<TabListDemoExample> {
 
 **Rules**
 
+- **Accessibility:** The close button is always drawn, not revealed on hover — hover raises its contrast and nothing more. Touch has no hover, and an action that only exists under a cursor does not exist on a phone. The keyboard reaches it with `Delete` on the strip.
 - **Note:** The overflow scrolls; it does not collapse into a "more" menu. If a strip needs sixteen tabs, the navigation probably needs rethinking before the widget does.
 - **Accessibility:** Arrow keys select as they move, which is the ARIA pattern for tabs whose panels are cheap to render. Give the strip a `label` when the page has more than one.
 
@@ -62,6 +63,7 @@ class _TabListDemoExampleState extends State<TabListDemoExample> {
 | `Tab` | Enters or leaves the strip — one stop for the whole strip. |
 | `→` / `←` | Selects the next or previous enabled tab, wrapping. Mirrored under RTL. |
 | `Home` / `End` | Selects the first or last enabled tab. |
+| `Delete` / `Backspace` | Closes the selected tab, when it has an `onClose`. |
 
 ### AstryxTabList
 
@@ -86,6 +88,8 @@ class _TabListDemoExampleState extends State<TabListDemoExample> {
 | `icon` | `Widget?` | — | An icon before the label. |
 | `badge` | `AstryxBadge?` | — | A count or status after it. |
 | `enabled` | `bool` | `true` | Whether the tab can be selected. |
+| `onClose` | `VoidCallback?` | — | Called when the tab’s close button is pressed. Non-null draws the button. |
+| `closeLabel` | `String?` | — | The accessible name of the close button. Defaults to “Close {label}”. |
 
 ---
 

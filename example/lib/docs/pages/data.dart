@@ -40,9 +40,24 @@ AstryxTabList<T>
         ├── value    ← what selecting it produces
         ├── label    ← the visible text, and its accessible name
         ├── icon     ← optional. Any widget
-        └── badge    ← optional. An AstryxBadge'''),
+        ├── badge    ← optional. An AstryxBadge
+        └── onClose  ← optional. Draws a close button after the label'''),
     DocHeading('Icons and badges'),
     DocExample('tab_list_icons', align: DocExampleAlign.stretch),
+    DocHeading('Closable tabs'),
+    DocProse(
+      'An `onClose` puts a close button after the label — editor tabs, open '
+      'documents, anything the user can put away. The strip owns no list of '
+      'its own, so removing the tab and choosing what is selected afterwards '
+      'stays with the caller.',
+    ),
+    DocExample('tab_list_closable', align: DocExampleAlign.stretch),
+    DocCallout.accessibility(
+      'The close button is always drawn, not revealed on hover — hover raises '
+      'its contrast and nothing more. Touch has no hover, and an action that '
+      'only exists under a cursor does not exist on a phone. The keyboard '
+      'reaches it with `Delete` on the strip.',
+    ),
     DocHeading('Sizes'),
     DocExample('tab_list_sizes', align: DocExampleAlign.stretch),
     DocHeading('Fill and the divider'),
@@ -78,6 +93,10 @@ AstryxTabList<T>
               'wrapping. Mirrored under RTL.',
         ],
         <String>['`Home` / `End`', 'Selects the first or last enabled tab.'],
+        <String>[
+          '`Delete` / `Backspace`',
+          'Closes the selected tab, when it has an `onClose`.',
+        ],
       ],
     ),
     DocCallout.accessibility(
@@ -144,6 +163,18 @@ AstryxTabList<T>
         'bool',
         'Whether the tab can be selected.',
         defaultValue: 'true',
+      ),
+      DocProp(
+        'onClose',
+        'VoidCallback?',
+        'Called when the tab’s close button is pressed. Non-null draws the '
+            'button.',
+      ),
+      DocProp(
+        'closeLabel',
+        'String?',
+        'The accessible name of the close button. Defaults to “Close '
+            '{label}”.',
       ),
     ]),
     DocHeading('Related'),

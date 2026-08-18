@@ -9,6 +9,19 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **`AstryxTab.onClose` — closable tabs.** A non-null callback puts a close
+  button after the label, for editor tabs and anything else the user opens and
+  puts away. The strip owns no list, so removing the tab and choosing what is
+  selected afterwards stays with the caller. The button is always drawn rather
+  than revealed on hover — hover only raises its contrast — because touch has
+  no hover and an action that exists only under a cursor does not exist on a
+  phone. `Delete` and `Backspace` close the selected tab from the keyboard,
+  which the strip's single tab stop would otherwise leave unreachable.
+  `AstryxTab.closeLabel` overrides the button's accessible name, and
+  `AstryxLocalizations.tabClose(label)` supplies the default, "Close
+  card.dart" — a strip of open files is a row of identical "Close" buttons
+  otherwise.
+
 - **`AstryxLocalizations.layoutPanelLabel`** — the disclosure title a collapsed
   `AstryxLayout` panel falls back to. Generic, because the slot is; name the
   panel with `panelLabel` and it is never read.
@@ -59,6 +72,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   home page's Open Graph card.
 
 ### Fixed
+
+- **The IDE template's editor tabs could not be closed from the tab.** Closing
+  the file you were reading meant finding it in the editor's overflow menu. The
+  tabs carry their own close button now, and closing the selected one hands the
+  editor its neighbour rather than the far end of the strip.
 
 - **`AstryxLayout` no longer keeps its panel beside the body at any width.** A
   320px rail beside a 390px phone left 70px for the page, and everything in it

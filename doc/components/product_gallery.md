@@ -171,6 +171,11 @@ class _ProductGalleryTemplateState extends State<ProductGalleryTemplate> {
             ),
             AstryxHStack(
               gap: AstryxSpacingToken.spacing2,
+              // Search and sort are 400 logical pixels of field between them,
+              // which is wider than a phone. They take a line each rather than
+              // one of them being pushed off the end.
+              wrap: true,
+              runGap: AstryxSpacingToken.spacing2,
               children: <Widget>[
                 SizedBox(
                   width: 220,

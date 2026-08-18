@@ -77,7 +77,8 @@ AstryxTabList<T>
         ├── value    ← what selecting it produces
         ├── label    ← the visible text, and its accessible name
         ├── icon     ← optional. Any widget
-        └── badge    ← optional. An AstryxBadge
+        ├── badge    ← optional. An AstryxBadge
+        └── onClose  ← optional. Draws a close button after the label
 ```
 
 ## Icons and badges
@@ -125,6 +126,70 @@ class _TabListIconsExampleState extends State<TabListIconsExample> {
 }
 ```
 
+
+## Closable tabs
+
+An `onClose` puts a close button after the label — editor tabs, open documents, anything the user can put away. The strip owns no list of its own, so removing the tab and choosing what is selected afterwards stays with the caller.
+
+```dart
+class TabListClosableExample extends StatefulWidget {
+  const TabListClosableExample({super.key});
+
+  @override
+  State<TabListClosableExample> createState() => _TabListClosableExampleState();
+}
+
+class _TabListClosableExampleState extends State<TabListClosableExample> {
+  List<String> _open = <String>['card.dart', 'table.dart', 'tab_list.dart'];
+  String _file = 'table.dart';
+
+  void _close(String file) {
+    setState(() {
+      final index = _open.indexOf(file);
+      _open = List<String>.of(_open)..removeAt(index);
+      if (_file != file) return;
+      // The neighbour, not the first tab: closing what you were reading should
+      // not move you to the other end of the strip.
+      _file = _open.isEmpty
+          ? ''
+          : _open[index < _open.length ? index : _open.length - 1];
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // An onClose puts a close button after the label. The strip owns no list,
+    // so removing the tab — and deciding what is selected afterwards — is the
+    // caller's job.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing4,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        AstryxTabList<String>(
+          label: 'Open files',
+          value: _file,
+          size: AstryxTabSize.sm,
+          onChanged: (value) => setState(() => _file = value),
+          tabs: <AstryxTab<String>>[
+            for (final file in _open)
+              AstryxTab<String>(
+                value: file,
+                label: file,
+                onClose: () => _close(file),
+              ),
+          ],
+        ),
+        AstryxText(_open.isEmpty ? 'Nothing open.' : 'Editing $_file.'),
+      ],
+    );
+  }
+}
+```
+
+
+> **Accessibility**
+>
+> The close button is always drawn, not revealed on hover — hover raises its contrast and nothing more. Touch has no hover, and an action that only exists under a cursor does not exist on a phone. The keyboard reaches it with `Delete` on the strip.
 
 ## Sizes
 
@@ -220,8 +285,7 @@ class TabListOverflowExample extends StatefulWidget {
   const TabListOverflowExample({super.key});
 
   @override
-  State<TabListOverflowExample> createState() =>
-      _TabListOverflowExampleState();
+  State<TabListOverflowExample> createState() => _TabListOverflowExampleState();
 }
 
 class _TabListOverflowExampleState extends State<TabListOverflowExample> {
@@ -259,6 +323,7 @@ class _TabListOverflowExampleState extends State<TabListOverflowExample> {
 | `Tab` | Enters or leaves the strip — one stop for the whole strip. |
 | `→` / `←` | Selects the next or previous enabled tab, wrapping. Mirrored under RTL. |
 | `Home` / `End` | Selects the first or last enabled tab. |
+| `Delete` / `Backspace` | Closes the selected tab, when it has an `onClose`. |
 
 > **Accessibility**
 >
@@ -288,6 +353,8 @@ class _TabListOverflowExampleState extends State<TabListOverflowExample> {
 | `icon` | `Widget?` | — | An icon before the label. |
 | `badge` | `AstryxBadge?` | — | A count or status after it. |
 | `enabled` | `bool` | `true` | Whether the tab can be selected. |
+| `onClose` | `VoidCallback?` | — | Called when the tab’s close button is pressed. Non-null draws the button. |
+| `closeLabel` | `String?` | — | The accessible name of the close button. Defaults to “Close {label}”. |
 
 
 ## Related

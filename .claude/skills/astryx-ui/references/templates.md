@@ -1640,52 +1640,55 @@ class _SettingsSidebarTemplateState extends State<SettingsSidebarTemplate> {
   Widget build(BuildContext context) {
     final heading = _headings[_section]!;
 
-    // The rail sits *beside* the layout rather than in its `panel`. A panel is
+    // The rail sits in the *shell* rather than in the layout's `panel`. Two
+    // reasons, and the second is the one that matters on a phone: a panel is
     // wrapped in a scroll view, so it is handed an unbounded height — and an
     // `AstryxSideNav` pins its own footer with an `Expanded`, which cannot be
-    // laid out against one. Beside it, the rail gets the height of the frame,
-    // which is what it wants.
+    // laid out against one. And a shell already knows what to do when there is
+    // no room beside the content: the rail moves into a drawer, with the
+    // focus trap, the Escape key and the return of focus that a hand-rolled
+    // `Row` never gets around to.
     return SizedBox(
-      height: 560,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          SizedBox(
-            width: 232,
-            // A rail of sections, not a tab strip: these are *places* in a
-            // settings area rather than views of one thing, and there are
-            // more of them than a strip can hold without scrolling sideways.
-            child: AstryxSideNav(
-              label: 'Settings sections',
-              entries: _sections,
-              selectedId: _section,
-              onSelected: (id) => setState(() => _section = id),
-            ),
-          ),
-          const AstryxDivider(axis: Axis.vertical),
-          Expanded(
-            child: AstryxLayout(
-              maxContentWidth: 620,
-              header: AstryxVStack(
-                gap: AstryxSpacingToken.spacing1,
-                children: <Widget>[
-                  AstryxHeading(heading.title, level: 1),
-                  AstryxText(
-                    heading.description,
-                    type: AstryxTextType.supporting,
-                    color: AstryxTextColor.secondary,
-                  ),
-                ],
+      height: 620,
+      child: AstryxAppShell(
+        compactBelow: 640,
+        sidebarWidth: 232,
+        navLabel: 'Settings sections',
+        header: _SettingsBar(title: heading.title),
+        // A rail of sections, not a tab strip: these are *places* in a
+        // settings area rather than views of one thing, and there are
+        // more of them than a strip can hold without scrolling sideways.
+        sidebar: AstryxSideNav(
+          label: 'Settings sections',
+          entries: _sections,
+          selectedId: _section,
+          onSelected: (id) {
+            setState(() => _section = id);
+            // Choosing a section in the drawer is the end of what the drawer
+            // was opened for. Leaving it up would hide the answer.
+            AstryxAppShell.of(context).controller.hide();
+          },
+        ),
+        child: AstryxLayout(
+          maxContentWidth: 620,
+          header: AstryxVStack(
+            gap: AstryxSpacingToken.spacing1,
+            children: <Widget>[
+              AstryxHeading(heading.title, level: 1),
+              AstryxText(
+                heading.description,
+                type: AstryxTextType.supporting,
+                color: AstryxTextColor.secondary,
               ),
-              child: switch (_section) {
-                'notifications' => _notifications(),
-                'appearance' => _appearance(),
-                'danger' => _danger(context),
-                _ => _placeholder(heading.title),
-              },
-            ),
+            ],
           ),
-        ],
+          child: switch (_section) {
+            'notifications' => _notifications(),
+            'appearance' => _appearance(),
+            'danger' => _danger(context),
+            _ => _placeholder(heading.title),
+          },
+        ),
       ),
     );
   }
@@ -1799,6 +1802,55 @@ class _SettingsSidebarTemplateState extends State<SettingsSidebarTemplate> {
         'The $title section would go here. It is one field of state and a '
         '`switch` expression away — which is exactly what makes a settings '
         'area with a rail no harder than one without.',
+      ),
+    );
+  }
+}
+
+/// The bar above the settings area.
+///
+/// Its only job on a wide window is to say where you are. Its job on a narrow
+/// one is to be the way back to the rail, which has moved into a drawer.
+class _SettingsBar extends StatelessWidget {
+  const _SettingsBar({required this.title});
+
+  /// The open section, so the bar still says where you are once the rail is
+  /// behind a button and the selected row is out of sight.
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    // The shell knows where the navigation went. A header cannot decide
+    // whether to draw a menu button without that, which is why it asks rather
+    // than measuring the window a second time.
+    final shell = AstryxAppShell.of(context);
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
+      child: AstryxHStack(
+        gap: AstryxSpacingToken.spacing2,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          if (shell.compact)
+            const AstryxMobileNavToggle(
+              label: 'Open the settings sections',
+              size: AstryxButtonSize.sm,
+            ),
+          const AstryxText('Settings', type: AstryxTextType.label),
+          if (shell.compact) ...<Widget>[
+            const AstryxText('/', color: AstryxTextColor.secondary),
+            Flexible(
+              child: AstryxText(
+                title,
+                color: AstryxTextColor.secondary,
+                maxLines: 1,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -2634,6 +2686,11 @@ class _PortfolioDashboardTemplateState
                 ),
                 AstryxHStack(
                   gap: AstryxSpacingToken.spacing2,
+                  // The badge carries the number and the words carry the
+                  // window it is over. Neither can be cut off, so on a narrow
+                  // column they take a line each.
+                  wrap: true,
+                  runGap: AstryxSpacingToken.spacing1,
                   children: <Widget>[
                     AstryxBadge(
                       signed(change),
@@ -3714,6 +3771,11 @@ class _TablePageTemplateState extends State<TablePageTemplate> {
             ),
             AstryxHStack(
               gap: AstryxSpacingToken.spacing3,
+              // The page size and the pager are 330 logical pixels between
+              // them, which is a phone with nothing left over. They take a
+              // line each rather than the pager losing its last page button.
+              wrap: true,
+              runGap: AstryxSpacingToken.spacing2,
               children: <Widget>[
                 AstryxSelector<int>(
                   label: 'Rows per page',
@@ -5423,8 +5485,14 @@ class _IncidentCard extends StatelessWidget {
             child: AstryxVStack(
               gap: AstryxSpacingToken.spacing1,
               children: <Widget>[
+                // Wrapping, not truncating. Every badge in this row is a
+                // fact about how urgent the card is; a phone that clips
+                // "Unacknowledged" off the end has hidden the one word that
+                // decides whether anybody picks the incident up.
                 AstryxHStack(
                   gap: AstryxSpacingToken.spacing2,
+                  wrap: true,
+                  runGap: AstryxSpacingToken.spacing1,
                   children: <Widget>[
                     AstryxBadge(
                       'Sev-${incident.severity}',
@@ -6376,6 +6444,11 @@ class _ProductGalleryTemplateState extends State<ProductGalleryTemplate> {
             ),
             AstryxHStack(
               gap: AstryxSpacingToken.spacing2,
+              // Search and sort are 400 logical pixels of field between them,
+              // which is wider than a phone. They take a line each rather than
+              // one of them being pushed off the end.
+              wrap: true,
+              runGap: AstryxSpacingToken.spacing2,
               children: <Widget>[
                 SizedBox(
                   width: 220,
@@ -7231,21 +7304,26 @@ class _ChatHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Wrapping, so the title and the controls take a line each rather than
+    // fighting over one. `Flexible` alone cannot save this row: the model
+    // selector and the New chat button have a width they cannot go under, and
+    // below about 500 logical pixels there is no share of the line that leaves
+    // the heading anything to say.
     return AstryxHStack(
       gap: AstryxSpacingToken.spacing3,
       justify: AstryxStackJustify.between,
       mainAxisSize: MainAxisSize.max,
+      wrap: true,
+      runGap: AstryxSpacingToken.spacing2,
       children: <Widget>[
-        Flexible(
-          child: AstryxHStack(
-            gap: AstryxSpacingToken.spacing2,
-            children: <Widget>[
-              const Flexible(
-                child: AstryxHeading('Why did 14:02 fail?', level: 1),
-              ),
-              AstryxBadge('$turns turns'),
-            ],
-          ),
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing2,
+          children: <Widget>[
+            const Flexible(
+              child: AstryxHeading('Why did 14:02 fail?', level: 1),
+            ),
+            AstryxBadge('$turns turns'),
+          ],
         ),
         AstryxHStack(
           gap: AstryxSpacingToken.spacing2,
@@ -8338,6 +8416,11 @@ class _DocumentationTemplateState extends State<DocumentationTemplate> {
             gap: AstryxSpacingToken.spacing3,
             justify: AstryxStackJustify.between,
             mainAxisSize: MainAxisSize.max,
+            // Two pagers whose labels are page titles, and page titles are as
+            // long as they are. Narrow, they take a line each — the chevrons
+            // still say which way each one goes.
+            wrap: true,
+            runGap: AstryxSpacingToken.spacing2,
             children: <Widget>[
               AstryxButton(
                 label: 'Concepts',
@@ -8448,24 +8531,45 @@ class _DocsBar extends StatelessWidget {
               size: AstryxButtonSize.sm,
               onPressed: shell.controller.toggle,
             ),
-          const AstryxText('Atlas docs', type: AstryxTextType.label),
-          const Spacer(),
-          AstryxButton(
-            label: 'Search',
-            size: AstryxButtonSize.sm,
-            leading: const AstryxIcon(
-              AstryxIconName.search,
-              size: AstryxIconSize.sm,
+          const Flexible(
+            child: AstryxText(
+              'Atlas docs',
+              type: AstryxTextType.label,
+              maxLines: 1,
             ),
-            // `mod` is ⌘ on a Mac and Ctrl everywhere else, and the cap says
-            // whichever one this platform actually listens for.
-            trailing: const AstryxKbd.hotkey(
-              AstryxHotkey.mod(LogicalKeyboardKey.keyK),
-              size: AstryxKbdSize.sm,
-            ),
-            onPressed: () {},
           ),
-          const AstryxBadge('v4.2'),
+          const Spacer(),
+          // A phone has no keyboard to press ⌘K on and no room for the cap
+          // that says so, so the search collapses to its glyph. The name it is
+          // announced by does not collapse with it — an icon button with no
+          // label is a button screen readers call "button".
+          if (shell.compact)
+            AstryxIconButton(
+              icon: AstryxIconName.search,
+              label: 'Search the documentation',
+              tooltip: 'Search',
+              variant: AstryxButtonVariant.ghost,
+              size: AstryxButtonSize.sm,
+              onPressed: () {},
+            )
+          else ...<Widget>[
+            AstryxButton(
+              label: 'Search',
+              size: AstryxButtonSize.sm,
+              leading: const AstryxIcon(
+                AstryxIconName.search,
+                size: AstryxIconSize.sm,
+              ),
+              // `mod` is ⌘ on a Mac and Ctrl everywhere else, and the cap says
+              // whichever one this platform actually listens for.
+              trailing: const AstryxKbd.hotkey(
+                AstryxHotkey.mod(LogicalKeyboardKey.keyK),
+                size: AstryxKbdSize.sm,
+              ),
+              onPressed: () {},
+            ),
+            const AstryxBadge('v4.2'),
+          ],
         ],
       ),
     );
@@ -8960,6 +9064,11 @@ curl https://api.foundry.example/v1/runs \
                 // code block that has to be read for them.
                 AstryxHStack(
                   gap: AstryxSpacingToken.spacing2,
+                  // The method, the path and the guarantee are three separate
+                  // facts, so a narrow page takes them on separate lines
+                  // rather than choosing which one to cut off.
+                  wrap: true,
+                  runGap: AstryxSpacingToken.spacing2,
                   children: <Widget>[
                     AstryxBadge('POST', variant: AstryxBadgeVariant.success),
                     AstryxCode('/v1/runs'),
@@ -9227,206 +9336,234 @@ class _EditorTemplateState extends State<EditorTemplate> {
     // `scrollable: false`: the canvas scrolls itself, and a scroll view inside
     // a scroll view measures unbounded — which is a layout assertion rather
     // than a subtle bug.
-    return SizedBox(
-      height: 560,
-      child: AstryxLayout(
-        scrollable: false,
-        panelWidth: 260,
-        header: AstryxVStack(
-          gap: AstryxSpacingToken.spacing3,
-          align: AstryxStackAlign.stretch,
-          children: <Widget>[
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing3,
-              justify: AstryxStackJustify.between,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Flexible(
-                  child: AstryxTextInput(
-                    controller: _title,
-                    label: 'Title',
-                    labelHidden: true,
-                    size: AstryxInputSize.lg,
-                    placeholder: 'Untitled',
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // The same width the layout's own panel makes its mind up at, so the
+        // frame and the panel change together rather than one at a time.
+        final compact = constraints.maxWidth < 640;
+
+        return SizedBox(
+          // A header that has wrapped onto three lines and a panel that has
+          // become a band above the canvas both cost height the wide frame
+          // never had to find. Bands do not shrink, so the frame grows.
+          height: compact ? 720 : 560,
+          child: _layout(context, compact: compact),
+        );
+      },
+    );
+  }
+
+  Widget _layout(BuildContext context, {required bool compact}) {
+    return AstryxLayout(
+      scrollable: false,
+      panelWidth: 260,
+      panelLabel: 'Document',
+      header: AstryxVStack(
+        gap: AstryxSpacingToken.spacing3,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing3,
+            justify: AstryxStackJustify.between,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Flexible(
+                child: AstryxTextInput(
+                  controller: _title,
+                  label: 'Title',
+                  labelHidden: true,
+                  size: AstryxInputSize.lg,
+                  placeholder: 'Untitled',
                 ),
-                AstryxBadge(
-                  _dirty ? 'Unsaved changes' : 'Saved',
-                  variant: _dirty
-                      ? AstryxBadgeVariant.warning
-                      : AstryxBadgeVariant.success,
-                  icon: AstryxIcon(
-                    _dirty ? AstryxIconName.warning : AstryxIconName.success,
-                  ),
+              ),
+              AstryxBadge(
+                _dirty ? 'Unsaved changes' : 'Saved',
+                variant: _dirty
+                    ? AstryxBadgeVariant.warning
+                    : AstryxBadgeVariant.success,
+                icon: AstryxIcon(
+                  _dirty ? AstryxIconName.warning : AstryxIconName.success,
                 ),
-              ],
-            ),
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing3,
-              justify: AstryxStackJustify.between,
-              mainAxisSize: MainAxisSize.max,
-              wrap: true,
-              runGap: AstryxSpacingToken.spacing2,
-              children: <Widget>[
-                // One tab stop for the whole band, however many controls sit
-                // in it. Tab reaches the toolbar and leaves it; the arrows
-                // move inside.
-                AstryxToolbar(
-                  label: 'Formatting',
-                  children: <Widget>[
-                    for (final mark in const <List<String>>[
-                      <String>['Bold', '**'],
-                      <String>['Italic', '_'],
-                      <String>['Code', '`'],
-                    ])
-                      AstryxButton(
-                        label: mark[0],
-                        size: AstryxButtonSize.sm,
-                        variant: AstryxButtonVariant.ghost,
-                        enabled: _mode == 'write',
-                        onPressed: () => _wrap(mark[1]),
-                      ),
-                    const AstryxToolbarDivider(),
-                    AstryxMoreMenu(
-                      label: 'More formatting',
+              ),
+            ],
+          ),
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing3,
+            justify: AstryxStackJustify.between,
+            mainAxisSize: MainAxisSize.max,
+            wrap: true,
+            runGap: AstryxSpacingToken.spacing2,
+            children: <Widget>[
+              // One tab stop for the whole band, however many controls sit
+              // in it. Tab reaches the toolbar and leaves it; the arrows
+              // move inside.
+              AstryxToolbar(
+                label: 'Formatting',
+                children: <Widget>[
+                  for (final mark in const <List<String>>[
+                    <String>['Bold', '**'],
+                    <String>['Italic', '_'],
+                    <String>['Code', '`'],
+                  ])
+                    AstryxButton(
+                      label: mark[0],
+                      size: AstryxButtonSize.sm,
+                      variant: AstryxButtonVariant.ghost,
                       enabled: _mode == 'write',
-                      entries: <AstryxMenuEntry>[
-                        AstryxMenuItem(
-                          label: 'Strikethrough',
-                          onSelected: () => _wrap('~~'),
-                        ),
-                        AstryxMenuItem(
-                          label: 'Quote',
-                          onSelected: () => _wrap('\n> '),
-                        ),
-                      ],
+                      onPressed: () => _wrap(mark[1]),
+                    ),
+                  const AstryxToolbarDivider(),
+                  AstryxMoreMenu(
+                    label: 'More formatting',
+                    enabled: _mode == 'write',
+                    entries: <AstryxMenuEntry>[
+                      AstryxMenuItem(
+                        label: 'Strikethrough',
+                        onSelected: () => _wrap('~~'),
+                      ),
+                      AstryxMenuItem(
+                        label: 'Quote',
+                        onSelected: () => _wrap('\n> '),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              AstryxSegmentedControl<String>(
+                label: 'Canvas',
+                value: _mode,
+                size: AstryxButtonSize.sm,
+                onChanged: (value) => setState(() => _mode = value),
+                segments: const <AstryxSegment<String>>[
+                  AstryxSegment(value: 'write', label: 'Write'),
+                  AstryxSegment(value: 'preview', label: 'Preview'),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      panel: AstryxVStack(
+        gap: AstryxSpacingToken.spacing5,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          AstryxSection(
+            title: 'Document',
+            level: 2,
+            child: AstryxVStack(
+              gap: AstryxSpacingToken.spacing3,
+              align: AstryxStackAlign.stretch,
+              children: <Widget>[
+                AstryxSelector<String>(
+                  label: 'Status',
+                  value: _status,
+                  onChanged: (value) => setState(() {
+                    _status = value ?? _status;
+                    _dirty = true;
+                  }),
+                  options: const <AstryxSelectorOption<String>>[
+                    AstryxSelectorOption(value: 'draft', label: 'Draft'),
+                    AstryxSelectorOption(value: 'review', label: 'In review'),
+                    AstryxSelectorOption(
+                      value: 'published',
+                      label: 'Published',
                     ),
                   ],
                 ),
-                AstryxSegmentedControl<String>(
-                  label: 'Canvas',
-                  value: _mode,
-                  size: AstryxButtonSize.sm,
-                  onChanged: (value) => setState(() => _mode = value),
-                  segments: const <AstryxSegment<String>>[
-                    AstryxSegment(value: 'write', label: 'Write'),
-                    AstryxSegment(value: 'preview', label: 'Preview'),
+                AstryxCheckboxList(
+                  label: 'Tags',
+                  values: _tags,
+                  onChanged: (values) => setState(() {
+                    _tags
+                      ..clear()
+                      ..addAll(values);
+                    _dirty = true;
+                  }),
+                  options: const <AstryxCheckboxOption<String>>[
+                    AstryxCheckboxOption(value: 'deploys', label: 'Deploys'),
+                    AstryxCheckboxOption(value: 'oncall', label: 'On-call'),
+                    AstryxCheckboxOption(
+                      value: 'runbook',
+                      label: 'Runbook',
+                    ),
                   ],
                 ),
               ],
             ),
-          ],
-        ),
-        panel: AstryxVStack(
-          gap: AstryxSpacingToken.spacing5,
-          align: AstryxStackAlign.stretch,
-          children: <Widget>[
-            AstryxSection(
-              title: 'Document',
-              level: 2,
-              child: AstryxVStack(
-                gap: AstryxSpacingToken.spacing3,
-                align: AstryxStackAlign.stretch,
-                children: <Widget>[
-                  AstryxSelector<String>(
-                    label: 'Status',
-                    value: _status,
-                    onChanged: (value) => setState(() {
-                      _status = value ?? _status;
-                      _dirty = true;
-                    }),
-                    options: const <AstryxSelectorOption<String>>[
-                      AstryxSelectorOption(value: 'draft', label: 'Draft'),
-                      AstryxSelectorOption(value: 'review', label: 'In review'),
-                      AstryxSelectorOption(
-                        value: 'published',
-                        label: 'Published',
-                      ),
-                    ],
-                  ),
-                  AstryxCheckboxList(
-                    label: 'Tags',
-                    values: _tags,
-                    onChanged: (values) => setState(() {
-                      _tags
-                        ..clear()
-                        ..addAll(values);
-                      _dirty = true;
-                    }),
-                    options: const <AstryxCheckboxOption<String>>[
-                      AstryxCheckboxOption(value: 'deploys', label: 'Deploys'),
-                      AstryxCheckboxOption(value: 'oncall', label: 'On-call'),
-                      AstryxCheckboxOption(
-                        value: 'runbook',
-                        label: 'Runbook',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const AstryxDivider(),
-            AstryxSection(
-              title: 'History',
-              level: 2,
-              child: AstryxMetadataList(
-                items: <AstryxMetadataItem>[
-                  AstryxMetadataItem.text(
-                    label: 'Created',
-                    value: '12 March, by Grace Hopper',
-                  ),
-                  AstryxMetadataItem.text(
-                    label: 'Last edited',
-                    value: '4 minutes ago, by you',
-                  ),
-                  AstryxMetadataItem.text(label: 'Revisions', value: '31'),
-                ],
-              ),
-            ),
-          ],
-        ),
-        footer: AstryxHStack(
-          gap: AstryxSpacingToken.spacing3,
-          justify: AstryxStackJustify.between,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            AstryxText(
-              '$_words words',
-              type: AstryxTextType.supporting,
-              color: AstryxTextColor.secondary,
-            ),
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing2,
-              children: <Widget>[
-                AstryxButton(
-                  label: 'Discard',
-                  size: AstryxButtonSize.sm,
-                  enabled: _dirty,
-                  onPressed: () => setState(() => _dirty = false),
+          ),
+          const AstryxDivider(),
+          AstryxSection(
+            title: 'History',
+            level: 2,
+            child: AstryxMetadataList(
+              items: <AstryxMetadataItem>[
+                AstryxMetadataItem.text(
+                  label: 'Created',
+                  value: '12 March, by Grace Hopper',
                 ),
-                AstryxButton(
-                  label: 'Save',
-                  variant: AstryxButtonVariant.primary,
-                  size: AstryxButtonSize.sm,
-                  enabled: _dirty,
-                  onPressed: () => setState(() => _dirty = false),
+                AstryxMetadataItem.text(
+                  label: 'Last edited',
+                  value: '4 minutes ago, by you',
                 ),
+                AstryxMetadataItem.text(label: 'Revisions', value: '31'),
               ],
             ),
-          ],
-        ),
-        // The canvas, and the only thing on the screen that scrolls.
+          ),
+        ],
+      ),
+      footer: AstryxHStack(
+        gap: AstryxSpacingToken.spacing3,
+        justify: AstryxStackJustify.between,
+        mainAxisSize: MainAxisSize.max,
+        // The count and the two actions take a line each rather than the
+        // count being pushed off the start of the band.
+        wrap: true,
+        runGap: AstryxSpacingToken.spacing2,
+        children: <Widget>[
+          AstryxText(
+            '$_words words',
+            type: AstryxTextType.supporting,
+            color: AstryxTextColor.secondary,
+          ),
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing2,
+            children: <Widget>[
+              AstryxButton(
+                label: 'Discard',
+                size: AstryxButtonSize.sm,
+                enabled: _dirty,
+                onPressed: () => setState(() => _dirty = false),
+              ),
+              AstryxButton(
+                label: 'Save',
+                variant: AstryxButtonVariant.primary,
+                size: AstryxButtonSize.sm,
+                enabled: _dirty,
+                onPressed: () => setState(() => _dirty = false),
+              ),
+            ],
+          ),
+        ],
+      ),
+      // The canvas, and the only thing on the screen that scrolls — in both
+      // modes, and for the same reason. `minLines` becomes a minimum in
+      // *pixels* once it has been measured, and it wins against the frame: a
+      // field asking for twelve lines inside a band with room for nine
+      // overflows rather than shrinking. Given a scroll view it keeps the
+      // height it asked for and the reader gets at the rest by scrolling.
+      child: SingleChildScrollView(
         child: _mode == 'write'
             ? AstryxTextArea(
                 controller: _body,
                 label: 'Document body',
                 labelHidden: true,
-                minLines: 12,
+                // Fewer lines on a phone all the same: a canvas that opens
+                // taller than the window it is in has put the Save button
+                // behind a scroll nobody was told about.
+                minLines: compact ? 6 : 12,
                 maxLines: 40,
               )
-            : SingleChildScrollView(
-                child: AstryxMarkdown(_body.text),
-              ),
+            : AstryxMarkdown(_body.text),
       ),
     );
   }
@@ -9713,7 +9850,7 @@ class IdeTemplate extends StatefulWidget {
 }
 
 class _IdeTemplateState extends State<IdeTemplate> {
-  static const List<AstryxTreeNode> _tree = <AstryxTreeNode>[
+  static const List<AstryxTreeNode> _nodes = <AstryxTreeNode>[
     AstryxTreeNode(
       id: 'lib',
       label: 'lib',
@@ -9797,76 +9934,114 @@ void main() {
     // so it hands that body an unbounded height — and every region here is an
     // `Expanded` or a fixed band measured against the frame. The bounded
     // `SizedBox` is what the whole layout is built against.
-    return SizedBox(
-      height: 520,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  width: _treeWidth,
-                  child: AstryxVStack(
-                    gap: AstryxSpacingToken.spacing0,
-                    align: AstryxStackAlign.stretch,
+    //
+    // The `LayoutBuilder` is what decides whether there are three regions or
+    // one. A resizable tree needs a window to be resized *within*: at 390
+    // logical pixels the handle's own minimum of 140 is more than a third of
+    // the screen, and what is left is not a narrow editor but no editor.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 640;
+
+        return SizedBox(
+          // The bands do not shrink — a tab strip and a status bar cost what
+          // they cost — so a narrow frame is a taller one rather than an
+          // overflowing one.
+          height: compact ? 620 : 520,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // Narrow, the tree is a disclosure above the editor rather than a
+              // column beside it: the same nodes, the same selection, and the
+              // editor keeps the whole width once a file is chosen.
+              if (compact) ...<Widget>[
+                AstryxCollapsible(
+                  title: 'Explorer',
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 180),
+                    child: SingleChildScrollView(child: _tree(context)),
+                  ),
+                ),
+                const AstryxDivider(),
+                Expanded(child: _editor(context)),
+              ] else
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: AstryxText(
-                          'Explorer',
-                          type: AstryxTextType.supporting,
-                          color: AstryxTextColor.secondary,
+                      SizedBox(
+                        width: _treeWidth,
+                        child: AstryxVStack(
+                          gap: AstryxSpacingToken.spacing0,
+                          align: AstryxStackAlign.stretch,
+                          children: <Widget>[
+                            const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: AstryxText(
+                                'Explorer',
+                                type: AstryxTextType.supporting,
+                                color: AstryxTextColor.secondary,
+                              ),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: _tree(context),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: AstryxTreeList(
-                            label: 'Files',
-                            nodes: _tree,
-                            initiallyExpanded: const <String>{
-                              'lib',
-                              'components',
-                            },
-                            density: AstryxItemDensity.compact,
-                            selected: _file,
-                            onSelectedChanged: _openFile,
-                          ),
-                        ),
+                      // Tab reaches the handle and the arrows move it. A
+                      // divider only a pointer can drag is a layout only some
+                      // people can use, which is the part hand-rolled
+                      // splitters always miss.
+                      AstryxResizeHandle(
+                        label: 'Resize the file tree',
+                        size: _treeWidth,
+                        min: 140,
+                        max: 320,
+                        onResize: (width) => setState(() => _treeWidth = width),
                       ),
+                      Expanded(child: _editor(context)),
                     ],
                   ),
                 ),
-                // Tab reaches the handle and the arrows move it. A divider
-                // only a pointer can drag is a layout only some people can
-                // use, which is the part hand-rolled splitters always miss.
+              // Nothing to drag on a touch screen with no pointer to spare, so
+              // narrow the drawer is a fixed band and the handle goes away
+              // rather than becoming a control that cannot be used.
+              if (!compact)
                 AstryxResizeHandle(
-                  label: 'Resize the file tree',
-                  size: _treeWidth,
-                  min: 140,
-                  max: 320,
-                  onResize: (width) => setState(() => _treeWidth = width),
-                ),
-                Expanded(child: _editor(context)),
-              ],
-            ),
+                  label: 'Resize the panel',
+                  edge: AstryxResizeEdge.bottom,
+                  size: _drawerHeight,
+                  min: 80,
+                  max: 260,
+                  onResize: (height) => setState(() => _drawerHeight = height),
+                )
+              else
+                const AstryxDivider(),
+              SizedBox(
+                height: compact ? 132 : _drawerHeight,
+                child: _panel(context),
+              ),
+              const AstryxDivider(),
+              _statusBar(context, compact: compact),
+            ],
           ),
-          AstryxResizeHandle(
-            label: 'Resize the panel',
-            edge: AstryxResizeEdge.bottom,
-            size: _drawerHeight,
-            min: 80,
-            max: 260,
-            onResize: (height) => setState(() => _drawerHeight = height),
-          ),
-          SizedBox(height: _drawerHeight, child: _panel(context)),
-          const AstryxDivider(),
-          _statusBar(context),
-        ],
-      ),
+        );
+      },
     );
   }
+
+  /// The file tree, shared by the column and the disclosure.
+  Widget _tree(BuildContext context) => AstryxTreeList(
+    label: 'Files',
+    nodes: _nodes,
+    initiallyExpanded: const <String>{'lib', 'components'},
+    density: AstryxItemDensity.compact,
+    selected: _file,
+    onSelectedChanged: _openFile,
+  );
 
   /// Opens [id] in a tab, if it is a file rather than a folder.
   void _openFile(String id) {
@@ -9874,6 +10049,21 @@ void main() {
     setState(() {
       if (!_open.contains(id)) _open.add(id);
       _file = id;
+    });
+  }
+
+  /// Closes [id], and hands the editor whatever tab is left beside it.
+  void _closeFile(String id) {
+    setState(() {
+      final index = _open.indexOf(id);
+      if (index < 0) return;
+      _open.removeAt(index);
+      if (_file != id) return;
+      // The neighbour, not the last tab: closing the file you were reading
+      // should not throw you to the other end of the strip.
+      _file = _open.isEmpty
+          ? ''
+          : _open[index < _open.length ? index : _open.length - 1];
     });
   }
 
@@ -9897,7 +10087,12 @@ void main() {
                 size: AstryxTabSize.sm,
                 onChanged: (value) => setState(() => _file = value),
                 tabs: <AstryxTab<String>>[
-                  for (final file in _open) AstryxTab(value: file, label: file),
+                  for (final file in _open)
+                    AstryxTab(
+                      value: file,
+                      label: file,
+                      onClose: () => _closeFile(file),
+                    ),
                 ],
               ),
             ),
@@ -9905,10 +10100,9 @@ void main() {
               label: 'Editor actions',
               entries: <AstryxMenuEntry>[
                 AstryxMenuItem(
-                  label: 'Close $_file',
+                  label: 'Close others',
                   onSelected: () => setState(() {
-                    _open.remove(_file);
-                    _file = _open.isEmpty ? '' : _open.last;
+                    _open.removeWhere((file) => file != _file);
                   }),
                 ),
                 AstryxMenuItem(
@@ -10005,29 +10199,39 @@ void main() {
   }
 
   /// The band along the bottom: branch, problems, and where the caret is.
-  Widget _statusBar(BuildContext context) {
+  ///
+  /// Narrow, the caret position goes rather than being squeezed: it is the one
+  /// item here a reader can get from the editor itself, and a status bar that
+  /// wraps onto two lines has stopped being a band.
+  Widget _statusBar(BuildContext context, {required bool compact}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: AstryxHStack(
-        gap: AstryxSpacingToken.spacing4,
+        gap: compact
+            ? AstryxSpacingToken.spacing3
+            : AstryxSpacingToken.spacing4,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const AstryxStatusDot(
             AstryxStatusDotVariant.success,
             label: 'Analyser is clean',
           ),
-          const AstryxText(
-            'main',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
+          const Flexible(
+            child: AstryxText(
+              'main',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+              maxLines: 1,
+            ),
           ),
           const Spacer(),
-          const AstryxText(
-            'Ln 41, Col 12',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-            tabularNumbers: true,
-          ),
+          if (!compact)
+            const AstryxText(
+              'Ln 41, Col 12',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+              tabularNumbers: true,
+            ),
           AstryxText(
             _file.isEmpty ? '—' : 'Dart',
             type: AstryxTextType.supporting,

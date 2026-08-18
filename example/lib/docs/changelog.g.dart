@@ -21,6 +21,9 @@ const List<DocBlock> changelogBlocks = <DocBlock>[
   DocHeading('Unreleased'),
   DocHeading('Added', level: 3),
   DocList(<String>[
+    '**`AstryxTab.onClose` — closable tabs.** A non-null callback puts a close button after the label, for editor tabs and anything else the user opens and puts away. The strip owns no list, so removing the tab and choosing what is selected afterwards stays with the caller. The button is always drawn rather than revealed on hover — hover only raises its contrast — because touch has no hover and an action that exists only under a cursor does not exist on a phone. `Delete` and `Backspace` close the selected tab from the keyboard, which the strip\'s single tab stop would otherwise leave unreachable. `AstryxTab.closeLabel` overrides the button\'s accessible name, and `AstryxLocalizations.tabClose(label)` supplies the default, "Close card.dart" — a strip of open files is a row of identical "Close" buttons otherwise.',
+  ]),
+  DocList(<String>[
     '**`AstryxLocalizations.layoutPanelLabel`** — the disclosure title a collapsed `AstryxLayout` panel falls back to. Generic, because the slot is; name the panel with `panelLabel` and it is never read.',
   ]),
   DocList(<String>[
@@ -37,6 +40,9 @@ const List<DocBlock> changelogBlocks = <DocBlock>[
     '**The site\'s own link preview says what the package is** rather than that it is documentation. Somebody following a shared link is usually deciding whether to add the dependency, not looking up a parameter — so `example/web/index.html` carries that description and the title `astryx_ui — a Flutter design system`, and `gen_og.dart` copies both into the home page\'s Open Graph card.',
   ]),
   DocHeading('Fixed', level: 3),
+  DocList(<String>[
+    '**The IDE template\'s editor tabs could not be closed from the tab.** Closing the file you were reading meant finding it in the editor\'s overflow menu. The tabs carry their own close button now, and closing the selected one hands the editor its neighbour rather than the far end of the strip.',
+  ]),
   DocList(<String>[
     '**`AstryxLayout` no longer keeps its panel beside the body at any width.** A 320px rail beside a 390px phone left 70px for the page, and everything in it was clipped rather than narrow. Below `panelCollapseBelow` the panel becomes a disclosure banded across the top of the page — the same widget, the same content, collapsed and one press away. Name it with `panelLabel`; open it by default with `panelInitiallyExpanded`. The threshold is a number rather than an entry in a breakpoint table, for the reason `AstryxAppShell.compactBelow` is one: the width at which *your* panel stops fitting is a fact about your panel. Set it to `double.negativeInfinity` for a panel that must never collapse.',
     '**`AstryxToolbar` wraps onto a second run rather than running off the edge.** It behaves as a row in every window wide enough for one. Narrower than that, a formatting bar whose last two buttons are past the right-hand side is a bar those buttons have left. Arrow-key traversal is unchanged — it walks the focus nodes, not the geometry.',

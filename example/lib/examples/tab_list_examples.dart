@@ -166,8 +166,7 @@ class TabListOverflowExample extends StatefulWidget {
   const TabListOverflowExample({super.key});
 
   @override
-  State<TabListOverflowExample> createState() =>
-      _TabListOverflowExampleState();
+  State<TabListOverflowExample> createState() => _TabListOverflowExampleState();
 }
 
 class _TabListOverflowExampleState extends State<TabListOverflowExample> {
@@ -191,4 +190,60 @@ class _TabListOverflowExampleState extends State<TabListOverflowExample> {
     );
   }
 }
+// #end
+
+// #example tab_list_closable -> TabListClosableExample
+class TabListClosableExample extends StatefulWidget {
+  const TabListClosableExample({super.key});
+
+  @override
+  State<TabListClosableExample> createState() => _TabListClosableExampleState();
+}
+
+class _TabListClosableExampleState extends State<TabListClosableExample> {
+  List<String> _open = <String>['card.dart', 'table.dart', 'tab_list.dart'];
+  String _file = 'table.dart';
+
+  void _close(String file) {
+    setState(() {
+      final index = _open.indexOf(file);
+      _open = List<String>.of(_open)..removeAt(index);
+      if (_file != file) return;
+      // The neighbour, not the first tab: closing what you were reading should
+      // not move you to the other end of the strip.
+      _file = _open.isEmpty
+          ? ''
+          : _open[index < _open.length ? index : _open.length - 1];
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // An onClose puts a close button after the label. The strip owns no list,
+    // so removing the tab — and deciding what is selected afterwards — is the
+    // caller's job.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing4,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        AstryxTabList<String>(
+          label: 'Open files',
+          value: _file,
+          size: AstryxTabSize.sm,
+          onChanged: (value) => setState(() => _file = value),
+          tabs: <AstryxTab<String>>[
+            for (final file in _open)
+              AstryxTab<String>(
+                value: file,
+                label: file,
+                onClose: () => _close(file),
+              ),
+          ],
+        ),
+        AstryxText(_open.isEmpty ? 'Nothing open.' : 'Editing $_file.'),
+      ],
+    );
+  }
+}
+
 // #end

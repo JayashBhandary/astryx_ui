@@ -780,6 +780,21 @@ void main() {
     });
   }
 
+  /// Closes [id], and hands the editor whatever tab is left beside it.
+  void _closeFile(String id) {
+    setState(() {
+      final index = _open.indexOf(id);
+      if (index < 0) return;
+      _open.removeAt(index);
+      if (_file != id) return;
+      // The neighbour, not the last tab: closing the file you were reading
+      // should not throw you to the other end of the strip.
+      _file = _open.isEmpty
+          ? ''
+          : _open[index < _open.length ? index : _open.length - 1];
+    });
+  }
+
   /// The tab strip and the surface under it.
   Widget _editor(BuildContext context) {
     return AstryxVStack(
@@ -800,7 +815,12 @@ void main() {
                 size: AstryxTabSize.sm,
                 onChanged: (value) => setState(() => _file = value),
                 tabs: <AstryxTab<String>>[
-                  for (final file in _open) AstryxTab(value: file, label: file),
+                  for (final file in _open)
+                    AstryxTab(
+                      value: file,
+                      label: file,
+                      onClose: () => _closeFile(file),
+                    ),
                 ],
               ),
             ),
@@ -808,10 +828,9 @@ void main() {
               label: 'Editor actions',
               entries: <AstryxMenuEntry>[
                 AstryxMenuItem(
-                  label: 'Close $_file',
+                  label: 'Close others',
                   onSelected: () => setState(() {
-                    _open.remove(_file);
-                    _file = _open.isEmpty ? '' : _open.last;
+                    _open.removeWhere((file) => file != _file);
                   }),
                 ),
                 AstryxMenuItem(

@@ -371,6 +371,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'tab_list_sizes': (_) => const TabListSizesExample(),
   'tab_list_fill': (_) => const TabListFillExample(),
   'tab_list_overflow': (_) => const TabListOverflowExample(),
+  'tab_list_closable': (_) => const TabListClosableExample(),
   'table_demo': (_) => const TableDemoExample(),
   'table_sorting': (_) => const TableSortingExample(),
   'table_selection': (_) => const TableSelectionExample(),

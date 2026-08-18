@@ -7,6 +7,7 @@ import 'package:astryx_ui/src/foundation/focus_ring.dart';
 import 'package:astryx_ui/src/foundation/focus_visible.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/foundation/size_scope.dart';
+import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
@@ -52,6 +53,8 @@ class AstryxTab<T> {
     this.icon,
     this.badge,
     this.enabled = true,
+    this.onClose,
+    this.closeLabel,
   });
 
   /// What selecting this tab produces.
@@ -77,6 +80,23 @@ class AstryxTab<T> {
 
   /// Whether the tab can be selected.
   final bool enabled;
+
+  /// Called when the tab's close button is pressed.
+  ///
+  /// A non-null callback puts a close button after the label — an editor tab
+  /// the user can put away. Removing the tab from [AstryxTabList.tabs], and
+  /// choosing what is selected afterwards, is the caller's business: the strip
+  /// owns no list of its own.
+  ///
+  /// The button is *always* drawn, not revealed on hover. Hover only raises
+  /// its contrast, because touch has no hover and a close the user cannot
+  /// find is not a close.
+  final VoidCallback? onClose;
+
+  /// The accessible name of the close button.
+  ///
+  /// Defaults to `AstryxLocalizations.tabClose(label)` — "Close card.dart".
+  final String? closeLabel;
 }
 
 /// A row of tabs with an animated indicator.
@@ -84,7 +104,8 @@ class AstryxTab<T> {
 /// **Keyboard follows the ARIA tab pattern**, which Flutter's default traversal
 /// does not: the strip is one tab stop, arrows move *and select* within it,
 /// Home and End jump to the ends, and the inline arrows mirror under RTL. Tab
-/// leaves the strip for the panel below.
+/// leaves the strip for the panel below. Delete and Backspace close the
+/// selected tab, when that tab has an [AstryxTab.onClose].
 ///
 /// {@tool snippet}
 /// ```dart
@@ -287,6 +308,18 @@ class _AstryxTabListState<T> extends State<AstryxTabList<T>> {
       _edge(last: true);
       return KeyEventResult.handled;
     }
+
+    // Closing is otherwise a pointer-only affordance, and the strip is one tab
+    // stop, so the close button is not somewhere Tab can reach.
+    if (key == LogicalKeyboardKey.delete ||
+        key == LogicalKeyboardKey.backspace) {
+      final index = _selectedIndex;
+      if (index < 0) return KeyEventResult.ignored;
+      final tab = widget.tabs[index];
+      if (!tab.enabled || tab.onClose == null) return KeyEventResult.ignored;
+      tab.onClose!();
+      return KeyEventResult.handled;
+    }
     return KeyEventResult.ignored;
   }
 
@@ -413,9 +446,21 @@ class _TabState<T> extends State<_Tab<T>> {
                 : AstryxColorToken.textSecondary),
     );
 
+    final closable = widget.tab.onClose != null;
+    // Hover raises the close button's contrast; it never brings it into being.
+    final emphasise =
+        widget.selected ||
+        (_hovered && density.supportsHover) ||
+        !density.supportsHover;
+
     Widget content = Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: theme.spacing(AstryxSpacingToken.spacing3),
+      padding: EdgeInsetsDirectional.only(
+        start: theme.spacing(AstryxSpacingToken.spacing3),
+        // A closable tab spends its trailing gutter on the button instead, so
+        // the tab does not grow a lopsided amount of air on one side.
+        end: theme.spacing(
+          closable ? AstryxSpacingToken.spacing1 : AstryxSpacingToken.spacing3,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -453,6 +498,34 @@ class _TabState<T> extends State<_Tab<T>> {
         ],
       ),
     );
+
+    if (closable) {
+      // The label, icon and badge belong to the tab's own semantics node and
+      // are silenced here; the close button is a second action beside it and
+      // keeps a node of its own, which is why the exclusion stops at the body
+      // rather than wrapping the whole tab.
+      content = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Flexible(child: ExcludeSemantics(child: content)),
+          Padding(
+            padding: EdgeInsetsDirectional.only(
+              // The body's own trailing gutter, so the button sits where the
+              // label's right-hand air used to be rather than beyond it.
+              end: theme.spacing(AstryxSpacingToken.spacing1_5),
+            ),
+            child: _TabClose(
+              label:
+                  widget.tab.closeLabel ??
+                  AstryxLocalizations.of(context).tabClose(widget.tab.label),
+              enabled: enabled,
+              emphasised: emphasise,
+              onPressed: widget.tab.onClose!,
+            ),
+          ),
+        ],
+      );
+    }
 
     content = Stack(
       alignment: AlignmentDirectional.bottomCenter,
@@ -516,7 +589,109 @@ class _TabState<T> extends State<_Tab<T>> {
       button: true,
       label: widget.tab.label,
       onTap: enabled ? widget.onTap : null,
-      child: ExcludeSemantics(child: content),
+      explicitChildNodes: closable,
+      onDismiss: enabled ? widget.tab.onClose : null,
+      child: closable ? content : ExcludeSemantics(child: content),
+    );
+  }
+}
+
+/// The close button inside a tab.
+///
+/// Not an icon button: the strip is a single tab stop, and a focusable
+/// button per tab would put every open file back into the Tab order. It takes
+/// pointer input, carries its own semantics node, and the keyboard reaches the
+/// same action with Delete on the strip.
+class _TabClose extends StatefulWidget {
+  const _TabClose({
+    required this.label,
+    required this.enabled,
+    required this.emphasised,
+    required this.onPressed,
+  });
+
+  final String label;
+  final bool enabled;
+
+  /// Whether to draw at full contrast — the tab is selected, hovered, or the
+  /// pointer is a finger and there is no hover to wait for.
+  final bool emphasised;
+
+  final VoidCallback onPressed;
+
+  @override
+  State<_TabClose> createState() => _TabCloseState();
+}
+
+class _TabCloseState extends State<_TabClose> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+    final motion = AstryxMotion.of(context);
+    final density = AstryxTheme.densityOf(context);
+    final hovered = _hovered && density.supportsHover && widget.enabled;
+
+    final color = theme.color(
+      !widget.enabled
+          ? AstryxColorToken.textDisabled
+          : (widget.emphasised
+                ? AstryxColorToken.textPrimary
+                : AstryxColorToken.textSecondary),
+    );
+
+    Widget button = AnimatedOpacity(
+      // Never zero: an action that is only there on hover is not there on a
+      // touch screen, and is not there for anyone reading the strip.
+      opacity: widget.emphasised || !widget.enabled ? 1 : 0.55,
+      duration: motion.duration(AstryxDurationToken.fast),
+      curve: motion.curve(),
+      child: AnimatedContainer(
+        duration: motion.duration(AstryxDurationToken.fast),
+        curve: motion.curve(),
+        width: AstryxIconSize.md.pixels,
+        height: AstryxIconSize.md.pixels,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: hovered
+              ? theme.color(AstryxColorToken.overlayPressed)
+              : const Color(0x00000000),
+          borderRadius: theme.borderRadius(AstryxRadiusToken.full),
+        ),
+        child: const AstryxIcon(
+          AstryxIconName.close,
+          size: AstryxIconSize.xsm,
+        ),
+      ),
+    );
+
+    button = IconTheme.merge(
+      data: IconThemeData(size: AstryxIconSize.xsm.pixels, color: color),
+      child: button,
+    );
+
+    button = MouseRegion(
+      cursor: widget.enabled
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.basic,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        // The tab under it is also tappable; the inner detector wins the arena,
+        // so closing a tab does not select it on the way out.
+        onTap: widget.enabled ? widget.onPressed : null,
+        child: button,
+      ),
+    );
+
+    return Semantics(
+      button: true,
+      enabled: widget.enabled,
+      label: widget.label,
+      onTap: widget.enabled ? widget.onPressed : null,
+      child: ExcludeSemantics(child: button),
     );
   }
 }
