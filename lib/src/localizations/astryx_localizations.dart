@@ -609,6 +609,14 @@ class AstryxLocalizations {
   /// Opens the navigation drawer. Label on the toggle a narrow window gets.
   String get navOpen => 'Open the navigation';
 
+  /// The disclosure title an `AstryxLayout` panel gets when it is too narrow
+  /// to sit beside the body.
+  ///
+  /// A generic word, because the slot is generic — filters, an outline, the
+  /// details of a selection all live in it. Name it with `panelLabel` and this
+  /// is never read.
+  String get layoutPanelLabel => 'Details';
+
   /// The fallback accessible name for a breadcrumb trail.
   String get breadcrumbsLabel => 'Breadcrumbs';
 

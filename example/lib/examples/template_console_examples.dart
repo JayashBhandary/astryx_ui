@@ -286,8 +286,14 @@ class _IncidentCard extends StatelessWidget {
             child: AstryxVStack(
               gap: AstryxSpacingToken.spacing1,
               children: <Widget>[
+                // Wrapping, not truncating. Every badge in this row is a
+                // fact about how urgent the card is; a phone that clips
+                // "Unacknowledged" off the end has hidden the one word that
+                // decides whether anybody picks the incident up.
                 AstryxHStack(
                   gap: AstryxSpacingToken.spacing2,
+                  wrap: true,
+                  runGap: AstryxSpacingToken.spacing1,
                   children: <Widget>[
                     AstryxBadge(
                       'Sev-${incident.severity}',

@@ -322,21 +322,26 @@ class _ChatHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Wrapping, so the title and the controls take a line each rather than
+    // fighting over one. `Flexible` alone cannot save this row: the model
+    // selector and the New chat button have a width they cannot go under, and
+    // below about 500 logical pixels there is no share of the line that leaves
+    // the heading anything to say.
     return AstryxHStack(
       gap: AstryxSpacingToken.spacing3,
       justify: AstryxStackJustify.between,
       mainAxisSize: MainAxisSize.max,
+      wrap: true,
+      runGap: AstryxSpacingToken.spacing2,
       children: <Widget>[
-        Flexible(
-          child: AstryxHStack(
-            gap: AstryxSpacingToken.spacing2,
-            children: <Widget>[
-              const Flexible(
-                child: AstryxHeading('Why did 14:02 fail?', level: 1),
-              ),
-              AstryxBadge('$turns turns'),
-            ],
-          ),
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing2,
+          children: <Widget>[
+            const Flexible(
+              child: AstryxHeading('Why did 14:02 fail?', level: 1),
+            ),
+            AstryxBadge('$turns turns'),
+          ],
         ),
         AstryxHStack(
           gap: AstryxSpacingToken.spacing2,

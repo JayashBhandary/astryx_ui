@@ -7,10 +7,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-Documentation and marketing only. No library code changed, so nothing here can
-break a consumer.
-
 ### Added
+
+- **`AstryxLocalizations.layoutPanelLabel`** — the disclosure title a collapsed
+  `AstryxLayout` panel falls back to. Generic, because the slot is; name the
+  panel with `panelLabel` and it is never read.
 
 - **The landing page now carries the README.** `tool/gen_readme.dart` parses
   `../README.md` into `lib/docs/readme.g.dart` as `DocBlock`s, the same way
@@ -58,6 +59,36 @@ break a consumer.
   home page's Open Graph card.
 
 ### Fixed
+
+- **`AstryxLayout` no longer keeps its panel beside the body at any width.** A
+  320px rail beside a 390px phone left 70px for the page, and everything in it
+  was clipped rather than narrow. Below `panelCollapseBelow` the panel becomes a
+  disclosure banded across the top of the page — the same widget, the same
+  content, collapsed and one press away. Name it with `panelLabel`; open it by
+  default with `panelInitiallyExpanded`. The threshold is a number rather than
+  an entry in a breakpoint table, for the reason `AstryxAppShell.compactBelow`
+  is one: the width at which *your* panel stops fitting is a fact about your
+  panel. Set it to `double.negativeInfinity` for a panel that must never
+  collapse.
+- **`AstryxToolbar` wraps onto a second run rather than running off the edge.**
+  It behaves as a row in every window wide enough for one. Narrower than that, a
+  formatting bar whose last two buttons are past the right-hand side is a bar
+  those buttons have left. Arrow-key traversal is unchanged — it walks the focus
+  nodes, not the geometry.
+- **`AstryxSegmentedControl` gives ground instead of overflowing.** Its segments
+  are `Flexible` and their labels ellipsise, so the control still hugs its
+  labels wherever there is room and shrinks where there is not. A four-segment
+  filter is wider than a phone, and a track that runs off the edge hides the
+  segment on the end — a filter nobody can reach rather than one that looks
+  cramped.
+- **Every documented template now lays out at 360, 390, 600 and 768 logical
+  pixels.** Twelve of them overflowed on a phone: the split screens and the
+  workspaces lost their bodies to a fixed rail, the IDE and the settings area
+  hand-rolled a `Row` that could not collapse, and a dozen bands of badges,
+  pagers and filters ran past the right-hand edge. The IDE's file tree and the
+  settings rail now collapse — the settings rail into an `AstryxAppShell`
+  drawer, with the focus trap and the Escape key that a hand-rolled `Row` never
+  got around to. `example/test/template_responsive_test.dart` keeps it that way.
 
 - **The landing hero quoted a version by hand**, and quoted the wrong one:
   `Pre-alpha · 0.0.6-dev` while `pubspec.yaml` said `0.0.7-dev`. It reads

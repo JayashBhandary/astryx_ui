@@ -342,6 +342,11 @@ class _PortfolioDashboardTemplateState
                 ),
                 AstryxHStack(
                   gap: AstryxSpacingToken.spacing2,
+                  // The badge carries the number and the words carry the
+                  // window it is over. Neither can be cut off, so on a narrow
+                  // column they take a line each.
+                  wrap: true,
+                  runGap: AstryxSpacingToken.spacing1,
                   children: <Widget>[
                     AstryxBadge(
                       signed(change),

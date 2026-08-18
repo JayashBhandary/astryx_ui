@@ -236,6 +236,11 @@ class _TablePageTemplateState extends State<TablePageTemplate> {
             ),
             AstryxHStack(
               gap: AstryxSpacingToken.spacing3,
+              // The page size and the pager are 330 logical pixels between
+              // them, which is a phone with nothing left over. They take a
+              // line each rather than the pager losing its last page button.
+              wrap: true,
+              runGap: AstryxSpacingToken.spacing2,
               children: <Widget>[
                 AstryxSelector<int>(
                   label: 'Rows per page',

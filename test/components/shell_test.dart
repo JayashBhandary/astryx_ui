@@ -242,6 +242,68 @@ void main() {
       expect(find.byType(Scrollable), findsNothing);
     });
 
+    testWidgets('a panel with no room beside the body becomes a disclosure', (
+      tester,
+    ) async {
+      // A 320px rail beside a 390px phone leaves 70px for the body, which is
+      // not a narrow page but a broken one.
+      await pumpAstryxWidget(
+        tester,
+        build(panel: const AstryxText('Filter controls')),
+        surfaceSize: const Size(390, 700),
+      );
+
+      expect(tester.takeException(), isNull);
+      // Collapsed, so the content is not in the tree at all — no layout, no
+      // semantics, no focus stops behind a closed section. The disclosure that
+      // holds it is, under the fallback name.
+      expect(find.text('Filter controls'), findsNothing);
+      expect(find.text('Details'), findsOneWidget);
+      expect(find.text('Row 0'), findsOneWidget);
+    });
+
+    testWidgets('the collapsed panel opens on its header', (tester) async {
+      await pumpAstryxWidget(
+        tester,
+        const AstryxLayout(
+          panel: AstryxText('Filter controls'),
+          panelLabel: 'Filters',
+          child: AstryxText('Row 0'),
+        ),
+        surfaceSize: const Size(390, 700),
+      );
+
+      // Named, so the fallback is never read.
+      expect(find.text('Filters'), findsOneWidget);
+      expect(find.text('Details'), findsNothing);
+
+      await tester.tap(find.byType(AstryxCollapsible));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Filter controls'), findsOneWidget);
+      expect(find.text('Row 0'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets("panelCollapseBelow is the caller's number", (tester) async {
+      // Never collapsing is a legal answer for a panel the caller knows fits.
+      await pumpAstryxWidget(
+        tester,
+        const AstryxLayout(
+          panel: AstryxText('Details'),
+          panelWidth: 120,
+          panelCollapseBelow: double.negativeInfinity,
+          child: AstryxText('Row 0'),
+        ),
+        surfaceSize: const Size(390, 700),
+      );
+
+      expect(find.text('Details'), findsOneWidget);
+      final panel = tester.getRect(find.text('Details'));
+      final body = tester.getRect(find.text('Row 0'));
+      expect(panel.center.dx, greaterThan(body.center.dx));
+    });
+
     testWidgets('a caller-owned controller drives the body', (tester) async {
       // What an `AstryxOutline` in the panel needs: the body's scroll position
       // belongs to the layout, and tracking the reader is impossible without

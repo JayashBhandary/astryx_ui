@@ -220,7 +220,13 @@ class _AstryxSegmentedControlState<T> extends State<AstryxSegmentedControl<T>> {
         if (widget.expand)
           Expanded(child: _segment(context, i))
         else
-          _segment(context, i),
+          // Loose, not tight: the control still hugs its labels wherever
+          // there is room for them, and gives ground rather than overflowing
+          // where there is not. A four-segment filter is 420 logical pixels
+          // of label, which is wider than a phone — and a track that runs off
+          // the edge hides the segment on the end, which is a filter nobody
+          // can reach rather than a filter that looks cramped.
+          Flexible(child: _segment(context, i)),
     ];
 
     // The track is the inset the chosen segment sits in — what makes a
@@ -307,15 +313,20 @@ class _AstryxSegmentedControlState<T> extends State<AstryxSegmentedControl<T>> {
               child: segment.icon!,
             ),
           if (!segment.labelHidden)
-            AstryxText(
-              segment.label,
-              type: AstryxTextType.label,
-              color: !segment.enabled
-                  ? AstryxTextColor.disabled
-                  : chosen
-                  ? AstryxTextColor.primary
-                  : AstryxTextColor.secondary,
-              maxLines: 1,
+            // Flexible for the same reason the segment is: the last thing to
+            // give way is the text, and it gives way by ellipsis rather than
+            // by running past the track it sits in.
+            Flexible(
+              child: AstryxText(
+                segment.label,
+                type: AstryxTextType.label,
+                color: !segment.enabled
+                    ? AstryxTextColor.disabled
+                    : chosen
+                    ? AstryxTextColor.primary
+                    : AstryxTextColor.secondary,
+                maxLines: 1,
+              ),
             ),
         ],
       ),

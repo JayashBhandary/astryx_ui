@@ -454,52 +454,55 @@ class _SettingsSidebarTemplateState extends State<SettingsSidebarTemplate> {
   Widget build(BuildContext context) {
     final heading = _headings[_section]!;
 
-    // The rail sits *beside* the layout rather than in its `panel`. A panel is
+    // The rail sits in the *shell* rather than in the layout's `panel`. Two
+    // reasons, and the second is the one that matters on a phone: a panel is
     // wrapped in a scroll view, so it is handed an unbounded height — and an
     // `AstryxSideNav` pins its own footer with an `Expanded`, which cannot be
-    // laid out against one. Beside it, the rail gets the height of the frame,
-    // which is what it wants.
+    // laid out against one. And a shell already knows what to do when there is
+    // no room beside the content: the rail moves into a drawer, with the
+    // focus trap, the Escape key and the return of focus that a hand-rolled
+    // `Row` never gets around to.
     return SizedBox(
-      height: 560,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          SizedBox(
-            width: 232,
-            // A rail of sections, not a tab strip: these are *places* in a
-            // settings area rather than views of one thing, and there are
-            // more of them than a strip can hold without scrolling sideways.
-            child: AstryxSideNav(
-              label: 'Settings sections',
-              entries: _sections,
-              selectedId: _section,
-              onSelected: (id) => setState(() => _section = id),
-            ),
-          ),
-          const AstryxDivider(axis: Axis.vertical),
-          Expanded(
-            child: AstryxLayout(
-              maxContentWidth: 620,
-              header: AstryxVStack(
-                gap: AstryxSpacingToken.spacing1,
-                children: <Widget>[
-                  AstryxHeading(heading.title, level: 1),
-                  AstryxText(
-                    heading.description,
-                    type: AstryxTextType.supporting,
-                    color: AstryxTextColor.secondary,
-                  ),
-                ],
+      height: 620,
+      child: AstryxAppShell(
+        compactBelow: 640,
+        sidebarWidth: 232,
+        navLabel: 'Settings sections',
+        header: _SettingsBar(title: heading.title),
+        // A rail of sections, not a tab strip: these are *places* in a
+        // settings area rather than views of one thing, and there are
+        // more of them than a strip can hold without scrolling sideways.
+        sidebar: AstryxSideNav(
+          label: 'Settings sections',
+          entries: _sections,
+          selectedId: _section,
+          onSelected: (id) {
+            setState(() => _section = id);
+            // Choosing a section in the drawer is the end of what the drawer
+            // was opened for. Leaving it up would hide the answer.
+            AstryxAppShell.of(context).controller.hide();
+          },
+        ),
+        child: AstryxLayout(
+          maxContentWidth: 620,
+          header: AstryxVStack(
+            gap: AstryxSpacingToken.spacing1,
+            children: <Widget>[
+              AstryxHeading(heading.title, level: 1),
+              AstryxText(
+                heading.description,
+                type: AstryxTextType.supporting,
+                color: AstryxTextColor.secondary,
               ),
-              child: switch (_section) {
-                'notifications' => _notifications(),
-                'appearance' => _appearance(),
-                'danger' => _danger(context),
-                _ => _placeholder(heading.title),
-              },
-            ),
+            ],
           ),
-        ],
+          child: switch (_section) {
+            'notifications' => _notifications(),
+            'appearance' => _appearance(),
+            'danger' => _danger(context),
+            _ => _placeholder(heading.title),
+          },
+        ),
       ),
     );
   }
@@ -617,4 +620,54 @@ class _SettingsSidebarTemplateState extends State<SettingsSidebarTemplate> {
     );
   }
 }
+
+/// The bar above the settings area.
+///
+/// Its only job on a wide window is to say where you are. Its job on a narrow
+/// one is to be the way back to the rail, which has moved into a drawer.
+class _SettingsBar extends StatelessWidget {
+  const _SettingsBar({required this.title});
+
+  /// The open section, so the bar still says where you are once the rail is
+  /// behind a button and the selected row is out of sight.
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    // The shell knows where the navigation went. A header cannot decide
+    // whether to draw a menu button without that, which is why it asks rather
+    // than measuring the window a second time.
+    final shell = AstryxAppShell.of(context);
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
+      child: AstryxHStack(
+        gap: AstryxSpacingToken.spacing2,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          if (shell.compact)
+            const AstryxMobileNavToggle(
+              label: 'Open the settings sections',
+              size: AstryxButtonSize.sm,
+            ),
+          const AstryxText('Settings', type: AstryxTextType.label),
+          if (shell.compact) ...<Widget>[
+            const AstryxText('/', color: AstryxTextColor.secondary),
+            Flexible(
+              child: AstryxText(
+                title,
+                color: AstryxTextColor.secondary,
+                maxLines: 1,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 // #end

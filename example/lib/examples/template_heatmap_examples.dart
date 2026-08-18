@@ -129,24 +129,34 @@ class HeatLegend extends StatelessWidget {
 
     return AstryxHStack(
       gap: AstryxSpacingToken.spacing2,
+      // The ramp is five fixed swatches and two captions, which is more than a
+      // phone has room for on one line. The captions are what wrap: a ramp
+      // split across two lines has stopped reading as a ramp.
+      wrap: true,
+      runGap: AstryxSpacingToken.spacing1,
       children: <Widget>[
         AstryxText(
           low,
           type: AstryxTextType.supporting,
           color: AstryxTextColor.secondary,
         ),
-        for (final step in const <double>[0, 0.25, 0.5, 0.75, 1])
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color.lerp(
-                theme.color(AstryxColorToken.backgroundMuted),
-                theme.color(tint),
-                step,
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing2,
+          children: <Widget>[
+            for (final step in const <double>[0, 0.25, 0.5, 0.75, 1])
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Color.lerp(
+                    theme.color(AstryxColorToken.backgroundMuted),
+                    theme.color(tint),
+                    step,
+                  ),
+                  borderRadius: theme.borderRadius(AstryxRadiusToken.inner),
+                ),
+                child: const SizedBox(width: 24, height: 12),
               ),
-              borderRadius: theme.borderRadius(AstryxRadiusToken.inner),
-            ),
-            child: const SizedBox(width: 24, height: 12),
-          ),
+          ],
+        ),
         AstryxText(
           high,
           type: AstryxTextType.supporting,

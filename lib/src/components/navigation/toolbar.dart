@@ -158,9 +158,17 @@ class _AstryxToolbarState extends State<AstryxToolbar> {
         onKeyEvent: _handleKey,
         child: Padding(
           padding: EdgeInsets.all(theme.spacing(widget.padding)),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+          // A `Wrap` rather than a `Row`, and it behaves as a row in every
+          // window wide enough for one: a single run, hugging its controls.
+          // Narrower than that it takes a second run instead of running off
+          // the edge — a formatting bar whose last two buttons are past the
+          // right-hand side is a bar those buttons have left. Arrow-key
+          // traversal is unchanged, because it walks the focus nodes rather
+          // than the geometry.
+          child: Wrap(
             spacing: theme.spacing(widget.gap),
+            runSpacing: theme.spacing(widget.gap),
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: widget.children,
           ),
         ),

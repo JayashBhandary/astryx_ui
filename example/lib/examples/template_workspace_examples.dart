@@ -93,206 +93,234 @@ class _EditorTemplateState extends State<EditorTemplate> {
     // `scrollable: false`: the canvas scrolls itself, and a scroll view inside
     // a scroll view measures unbounded — which is a layout assertion rather
     // than a subtle bug.
-    return SizedBox(
-      height: 560,
-      child: AstryxLayout(
-        scrollable: false,
-        panelWidth: 260,
-        header: AstryxVStack(
-          gap: AstryxSpacingToken.spacing3,
-          align: AstryxStackAlign.stretch,
-          children: <Widget>[
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing3,
-              justify: AstryxStackJustify.between,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Flexible(
-                  child: AstryxTextInput(
-                    controller: _title,
-                    label: 'Title',
-                    labelHidden: true,
-                    size: AstryxInputSize.lg,
-                    placeholder: 'Untitled',
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // The same width the layout's own panel makes its mind up at, so the
+        // frame and the panel change together rather than one at a time.
+        final compact = constraints.maxWidth < 640;
+
+        return SizedBox(
+          // A header that has wrapped onto three lines and a panel that has
+          // become a band above the canvas both cost height the wide frame
+          // never had to find. Bands do not shrink, so the frame grows.
+          height: compact ? 720 : 560,
+          child: _layout(context, compact: compact),
+        );
+      },
+    );
+  }
+
+  Widget _layout(BuildContext context, {required bool compact}) {
+    return AstryxLayout(
+      scrollable: false,
+      panelWidth: 260,
+      panelLabel: 'Document',
+      header: AstryxVStack(
+        gap: AstryxSpacingToken.spacing3,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing3,
+            justify: AstryxStackJustify.between,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Flexible(
+                child: AstryxTextInput(
+                  controller: _title,
+                  label: 'Title',
+                  labelHidden: true,
+                  size: AstryxInputSize.lg,
+                  placeholder: 'Untitled',
                 ),
-                AstryxBadge(
-                  _dirty ? 'Unsaved changes' : 'Saved',
-                  variant: _dirty
-                      ? AstryxBadgeVariant.warning
-                      : AstryxBadgeVariant.success,
-                  icon: AstryxIcon(
-                    _dirty ? AstryxIconName.warning : AstryxIconName.success,
-                  ),
+              ),
+              AstryxBadge(
+                _dirty ? 'Unsaved changes' : 'Saved',
+                variant: _dirty
+                    ? AstryxBadgeVariant.warning
+                    : AstryxBadgeVariant.success,
+                icon: AstryxIcon(
+                  _dirty ? AstryxIconName.warning : AstryxIconName.success,
                 ),
-              ],
-            ),
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing3,
-              justify: AstryxStackJustify.between,
-              mainAxisSize: MainAxisSize.max,
-              wrap: true,
-              runGap: AstryxSpacingToken.spacing2,
-              children: <Widget>[
-                // One tab stop for the whole band, however many controls sit
-                // in it. Tab reaches the toolbar and leaves it; the arrows
-                // move inside.
-                AstryxToolbar(
-                  label: 'Formatting',
-                  children: <Widget>[
-                    for (final mark in const <List<String>>[
-                      <String>['Bold', '**'],
-                      <String>['Italic', '_'],
-                      <String>['Code', '`'],
-                    ])
-                      AstryxButton(
-                        label: mark[0],
-                        size: AstryxButtonSize.sm,
-                        variant: AstryxButtonVariant.ghost,
-                        enabled: _mode == 'write',
-                        onPressed: () => _wrap(mark[1]),
-                      ),
-                    const AstryxToolbarDivider(),
-                    AstryxMoreMenu(
-                      label: 'More formatting',
+              ),
+            ],
+          ),
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing3,
+            justify: AstryxStackJustify.between,
+            mainAxisSize: MainAxisSize.max,
+            wrap: true,
+            runGap: AstryxSpacingToken.spacing2,
+            children: <Widget>[
+              // One tab stop for the whole band, however many controls sit
+              // in it. Tab reaches the toolbar and leaves it; the arrows
+              // move inside.
+              AstryxToolbar(
+                label: 'Formatting',
+                children: <Widget>[
+                  for (final mark in const <List<String>>[
+                    <String>['Bold', '**'],
+                    <String>['Italic', '_'],
+                    <String>['Code', '`'],
+                  ])
+                    AstryxButton(
+                      label: mark[0],
+                      size: AstryxButtonSize.sm,
+                      variant: AstryxButtonVariant.ghost,
                       enabled: _mode == 'write',
-                      entries: <AstryxMenuEntry>[
-                        AstryxMenuItem(
-                          label: 'Strikethrough',
-                          onSelected: () => _wrap('~~'),
-                        ),
-                        AstryxMenuItem(
-                          label: 'Quote',
-                          onSelected: () => _wrap('\n> '),
-                        ),
-                      ],
+                      onPressed: () => _wrap(mark[1]),
+                    ),
+                  const AstryxToolbarDivider(),
+                  AstryxMoreMenu(
+                    label: 'More formatting',
+                    enabled: _mode == 'write',
+                    entries: <AstryxMenuEntry>[
+                      AstryxMenuItem(
+                        label: 'Strikethrough',
+                        onSelected: () => _wrap('~~'),
+                      ),
+                      AstryxMenuItem(
+                        label: 'Quote',
+                        onSelected: () => _wrap('\n> '),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              AstryxSegmentedControl<String>(
+                label: 'Canvas',
+                value: _mode,
+                size: AstryxButtonSize.sm,
+                onChanged: (value) => setState(() => _mode = value),
+                segments: const <AstryxSegment<String>>[
+                  AstryxSegment(value: 'write', label: 'Write'),
+                  AstryxSegment(value: 'preview', label: 'Preview'),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      panel: AstryxVStack(
+        gap: AstryxSpacingToken.spacing5,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          AstryxSection(
+            title: 'Document',
+            level: 2,
+            child: AstryxVStack(
+              gap: AstryxSpacingToken.spacing3,
+              align: AstryxStackAlign.stretch,
+              children: <Widget>[
+                AstryxSelector<String>(
+                  label: 'Status',
+                  value: _status,
+                  onChanged: (value) => setState(() {
+                    _status = value ?? _status;
+                    _dirty = true;
+                  }),
+                  options: const <AstryxSelectorOption<String>>[
+                    AstryxSelectorOption(value: 'draft', label: 'Draft'),
+                    AstryxSelectorOption(value: 'review', label: 'In review'),
+                    AstryxSelectorOption(
+                      value: 'published',
+                      label: 'Published',
                     ),
                   ],
                 ),
-                AstryxSegmentedControl<String>(
-                  label: 'Canvas',
-                  value: _mode,
-                  size: AstryxButtonSize.sm,
-                  onChanged: (value) => setState(() => _mode = value),
-                  segments: const <AstryxSegment<String>>[
-                    AstryxSegment(value: 'write', label: 'Write'),
-                    AstryxSegment(value: 'preview', label: 'Preview'),
+                AstryxCheckboxList(
+                  label: 'Tags',
+                  values: _tags,
+                  onChanged: (values) => setState(() {
+                    _tags
+                      ..clear()
+                      ..addAll(values);
+                    _dirty = true;
+                  }),
+                  options: const <AstryxCheckboxOption<String>>[
+                    AstryxCheckboxOption(value: 'deploys', label: 'Deploys'),
+                    AstryxCheckboxOption(value: 'oncall', label: 'On-call'),
+                    AstryxCheckboxOption(
+                      value: 'runbook',
+                      label: 'Runbook',
+                    ),
                   ],
                 ),
               ],
             ),
-          ],
-        ),
-        panel: AstryxVStack(
-          gap: AstryxSpacingToken.spacing5,
-          align: AstryxStackAlign.stretch,
-          children: <Widget>[
-            AstryxSection(
-              title: 'Document',
-              level: 2,
-              child: AstryxVStack(
-                gap: AstryxSpacingToken.spacing3,
-                align: AstryxStackAlign.stretch,
-                children: <Widget>[
-                  AstryxSelector<String>(
-                    label: 'Status',
-                    value: _status,
-                    onChanged: (value) => setState(() {
-                      _status = value ?? _status;
-                      _dirty = true;
-                    }),
-                    options: const <AstryxSelectorOption<String>>[
-                      AstryxSelectorOption(value: 'draft', label: 'Draft'),
-                      AstryxSelectorOption(value: 'review', label: 'In review'),
-                      AstryxSelectorOption(
-                        value: 'published',
-                        label: 'Published',
-                      ),
-                    ],
-                  ),
-                  AstryxCheckboxList(
-                    label: 'Tags',
-                    values: _tags,
-                    onChanged: (values) => setState(() {
-                      _tags
-                        ..clear()
-                        ..addAll(values);
-                      _dirty = true;
-                    }),
-                    options: const <AstryxCheckboxOption<String>>[
-                      AstryxCheckboxOption(value: 'deploys', label: 'Deploys'),
-                      AstryxCheckboxOption(value: 'oncall', label: 'On-call'),
-                      AstryxCheckboxOption(
-                        value: 'runbook',
-                        label: 'Runbook',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const AstryxDivider(),
-            AstryxSection(
-              title: 'History',
-              level: 2,
-              child: AstryxMetadataList(
-                items: <AstryxMetadataItem>[
-                  AstryxMetadataItem.text(
-                    label: 'Created',
-                    value: '12 March, by Grace Hopper',
-                  ),
-                  AstryxMetadataItem.text(
-                    label: 'Last edited',
-                    value: '4 minutes ago, by you',
-                  ),
-                  AstryxMetadataItem.text(label: 'Revisions', value: '31'),
-                ],
-              ),
-            ),
-          ],
-        ),
-        footer: AstryxHStack(
-          gap: AstryxSpacingToken.spacing3,
-          justify: AstryxStackJustify.between,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            AstryxText(
-              '$_words words',
-              type: AstryxTextType.supporting,
-              color: AstryxTextColor.secondary,
-            ),
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing2,
-              children: <Widget>[
-                AstryxButton(
-                  label: 'Discard',
-                  size: AstryxButtonSize.sm,
-                  enabled: _dirty,
-                  onPressed: () => setState(() => _dirty = false),
+          ),
+          const AstryxDivider(),
+          AstryxSection(
+            title: 'History',
+            level: 2,
+            child: AstryxMetadataList(
+              items: <AstryxMetadataItem>[
+                AstryxMetadataItem.text(
+                  label: 'Created',
+                  value: '12 March, by Grace Hopper',
                 ),
-                AstryxButton(
-                  label: 'Save',
-                  variant: AstryxButtonVariant.primary,
-                  size: AstryxButtonSize.sm,
-                  enabled: _dirty,
-                  onPressed: () => setState(() => _dirty = false),
+                AstryxMetadataItem.text(
+                  label: 'Last edited',
+                  value: '4 minutes ago, by you',
                 ),
+                AstryxMetadataItem.text(label: 'Revisions', value: '31'),
               ],
             ),
-          ],
-        ),
-        // The canvas, and the only thing on the screen that scrolls.
+          ),
+        ],
+      ),
+      footer: AstryxHStack(
+        gap: AstryxSpacingToken.spacing3,
+        justify: AstryxStackJustify.between,
+        mainAxisSize: MainAxisSize.max,
+        // The count and the two actions take a line each rather than the
+        // count being pushed off the start of the band.
+        wrap: true,
+        runGap: AstryxSpacingToken.spacing2,
+        children: <Widget>[
+          AstryxText(
+            '$_words words',
+            type: AstryxTextType.supporting,
+            color: AstryxTextColor.secondary,
+          ),
+          AstryxHStack(
+            gap: AstryxSpacingToken.spacing2,
+            children: <Widget>[
+              AstryxButton(
+                label: 'Discard',
+                size: AstryxButtonSize.sm,
+                enabled: _dirty,
+                onPressed: () => setState(() => _dirty = false),
+              ),
+              AstryxButton(
+                label: 'Save',
+                variant: AstryxButtonVariant.primary,
+                size: AstryxButtonSize.sm,
+                enabled: _dirty,
+                onPressed: () => setState(() => _dirty = false),
+              ),
+            ],
+          ),
+        ],
+      ),
+      // The canvas, and the only thing on the screen that scrolls — in both
+      // modes, and for the same reason. `minLines` becomes a minimum in
+      // *pixels* once it has been measured, and it wins against the frame: a
+      // field asking for twelve lines inside a band with room for nine
+      // overflows rather than shrinking. Given a scroll view it keeps the
+      // height it asked for and the reader gets at the rest by scrolling.
+      child: SingleChildScrollView(
         child: _mode == 'write'
             ? AstryxTextArea(
                 controller: _body,
                 label: 'Document body',
                 labelHidden: true,
-                minLines: 12,
+                // Fewer lines on a phone all the same: a canvas that opens
+                // taller than the window it is in has put the Save button
+                // behind a scroll nobody was told about.
+                minLines: compact ? 6 : 12,
                 maxLines: 40,
               )
-            : SingleChildScrollView(
-                child: AstryxMarkdown(_body.text),
-              ),
+            : AstryxMarkdown(_body.text),
       ),
     );
   }
@@ -550,7 +578,7 @@ class IdeTemplate extends StatefulWidget {
 }
 
 class _IdeTemplateState extends State<IdeTemplate> {
-  static const List<AstryxTreeNode> _tree = <AstryxTreeNode>[
+  static const List<AstryxTreeNode> _nodes = <AstryxTreeNode>[
     AstryxTreeNode(
       id: 'lib',
       label: 'lib',
@@ -634,76 +662,114 @@ void main() {
     // so it hands that body an unbounded height — and every region here is an
     // `Expanded` or a fixed band measured against the frame. The bounded
     // `SizedBox` is what the whole layout is built against.
-    return SizedBox(
-      height: 520,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  width: _treeWidth,
-                  child: AstryxVStack(
-                    gap: AstryxSpacingToken.spacing0,
-                    align: AstryxStackAlign.stretch,
+    //
+    // The `LayoutBuilder` is what decides whether there are three regions or
+    // one. A resizable tree needs a window to be resized *within*: at 390
+    // logical pixels the handle's own minimum of 140 is more than a third of
+    // the screen, and what is left is not a narrow editor but no editor.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 640;
+
+        return SizedBox(
+          // The bands do not shrink — a tab strip and a status bar cost what
+          // they cost — so a narrow frame is a taller one rather than an
+          // overflowing one.
+          height: compact ? 620 : 520,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // Narrow, the tree is a disclosure above the editor rather than a
+              // column beside it: the same nodes, the same selection, and the
+              // editor keeps the whole width once a file is chosen.
+              if (compact) ...<Widget>[
+                AstryxCollapsible(
+                  title: 'Explorer',
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 180),
+                    child: SingleChildScrollView(child: _tree(context)),
+                  ),
+                ),
+                const AstryxDivider(),
+                Expanded(child: _editor(context)),
+              ] else
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: AstryxText(
-                          'Explorer',
-                          type: AstryxTextType.supporting,
-                          color: AstryxTextColor.secondary,
+                      SizedBox(
+                        width: _treeWidth,
+                        child: AstryxVStack(
+                          gap: AstryxSpacingToken.spacing0,
+                          align: AstryxStackAlign.stretch,
+                          children: <Widget>[
+                            const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: AstryxText(
+                                'Explorer',
+                                type: AstryxTextType.supporting,
+                                color: AstryxTextColor.secondary,
+                              ),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: _tree(context),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: AstryxTreeList(
-                            label: 'Files',
-                            nodes: _tree,
-                            initiallyExpanded: const <String>{
-                              'lib',
-                              'components',
-                            },
-                            density: AstryxItemDensity.compact,
-                            selected: _file,
-                            onSelectedChanged: _openFile,
-                          ),
-                        ),
+                      // Tab reaches the handle and the arrows move it. A
+                      // divider only a pointer can drag is a layout only some
+                      // people can use, which is the part hand-rolled
+                      // splitters always miss.
+                      AstryxResizeHandle(
+                        label: 'Resize the file tree',
+                        size: _treeWidth,
+                        min: 140,
+                        max: 320,
+                        onResize: (width) => setState(() => _treeWidth = width),
                       ),
+                      Expanded(child: _editor(context)),
                     ],
                   ),
                 ),
-                // Tab reaches the handle and the arrows move it. A divider
-                // only a pointer can drag is a layout only some people can
-                // use, which is the part hand-rolled splitters always miss.
+              // Nothing to drag on a touch screen with no pointer to spare, so
+              // narrow the drawer is a fixed band and the handle goes away
+              // rather than becoming a control that cannot be used.
+              if (!compact)
                 AstryxResizeHandle(
-                  label: 'Resize the file tree',
-                  size: _treeWidth,
-                  min: 140,
-                  max: 320,
-                  onResize: (width) => setState(() => _treeWidth = width),
-                ),
-                Expanded(child: _editor(context)),
-              ],
-            ),
+                  label: 'Resize the panel',
+                  edge: AstryxResizeEdge.bottom,
+                  size: _drawerHeight,
+                  min: 80,
+                  max: 260,
+                  onResize: (height) => setState(() => _drawerHeight = height),
+                )
+              else
+                const AstryxDivider(),
+              SizedBox(
+                height: compact ? 132 : _drawerHeight,
+                child: _panel(context),
+              ),
+              const AstryxDivider(),
+              _statusBar(context, compact: compact),
+            ],
           ),
-          AstryxResizeHandle(
-            label: 'Resize the panel',
-            edge: AstryxResizeEdge.bottom,
-            size: _drawerHeight,
-            min: 80,
-            max: 260,
-            onResize: (height) => setState(() => _drawerHeight = height),
-          ),
-          SizedBox(height: _drawerHeight, child: _panel(context)),
-          const AstryxDivider(),
-          _statusBar(context),
-        ],
-      ),
+        );
+      },
     );
   }
+
+  /// The file tree, shared by the column and the disclosure.
+  Widget _tree(BuildContext context) => AstryxTreeList(
+    label: 'Files',
+    nodes: _nodes,
+    initiallyExpanded: const <String>{'lib', 'components'},
+    density: AstryxItemDensity.compact,
+    selected: _file,
+    onSelectedChanged: _openFile,
+  );
 
   /// Opens [id] in a tab, if it is a file rather than a folder.
   void _openFile(String id) {
@@ -842,29 +908,39 @@ void main() {
   }
 
   /// The band along the bottom: branch, problems, and where the caret is.
-  Widget _statusBar(BuildContext context) {
+  ///
+  /// Narrow, the caret position goes rather than being squeezed: it is the one
+  /// item here a reader can get from the editor itself, and a status bar that
+  /// wraps onto two lines has stopped being a band.
+  Widget _statusBar(BuildContext context, {required bool compact}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: AstryxHStack(
-        gap: AstryxSpacingToken.spacing4,
+        gap: compact
+            ? AstryxSpacingToken.spacing3
+            : AstryxSpacingToken.spacing4,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const AstryxStatusDot(
             AstryxStatusDotVariant.success,
             label: 'Analyser is clean',
           ),
-          const AstryxText(
-            'main',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
+          const Flexible(
+            child: AstryxText(
+              'main',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+              maxLines: 1,
+            ),
           ),
           const Spacer(),
-          const AstryxText(
-            'Ln 41, Col 12',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-            tabularNumbers: true,
-          ),
+          if (!compact)
+            const AstryxText(
+              'Ln 41, Col 12',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+              tabularNumbers: true,
+            ),
           AstryxText(
             _file.isEmpty ? '—' : 'Dart',
             type: AstryxTextType.supporting,
@@ -875,4 +951,5 @@ void main() {
     );
   }
 }
+
 // #end
