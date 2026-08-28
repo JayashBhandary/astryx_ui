@@ -22,6 +22,8 @@
 /components/Banner
 /components/BaseTypeahead
 /components/Blockquote
+/components/BottomSheet
+/components/BottomSheetSwitcher
 /components/BreadcrumbItem
 /components/Breadcrumbs
 /components/Button
@@ -45,9 +47,11 @@
 /components/ChatSystemMessage
 /components/ChatTokenizedText
 /components/ChatToolCalls
+/components/CheckboxIndicator
 /components/CheckboxInput
 /components/CheckboxList
 /components/CheckboxListItem
+/components/CheckIndicator
 /components/Citation
 /components/ClickableCard
 /components/Code
@@ -84,9 +88,9 @@
 /components/FormLayout
 /components/Grid
 /components/GridSpan
-/components/HStack
 /components/Heading
 /components/HoverCard
+/components/HStack
 /components/Icon
 /components/IconButton
 /components/InputGroup
@@ -123,6 +127,7 @@
 /components/Popover
 /components/PowerSearch
 /components/ProgressBar
+/components/RadioIndicator
 /components/RadioList
 /components/RadioListItem
 /components/ResizeHandle
@@ -142,15 +147,17 @@
 /components/Spinner
 /components/StackItem
 /components/StatusDot
+/components/Step
+/components/Stepper
 /components/Switch
 /components/SyntaxTheme
 /components/Tab
-/components/TabList
-/components/TabMenu
 /components/Table
 /components/TableCell
 /components/TableHeaderCell
 /components/TableRow
+/components/TabList
+/components/TabMenu
 /components/Text
 /components/TextArea
 /components/TextInput
@@ -175,8 +182,6 @@
 /components/TreeList
 /components/Typeahead
 /components/TypeaheadItem
-/components/VStack
-/components/VisuallyHidden
 /components/useAppShellMobile
 /components/useClickableContainer
 /components/useCollapsible
@@ -202,8 +207,8 @@
 /components/useStreamingText
 /components/useTableColumnResize
 /components/useTableColumnSettings
-/components/useTableFilterState
 /components/useTableFiltering
+/components/useTableFilterState
 /components/useTableGroupedRows
 /components/useTablePagination
 /components/useTableRowExpansion
@@ -220,6 +225,8 @@
 /components/useTooltip
 /components/useTranslator
 /components/useTreeFocus
+/components/VisuallyHidden
+/components/VStack
 /docs
 /docs/browser-support
 /docs/cli

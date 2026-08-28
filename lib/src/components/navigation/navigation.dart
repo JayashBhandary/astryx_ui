@@ -11,6 +11,7 @@ export 'nav_icon.dart';
 export 'pagination.dart';
 export 'segmented_control.dart';
 export 'side_nav.dart';
+export 'stepper.dart';
 export 'tab_menu.dart';
 export 'toolbar.dart';
 export 'top_nav.dart';

@@ -1093,3 +1093,77 @@ class FormLayoutDirectionsExample extends StatelessWidget {
 
 ---
 
+## The indicators
+
+`lib/src/components/forms/indicator.dart` · upstream `CheckboxIndicator / RadioIndicator / CheckIndicator`
+
+The stateful control visuals, as widgets in their own right.
+
+```dart
+class IndicatorDemoExample extends StatelessWidget {
+  const IndicatorDemoExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // The three visuals, on their own. Each is decoration: it owns no role, no
+    // focus and no gesture, and the control that renders one keeps all of
+    // that. Reach for AstryxCheckbox or AstryxRadioList first.
+    return const AstryxHStack(
+      gap: AstryxSpacingToken.spacing6,
+      children: <Widget>[
+        AstryxVStack(
+          gap: AstryxSpacingToken.spacing2,
+          align: AstryxStackAlign.center,
+          children: <Widget>[
+            AstryxCheckboxIndicator(state: AstryxIndicatorState.checked),
+            AstryxText('Checkbox', type: AstryxTextType.supporting),
+          ],
+        ),
+        AstryxVStack(
+          gap: AstryxSpacingToken.spacing2,
+          align: AstryxStackAlign.center,
+          children: <Widget>[
+            AstryxRadioIndicator(state: AstryxIndicatorState.checked),
+            AstryxText('Radio', type: AstryxTextType.supporting),
+          ],
+        ),
+        AstryxVStack(
+          gap: AstryxSpacingToken.spacing2,
+          align: AstryxStackAlign.center,
+          children: <Widget>[
+            AstryxCheckIndicator(state: AstryxIndicatorState.checked),
+            AstryxText('Check', type: AstryxTextType.supporting),
+          ],
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Careful:** Reach for AstryxCheckbox (references/forms.md), AstryxRadioList (references/forms.md) or AstryxSelectableCard (references/surfaces.md) first. They are these visuals plus the label, the semantics, the focus ring and the tap target, and hand-building those around a bare indicator is how a control ends up unreachable by keyboard.
+- **Accessibility:** All three are **decorative**: each is hidden from assistive technology and owns no role, no focus and no gesture. An indicator announced next to the control that owns the name is the same thing said twice. `hovered` is the host’s to decide, because only it knows whether the pointer is over the row or only over the box — gate it on `AstryxTheme.densityOf(context).supportsHover`, since touch has no hover at all.
+
+### AstryxCheckboxIndicator, AstryxRadioIndicator
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `state` **(required)** | `AstryxIndicatorState` | — | Which state to draw: `unchecked`, `checked` or — checkbox only — `indeterminate`. |
+| `size` | `AstryxIndicatorSize` | `AstryxIndicatorSize.md` | The control size: `sm` is a 20px box, `md` a 24px one. |
+| `enabled` | `bool` | `true` | Whether the hosting control accepts input. Purely visual — the host still owns the disabled semantics. |
+| `hovered` | `bool` | `false` | Whether hover styling applies. The host decides. |
+| `child` | `Widget?` | — | Drawn inside the chrome instead of the state mark — a spinner, while a change is in flight. |
+
+### AstryxCheckIndicator
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `state` **(required)** | `AstryxIndicatorState` | — | Which state to draw. Never `indeterminate`. |
+| `size` | `AstryxIndicatorSize` | `AstryxIndicatorSize.md` | The control size. The glyph is `sm` at both — this only reserves the slot. |
+| `enabled` | `bool` | `true` | Whether the hosting control accepts input. |
+| `child` | `Widget?` | — | Drawn in the slot instead of the mark. |
+
+---
+

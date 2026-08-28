@@ -945,3 +945,95 @@ class _PaginationDemoExampleState extends State<PaginationDemoExample> {
 
 ---
 
+## AstryxStepper
+
+`lib/src/components/navigation/stepper.dart` · upstream `Stepper / Step`
+
+Progress through a sequence of steps, and the steps themselves.
+
+```dart
+class StepperDemoExample extends StatefulWidget {
+  const StepperDemoExample({super.key});
+
+  @override
+  State<StepperDemoExample> createState() => _StepperDemoExampleState();
+}
+
+class _StepperDemoExampleState extends State<StepperDemoExample> {
+  int _step = 1;
+
+  static const List<AstryxStep> _steps = <AstryxStep>[
+    AstryxStep(label: 'Account'),
+    AstryxStep(label: 'Profile', description: 'Name and photo'),
+    AstryxStep(label: 'Review'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    // A stepper is controlled: it draws the index it is given and reports
+    // nothing on its own, which is what lets a flow validate before advancing.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing5,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        AstryxStepper(activeStep: _step, steps: _steps),
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing2,
+          justify: AstryxStackJustify.end,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            AstryxButton(
+              label: 'Back',
+              variant: AstryxButtonVariant.secondary,
+              onPressed: _step == 0
+                  ? null
+                  : () => setState(() => _step -= 1),
+            ),
+            AstryxButton(
+              label: _step >= _steps.length - 1 ? 'Finish' : 'Next',
+              onPressed: _step > _steps.length - 1
+                  ? null
+                  : () => setState(() => _step += 1),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** The glyphs are decorative, so every one of them also reaches assistive technology as words: a step announces its position ("Step 2 of 3"), its label, its description, whether it is optional, whether the flow has passed it, and its status. Colour is never the only signal.
+- **Note:** The connector paints at its final length on the first frame: a stepper that opens on step three shows three filled segments rather than playing its own history back at the reader. Only a change animates.
+
+### AstryxStepper
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `activeStep` **(required)** | `int` | — | The zero-based index of the step the flow is on. Past the last step marks the flow complete. |
+| `steps` **(required)** | `List<AstryxStep>` | — | The steps, in order. Each one’s index is its position here. |
+| `orientation` | `AstryxStepperOrientation` | `AstryxStepperOrientation.horizontal` | Which way the stepper runs: `horizontal` or `vertical`. |
+| `indicatorPosition` | `AstryxStepperIndicatorPosition` | `AstryxStepperIndicatorPosition.separated` | Whether the indicator sits in the label row (`separated`) or in the connector (`onTrack`). |
+| `onStepPressed` | `ValueChanged<int>?` | — | Called with the index of a step the user pressed. Null makes the stepper a read-out. |
+| `label` | `String?` | — | The stepper’s accessible name. Null uses the localised "Progress". |
+| `density` | `AstryxStepDensity` | `AstryxStepDensity.balanced` | The vertical rhythm the steps take: `compact`, `balanced` or `spacious`. |
+
+### AstryxStep
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `label` **(required)** | `String` | — | The step’s name, and its accessible name. |
+| `description` | `String?` | — | A supporting line below the label. |
+| `status` | `AstryxStepStatus?` | — | A semantic colour — `accent`, `success`, `warning` or `error` — and, in `auto`, a matching glyph. |
+| `enabled` | `bool` | `true` | Whether the step can be chosen. A disabled step is still shown and still counted. |
+| `optional` | `bool` | `false` | Whether the step may be skipped, which appends an "Optional" note. |
+| `trailing` | `Widget?` | — | Content at the end of the label row — a timestamp, a badge. |
+| `indicator` | `AstryxStepIndicator` | `AstryxStepIndicator.auto` | Which preset to draw: `auto` (a number until the step is passed, then a check), `number`, or `none`. |
+| `icon` | `Widget?` | — | An indicator of your own, drawn instead of the preset and sized into the same 16px box. |
+| `content` | `Widget?` | — | Content below the label — the fields of this step of a form. |
+| `density` | `AstryxStepDensity?` | — | Overrides the stepper’s density for this step. |
+
+---
+

@@ -8,6 +8,7 @@ library;
 
 import 'dart:async';
 
+import 'package:astryx_ui/src/components/forms/indicator.dart';
 import 'package:astryx_ui/src/components/layout/divider.dart';
 import 'package:astryx_ui/src/components/layout/icon.dart';
 import 'package:astryx_ui/src/components/layout/text.dart';
@@ -183,7 +184,11 @@ class _AstryxMenuSurfaceState extends State<AstryxMenuSurface> {
     }
     // Close first, then act. The callback may push a route or open another
     // overlay, and a menu still on screen behind it is a bug users notice.
-    widget.onClose();
+    //
+    // A checkbox row is the exception: it stays open so several settings can be
+    // toggled in one visit, which is also why the surface rebuilds from the
+    // caller's new state rather than tracking a checked state of its own.
+    if (item.closeOnSelect) widget.onClose();
     item.onSelected?.call();
   }
 
@@ -278,6 +283,13 @@ class _AstryxMenuSurfaceState extends State<AstryxMenuSurface> {
     final theme = AstryxTheme.of(context);
     final padding = theme.spacing(AstryxSpacingToken.spacing1);
 
+    // One gutter for the whole menu, decided once: a menu with no selectable
+    // row keeps the tight layout it has always had, and a menu with one gives
+    // every row the same indent so the labels line up.
+    final reserveIndicator = _items.any(
+      (item) => item.role != AstryxMenuItemRole.action,
+    );
+
     var index = -1;
     final rows = <Widget>[];
     for (final entry in widget.entries) {
@@ -290,6 +302,7 @@ class _AstryxMenuSurfaceState extends State<AstryxMenuSurface> {
               item: entry,
               highlighted: i == _highlighted,
               submenuOpen: i == _openSubmenu,
+              reserveIndicator: reserveIndicator,
               onTap: () => _activate(i),
               onHover: () {
                 if (!entry.enabled) return;
@@ -377,6 +390,7 @@ class _MenuRow extends StatelessWidget {
     required this.item,
     required this.highlighted,
     required this.submenuOpen,
+    required this.reserveIndicator,
     required this.onTap,
     required this.onHover,
     required this.onClose,
@@ -385,6 +399,7 @@ class _MenuRow extends StatelessWidget {
 
   final AstryxMenuItem item;
   final bool highlighted;
+  final bool reserveIndicator;
   final bool submenuOpen;
   final VoidCallback onTap;
   final VoidCallback onHover;
@@ -417,6 +432,34 @@ class _MenuRow extends StatelessWidget {
       child: Row(
         spacing: theme.spacing(AstryxSpacingToken.spacing2),
         children: <Widget>[
+          // The state slot, before the icon. One fixed-width gutter for every
+          // row once any row in the menu reports state, so the labels stay in
+          // one column instead of stepping in and out as settings are toggled
+          // — and so a checkbox row and a radio row in the same menu agree.
+          if (reserveIndicator)
+            SizedBox(
+              width: AstryxIndicatorSize.sm.extent,
+              child: Center(
+                child: switch (item.role) {
+                  AstryxMenuItemRole.checkbox => AstryxCheckboxIndicator(
+                    state: item.checked
+                        ? AstryxIndicatorState.checked
+                        : AstryxIndicatorState.unchecked,
+                    size: AstryxIndicatorSize.sm,
+                    enabled: item.enabled,
+                  ),
+                  AstryxMenuItemRole.radio => AstryxCheckIndicator(
+                    state: item.checked
+                        ? AstryxIndicatorState.checked
+                        : AstryxIndicatorState.unchecked,
+                    enabled: item.enabled,
+                  ),
+                  // An action reports nothing, and an empty box beside it
+                  // would say it does. It pays the gutter, and draws nothing.
+                  AstryxMenuItemRole.action => const SizedBox.shrink(),
+                },
+              ),
+            ),
           if (item.icon != null)
             IconTheme.merge(
               data: IconThemeData(
@@ -485,7 +528,12 @@ class _MenuRow extends StatelessWidget {
     );
 
     row = Semantics(
-      button: true,
+      // A row that reports state is announced as what it reports. A checkbox
+      // row said to be a button is a row whose "on" is invisible to a screen
+      // reader, which is the whole reason the role exists.
+      button: item.role == AstryxMenuItemRole.action,
+      checked: item.role == AstryxMenuItemRole.action ? null : item.checked,
+      inMutuallyExclusiveGroup: item.role == AstryxMenuItemRole.radio,
       enabled: item.enabled,
       label: item.label,
       hint: item.description,

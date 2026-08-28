@@ -153,7 +153,11 @@ A dropdown is bounded by its trigger; this one is anchored to a point, so `maxWi
 
 ## On the web
 
-The browser’s own menu appears over this one unless the app turns it off once at startup.
+A secondary click is the browser’s before it is the application’s, so without help the browser raises its Back / Reload / Inspect menu on top of this one — two menus for one click, and the one the user wanted underneath.
+
+**The widget handles it.** While one is mounted and able to open, the browser’s menu is suppressed; when the last one leaves the tree, it comes back. Flutter offers no way to suppress it over one region only — `BrowserContextMenu` is whole-document — so "while the page has a context menu of its own" is the narrowest scope available. `suppressBrowserMenu: false` opts one widget out.
+
+An app that wants the browser’s menu off everywhere should still say so once at startup. This will not turn back on what it did not turn off, so the two do not fight.
 
 ```dart
 if (kIsWeb) await BrowserContextMenu.disableContextMenu();
@@ -184,6 +188,7 @@ if (kIsWeb) await BrowserContextMenu.disableContextMenu();
 | `enabled` | `bool` | `true` | Whether the menu can be opened. |
 | `width` | `double?` | — | A fixed width. Null sizes the menu up to `maxWidth`. |
 | `maxWidth` | `double` | `280` | The widest the menu may become. |
+| `suppressBrowserMenu` | `bool` | `true` | Whether to keep the browser’s own right-click menu out of the way. Web only, and whole-document rather than local. |
 | `maxHeight` | `double` | `300` | The tallest the menu may be before it scrolls. |
 | `longPressOnTouch` | `bool` | `true` | Whether a long-press opens it in touch density. |
 | `onOpenChange` | `ValueChanged<bool>?` | — | Called whenever the menu opens or closes. |

@@ -275,6 +275,67 @@ class DropdownMenuPlacementExample extends StatelessWidget {
 >
 > Sections and dividers are skipped by the keyboard, so arrowing never lands on something that does nothing. A disabled item stays visible and is announced as disabled — with a `description` it can even say why.
 
+## Selectable rows
+
+A menu **performs actions**, and a row that reports a setting is the exception rather than the shape to reach for. Where the choice *is* the point — one value out of a list, with the current one shown — use [AstryxSelector](selector.md), which announces itself as a listbox and keeps the value on its trigger. These two roles are for the settings a menu really owns: a view’s density, whether a column is shown, how a list is sorted.
+
+`AstryxMenuItem.checkbox` reports a setting that is independently on or off, and **leaves the menu open** so several can be toggled in one visit. `AstryxMenuItem.radio` reports one choice out of the rows around it, and closes the menu — the choice has been made. Both are controlled: the row draws the `checked` it is given and asks you to change it. `closeOnSelect` overrides either default.
+
+```dart
+class DropdownMenuSelectableExample extends StatefulWidget {
+  const DropdownMenuSelectableExample({super.key});
+
+  @override
+  State<DropdownMenuSelectableExample> createState() =>
+      _DropdownMenuSelectableExampleState();
+}
+
+class _DropdownMenuSelectableExampleState
+    extends State<DropdownMenuSelectableExample> {
+  bool _archived = false;
+  bool _drafts = true;
+  String _sort = 'Newest';
+
+  @override
+  Widget build(BuildContext context) {
+    // Two roles a menu can carry beyond actions. A checkbox row keeps the menu
+    // open so several can be toggled in one visit; a radio row closes it,
+    // because the choice has been made. Both are controlled — the row draws
+    // the state it is given and asks you to change it.
+    return AstryxDropdownMenu(
+      entries: <AstryxMenuEntry>[
+        const AstryxMenuSection('Show'),
+        AstryxMenuItem.checkbox(
+          label: 'Archived',
+          checked: _archived,
+          onSelected: () => setState(() => _archived = !_archived),
+        ),
+        AstryxMenuItem.checkbox(
+          label: 'Drafts',
+          checked: _drafts,
+          onSelected: () => setState(() => _drafts = !_drafts),
+        ),
+        const AstryxMenuDivider(),
+        const AstryxMenuSection('Sort by'),
+        for (final option in const <String>['Newest', 'Oldest', 'Name'])
+          AstryxMenuItem.radio(
+            label: option,
+            checked: _sort == option,
+            onSelected: () => setState(() => _sort = option),
+          ),
+      ],
+      triggerBuilder: (context, controller) =>
+          AstryxButton(label: 'View', onPressed: controller.toggle),
+    );
+  }
+}
+```
+
+
+> **Accessibility**
+>
+> A checkbox row is announced with a checked state rather than as a button, and a radio row adds that it is one of a mutually exclusive group; the run of adjacent radio rows is the group, so a divider or a section heading between two runs reads as two groups. Once any row in a menu reports state, every row pays the same gutter, so the labels stay in one column instead of stepping in and out as settings are toggled.
+
 ### AstryxDropdownMenu
 
 | Property | Type | Default | Description |
@@ -303,6 +364,9 @@ class DropdownMenuPlacementExample extends StatelessWidget {
 | `enabled` | `bool` | `true` | Whether the item can be chosen. |
 | `destructive` | `bool` | `false` | Whether the action is irreversible, which colours it with `--color-error`. |
 | `submenu` | `List<AstryxMenuEntry>` | `const <AstryxMenuEntry>[]` | Nested entries. A non-empty list turns this row into a submenu. |
+| `role` | `AstryxMenuItemRole` | `AstryxMenuItemRole.action` | What choosing the row means: `action`, `checkbox` or `radio`. Set by the constructor you use, not directly. |
+| `checked` | `bool` | `false` | Whether the setting the row reports is on. Required by the `checkbox` and `radio` constructors, and always false for an action. |
+| `closeOnSelect` | `bool` | `true` | Whether choosing the row closes the menu. False by default for a checkbox row, true for an action and a radio row. |
 
 
 ---

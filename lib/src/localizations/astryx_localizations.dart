@@ -656,6 +656,37 @@ class AstryxLocalizations {
 
   /// Goes to page [page] of [count].
   String paginationPage(int page, int count) => 'Page $page of $count';
+
+  /// The fallback accessible name for a stepper.
+  ///
+  /// A stepper is announced as a list of the steps in a flow, not as site
+  /// navigation, so this names the sequence rather than the destinations.
+  String get stepperLabel => 'Progress';
+
+  /// Says where a step sits in the flow: step [step] of [count].
+  ///
+  /// Announced because the numbers a stepper paints are decoration — a
+  /// numbered badge is a picture of "3", and a screen reader is not shown
+  /// pictures.
+  String stepPosition(int step, int count) => 'Step $step of $count';
+
+  /// Said of a step the flow has already passed.
+  String get stepCompleted => 'Completed';
+
+  /// Said of the step the flow is on.
+  String get stepCurrent => 'Current step';
+
+  /// Marks a step that may be skipped.
+  String get stepOptional => 'Optional';
+
+  /// The grab handle at the top of a bottom sheet.
+  ///
+  /// Named rather than left as decoration: it is a drag target, and one a
+  /// pointer user reaches for before reading anything else in the sheet.
+  String get bottomSheetHandle => 'Drag to resize';
+
+  /// Dismisses a bottom sheet.
+  String get bottomSheetClose => 'Close';
 }
 
 /// Makes an [AstryxLocalizations] available to the widgets beneath it.

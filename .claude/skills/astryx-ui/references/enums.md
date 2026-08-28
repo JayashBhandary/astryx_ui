@@ -6,7 +6,7 @@
      Regenerate: cd example && dart run tool/gen_skill.dart
 -->
 
-Scraped from the package source, so this is what the analyser will accept. 88 public enums.
+Scraped from the package source, so this is what the analyser will accept. 97 public enums.
 
 | Enum | Values |
 | --- | --- |
@@ -14,6 +14,7 @@ Scraped from the package source, so this is what the analyser will accept. 88 pu
 | `AstryxAvatarSize` | `xs`, `sm`, `md`, `lg`, `xl` |
 | `AstryxBannerStatus` | `info`, `warning`, `error`, `success` |
 | `AstryxBorderToken` | `width` |
+| `AstryxBottomSheetHeight` | `hug`, `capped`, `tall` |
 | `AstryxButtonSize` | `sm`, `md`, `lg` |
 | `AstryxButtonVariant` | `primary`, `secondary`, `ghost`, `destructive` |
 | `AstryxCenterAxis` | `both`, `horizontal`, `vertical` |
@@ -42,6 +43,8 @@ Scraped from the package source, so this is what the analyser will accept. 88 pu
 | `AstryxIconColor` | `primary`, `secondary`, `tertiary`, `disabled`, `accent`, `success`, `error`, `warning`, `inherit` |
 | `AstryxIconName` | `close`, `chevronDown`, `chevronLeft`, `chevronRight`, `chevronsLeft`, `chevronsRight`, `check`, `success`, `error`, `warning`, `info`, `calendar`, `clock`, `externalLink`, `menu`, `moreHorizontal`, `search`, `arrowUp`, `arrowDown`, `arrowsUpDown`, `funnel`, `eyeSlash`, `viewColumns`, `copy`, `checkDouble`, `wrench`, `stop`, `microphone` |
 | `AstryxIconSize` | `xsm`, `sm`, `md`, `lg` |
+| `AstryxIndicatorSize` | `sm`, `md` |
+| `AstryxIndicatorState` | `unchecked`, `checked`, `indeterminate` |
 | `AstryxInputDevice` | `keyboard`, `pointer` |
 | `AstryxInputGroupPosition` | `start`, `middle`, `end`, `only` |
 | `AstryxInputSize` | `sm`, `md`, `lg` |
@@ -50,6 +53,7 @@ Scraped from the package source, so this is what the analyser will accept. 88 pu
 | `AstryxLayoutPanelSide` | `start`, `end` |
 | `AstryxLinkUnderline` | `always`, `hover`, `never` |
 | `AstryxMediaScrim` | `none`, `bottom`, `top`, `full` |
+| `AstryxMenuItemRole` | `action`, `checkbox`, `radio` |
 | `AstryxMetadataListDirection` | `stacked`, `inline` |
 | `AstryxMultiSelectorTriggerDisplay` | `badges`, `count` |
 | `AstryxNeutralStyle` | `warm`, `cool`, `neutral` |
@@ -74,6 +78,11 @@ Scraped from the package source, so this is what the analyser will accept. 88 pu
 | `AstryxStackAlign` | `start`, `center`, `end`, `stretch` |
 | `AstryxStackJustify` | `start`, `center`, `end`, `between`, `around`, `evenly` |
 | `AstryxStatusDotVariant` | `success`, `warning`, `error`, `accent`, `neutral` |
+| `AstryxStepDensity` | `compact`, `balanced`, `spacious` |
+| `AstryxStepIndicator` | `auto`, `number`, `none` |
+| `AstryxStepStatus` | `accent`, `success`, `warning`, `error` |
+| `AstryxStepperIndicatorPosition` | `separated`, `onTrack` |
+| `AstryxStepperOrientation` | `horizontal`, `vertical` |
 | `AstryxSurface` | `dark`, `light` |
 | `AstryxSyntaxToken` | `keyword`, `string`, `comment`, `number`, `function`, `type`, `variable`, `operator`, `constant`, `tag`, `attribute`, `property`, `punctuation`, `background` |
 | `AstryxTabSize` | `sm`, `md`, `lg` |

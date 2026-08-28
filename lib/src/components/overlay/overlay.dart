@@ -2,13 +2,15 @@
 /// do the same job in the flow of the page.
 ///
 /// Most are anchored to a trigger and share one positioning engine;
-/// `AstryxDialog`, `AstryxAlertDialog` and `AstryxOverlay` are anchored to the
-/// viewport instead. All of them share the focus trap, the dismissal stack and
-/// the surface.
+/// `AstryxDialog`, `AstryxAlertDialog`, `AstryxBottomSheet` and
+/// `AstryxOverlay` are anchored to the viewport instead. All of them share the
+/// focus trap, the dismissal stack and the surface.
 library;
 
 export 'alert_dialog.dart';
 export 'anchored_overlay.dart' hide AstryxAnchoredOverlay;
+export 'bottom_sheet.dart' hide AstryxBottomSheetPanel;
+export 'bottom_sheet_switcher.dart';
 export 'collapsible.dart' hide AstryxCollapsibleGroupScope;
 export 'collapsible_group.dart';
 export 'context_menu.dart';

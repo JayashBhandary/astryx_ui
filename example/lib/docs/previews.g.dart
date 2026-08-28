@@ -17,6 +17,7 @@ import 'package:example/examples/app_shell_examples.dart';
 import 'package:example/examples/badge_examples.dart';
 import 'package:example/examples/banner_examples.dart';
 import 'package:example/examples/blockquote_examples.dart';
+import 'package:example/examples/bottom_sheet_examples.dart';
 import 'package:example/examples/button_examples.dart';
 import 'package:example/examples/button_group_examples.dart';
 import 'package:example/examples/calendar_examples.dart';
@@ -48,6 +49,7 @@ import 'package:example/examples/hover_card_examples.dart';
 import 'package:example/examples/icon_button_examples.dart';
 import 'package:example/examples/icon_examples.dart';
 import 'package:example/examples/icons_examples.dart';
+import 'package:example/examples/indicator_examples.dart';
 import 'package:example/examples/item_examples.dart';
 import 'package:example/examples/layout_examples.dart';
 import 'package:example/examples/list_examples.dart';
@@ -73,6 +75,7 @@ import 'package:example/examples/spacing_examples.dart';
 import 'package:example/examples/spinner_examples.dart';
 import 'package:example/examples/stack_examples.dart';
 import 'package:example/examples/status_dot_examples.dart';
+import 'package:example/examples/stepper_examples.dart';
 import 'package:example/examples/styling_examples.dart';
 import 'package:example/examples/switch_examples.dart';
 import 'package:example/examples/tab_list_examples.dart';
@@ -132,6 +135,10 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'blockquote_child': (_) => const BlockquoteChildExample(),
   'kbd_demo': (_) => const KbdDemoExample(),
   'kbd_in_context': (_) => const KbdInContextExample(),
+  'bottom_sheet_demo': (_) => const BottomSheetDemoExample(),
+  'bottom_sheet_heights': (_) => const BottomSheetHeightsExample(),
+  'bottom_sheet_snap': (_) => const BottomSheetSnapExample(),
+  'bottom_sheet_switcher': (_) => const BottomSheetSwitcherExample(),
   'button_demo': (_) => const ButtonDemoExample(),
   'button_variants': (_) => const ButtonVariantsExample(),
   'button_sizes': (_) => const ButtonSizesExample(),
@@ -214,6 +221,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'dropdown_menu_submenu': (_) => const DropdownMenuSubmenuExample(),
   'dropdown_menu_trailing': (_) => const DropdownMenuTrailingExample(),
   'dropdown_menu_placement': (_) => const DropdownMenuPlacementExample(),
+  'dropdown_menu_selectable': (_) => const DropdownMenuSelectableExample(),
   'elevation_shadows': (_) => const ElevationShadowsExample(),
   'elevation_button': (_) => const ElevationButtonExample(),
   'empty_state_demo': (_) => const EmptyStateDemoExample(),
@@ -276,6 +284,9 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'icon_labelled': (_) => const IconLabelledExample(),
   'icons_registry_swap': (_) => const IconsRegistrySwapExample(),
   'icons_mirroring': (_) => const IconsMirroringExample(),
+  'indicator_demo': (_) => const IndicatorDemoExample(),
+  'indicator_states': (_) => const IndicatorStatesExample(),
+  'indicator_row': (_) => const IndicatorRowExample(),
   'item_demo': (_) => const ItemDemoExample(),
   'item_states': (_) => const ItemStatesExample(),
   'layout_page': (_) => const LayoutPageExample(),
@@ -361,6 +372,12 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'stack_nested': (_) => const StackNestedExample(),
   'status_dot_demo': (_) => const StatusDotDemoExample(),
   'status_dot_in_place': (_) => const StatusDotInPlaceExample(),
+  'stepper_demo': (_) => const StepperDemoExample(),
+  'stepper_orientations': (_) => const StepperOrientationsExample(),
+  'stepper_on_track': (_) => const StepperOnTrackExample(),
+  'stepper_status': (_) => const StepperStatusExample(),
+  'stepper_navigable': (_) => const StepperNavigableExample(),
+  'stepper_content': (_) => const StepperContentExample(),
   'styling_scopes': (_) => const StylingScopesExample(),
   'switch_demo': (_) => const SwitchDemoExample(),
   'switch_settings_list': (_) => const SwitchSettingsListExample(),

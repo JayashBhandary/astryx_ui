@@ -269,6 +269,7 @@ class _DropdownMenuDemoExampleState extends State<DropdownMenuDemoExample> {
 
 - **Note:** A menu performs **actions**. To pick a *value*, use AstryxSelector (references/forms.md) — it reports a selection, shows which option is current, and can be validated.
 - **Accessibility:** Sections and dividers are skipped by the keyboard, so arrowing never lands on something that does nothing. A disabled item stays visible and is announced as disabled — with a `description` it can even say why.
+- **Accessibility:** A checkbox row is announced with a checked state rather than as a button, and a radio row adds that it is one of a mutually exclusive group; the run of adjacent radio rows is the group, so a divider or a section heading between two runs reads as two groups. Once any row in a menu reports state, every row pays the same gutter, so the labels stay in one column instead of stepping in and out as settings are toggled.
 
 | Key | Does |
 | --- | --- |
@@ -308,6 +309,9 @@ class _DropdownMenuDemoExampleState extends State<DropdownMenuDemoExample> {
 | `enabled` | `bool` | `true` | Whether the item can be chosen. |
 | `destructive` | `bool` | `false` | Whether the action is irreversible, which colours it with `--color-error`. |
 | `submenu` | `List<AstryxMenuEntry>` | `const <AstryxMenuEntry>[]` | Nested entries. A non-empty list turns this row into a submenu. |
+| `role` | `AstryxMenuItemRole` | `AstryxMenuItemRole.action` | What choosing the row means: `action`, `checkbox` or `radio`. Set by the constructor you use, not directly. |
+| `checked` | `bool` | `false` | Whether the setting the row reports is on. Required by the `checkbox` and `radio` constructors, and always false for an action. |
+| `closeOnSelect` | `bool` | `true` | Whether choosing the row closes the menu. False by default for a checkbox row, true for an action and a radio row. |
 
 ---
 
@@ -410,6 +414,7 @@ class _ContextMenuDemoExampleState extends State<ContextMenuDemoExample> {
 | `enabled` | `bool` | `true` | Whether the menu can be opened. |
 | `width` | `double?` | — | A fixed width. Null sizes the menu up to `maxWidth`. |
 | `maxWidth` | `double` | `280` | The widest the menu may become. |
+| `suppressBrowserMenu` | `bool` | `true` | Whether to keep the browser’s own right-click menu out of the way. Web only, and whole-document rather than local. |
 | `maxHeight` | `double` | `300` | The tallest the menu may be before it scrolls. |
 | `longPressOnTouch` | `bool` | `true` | Whether a long-press opens it in touch density. |
 | `onOpenChange` | `ValueChanged<bool>?` | — | Called whenever the menu opens or closes. |
@@ -598,6 +603,233 @@ class _AlertDialogDemoExampleState extends State<AlertDialogDemoExample> {
 | `barrierDismissible` | `bool` | `false` | Whether a press on the barrier cancels. |
 | `escapeDismissible` | `bool` | `true` | Whether Escape cancels. |
 | `child` | `Widget?` | — | Extra content below the description. |
+
+---
+
+## AstryxBottomSheet
+
+`lib/src/components/overlay/bottom_sheet.dart` · upstream `BottomSheet`
+
+A modal panel that rises from the bottom edge of the viewport.
+
+```dart
+class BottomSheetDemoExample extends StatefulWidget {
+  const BottomSheetDemoExample({super.key});
+
+  @override
+  State<BottomSheetDemoExample> createState() => _BottomSheetDemoExampleState();
+}
+
+class _BottomSheetDemoExampleState extends State<BottomSheetDemoExample> {
+  final AstryxBottomSheetController _sheet = AstryxBottomSheetController();
+
+  @override
+  void dispose() {
+    _sheet.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Like every overlay here the sheet is a widget in the tree, not a
+    // `showModalBottomSheet` call: it renders nothing until its controller
+    // opens it, so it sits next to whatever opens it.
+    return AstryxHStack(
+      children: <Widget>[
+        AstryxButton(label: 'Filters', onPressed: _sheet.show),
+        AstryxBottomSheet(
+          controller: _sheet,
+          label: 'Filters',
+          height: AstryxBottomSheetHeight.hug,
+          child: AstryxVStack(
+            gap: AstryxSpacingToken.spacing4,
+            align: AstryxStackAlign.stretch,
+            children: <Widget>[
+              const AstryxHeading('Filters', type: AstryxHeadingType.display3),
+              AstryxCheckbox(
+                label: 'Only my issues',
+                value: true,
+                onChanged: (_) {},
+              ),
+              AstryxCheckbox(
+                label: 'Include closed',
+                value: false,
+                onChanged: (_) {},
+              ),
+              AstryxButton(label: 'Apply', onPressed: _sheet.hide),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** A detent is a **convenience, never the only way to something**: a sheet with snap points still has to work for someone who cannot drag, so put nothing behind a stop that the sheet does not also reach by scrolling. The handle is a drag target and is named as one; `label` is required because a sheet has no header of its own to derive a name from.
+- **Note:** The sheet travels up from the edge it is anchored to, rather than fading in as the other viewport overlays do: fading one in leaves no trace of where it came from, which is the one thing its shape is meant to say. Under reduced motion neither runs.
+
+### AstryxBottomSheet
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `controller` **(required)** | `AstryxBottomSheetController` | — | The open/closed state. |
+| `label` **(required)** | `String` | — | The sheet’s accessible name. Required — a sheet has no header to derive one from. |
+| `child` **(required)** | `Widget` | — | The body. Scrolls when it is taller than the sheet. |
+| `height` | `AstryxBottomSheetHeight` | `AstryxBottomSheetHeight.capped` | How much of the viewport the sheet may occupy: `hug`, `capped` or `tall`. |
+| `snapPoints` | `List<double>` | `const <double>[]` | Extra resting heights, each a fraction of the viewport in `(0, 1]`. |
+| `initialSnapPoint` | `int?` | — | Which snap point the sheet opens at. Null opens at the tallest. |
+| `showScrim` | `bool` | `true` | Whether to dim the page behind the sheet. |
+| `showHandle` | `bool` | `true` | Whether to draw the grab handle. |
+| `barrierDismissible` | `bool` | `true` | Whether a press on the scrim closes it. |
+| `escapeDismissible` | `bool` | `true` | Whether Escape closes it. |
+| `dragDismissible` | `bool` | `true` | Whether dragging the sheet down past its shortest height closes it. |
+| `padding` | `AstryxSpacingToken` | `AstryxSpacingToken.spacing4` | The inset between the sheet’s edges and its content. |
+| `onDismiss` | `VoidCallback?` | — | Called when the sheet dismisses itself. |
+
+---
+
+## AstryxBottomSheetSwitcher
+
+`lib/src/components/overlay/bottom_sheet_switcher.dart` · upstream `BottomSheetSwitcher`
+
+A flow of bottom sheets sharing one scrim.
+
+```dart
+class BottomSheetSwitcherExample extends StatefulWidget {
+  const BottomSheetSwitcherExample({super.key});
+
+  @override
+  State<BottomSheetSwitcherExample> createState() =>
+      _BottomSheetSwitcherExampleState();
+}
+
+class _BottomSheetSwitcherExampleState
+    extends State<BottomSheetSwitcherExample> {
+  String? _step;
+
+  void _go(String? id) => setState(() => _step = id);
+
+  @override
+  Widget build(BuildContext context) {
+    // Three sheets, one scrim. Opening and closing three separate sheets in
+    // turn would dim the page, undim it and dim it again — three
+    // interruptions where the user performed one task.
+    return AstryxHStack(
+      children: <Widget>[
+        AstryxButton(label: 'Check out', onPressed: () => _go('method')),
+        AstryxBottomSheetSwitcher(
+          activeSheetId: _step,
+          onActiveSheetChanged: _go,
+          sheets: <AstryxBottomSheetPage>[
+            AstryxBottomSheetPage(
+              id: 'method',
+              label: 'Payment method',
+              child: AstryxVStack(
+                gap: AstryxSpacingToken.spacing3,
+                align: AstryxStackAlign.stretch,
+                children: <Widget>[
+                  const AstryxHeading(
+                    'Payment method',
+                    type: AstryxHeadingType.display3,
+                  ),
+                  AstryxItem(
+                    label: 'Card ending 4242',
+                    onPressed: () => _go('confirm'),
+                  ),
+                  AstryxItem(
+                    label: 'Pay on delivery',
+                    onPressed: () => _go('confirm'),
+                  ),
+                ],
+              ),
+            ),
+            AstryxBottomSheetPage(
+              id: 'confirm',
+              label: 'Confirm payment',
+              child: AstryxVStack(
+                gap: AstryxSpacingToken.spacing3,
+                align: AstryxStackAlign.stretch,
+                children: <Widget>[
+                  const AstryxHeading(
+                    'Confirm payment',
+                    type: AstryxHeadingType.display3,
+                  ),
+                  const AstryxText('£42.00 to Acme Supplies.'),
+                  AstryxHStack(
+                    gap: AstryxSpacingToken.spacing2,
+                    justify: AstryxStackJustify.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      AstryxButton(
+                        label: 'Back',
+                        variant: AstryxButtonVariant.secondary,
+                        onPressed: () => _go('method'),
+                      ),
+                      AstryxButton(
+                        label: 'Pay',
+                        onPressed: () => _go('receipt'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            AstryxBottomSheetPage(
+              id: 'receipt',
+              label: 'Payment sent',
+              child: AstryxVStack(
+                gap: AstryxSpacingToken.spacing3,
+                align: AstryxStackAlign.stretch,
+                children: <Widget>[
+                  const AstryxBanner(
+                    status: AstryxBannerStatus.success,
+                    title: 'Payment sent',
+                    description: 'A receipt is on its way to your inbox.',
+                  ),
+                  AstryxButton(label: 'Done', onPressed: () => _go(null)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Rules**
+
+- **Accessibility:** Each step names itself, so a screen reader announces the step the flow moved to rather than the flow it is still in.
+- **Note:** Upstream choreographs the outgoing sheet: it stays present and inert, travels to meet the height of the incoming one, then fades. Here the two cross-fade while the layer resizes to the new step. The difference shows on a large height change; everything the flow *does* is the same.
+
+### AstryxBottomSheetSwitcher
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `activeSheetId` **(required)** | `String?` | — | The id of the step on screen, or null when the flow is closed. |
+| `onActiveSheetChanged` **(required)** | `ValueChanged<String?>` | — | Called with the step to move to, or null to close the flow. |
+| `sheets` **(required)** | `List<AstryxBottomSheetPage>` | — | The steps. Order is documentation only — `activeSheetId` decides. |
+| `showScrim` | `bool` | `true` | Whether to dim the page behind the flow. |
+| `barrierDismissible` | `bool` | `true` | Whether a press on the scrim closes the flow. |
+| `escapeDismissible` | `bool` | `true` | Whether Escape closes the flow. |
+
+### AstryxBottomSheetPage
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `id` **(required)** | `String` | — | What names this sheet in `activeSheetId`. Unique within one switcher. |
+| `label` **(required)** | `String` | — | The step’s accessible name. |
+| `child` **(required)** | `Widget` | — | The body. |
+| `height` | `AstryxBottomSheetHeight` | `AstryxBottomSheetHeight.hug` | How much of the viewport this step may occupy. Hugs by default, unlike a standalone sheet: the steps of a flow are rarely the same length. |
+| `snapPoints` | `List<double>` | `const <double>[]` | Extra resting heights, each a fraction of the viewport in `(0, 1]`. |
+| `initialSnapPoint` | `int?` | — | Which snap point this step opens at. |
+| `showHandle` | `bool` | `true` | Whether to draw the grab handle. |
+| `dragDismissible` | `bool` | `true` | Whether dragging past the shortest height closes the flow. |
+| `padding` | `AstryxSpacingToken` | `AstryxSpacingToken.spacing4` | The inset around the body. |
 
 ---
 

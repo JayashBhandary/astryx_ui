@@ -54,6 +54,7 @@ class AstryxOverlay extends StatefulWidget {
     this.trapFocus = true,
     this.restoreFocus = true,
     this.transition = AstryxOverlayTransition.scale,
+    this.transitionBuilder,
     this.duration = AstryxDurationToken.mediumMax,
     this.label,
     this.scopesRoute = true,
@@ -103,6 +104,21 @@ class AstryxOverlay extends StatefulWidget {
   /// [AstryxOverlayTransition.slide] has no meaning here — there is no anchor
   /// to slide from — and is treated as a fade.
   final AstryxOverlayTransition transition;
+
+  /// An entry and exit of your own, replacing [transition].
+  ///
+  /// Given the layer's own curved animation — 0 closed, 1 open — so a caller
+  /// can drive a motion the three presets do not cover and still have the
+  /// portal stay mounted for the whole of the exit. `AstryxBottomSheet` uses it
+  /// to travel up from the edge it is anchored to.
+  ///
+  /// Null keeps [transition]. Under reduced motion neither runs.
+  final Widget Function(
+    BuildContext context,
+    Animation<double> animation,
+    Widget child,
+  )?
+  transitionBuilder;
 
   /// How long the entry and exit take.
   final AstryxDurationToken duration;
@@ -254,7 +270,9 @@ class _AstryxOverlayState extends State<AstryxOverlay>
 
     var layer = widget.child;
 
-    if (animate) {
+    if (animate && widget.transitionBuilder != null) {
+      layer = widget.transitionBuilder!(overlayContext, curved, layer);
+    } else if (animate) {
       final faded = FadeTransition(opacity: curved, child: layer);
       layer = switch (widget.transition) {
         AstryxOverlayTransition.scale => ScaleTransition(

@@ -16,9 +16,38 @@ sealed class AstryxMenuEntry {
   const AstryxMenuEntry();
 }
 
-/// A selectable action, or a row that opens a submenu.
+/// What a menu row means when it is chosen.
+///
+/// Rule of thumb: a menu **performs actions**, and a row that reports a setting
+/// is the exception rather than the shape to reach for. Where the choice *is*
+/// the point — one value out of a list, with the current one shown — use
+/// `AstryxSelector`, which announces itself as a listbox and keeps the value
+/// visible on the trigger. These two roles are for the settings a menu really
+/// owns: a view's density, whether a column is shown, how a list is sorted.
+enum AstryxMenuItemRole {
+  /// Does something. Announced as a button, and carries no state.
+  action,
+
+  /// Reports a setting that is independently on or off.
+  ///
+  /// Announced with `Semantics(checked:)`, and by default **leaves the menu
+  /// open** so several can be toggled in one visit.
+  checkbox,
+
+  /// Reports one choice out of the rows around it.
+  ///
+  /// Announced with `Semantics(inMutuallyExclusiveGroup: true, checked:)`, and
+  /// closes the menu on choice — the choice is made, there is nothing left to
+  /// do in the menu.
+  ///
+  /// The group is the run of adjacent radio rows: put an [AstryxMenuDivider] or
+  /// an [AstryxMenuSection] between two runs and they read as two groups.
+  radio,
+}
+
+/// A selectable action, a setting, or a row that opens a submenu.
 class AstryxMenuItem extends AstryxMenuEntry {
-  /// Creates a menu item.
+  /// Creates a menu item that performs an action.
   const AstryxMenuItem({
     required this.label,
     this.onSelected,
@@ -28,13 +57,85 @@ class AstryxMenuItem extends AstryxMenuEntry {
     this.enabled = true,
     this.destructive = false,
     this.submenu = const <AstryxMenuEntry>[],
-  });
+    this.closeOnSelect = true,
+  }) : role = AstryxMenuItemRole.action,
+       checked = false;
+
+  /// Creates a row reporting a setting that is independently on or off.
+  ///
+  /// [checked] is the current state and [onSelected] is asked to flip it — the
+  /// row is controlled, like every other selection control in this package, so
+  /// nothing is toggled that the caller did not toggle.
+  ///
+  /// {@tool snippet}
+  /// ```dart
+  /// AstryxMenuItem.checkbox(
+  ///   label: 'Show archived',
+  ///   checked: _showArchived,
+  ///   onSelected: () => setState(() => _showArchived = !_showArchived),
+  /// )
+  /// ```
+  /// {@end-tool}
+  const AstryxMenuItem.checkbox({
+    required this.label,
+    required this.checked,
+    this.onSelected,
+    this.icon,
+    this.description,
+    this.trailing,
+    this.enabled = true,
+    this.closeOnSelect = false,
+  }) : role = AstryxMenuItemRole.checkbox,
+       destructive = false,
+       submenu = const <AstryxMenuEntry>[];
+
+  /// Creates a row reporting one choice out of the rows around it.
+  ///
+  /// {@tool snippet}
+  /// ```dart
+  /// for (final density in AstryxTableDensity.values)
+  ///   AstryxMenuItem.radio(
+  ///     label: density.name,
+  ///     checked: density == _density,
+  ///     onSelected: () => setState(() => _density = density),
+  ///   ),
+  /// ```
+  /// {@end-tool}
+  const AstryxMenuItem.radio({
+    required this.label,
+    required this.checked,
+    this.onSelected,
+    this.icon,
+    this.description,
+    this.trailing,
+    this.enabled = true,
+    this.closeOnSelect = true,
+  }) : role = AstryxMenuItemRole.radio,
+       destructive = false,
+       submenu = const <AstryxMenuEntry>[];
 
   /// The visible text, and this item's accessible name.
   final String label;
 
-  /// Called when the item is chosen. The menu closes first.
+  /// Called when the item is chosen.
+  ///
+  /// The menu closes first, unless [closeOnSelect] is false.
   final VoidCallback? onSelected;
+
+  /// What choosing this row means — an action, or a setting it reports.
+  final AstryxMenuItemRole role;
+
+  /// Whether the setting this row reports is currently on.
+  ///
+  /// Always false for [AstryxMenuItemRole.action], which reports nothing.
+  final bool checked;
+
+  /// Whether choosing the row closes the menu.
+  ///
+  /// True for an action and for a radio row — the thing the menu was opened for
+  /// has happened. False by default for a checkbox row, so several settings can
+  /// be toggled in one visit.
+  final bool closeOnSelect;
 
   /// An icon before the label.
   ///

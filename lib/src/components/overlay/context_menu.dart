@@ -4,6 +4,7 @@ library;
 import 'package:astryx_ui/src/components/overlay/anchored_overlay.dart';
 import 'package:astryx_ui/src/components/overlay/menu_entry.dart';
 import 'package:astryx_ui/src/components/overlay/menu_surface.dart';
+import 'package:astryx_ui/src/foundation/browser_context_menu.dart';
 import 'package:astryx_ui/src/foundation/overlay_positioner.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:flutter/widgets.dart';
@@ -35,8 +36,22 @@ import 'package:flutter/widgets.dart';
 /// toolbar, a row menu, a details panel — and this is the shortcut for people
 /// who already know it is there.
 ///
-/// On the web the browser's own menu appears over this one unless the app
-/// disables it once at startup:
+/// ## The browser's own menu
+///
+/// On the web a secondary click is the browser's before it is the
+/// application's, so without help the browser raises its Back / Reload /
+/// Inspect menu on top of this one — two menus for one click, and the one the
+/// user wanted underneath.
+///
+/// **This widget handles it.** While one is mounted and able to open, the
+/// browser's menu is suppressed; when the last one goes, it comes back. Flutter
+/// offers no way to suppress it over one region only — `BrowserContextMenu` is
+/// whole-document — so "while the page has a context menu of its own" is the
+/// narrowest scope available. Set [suppressBrowserMenu] to false to opt one
+/// widget out of that.
+///
+/// An app that wants the browser's menu off everywhere should still say so
+/// once at startup, and this will not turn back on what it did not turn off:
 ///
 /// ```dart
 /// if (kIsWeb) await BrowserContextMenu.disableContextMenu();
@@ -53,6 +68,7 @@ class AstryxContextMenu extends StatefulWidget {
     this.maxWidth = 280,
     this.maxHeight = 300,
     this.longPressOnTouch = true,
+    this.suppressBrowserMenu = true,
     this.onOpenChange,
   });
 
@@ -88,6 +104,13 @@ class AstryxContextMenu extends StatefulWidget {
   /// the actions another home instead.
   final bool longPressOnTouch;
 
+  /// Whether to keep the browser's own right-click menu out of the way.
+  ///
+  /// Web only, and whole-document rather than local — see the note on this
+  /// class. False leaves the browser's menu alone, which is what a region that
+  /// wants both, or an app that manages the setting itself, should say.
+  final bool suppressBrowserMenu;
+
   /// Called whenever the menu opens or closes.
   final ValueChanged<bool>? onOpenChange;
 
@@ -102,18 +125,56 @@ class _AstryxContextMenuState extends State<AstryxContextMenu> {
   /// Where the menu was raised, in global coordinates.
   Offset? _at;
 
+  /// Whether this widget is currently holding the browser menu down.
+  bool _claimed = false;
+
+  /// Whether a secondary click here would actually open something.
+  ///
+  /// A menu that cannot open has no quarrel with the browser's, and taking the
+  /// browser's menu away over a widget that does nothing with the click is a
+  /// worse bug than the one this fixes.
+  bool get _wantsBrowserMenuSuppressed =>
+      widget.suppressBrowserMenu && widget.enabled && widget.entries.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
     _controller.addListener(_handleOpenChange);
+    _syncBrowserMenuClaim();
+  }
+
+  @override
+  void didUpdateWidget(AstryxContextMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // `enabled` and `entries` both move over a widget's life — a row whose
+    // actions depend on selection empties and refills — so the claim is
+    // re-derived rather than taken once at mount.
+    _syncBrowserMenuClaim();
   }
 
   @override
   void dispose() {
+    _releaseBrowserMenuClaim();
     _controller.removeListener(_handleOpenChange);
     _controller.dispose();
     _menuFocus.dispose();
     super.dispose();
+  }
+
+  void _syncBrowserMenuClaim() {
+    if (_wantsBrowserMenuSuppressed == _claimed) return;
+    if (_claimed) {
+      _releaseBrowserMenuClaim();
+    } else {
+      _claimed = true;
+      AstryxBrowserContextMenu.claim();
+    }
+  }
+
+  void _releaseBrowserMenuClaim() {
+    if (!_claimed) return;
+    _claimed = false;
+    AstryxBrowserContextMenu.release();
   }
 
   void _handleOpenChange() {

@@ -73,6 +73,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxComplexSelector](components/complex_selector.md) — A selector with a trigger this package draws and a surface you draw.
 - [AstryxInputGroup](components/input_group.md) — Adjacent inputs and affixes joined into one bordered control.
 - [AstryxFormLayout](components/form_layout.md) — The column and label geometry a form’s fields share.
+- [The indicators](components/indicator.md) — The stateful control visuals, as widgets in their own right.
 
 ## Date & time
 
@@ -99,6 +100,8 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxContextMenu](components/context_menu.md) — A menu raised by a secondary click, at the pointer.
 - [AstryxDialog](components/dialog.md) — A modal panel anchored to the viewport, with a scrolling body.
 - [AstryxAlertDialog](components/alert_dialog.md) — A modal that interrupts to confirm one consequential action.
+- [AstryxBottomSheet](components/bottom_sheet.md) — A modal panel that rises from the bottom edge of the viewport.
+- [AstryxBottomSheetSwitcher](components/bottom_sheet_switcher.md) — A flow of bottom sheets sharing one scrim.
 - [AstryxOverlay](components/overlay.md) — The scrim-and-layer primitive the modals are built on.
 - [AstryxToast](components/toast.md) — A transient message in the corner, with an optional action.
 - [AstryxCollapsible](components/collapsible.md) — A disclosure: a header that shows and hides its own content.
@@ -140,6 +143,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [AstryxMoreMenu](components/more_menu.md) — The overflow menu a toolbar or nav collapses its tail into.
 - [AstryxTabMenu](components/tab_menu.md) — A tab whose selection opens a menu rather than switching a panel.
 - [AstryxPagination](components/pagination.md) — Page-at-a-time controls for a list or table too long to scroll.
+- [AstryxStepper](components/stepper.md) — Progress through a sequence of steps, and the steps themselves.
 
 ## App shell
 

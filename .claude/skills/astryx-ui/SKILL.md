@@ -245,6 +245,7 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxComplexSelector` | A selector with a trigger this package draws and a surface you draw. | `references/forms.md` |
 | `AstryxInputGroup` | Adjacent inputs and affixes joined into one bordered control. | `references/forms.md` |
 | `AstryxFormLayout` | The column and label geometry a form’s fields share. | `references/forms.md` |
+| `The indicators` | The stateful control visuals, as widgets in their own right. | `references/forms.md` |
 | `AstryxCalendar` | A month grid for picking a date, keyboard-navigable. | `references/date_time.md` |
 | `AstryxDateInput` | A text field that parses and formats a single date. | `references/date_time.md` |
 | `AstryxDateRangeInput` | Two dates as one field, with the range validated across them. | `references/date_time.md` |
@@ -262,6 +263,8 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxContextMenu` | A menu raised by a secondary click, at the pointer. | `references/overlays.md` |
 | `AstryxDialog` | A modal panel anchored to the viewport, with a scrolling body. | `references/overlays.md` |
 | `AstryxAlertDialog` | A modal that interrupts to confirm one consequential action. | `references/overlays.md` |
+| `AstryxBottomSheet` | A modal panel that rises from the bottom edge of the viewport. | `references/overlays.md` |
+| `AstryxBottomSheetSwitcher` | A flow of bottom sheets sharing one scrim. | `references/overlays.md` |
 | `AstryxOverlay` | The scrim-and-layer primitive the modals are built on. | `references/overlays.md` |
 | `AstryxToast` | A transient message in the corner, with an optional action. | `references/overlays.md` |
 | `AstryxCollapsible` | A disclosure: a header that shows and hides its own content. | `references/overlays.md` |
@@ -294,6 +297,7 @@ Open the reference before writing a component you have not written before. Each 
 | `AstryxMoreMenu` | The overflow menu a toolbar or nav collapses its tail into. | `references/navigation.md` |
 | `AstryxTabMenu` | A tab whose selection opens a menu rather than switching a panel. | `references/navigation.md` |
 | `AstryxPagination` | Page-at-a-time controls for a list or table too long to scroll. | `references/navigation.md` |
+| `AstryxStepper` | Progress through a sequence of steps, and the steps themselves. | `references/navigation.md` |
 | `AstryxAppShell` | The outer frame of an application: header, navigation, content, and the responsive behaviour joining them. | `references/app_shell.md` |
 | `AstryxLayout` | The content frame inside the shell — header, footer, panel and scrolling body. | `references/app_shell.md` |
 | `AstryxSection` | A titled band of page content, with its own heading level and spacing. | `references/app_shell.md` |

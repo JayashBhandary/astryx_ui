@@ -18,6 +18,7 @@ final List<DocPage> formPages = <DocPage>[
   _complexSelector,
   _inputGroup,
   _formLayout,
+  _indicator,
 ];
 
 const String _group = DocGroup.forms;
@@ -2099,6 +2100,130 @@ AstryxFormLayout(
       '[AstryxField](field) — the widget that reads this and moves its label.',
       '[AstryxGrid](grid) — for laying out anything that is not a form.',
       '[Two-column form](form_two_column) — a whole screen, assembled.',
+    ]),
+  ],
+);
+
+// -----------------------------------------------------------------------------
+// The indicators
+// -----------------------------------------------------------------------------
+
+const DocPage _indicator = DocPage(
+  id: 'indicator',
+  title: 'The indicators',
+  group: _group,
+  description: 'The stateful control visuals, as widgets in their own right.',
+  source: 'lib/src/components/forms/indicator.dart',
+  upstream: 'CheckboxIndicator / RadioIndicator / CheckIndicator',
+  upstreamPath: '/components/CheckboxIndicator',
+  blocks: <DocBlock>[
+    DocExample('indicator_demo', align: DocExampleAlign.start),
+    DocProse(
+      'An **indicator** is the picture a control draws for its state: the box '
+      'a checkbox fills, the circle a radio fills, the mark on a chosen row. '
+      'Upstream componentised them so a theme can restyle or replace one and '
+      'every control that draws it follows. The same three are here for that '
+      'reason, and for the case a registry cannot cover: a row this package '
+      'has no widget for — a custom listbox, a menu of layer visibilities, a '
+      'table cell — that has to draw the *same* box as a real checkbox rather '
+      'than an approximation of one.',
+    ),
+    DocCallout.warning(
+      'Reach for [AstryxCheckbox](checkbox), [AstryxRadioList](radio_list) or '
+      '[AstryxSelectableCard](selectable_card) first. They are these visuals '
+      'plus the label, the semantics, the focus ring and the tap target, and '
+      'hand-building those around a bare indicator is how a control ends up '
+      'unreachable by keyboard.',
+    ),
+    DocHeading('States'),
+    DocProse(
+      'A checkbox draws all three states; a radio and a check draw two, and '
+      'assert in debug if handed `indeterminate` — a radio stands for one '
+      'choice out of several, and "partly this one" is not a thing it can '
+      'mean. The partial state is a bar rather than a half-tick, because a '
+      'tick at any weight says "all of these"; it fills the chrome too, since '
+      'a partially checked parent is not an unchecked one.',
+    ),
+    DocExample('indicator_states', align: DocExampleAlign.start),
+    DocHeading('In a row of your own'),
+    DocProse(
+      'What they are for. The row keeps the role, the accessible name, the '
+      'focus and the gesture; the indicator only turns state into a picture. '
+      '`AstryxCheckIndicator` draws no chrome of its own — it *is* the glyph, '
+      'in a reserved 16px slot so the row does not shift when the mark appears '
+      '— which is what makes it right for a menu row or a selector option, '
+      'where a full checkbox beside every line would turn a list of choices '
+      'into a form.',
+    ),
+    DocExample('indicator_row', align: DocExampleAlign.stretch),
+    DocCallout.accessibility(
+      'All three are **decorative**: each is hidden from assistive technology '
+      'and owns no role, no focus and no gesture. An indicator announced next '
+      'to the control that owns the name is the same thing said twice. '
+      '`hovered` is the host’s to decide, because only it knows whether the '
+      'pointer is over the row or only over the box — gate it on '
+      '`AstryxTheme.densityOf(context).supportsHover`, since touch has no '
+      'hover at all.',
+    ),
+    DocApi('AstryxCheckboxIndicator, AstryxRadioIndicator', <DocProp>[
+      DocProp(
+        'state',
+        'AstryxIndicatorState',
+        'Which state to draw: `unchecked`, `checked` or — checkbox only — '
+            '`indeterminate`.',
+        required: true,
+      ),
+      DocProp(
+        'size',
+        'AstryxIndicatorSize',
+        'The control size: `sm` is a 20px box, `md` a 24px one.',
+        defaultValue: 'AstryxIndicatorSize.md',
+      ),
+      DocProp(
+        'enabled',
+        'bool',
+        'Whether the hosting control accepts input. Purely visual — the host '
+            'still owns the disabled semantics.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'hovered',
+        'bool',
+        'Whether hover styling applies. The host decides.',
+        defaultValue: 'false',
+      ),
+      DocProp(
+        'child',
+        'Widget?',
+        'Drawn inside the chrome instead of the state mark — a spinner, while '
+            'a change is in flight.',
+      ),
+    ]),
+    DocApi('AstryxCheckIndicator', <DocProp>[
+      DocProp(
+        'state',
+        'AstryxIndicatorState',
+        'Which state to draw. Never `indeterminate`.',
+        required: true,
+      ),
+      DocProp(
+        'size',
+        'AstryxIndicatorSize',
+        'The control size. The glyph is `sm` at both — this only reserves the '
+            'slot.',
+        defaultValue: 'AstryxIndicatorSize.md',
+      ),
+      DocProp(
+        'enabled',
+        'bool',
+        'Whether the hosting control accepts input.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'child',
+        'Widget?',
+        'Drawn in the slot instead of the mark.',
+      ),
     ]),
   ],
 );

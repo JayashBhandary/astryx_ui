@@ -15,6 +15,7 @@ final List<DocPage> navigationPages = <DocPage>[
   _moreMenu,
   _tabMenu,
   _pagination,
+  _stepper,
 ];
 
 const String _group = DocGroup.navigation;
@@ -1334,4 +1335,203 @@ final List<DocProp> _paginationProps = <DocProp>[
     defaultValue: 'true',
   ),
   const DocProp('label', 'String?', 'The control’s accessible name.'),
+];
+
+// -----------------------------------------------------------------------------
+// AstryxStepper
+// -----------------------------------------------------------------------------
+
+final DocPage _stepper = DocPage(
+  id: 'stepper',
+  title: 'AstryxStepper',
+  group: _group,
+  description:
+      'Progress through a sequence of steps, and the steps themselves.',
+  source: 'lib/src/components/navigation/stepper.dart',
+  upstream: 'Stepper / Step',
+  upstreamPath: '/components/Stepper',
+  blocks: <DocBlock>[
+    const DocExample('stepper_demo', align: DocExampleAlign.stretch),
+    const DocHeading('Usage'),
+    const DocCode('''
+AstryxStepper(
+  activeStep: _step,
+  steps: const <AstryxStep>[
+    AstryxStep(label: 'Account'),
+    AstryxStep(label: 'Profile', description: 'Name and photo'),
+    AstryxStep(label: 'Review'),
+  ],
+)'''),
+    const DocProse(
+      'A stepper says *where in a flow the user is*. It is not navigation: the '
+      'steps are the stages of one task, not the destinations of an '
+      'application, so it announces itself as a labelled group of steps rather '
+      'than as a landmark. `activeStep` is a zero-based index, and a value '
+      'past the last step marks the whole flow complete — which is what a '
+      'confirmation screen wants.',
+    ),
+    const DocProse(
+      'It is **controlled**: it draws the index it is given and changes '
+      'nothing on its own, which is what makes a flow that validates before '
+      'advancing possible. Upstream asks each `Step` to declare its own '
+      'index; here a step’s index is its position in `steps`, so two steps '
+      'cannot claim the same one.',
+    ),
+    const DocHeading('Orientation'),
+    const DocProse(
+      'Horizontal divides the width evenly between the steps, so a long label '
+      'wraps inside its own slice rather than spilling into its neighbour. '
+      'Vertical stacks them, and is the orientation to reach for once the '
+      'steps carry content of their own.',
+    ),
+    const DocExample('stepper_orientations', align: DocExampleAlign.stretch),
+    const DocHeading('Indicator position'),
+    const DocProse(
+      '`separated` — the default — puts the indicator in the label row with '
+      'the connector as a bar of its own. `onTrack` slots it into the line as '
+      'a node, with the label below it (horizontal) or beside it (vertical); '
+      'the steps then abut so their segments form one continuous track.',
+    ),
+    const DocExample('stepper_on_track', align: DocExampleAlign.stretch),
+    const DocHeading('Status'),
+    const DocProse(
+      '`status` colours the indicator, and in the default `auto` mode gives it '
+      'a glyph. It is **not** a lifecycle: whether a step is done comes from '
+      '`activeStep`, and the step the flow is on keeps its current-step '
+      'indicator whatever its status says. It never recolours the connector, '
+      'which reports progress and nothing else.',
+    ),
+    const DocExample('stepper_status', align: DocExampleAlign.stretch),
+    const DocCallout.accessibility(
+      'The glyphs are decorative, so every one of them also reaches assistive '
+      'technology as words: a step announces its position ("Step 2 of 3"), its '
+      'label, its description, whether it is optional, whether the flow has '
+      'passed it, and its status. Colour is never the only signal.',
+    ),
+    const DocHeading('Navigable steps'),
+    const DocProse(
+      '`onStepPressed` makes every enabled step pressable — the ones ahead as '
+      'well as the ones behind, which is the free navigation a flow the user '
+      'may revisit wants. A step with `enabled: false` stays visible and '
+      'counted; it simply cannot be reached.',
+    ),
+    const DocExample('stepper_navigable', align: DocExampleAlign.stretch),
+    const DocHeading('Content in a step'),
+    const DocProse(
+      'A vertical step can carry the fields it is asking for, so the form and '
+      'the progress through it are one thing rather than two. Give `content` '
+      'to the step the flow is on and null to the rest.',
+    ),
+    const DocExample('stepper_content', align: DocExampleAlign.stretch),
+    const DocCallout.note(
+      'The connector paints at its final length on the first frame: a stepper '
+      'that opens on step three shows three filled segments rather than '
+      'playing its own history back at the reader. Only a change animates.',
+    ),
+    DocApi('AstryxStepper', _stepperProps),
+    DocApi('AstryxStep', _stepProps),
+  ],
+);
+
+final List<DocProp> _stepperProps = <DocProp>[
+  const DocProp(
+    'activeStep',
+    'int',
+    'The zero-based index of the step the flow is on. Past the last step marks '
+        'the flow complete.',
+    required: true,
+  ),
+  const DocProp(
+    'steps',
+    'List<AstryxStep>',
+    'The steps, in order. Each one’s index is its position here.',
+    required: true,
+  ),
+  const DocProp(
+    'orientation',
+    'AstryxStepperOrientation',
+    'Which way the stepper runs: `horizontal` or `vertical`.',
+    defaultValue: 'AstryxStepperOrientation.horizontal',
+  ),
+  const DocProp(
+    'indicatorPosition',
+    'AstryxStepperIndicatorPosition',
+    'Whether the indicator sits in the label row (`separated`) or in the '
+        'connector (`onTrack`).',
+    defaultValue: 'AstryxStepperIndicatorPosition.separated',
+  ),
+  const DocProp(
+    'onStepPressed',
+    'ValueChanged<int>?',
+    'Called with the index of a step the user pressed. Null makes the stepper '
+        'a read-out.',
+  ),
+  const DocProp(
+    'label',
+    'String?',
+    'The stepper’s accessible name. Null uses the localised "Progress".',
+  ),
+  const DocProp(
+    'density',
+    'AstryxStepDensity',
+    'The vertical rhythm the steps take: `compact`, `balanced` or `spacious`.',
+    defaultValue: 'AstryxStepDensity.balanced',
+  ),
+];
+
+final List<DocProp> _stepProps = <DocProp>[
+  const DocProp(
+    'label',
+    'String',
+    'The step’s name, and its accessible name.',
+    required: true,
+  ),
+  const DocProp('description', 'String?', 'A supporting line below the label.'),
+  const DocProp(
+    'status',
+    'AstryxStepStatus?',
+    'A semantic colour — `accent`, `success`, `warning` or `error` — and, in '
+        '`auto`, a matching glyph.',
+  ),
+  const DocProp(
+    'enabled',
+    'bool',
+    'Whether the step can be chosen. A disabled step is still shown and still '
+        'counted.',
+    defaultValue: 'true',
+  ),
+  const DocProp(
+    'optional',
+    'bool',
+    'Whether the step may be skipped, which appends an "Optional" note.',
+    defaultValue: 'false',
+  ),
+  const DocProp(
+    'trailing',
+    'Widget?',
+    'Content at the end of the label row — a timestamp, a badge.',
+  ),
+  const DocProp(
+    'indicator',
+    'AstryxStepIndicator',
+    'Which preset to draw: `auto` (a number until the step is passed, then a '
+        'check), `number`, or `none`.',
+    defaultValue: 'AstryxStepIndicator.auto',
+  ),
+  const DocProp(
+    'icon',
+    'Widget?',
+    'An indicator of your own, drawn instead of the preset and sized into the '
+        'same 16px box.',
+  ),
+  const DocProp(
+    'content',
+    'Widget?',
+    'Content below the label — the fields of this step of a form.',
+  ),
+  const DocProp(
+    'density',
+    'AstryxStepDensity?',
+    'Overrides the stepper’s density for this step.',
+  ),
 ];

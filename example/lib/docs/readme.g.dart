@@ -31,10 +31,10 @@ const List<DocBlock> readmeIntro = <DocBlock>[
 /// `A custom theme`; each subsection is also an entry of its own.
 const Map<String, List<DocBlock>> readmeSections = <String, List<DocBlock>>{
   'Install': <DocBlock>[
-    DocCode('''flutter pub add astryx_ui:^0.0.7-dev''', language: 'sh'),
+    DocCode('''flutter pub add astryx_ui:^0.0.8-dev''', language: 'sh'),
     DocProse('Pre-release versions are not selected by a bare `flutter pub add`, so name the version — or write it out:'),
     DocCode('''dependencies:
-  astryx_ui: ^0.0.7-dev''', language: 'yaml'),
+  astryx_ui: ^0.0.8-dev''', language: 'yaml'),
     DocProse('To track the repository instead of a release:'),
     DocCode('''dependencies:
   astryx_ui:
@@ -146,7 +146,7 @@ final gap = theme.spacing(AstryxSpacingToken.spacing3);''', language: 'dart'),
     DocProse('This repository is also a Claude Code plugin marketplace, so the skill installs in one step:'),
     DocCode('''/plugin marketplace add JayashBhandary/astryx_ui
 /plugin install astryx-ui@astryx-ui''', language: 'text'),
-    DocProse('Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.7-dev` — and pick up later ones with `/plugin marketplace update`. Claude Code loads the skill automatically inside this repository whether or not the plugin is installed.'),
+    DocProse('Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.8-dev` — and pick up later ones with `/plugin marketplace update`. Claude Code loads the skill automatically inside this repository whether or not the plugin is installed.'),
     DocProse('Not using Claude Code? Copy `.claude/skills/astryx-ui/` into your own project\'s `.claude/skills/`, or point your agent at [`doc/`](https://github.com/JayashBhandary/astryx_ui/blob/main/doc/README.md), which is the same content in plain markdown.'),
   ],
   'For AI coding agents': <DocBlock>[
@@ -154,7 +154,7 @@ final gap = theme.spacing(AstryxSpacingToken.spacing3);''', language: 'dart'),
     DocProse('This repository is also a Claude Code plugin marketplace, so the skill installs in one step:'),
     DocCode('''/plugin marketplace add JayashBhandary/astryx_ui
 /plugin install astryx-ui@astryx-ui''', language: 'text'),
-    DocProse('Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.7-dev` — and pick up later ones with `/plugin marketplace update`. Claude Code loads the skill automatically inside this repository whether or not the plugin is installed.'),
+    DocProse('Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.8-dev` — and pick up later ones with `/plugin marketplace update`. Claude Code loads the skill automatically inside this repository whether or not the plugin is installed.'),
     DocProse('Not using Claude Code? Copy `.claude/skills/astryx-ui/` into your own project\'s `.claude/skills/`, or point your agent at [`doc/`](https://github.com/JayashBhandary/astryx_ui/blob/main/doc/README.md), which is the same content in plain markdown.'),
   ],
   'Contributing': <DocBlock>[

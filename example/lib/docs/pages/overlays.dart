@@ -11,6 +11,8 @@ final List<DocPage> overlayPages = <DocPage>[
   _contextMenu,
   _dialog,
   _alertDialog,
+  _bottomSheet,
+  _bottomSheetSwitcher,
   _overlay,
   _toast,
   _collapsible,
@@ -392,6 +394,33 @@ AstryxDropdownMenu
       'lands on something that does nothing. A disabled item stays visible and '
       'is announced as disabled — with a `description` it can even say why.',
     ),
+    DocHeading('Selectable rows'),
+    DocProse(
+      'A menu **performs actions**, and a row that reports a setting is the '
+      'exception rather than the shape to reach for. Where the choice *is* the '
+      'point — one value out of a list, with the current one shown — use '
+      '[AstryxSelector](selector), which announces itself as a listbox and '
+      'keeps the value on its trigger. These two roles are for the settings a '
+      'menu really owns: a view’s density, whether a column is shown, how a '
+      'list is sorted.',
+    ),
+    DocProse(
+      '`AstryxMenuItem.checkbox` reports a setting that is independently on or '
+      'off, and **leaves the menu open** so several can be toggled in one '
+      'visit. `AstryxMenuItem.radio` reports one choice out of the rows around '
+      'it, and closes the menu — the choice has been made. Both are '
+      'controlled: the row draws the `checked` it is given and asks you to '
+      'change it. `closeOnSelect` overrides either default.',
+    ),
+    DocExample('dropdown_menu_selectable'),
+    DocCallout.accessibility(
+      'A checkbox row is announced with a checked state rather than as a '
+      'button, and a radio row adds that it is one of a mutually exclusive '
+      'group; the run of adjacent radio rows is the group, so a divider or a '
+      'section heading between two runs reads as two groups. Once any row in a '
+      'menu reports state, every row pays the same gutter, so the labels stay '
+      'in one column instead of stepping in and out as settings are toggled.',
+    ),
     DocApi('AstryxDropdownMenu', <DocProp>[
       DocProp(
         'entries',
@@ -483,6 +512,27 @@ AstryxDropdownMenu
         'List<AstryxMenuEntry>',
         'Nested entries. A non-empty list turns this row into a submenu.',
         defaultValue: 'const <AstryxMenuEntry>[]',
+      ),
+      DocProp(
+        'role',
+        'AstryxMenuItemRole',
+        'What choosing the row means: `action`, `checkbox` or `radio`. Set by '
+            'the constructor you use, not directly.',
+        defaultValue: 'AstryxMenuItemRole.action',
+      ),
+      DocProp(
+        'checked',
+        'bool',
+        'Whether the setting the row reports is on. Required by the `checkbox` '
+            'and `radio` constructors, and always false for an action.',
+        defaultValue: 'false',
+      ),
+      DocProp(
+        'closeOnSelect',
+        'bool',
+        'Whether choosing the row closes the menu. False by default for a '
+            'checkbox row, true for an action and a radio row.',
+        defaultValue: 'true',
       ),
     ]),
   ],
@@ -926,8 +976,23 @@ AstryxContextMenu(
     ),
     DocHeading('On the web'),
     DocProse(
-      'The browser’s own menu appears over this one unless the app turns '
-      'it off once at startup.',
+      'A secondary click is the browser’s before it is the application’s, so '
+      'without help the browser raises its Back / Reload / Inspect menu on top '
+      'of this one — two menus for one click, and the one the user wanted '
+      'underneath.',
+    ),
+    DocProse(
+      '**The widget handles it.** While one is mounted and able to open, the '
+      'browser’s menu is suppressed; when the last one leaves the tree, it '
+      'comes back. Flutter offers no way to suppress it over one region only — '
+      '`BrowserContextMenu` is whole-document — so "while the page has a '
+      'context menu of its own" is the narrowest scope available. '
+      '`suppressBrowserMenu: false` opts one widget out.',
+    ),
+    DocProse(
+      'An app that wants the browser’s menu off everywhere should still say so '
+      'once at startup. This will not turn back on what it did not turn off, '
+      'so the two do not fight.',
     ),
     DocCode('''
 if (kIsWeb) await BrowserContextMenu.disableContextMenu();'''),
@@ -985,6 +1050,13 @@ if (kIsWeb) await BrowserContextMenu.disableContextMenu();'''),
         'double',
         'The widest the menu may become.',
         defaultValue: '280',
+      ),
+      DocProp(
+        'suppressBrowserMenu',
+        'bool',
+        'Whether to keep the browser’s own right-click menu out of the way. '
+            'Web only, and whole-document rather than local.',
+        defaultValue: 'true',
       ),
       DocProp(
         'maxHeight',
@@ -1491,6 +1563,321 @@ AstryxCollapsibleGroup(
     DocList(<String>[
       '[AstryxCollapsible](collapsible) — one section, and where the header is '
           'documented.',
+    ]),
+  ],
+);
+
+// -----------------------------------------------------------------------------
+// AstryxBottomSheet
+// -----------------------------------------------------------------------------
+
+const DocPage _bottomSheet = DocPage(
+  id: 'bottom_sheet',
+  title: 'AstryxBottomSheet',
+  group: _group,
+  description: 'A modal panel that rises from the bottom edge of the viewport.',
+  source: 'lib/src/components/overlay/bottom_sheet.dart',
+  upstream: 'BottomSheet',
+  upstreamPath: '/components/BottomSheet',
+  blocks: <DocBlock>[
+    DocExample('bottom_sheet_demo'),
+    DocHeading('Usage'),
+    DocCode('''
+AstryxBottomSheet(
+  controller: _sheet,
+  label: 'Filters',
+  height: AstryxBottomSheetHeight.hug,
+  child: const FilterForm(),
+)'''),
+    DocProse(
+      'The same modal contract as [AstryxDialog](dialog) — trapped focus, '
+      'Escape, a scrim that dims and dismisses, focus handed back to whatever '
+      'opened it — anchored to an edge rather than centred, and draggable.',
+    ),
+    DocProse(
+      '**Reach for a sheet on a touch screen.** It puts its content and its '
+      'actions inside the thumb’s reach, which is the whole reason it exists; '
+      'a dialog centred in a tall phone window puts them where the hand is '
+      'not. On a desktop window `AstryxDialog` remains the right shape, and '
+      'the sheet stops growing at 640px rather than becoming a very wide strip '
+      'stuck to the bottom of the screen.',
+    ),
+    DocProse(
+      'Like every overlay here it is a **widget in the tree**, not a '
+      '`showModalBottomSheet` call: it renders nothing until its controller '
+      'opens it, so it sits next to whatever opens it and there is no '
+      '`BuildContext` to smuggle across an async gap.',
+    ),
+    DocHeading('Height'),
+    DocProse(
+      '`hug` sizes to its content, up to 92% of the viewport — the budget for '
+      'a share menu, three actions, a confirmation. `capped` takes 62% '
+      'whatever is in it, which leaves enough of the page visible behind the '
+      'scrim to keep the sheet reading as a layer over something rather than '
+      'as a new screen. `tall` takes 92%: a working surface, with the page a '
+      'sliver above it.',
+    ),
+    DocExample('bottom_sheet_heights'),
+    DocHeading('Snap points'),
+    DocProse(
+      '`snapPoints` gives the sheet more than one resting height, each a '
+      'fraction of the viewport, and dragging the handle moves between them. '
+      'Dragging below the shortest one dismisses the sheet unless '
+      '`dragDismissible` is false. Values outside `(0, 1]` are dropped rather '
+      'than thrown for — a snap point of `50` is a mistake, and a sheet that '
+      'threw for it would take the screen down with it.',
+    ),
+    DocExample('bottom_sheet_snap'),
+    DocCallout.accessibility(
+      'A detent is a **convenience, never the only way to something**: a sheet '
+      'with snap points still has to work for someone who cannot drag, so put '
+      'nothing behind a stop that the sheet does not also reach by scrolling. '
+      'The handle is a drag target and is named as one; `label` is required '
+      'because a sheet has no header of its own to derive a name from.',
+    ),
+    DocCallout.note(
+      'The sheet travels up from the edge it is anchored to, rather than '
+      'fading in as the other viewport overlays do: fading one in leaves no '
+      'trace of where it came from, which is the one thing its shape is meant '
+      'to say. Under reduced motion neither runs.',
+    ),
+    DocApi('AstryxBottomSheet', <DocProp>[
+      DocProp(
+        'controller',
+        'AstryxBottomSheetController',
+        'The open/closed state.',
+        required: true,
+      ),
+      DocProp(
+        'label',
+        'String',
+        'The sheet’s accessible name. Required — a sheet has no header to '
+            'derive one from.',
+        required: true,
+      ),
+      DocProp(
+        'child',
+        'Widget',
+        'The body. Scrolls when it is taller than the sheet.',
+        required: true,
+      ),
+      DocProp(
+        'height',
+        'AstryxBottomSheetHeight',
+        'How much of the viewport the sheet may occupy: `hug`, `capped` or '
+            '`tall`.',
+        defaultValue: 'AstryxBottomSheetHeight.capped',
+      ),
+      DocProp(
+        'snapPoints',
+        'List<double>',
+        'Extra resting heights, each a fraction of the viewport in `(0, 1]`.',
+        defaultValue: 'const <double>[]',
+      ),
+      DocProp(
+        'initialSnapPoint',
+        'int?',
+        'Which snap point the sheet opens at. Null opens at the tallest.',
+      ),
+      DocProp(
+        'showScrim',
+        'bool',
+        'Whether to dim the page behind the sheet.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'showHandle',
+        'bool',
+        'Whether to draw the grab handle.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'barrierDismissible',
+        'bool',
+        'Whether a press on the scrim closes it.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'escapeDismissible',
+        'bool',
+        'Whether Escape closes it.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'dragDismissible',
+        'bool',
+        'Whether dragging the sheet down past its shortest height closes it.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'padding',
+        'AstryxSpacingToken',
+        'The inset between the sheet’s edges and its content.',
+        defaultValue: 'AstryxSpacingToken.spacing4',
+      ),
+      DocProp(
+        'onDismiss',
+        'VoidCallback?',
+        'Called when the sheet dismisses itself.',
+      ),
+    ]),
+  ],
+);
+
+// -----------------------------------------------------------------------------
+// AstryxBottomSheetSwitcher
+// -----------------------------------------------------------------------------
+
+const DocPage _bottomSheetSwitcher = DocPage(
+  id: 'bottom_sheet_switcher',
+  title: 'AstryxBottomSheetSwitcher',
+  group: _group,
+  description: 'A flow of bottom sheets sharing one scrim.',
+  source: 'lib/src/components/overlay/bottom_sheet_switcher.dart',
+  upstream: 'BottomSheetSwitcher',
+  upstreamPath: '/components/BottomSheetSwitcher',
+  blocks: <DocBlock>[
+    DocExample('bottom_sheet_switcher'),
+    DocHeading('Usage'),
+    DocCode('''
+AstryxBottomSheetSwitcher(
+  activeSheetId: _step,
+  onActiveSheetChanged: (id) => setState(() => _step = id),
+  sheets: <AstryxBottomSheetPage>[
+    AstryxBottomSheetPage(
+      id: 'method',
+      label: 'Payment method',
+      child: MethodList(onPicked: () => setState(() => _step = 'confirm')),
+    ),
+    AstryxBottomSheetPage(
+      id: 'confirm',
+      label: 'Confirm payment',
+      child: const Confirmation(),
+    ),
+  ],
+)'''),
+    DocProse(
+      'The step-by-step case a sheet is often asked for: choose a payment '
+      'method, then confirm it, then see the receipt. Each step is its own '
+      'sheet with its own height, and the switcher moves between them '
+      '**without the scrim flashing** — three separate sheets opening and '
+      'closing in turn dim the page, undim it and dim it again, which reads as '
+      'three interruptions rather than one task.',
+    ),
+    DocProse(
+      '`activeSheetId` is the whole state: a non-null id is the step on '
+      'screen, null closes the flow. There is no controller, because a '
+      'controller and an id would be two sources of truth for the same thing. '
+      'The scrim, Escape and a dismissing drag all report a close as '
+      '`onActiveSheetChanged(null)`, so a flow closed by the user and one '
+      'closed by code take the same path.',
+    ),
+    DocProse(
+      'A step is an `AstryxBottomSheetPage` rather than a sheet widget: only '
+      'the active one is built, and the rest are the steps it may become. Its '
+      'fields are [AstryxBottomSheet](bottom_sheet)’s own, minus the ones the '
+      'switcher owns for the whole flow — the scrim, and how it dismisses. '
+      'Upstream spells the same thing as nested sheets carrying a `sheetId`.',
+    ),
+    DocCallout.accessibility(
+      'Each step names itself, so a screen reader announces the step the flow '
+      'moved to rather than the flow it is still in.',
+    ),
+    DocCallout.note(
+      'Upstream choreographs the outgoing sheet: it stays present and inert, '
+      'travels to meet the height of the incoming one, then fades. Here the '
+      'two cross-fade while the layer resizes to the new step. The difference '
+      'shows on a large height change; everything the flow *does* is the same.',
+    ),
+    DocApi('AstryxBottomSheetSwitcher', <DocProp>[
+      DocProp(
+        'activeSheetId',
+        'String?',
+        'The id of the step on screen, or null when the flow is closed.',
+        required: true,
+      ),
+      DocProp(
+        'onActiveSheetChanged',
+        'ValueChanged<String?>',
+        'Called with the step to move to, or null to close the flow.',
+        required: true,
+      ),
+      DocProp(
+        'sheets',
+        'List<AstryxBottomSheetPage>',
+        'The steps. Order is documentation only — `activeSheetId` decides.',
+        required: true,
+      ),
+      DocProp(
+        'showScrim',
+        'bool',
+        'Whether to dim the page behind the flow.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'barrierDismissible',
+        'bool',
+        'Whether a press on the scrim closes the flow.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'escapeDismissible',
+        'bool',
+        'Whether Escape closes the flow.',
+        defaultValue: 'true',
+      ),
+    ]),
+    DocApi('AstryxBottomSheetPage', <DocProp>[
+      DocProp(
+        'id',
+        'String',
+        'What names this sheet in `activeSheetId`. Unique within one switcher.',
+        required: true,
+      ),
+      DocProp(
+        'label',
+        'String',
+        'The step’s accessible name.',
+        required: true,
+      ),
+      DocProp('child', 'Widget', 'The body.', required: true),
+      DocProp(
+        'height',
+        'AstryxBottomSheetHeight',
+        'How much of the viewport this step may occupy. Hugs by default, '
+            'unlike a standalone sheet: the steps of a flow are rarely the '
+            'same length.',
+        defaultValue: 'AstryxBottomSheetHeight.hug',
+      ),
+      DocProp(
+        'snapPoints',
+        'List<double>',
+        'Extra resting heights, each a fraction of the viewport in `(0, 1]`.',
+        defaultValue: 'const <double>[]',
+      ),
+      DocProp(
+        'initialSnapPoint',
+        'int?',
+        'Which snap point this step opens at.',
+      ),
+      DocProp(
+        'showHandle',
+        'bool',
+        'Whether to draw the grab handle.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'dragDismissible',
+        'bool',
+        'Whether dragging past the shortest height closes the flow.',
+        defaultValue: 'true',
+      ),
+      DocProp(
+        'padding',
+        'AstryxSpacingToken',
+        'The inset around the body.',
+        defaultValue: 'AstryxSpacingToken.spacing4',
+      ),
     ]),
   ],
 );

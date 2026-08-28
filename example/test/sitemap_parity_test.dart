@@ -1,9 +1,17 @@
 /// Checks the site against the upstream one it mirrors.
 ///
 /// `test/upstream_pages.txt` is every URL in `astryx.atmeta.com/sitemap.xml`,
-/// captured on 2026-08-10. Without a check like this the port drifts silently:
-/// upstream ships a component, nobody notices, and the gap is invisible because
-/// a missing page looks exactly like a component nobody has thought about.
+/// captured on 2026-08-10, plus the seven component paths added by hand on
+/// 2026-08-28 for the components ported that day — `BottomSheet`,
+/// `BottomSheetSwitcher`, `Stepper`, `Step` and the three indicators. That
+/// re-capture also listed `Stack`, three `Table*` sub-components, four hooks
+/// and six new templates, and retired three template URLs this port still
+/// documents; merging those is a piece of work in its own right, so the
+/// fixture stays a snapshot of 2026-08-10 everywhere else.
+///
+/// Without a check like this the port drifts silently: upstream ships a
+/// component, nobody notices, and the gap is invisible because a missing page
+/// looks exactly like a component nobody has thought about.
 ///
 /// The fixture lives beside the test rather than in `scrape/`, which is
 /// git-ignored — a check whose data is absent from a fresh clone is not a

@@ -200,3 +200,53 @@ class DropdownMenuPlacementExample extends StatelessWidget {
   }
 }
 // #end
+
+// #example dropdown_menu_selectable -> DropdownMenuSelectableExample
+class DropdownMenuSelectableExample extends StatefulWidget {
+  const DropdownMenuSelectableExample({super.key});
+
+  @override
+  State<DropdownMenuSelectableExample> createState() =>
+      _DropdownMenuSelectableExampleState();
+}
+
+class _DropdownMenuSelectableExampleState
+    extends State<DropdownMenuSelectableExample> {
+  bool _archived = false;
+  bool _drafts = true;
+  String _sort = 'Newest';
+
+  @override
+  Widget build(BuildContext context) {
+    // Two roles a menu can carry beyond actions. A checkbox row keeps the menu
+    // open so several can be toggled in one visit; a radio row closes it,
+    // because the choice has been made. Both are controlled — the row draws
+    // the state it is given and asks you to change it.
+    return AstryxDropdownMenu(
+      entries: <AstryxMenuEntry>[
+        const AstryxMenuSection('Show'),
+        AstryxMenuItem.checkbox(
+          label: 'Archived',
+          checked: _archived,
+          onSelected: () => setState(() => _archived = !_archived),
+        ),
+        AstryxMenuItem.checkbox(
+          label: 'Drafts',
+          checked: _drafts,
+          onSelected: () => setState(() => _drafts = !_drafts),
+        ),
+        const AstryxMenuDivider(),
+        const AstryxMenuSection('Sort by'),
+        for (final option in const <String>['Newest', 'Oldest', 'Name'])
+          AstryxMenuItem.radio(
+            label: option,
+            checked: _sort == option,
+            onSelected: () => setState(() => _sort = option),
+          ),
+      ],
+      triggerBuilder: (context, controller) =>
+          AstryxButton(label: 'View', onPressed: controller.toggle),
+    );
+  }
+}
+// #end

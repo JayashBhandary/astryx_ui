@@ -8,6 +8,10 @@ export 'field.dart';
 export 'field_status.dart';
 export 'file_input.dart';
 export 'form_layout.dart';
+// The three stateful control visuals, for the row this package has no widget
+// for. `AstryxSelectionIndicator` stays internal: it is the shared chrome the
+// three are built from, and it takes a resolved theme rather than reading one.
+export 'indicator.dart';
 // `AstryxInputContainer` and the two resolvers are shared by the text inputs
 // and the selector, but they are implementation detail, not public API.
 export 'input_container.dart'

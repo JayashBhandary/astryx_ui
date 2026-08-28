@@ -19,7 +19,7 @@ themes, light and dark, on a mouse and on a thumb.
 ## Install
 
 ```sh
-flutter pub add astryx_ui:^0.0.7-dev
+flutter pub add astryx_ui:^0.0.8-dev
 ```
 
 Pre-release versions are not selected by a bare `flutter pub add`, so name the
@@ -27,7 +27,7 @@ version — or write it out:
 
 ```yaml
 dependencies:
-  astryx_ui: ^0.0.7-dev
+  astryx_ui: ^0.0.8-dev
 ```
 
 To track the repository instead of a release:
@@ -239,7 +239,7 @@ in one step:
 /plugin install astryx-ui@astryx-ui
 ```
 
-Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.7-dev` — and
+Pin a release by appending a tag — `JayashBhandary/astryx_ui@v0.0.8-dev` — and
 pick up later ones with `/plugin marketplace update`. Claude Code loads the skill
 automatically inside this repository whether or not the plugin is installed.
 
