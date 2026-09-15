@@ -9,7 +9,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [astryx_ui](guides/introduction.md) — A Flutter design system for internal tools, token-compatible with Astryx.
 - [Installation](guides/installation.md) — Add the package, wrap your app once, and you are done.
 - [Principles](guides/principles.md) — What the design system optimises for, and the decisions that follow from it.
-- [Theming](guides/theming.md) — Seven themes, two brightnesses, and an engine for your own.
+- [Theming](guides/theming.md) — Eight themes, two brightnesses, and an engine for your own.
 - [Design tokens](guides/tokens.md) — The values every component resolves through.
 - [Colour](guides/color.md) — The colour system: the families, the semantic roles, and which one to reach for.
 - [Typography](guides/typography.md) — The type scale, the roles, and how a heading level maps onto them.
@@ -241,6 +241,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [Retail heatmap table](components/table_page_shoe_store_heatmap.md) — The heatmap table screen with a retail data set.
 - [Kanban board](components/kanban_board.md) — Columns of draggable cards.
 - [Incident console](components/incident_console.md) — A live operations view: severity, timeline, and the current on-call.
+- [Departure board](components/travel_journey.md) — A travel screen: what leaves next, what is late, and where the passenger's own trip is up to.
 - [Classic gallery](components/classic_gallery.md) — A uniform wall of media tiles, each opening the same viewer on the item that was pressed.
 - [Mixed gallery](components/mixed_gallery.md) — A gallery of items at mixed sizes.
 - [Side gallery](components/side_gallery.md) — A gallery with the selected item beside the strip.

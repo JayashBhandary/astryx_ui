@@ -1,6 +1,6 @@
 ---
 title: Theming
-description: Seven themes, two brightnesses, and an engine for your own.
+description: Eight themes, two brightnesses, and an engine for your own.
 group: Getting started
 ---
 
@@ -11,7 +11,7 @@ group: Getting started
 
 ## The prebuilt themes
 
-A theme is a value, not a global. Nesting a provider re-themes a subtree — which is how the preview below shows eight at once.
+A theme is a value, not a global. Nesting a provider re-themes a subtree — which is how the preview below shows nine at once.
 
 ```dart
 class ThemingThemesExample extends StatelessWidget {
@@ -135,6 +135,19 @@ class ThemingModesExample extends StatelessWidget {
 }
 ```
 
+
+## `transit`, and solving a theme for contrast
+
+`transitTheme` is the one theme in this package that upstream does not ship. It is hand-authored here — a signal blue accent, cool slate neutrals and the squarer corners of printed signage — and every colour pair in it was solved for a ratio rather than picked by eye. See it on a screen in [Departure board](../components/travel_journey.md).
+
+| Pair | Floor | Why it is the floor |
+| --- | --- | --- |
+| Text on any surface it can land on | 4.5:1 | WCAG 2.1 AA, 1.4.3. "Any surface" includes `--color-background-muted`, which is the darkest light surface and the lightest dark one, so that is what the text tokens were solved against. |
+| The foreground of a filled control | 4.5:1 | `--color-on-success` is painted on `--color-success` by a badge, a stepper indicator and a solid button. It is a near-white or a near-black here, never the fill itself. |
+| A control's boundary | 3:1 | WCAG 2.1 AA, 1.4.11. `--color-border-emphasized` draws the secondary button, so it clears 3:1 on every surface; `--color-border` is a separator and does not have to. |
+| Each of the ten families on its own fill | 4.5:1 | A categorical badge is text on a tint. The ten pairs land between 4.6:1 and 6.8:1 in both modes. |
+
+`test/theme/transit_contrast_test.dart` measures all of it through the resolved token set, in both modes. The seven generated themes are held to upstream parity instead, defects included: `stone` sets `--color-on-error` equal to `--color-error`, and a test pins that 1.00:1 rather than correcting it.
 
 ## A custom theme
 

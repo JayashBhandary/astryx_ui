@@ -2,8 +2,8 @@
 ///
 /// The package has its own contrast tests, but they check the *engine* — that
 /// the maths matches upstream. This checks the *choices*: every foreground the
-/// docs site paints over every background it paints it on, in all eight themes
-/// and both brightnesses. Sixteen combinations per pair is more than anyone
+/// docs site paints over every background it paints it on, in all nine themes
+/// and both brightnesses. Eighteen combinations per pair is more than anyone
 /// checks by looking, which is how a legible badge in light mode ships as an
 /// illegible one in dark.
 ///

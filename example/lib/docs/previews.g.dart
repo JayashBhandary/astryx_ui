@@ -98,6 +98,7 @@ import 'package:example/examples/template_shell_examples.dart';
 import 'package:example/examples/template_shell_variant_examples.dart';
 import 'package:example/examples/template_split_examples.dart';
 import 'package:example/examples/template_table_page_examples.dart';
+import 'package:example/examples/template_travel_examples.dart';
 import 'package:example/examples/template_workspace_examples.dart';
 import 'package:example/examples/text_area_examples.dart';
 import 'package:example/examples/text_examples.dart';
@@ -435,6 +436,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'template_library': (_) => const LibraryTemplate(),
   'template_messaging_shell': (_) => const MessagingShellTemplate(),
   'template_table_page': (_) => const TablePageTemplate(),
+  'template_travel_journey': (_) => const TravelJourneyTemplate(),
   'template_editor': (_) => const EditorTemplate(),
   'template_file_explorer': (_) => const FileExplorerTemplate(),
   'template_ide': (_) => const IdeTemplate(),

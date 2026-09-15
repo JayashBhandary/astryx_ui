@@ -50,7 +50,7 @@ What the design system optimises for, and the decisions that follow from it.
 
 ## Theming
 
-Seven themes, two brightnesses, and an engine for your own.
+Eight themes, two brightnesses, and an engine for your own.
 
 ```dart
 class ThemingThemesExample extends StatelessWidget {
@@ -112,6 +112,13 @@ class ThemingThemesExample extends StatelessWidget {
 **Rules**
 
 - **Note:** If you only need tokens and theme types, import `package:astryx_ui/theme.dart` instead of the full surface. It is the same theme layer without any widgets.
+
+| Pair | Floor | Why it is the floor |
+| --- | --- | --- |
+| Text on any surface it can land on | 4.5:1 | WCAG 2.1 AA, 1.4.3. "Any surface" includes `--color-background-muted`, which is the darkest light surface and the lightest dark one, so that is what the text tokens were solved against. |
+| The foreground of a filled control | 4.5:1 | `--color-on-success` is painted on `--color-success` by a badge, a stepper indicator and a solid button. It is a near-white or a near-black here, never the fill itself. |
+| A control's boundary | 3:1 | WCAG 2.1 AA, 1.4.11. `--color-border-emphasized` draws the secondary button, so it clears 3:1 on every surface; `--color-border` is a separator and does not have to. |
+| Each of the ten families on its own fill | 4.5:1 | A categorical badge is text on a tint. The ten pairs land between 4.6:1 and 6.8:1 in both modes. |
 
 ---
 
@@ -1529,7 +1536,7 @@ class ThemesGalleryExample extends StatelessWidget {
             // Each cell paints its own page background rather than borrowing
             // the site's: `--color-background-body` is the first thing that
             // separates one theme from the next, and a gallery that hides it
-            // would be comparing seven cards on one page.
+            // would be comparing nine cards on one page.
             child: Builder(
               builder: (context) {
                 final t = AstryxTheme.of(context);

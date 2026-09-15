@@ -1,7 +1,7 @@
 /// The examples on the Themes page.
 ///
 /// Every other page renders in one theme — whichever the picker at the top of
-/// the site is set to. These render all eight at once, which is possible only
+/// the site is set to. These render all nine at once, which is possible only
 /// because a theme is a value rather than a global: nesting
 /// `AstryxThemeProvider` re-themes a subtree, and nothing above or below it
 /// needs to know.
@@ -11,12 +11,13 @@ import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/examples/theming_examples.dart';
 import 'package:flutter/widgets.dart';
 
-/// The eight themes, in the order the picker at the top of the page lists them.
+/// The nine themes, in the order the picker at the top of the page lists them.
 ///
-/// Seven ship with the package. `acme` is `defineTheme`d from one hex accent in
-/// `theming_examples.dart`, and is in the gallery deliberately: a theme the
-/// engine generated should be indistinguishable from the seven that were tuned
-/// by hand.
+/// Seven ship with the package. `transit` is hand-authored here and solved for
+/// WCAG contrast rather than picked by eye. `acme` is `defineTheme`d from one
+/// hex accent in `theming_examples.dart`, and is in the gallery deliberately: a
+/// theme the engine generated should be indistinguishable from the ones that
+/// were tuned by hand.
 final List<(String, AstryxDefinedTheme)> galleryThemes =
     <(String, AstryxDefinedTheme)>[
       ('neutral', neutralTheme),
@@ -26,6 +27,7 @@ final List<(String, AstryxDefinedTheme)> galleryThemes =
       ('chocolate', chocolateTheme),
       ('y2k', y2kTheme),
       ('butter', butterTheme),
+      ('transit', transitTheme),
       ('acme', acmeTheme),
     ];
 
@@ -60,7 +62,7 @@ class ThemesGalleryExample extends StatelessWidget {
             // Each cell paints its own page background rather than borrowing
             // the site's: `--color-background-body` is the first thing that
             // separates one theme from the next, and a gallery that hides it
-            // would be comparing seven cards on one page.
+            // would be comparing nine cards on one page.
             child: Builder(
               builder: (context) {
                 final t = AstryxTheme.of(context);

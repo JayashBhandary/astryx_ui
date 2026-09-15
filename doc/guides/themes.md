@@ -29,7 +29,7 @@ class ThemesGalleryExample extends StatelessWidget {
             // Each cell paints its own page background rather than borrowing
             // the site's: `--color-background-body` is the first thing that
             // separates one theme from the next, and a gallery that hides it
-            // would be comparing seven cards on one page.
+            // would be comparing nine cards on one page.
             child: Builder(
               builder: (context) {
                 final t = AstryxTheme.of(context);

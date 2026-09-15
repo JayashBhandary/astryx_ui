@@ -7,8 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// The themes the docs site can be viewed in: the seven Astryx ships, plus one
-/// defined in `lib/examples/theming_examples.dart` to prove the engine works.
+/// The themes the docs site can be viewed in: the seven Astryx ships,
+/// `transit` — hand-authored in this repository and solved for contrast — and
+/// one defined in `lib/examples/theming_examples.dart` to prove the engine
+/// works.
 enum DocsTheme {
   neutral('Neutral'),
   matcha('Matcha'),
@@ -17,6 +19,7 @@ enum DocsTheme {
   chocolate('Chocolate'),
   y2k('Y2K'),
   butter('Butter'),
+  transit('Transit'),
   acme('Acme (custom)');
 
   const DocsTheme(this.label);
@@ -33,6 +36,7 @@ enum DocsTheme {
     DocsTheme.chocolate => chocolateTheme,
     DocsTheme.y2k => y2kTheme,
     DocsTheme.butter => butterTheme,
+    DocsTheme.transit => transitTheme,
     DocsTheme.acme => acmeTheme,
   };
 }

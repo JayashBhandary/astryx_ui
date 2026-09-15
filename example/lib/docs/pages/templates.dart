@@ -44,6 +44,7 @@ final List<DocPage> templatePages = <DocPage>[
   _tablePageShoeStoreHeatmap,
   _kanbanBoard,
   _incidentConsole,
+  _travelJourney,
   _classicGallery,
   _mixedGallery,
   _sideGallery,
@@ -1637,8 +1638,7 @@ const DocPage _tablePageHeatmapStatus = DocPage(
   id: 'table_page_heatmap_status',
   title: 'Table page with heatmap',
   group: _group,
-  description:
-      'A table screen whose cells carry heatmap and status colouring.',
+  description: 'A table screen whose cells carry heatmap and status colouring.',
   source: 'example/lib/examples/template_heatmap_examples.dart',
   upstreamPath: '/templates/table-page-heatmap-status',
   blocks: <DocBlock>[
@@ -1897,6 +1897,96 @@ AstryxLayout(scrollable: false)
       '[AstryxMoreMenu](more_menu) — the trigger’s name, its tooltip and the '
           'menu’s name.',
     ]),
+    _notAWidget,
+  ],
+);
+
+const DocPage _travelJourney = DocPage(
+  id: 'travel_journey',
+  title: 'Departure board',
+  group: _group,
+  description:
+      'A travel screen: what leaves next, what is late, and where the '
+      "passenger's own trip is up to.",
+  source: 'example/lib/examples/template_travel_examples.dart',
+  blocks: <DocBlock>[
+    DocExample(
+      'template_travel_journey',
+      align: DocExampleAlign.stretch,
+      note:
+          'Press a service to change the banner and the connection beside it. '
+          'This is the one template that pins its own theme — `transitTheme` — '
+          'so the theme picker above does not move it.',
+    ),
+    DocHeading('It is read standing up, holding something'),
+    DocProse(
+      'A departure board is glanced at, not interrogated. Everything a '
+      'passenger needs in that glance is already on the row: the line, the '
+      'destination, the platform, the time, and whether the service is late. '
+      'Pressing a row changes what is said *about* it — the banner and the '
+      'connection — and reveals nothing that was hidden.',
+    ),
+    DocTable(
+      headers: <String>['Because it is a board', 'It uses', 'Rather than'],
+      rows: <List<String>>[
+        <String>[
+          'The times must stay true',
+          '[AstryxTimestamp](timestamp), which re-renders as it ages',
+          'A formatted string, which freezes at load. A board that stopped is '
+              'worse than no board.',
+        ],
+        <String>[
+          'A line is a category, not a severity',
+          '`AstryxBadge.palette` with the line name written in it',
+          'A coloured row. The ten palettes are categorical — "the Coast '
+              'line" — and colour is never the only signal.',
+        ],
+        <String>[
+          'Lateness is a severity',
+          'A `warning` or `error` badge reading `+9 min` or `Cancelled`',
+          'A palette. Severity has its own three colours, and they carry an '
+              'icon and a word.',
+        ],
+        <String>[
+          'The journey is a list of places',
+          'A vertical [AstryxStepper](stepper), one step per leg',
+          'A progress bar. A passenger needs the names of the places, not a '
+              'percentage.',
+        ],
+      ],
+    ),
+    DocHeading('The one template that pins a theme'),
+    DocProse(
+      'Every other screen here renders in whichever theme the picker is set '
+      'to. This one wraps itself in an `AstryxThemeProvider` holding '
+      '`transitTheme`, because the theme is half of what the template is '
+      'showing. A theme is a value rather than a global, so a subtree can hold '
+      'a different one and nothing above or below it needs to know.',
+    ),
+    DocCode('''
+AstryxThemeProvider(
+  theme: transitTheme,
+  child: const DepartureBoard(),
+)'''),
+    DocProse(
+      "In an application that provider is `AstryxApp`'s `theme:`, and it "
+      'appears once.',
+    ),
+    DocHeading('Why transit and not one of the seven'),
+    DocProse(
+      'Every colour pair a passenger reads on this screen was solved for a '
+      'contrast ratio rather than picked by eye: text clears 4.5:1 on every '
+      'surface it can land on, including `--color-background-muted`; a '
+      "control's boundary clears 3:1; and `--color-on-success` is a near-white "
+      'or a near-black, never the fill it sits on. See '
+      '[Theming](theming) for what the theme sets and why.',
+    ),
+    DocCallout.note(
+      'A board on a wall and a board in a pocket are the same widget here: '
+      'the two-panel layout collapses to one column from a `LayoutBuilder` '
+      'reading its own constraints, so it also works in a split view rather '
+      'than only at a window size.',
+    ),
     _notAWidget,
   ],
 );

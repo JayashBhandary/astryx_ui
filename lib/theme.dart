@@ -23,6 +23,10 @@ export 'src/theme/engine/engine.dart';
 export 'src/theme/font_stack.dart';
 export 'src/theme/resolved_token_set.dart';
 export 'src/theme/themes/themes.dart';
+// Hand-authored, and so exported beside the generated barrel rather than
+// from inside it: `themes.dart` is regenerated from upstream and would lose
+// the line.
+export 'src/theme/themes/transit.dart';
 export 'src/theme/token_conversions.dart';
 export 'src/theme/tokens/tokens.dart';
 export 'src/theme/type_role.dart';

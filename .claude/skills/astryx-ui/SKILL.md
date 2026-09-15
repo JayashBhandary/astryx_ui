@@ -374,6 +374,7 @@ Open the reference before writing a component you have not written before. Each 
 | `Retail heatmap table` | The heatmap table screen with a retail data set. | `references/templates.md` |
 | `Kanban board` | Columns of draggable cards. | `references/templates.md` |
 | `Incident console` | A live operations view: severity, timeline, and the current on-call. | `references/templates.md` |
+| `Departure board` | A travel screen: what leaves next, what is late, and where the passenger's own trip is up to. | `references/templates.md` |
 | `Classic gallery` | A uniform wall of media tiles, each opening the same viewer on the item that was pressed. | `references/templates.md` |
 | `Mixed gallery` | A gallery of items at mixed sizes. | `references/templates.md` |
 | `Side gallery` | A gallery with the selected item beside the strip. | `references/templates.md` |
@@ -401,7 +402,7 @@ Open the reference before writing a component you have not written before. Each 
 | astryx_ui | A Flutter design system for internal tools, token-compatible with Astryx. | `references/guides.md` |
 | Installation | Add the package, wrap your app once, and you are done. | `references/guides.md` |
 | Principles | What the design system optimises for, and the decisions that follow from it. | `references/guides.md` |
-| Theming | Seven themes, two brightnesses, and an engine for your own. | `references/guides.md` |
+| Theming | Eight themes, two brightnesses, and an engine for your own. | `references/guides.md` |
 | Design tokens | The values every component resolves through. | `references/guides.md` |
 | Colour | The colour system: the families, the semantic roles, and which one to reach for. | `references/guides.md` |
 | Typography | The type scale, the roles, and how a heading level maps onto them. | `references/guides.md` |
