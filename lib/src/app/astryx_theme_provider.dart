@@ -194,11 +194,7 @@ class _AstryxThemeProviderState extends State<AstryxThemeProvider> {
           : AstryxResolvedTokenSet.resolve(widget.theme),
       mode: mode,
       platform: target,
-      text: components.text,
-      heading: components.heading,
-      divider: components.divider,
-      icon: components.icon,
-      button: components.button,
+      components: components,
     );
 
     return AstryxTheme(

@@ -2,11 +2,7 @@
 library;
 
 import 'package:astryx_ui/src/theme/astryx_shadow.dart';
-import 'package:astryx_ui/src/theme/components/button.dart';
-import 'package:astryx_ui/src/theme/components/component_themes.dart';
-import 'package:astryx_ui/src/theme/components/divider.dart';
-import 'package:astryx_ui/src/theme/components/icon.dart';
-import 'package:astryx_ui/src/theme/components/text.dart';
+import 'package:astryx_ui/src/theme/components/components.dart';
 import 'package:astryx_ui/src/theme/engine/define_theme.dart';
 import 'package:astryx_ui/src/theme/engine/syntax_theme.dart';
 import 'package:astryx_ui/src/theme/engine/token_resolver.dart';
@@ -48,11 +44,12 @@ class AstryxThemeData {
     required AstryxResolvedTokenSet tokens,
     required AstryxThemeMode mode,
     TargetPlatform? platform,
-    AstryxTextTheme text = const AstryxTextTheme(),
-    AstryxTextTheme heading = const AstryxTextTheme(),
-    AstryxDividerTheme divider = const AstryxDividerTheme(),
-    AstryxIconTheme icon = const AstryxIconTheme(),
-    AstryxButtonTheme button = const AstryxButtonTheme(),
+    AstryxComponentThemes components = const AstryxComponentThemes(),
+    AstryxTextTheme? text,
+    AstryxTextTheme? heading,
+    AstryxDividerTheme? divider,
+    AstryxIconTheme? icon,
+    AstryxButtonTheme? button,
   }) {
     final target = platform ?? defaultTargetPlatform;
     final values = tokens.forMode(mode);
@@ -134,11 +131,13 @@ class AstryxThemeData {
       tokens: tokens,
       mode: mode,
       platform: target,
-      text: text,
-      heading: heading,
-      divider: divider,
-      icon: icon,
-      button: button,
+      components: components.copyWith(
+        text: text,
+        heading: heading,
+        divider: divider,
+        icon: icon,
+        button: button,
+      ),
       colors: colors,
       lengths: lengths,
       shadows: shadows,
@@ -154,11 +153,7 @@ class AstryxThemeData {
     required this.tokens,
     required this.mode,
     required this.platform,
-    required this.text,
-    required this.heading,
-    required this.divider,
-    required this.icon,
-    required this.button,
+    required this.components,
     required Map<String, Color> colors,
     required Map<String, double> lengths,
     required Map<String, List<AstryxShadow>> shadows,
@@ -183,17 +178,19 @@ class AstryxThemeData {
     required AstryxThemeMode mode,
     AstryxDefinedTheme? theme,
     TargetPlatform? platform,
-    AstryxTextTheme text = const AstryxTextTheme(),
-    AstryxTextTheme heading = const AstryxTextTheme(),
-    AstryxDividerTheme divider = const AstryxDividerTheme(),
-    AstryxIconTheme icon = const AstryxIconTheme(),
-    AstryxButtonTheme button = const AstryxButtonTheme(),
+    AstryxComponentThemes components = const AstryxComponentThemes(),
+    AstryxTextTheme? text,
+    AstryxTextTheme? heading,
+    AstryxDividerTheme? divider,
+    AstryxIconTheme? icon,
+    AstryxButtonTheme? button,
   }) => AstryxThemeData(
     tokens: theme == null
         ? AstryxResolvedTokenSet.defaults
         : AstryxResolvedTokenSet.resolve(theme),
     mode: mode,
     platform: platform,
+    components: components,
     text: text,
     heading: heading,
     divider: divider,
@@ -213,23 +210,68 @@ class AstryxThemeData {
   /// The platform the font stacks were resolved for.
   final TargetPlatform platform;
 
-  /// Visual overrides for `AstryxText`.
-  final AstryxTextTheme text;
-
-  /// Visual overrides for `AstryxHeading`.
+  /// Every per-widget theme this data carries.
   ///
-  /// Separate from [text] so a theme can weight or track headings without
-  /// touching body copy.
-  final AstryxTextTheme heading;
-
-  /// Visual overrides for `AstryxDivider`.
-  final AstryxDividerTheme divider;
-
-  /// Visual overrides for `AstryxIcon`.
-  final AstryxIconTheme icon;
+  /// The individual getters below — [button], [card], [dialog] and the rest —
+  /// read from here.
+  final AstryxComponentThemes components;
 
   /// Visual overrides for `AstryxButton` and `AstryxIconButton`.
-  final AstryxButtonTheme button;
+  AstryxButtonTheme get button => components.button;
+
+  /// Visual overrides for `AstryxText`.
+  AstryxTextTheme get text => components.text;
+
+  /// Visual overrides for `AstryxHeading`.
+  AstryxTextTheme get heading => components.heading;
+
+  /// Visual overrides for `AstryxDivider`.
+  AstryxDividerTheme get divider => components.divider;
+
+  /// Visual overrides for `AstryxIcon`.
+  AstryxIconTheme get icon => components.icon;
+
+  /// See [AstryxComponentThemes.card].
+  AstryxCardTheme get card => components.card;
+
+  /// See [AstryxComponentThemes.badge].
+  AstryxBadgeTheme get badge => components.badge;
+
+  /// See [AstryxComponentThemes.banner].
+  AstryxBannerTheme get banner => components.banner;
+
+  /// See [AstryxComponentThemes.input].
+  AstryxInputTheme get input => components.input;
+
+  /// See [AstryxComponentThemes.checkbox].
+  AstryxCheckboxTheme get checkbox => components.checkbox;
+
+  /// See [AstryxComponentThemes.radio].
+  AstryxRadioTheme get radio => components.radio;
+
+  /// See [AstryxComponentThemes.switchTheme].
+  AstryxSwitchTheme get switchTheme => components.switchTheme;
+
+  /// See [AstryxComponentThemes.dialog].
+  AstryxDialogTheme get dialog => components.dialog;
+
+  /// See [AstryxComponentThemes.bottomSheet].
+  AstryxBottomSheetTheme get bottomSheet => components.bottomSheet;
+
+  /// See [AstryxComponentThemes.menu].
+  AstryxMenuTheme get menu => components.menu;
+
+  /// See [AstryxComponentThemes.tooltip].
+  AstryxTooltipTheme get tooltip => components.tooltip;
+
+  /// See [AstryxComponentThemes.toast].
+  AstryxToastTheme get toast => components.toast;
+
+  /// See [AstryxComponentThemes.tabs].
+  AstryxTabsTheme get tabs => components.tabs;
+
+  /// See [AstryxComponentThemes.table].
+  AstryxTableTheme get table => components.table;
 
   final Map<String, Color> _colors;
   final Map<String, double> _lengths;
@@ -335,15 +377,6 @@ class AstryxThemeData {
           if (_colors[token.cssName] != null) token: _colors[token.cssName]!,
       });
 
-  /// Every per-widget theme this data carries, as one bundle.
-  AstryxComponentThemes get components => AstryxComponentThemes(
-    button: button,
-    text: text,
-    heading: heading,
-    divider: divider,
-    icon: icon,
-  );
-
   /// Returns a copy with the given values replaced.
   ///
   /// [components] replaces every component slot at once; a slot named on its
@@ -363,11 +396,13 @@ class AstryxThemeData {
     AstryxIconTheme? icon,
     AstryxButtonTheme? button,
   }) {
-    final nextText = text ?? components?.text ?? this.text;
-    final nextHeading = heading ?? components?.heading ?? this.heading;
-    final nextDivider = divider ?? components?.divider ?? this.divider;
-    final nextIcon = icon ?? components?.icon ?? this.icon;
-    final nextButton = button ?? components?.button ?? this.button;
+    final next = (components ?? this.components).copyWith(
+      text: text,
+      heading: heading,
+      divider: divider,
+      icon: icon,
+      button: button,
+    );
 
     final reconvert =
         (tokens != null && tokens != this.tokens) ||
@@ -379,11 +414,7 @@ class AstryxThemeData {
         tokens: tokens ?? this.tokens,
         mode: mode ?? this.mode,
         platform: platform ?? this.platform,
-        text: nextText,
-        heading: nextHeading,
-        divider: nextDivider,
-        icon: nextIcon,
-        button: nextButton,
+        components: next,
       );
     }
 
@@ -391,11 +422,7 @@ class AstryxThemeData {
       tokens: this.tokens,
       mode: this.mode,
       platform: this.platform,
-      text: nextText,
-      heading: nextHeading,
-      divider: nextDivider,
-      icon: nextIcon,
-      button: nextButton,
+      components: next,
       colors: _colors,
       lengths: _lengths,
       shadows: _shadows,
@@ -437,23 +464,10 @@ class AstryxThemeData {
           other.mode == mode &&
           other.platform == platform &&
           other.tokens == tokens &&
-          other.text == text &&
-          other.heading == heading &&
-          other.divider == divider &&
-          other.icon == icon &&
-          other.button == button;
+          other.components == components;
 
   @override
-  int get hashCode => Object.hash(
-    tokens,
-    mode,
-    platform,
-    text,
-    heading,
-    divider,
-    icon,
-    button,
-  );
+  int get hashCode => Object.hash(tokens, mode, platform, components);
 
   @override
   String toString() => 'AstryxThemeData(${mode.name}, $platform)';

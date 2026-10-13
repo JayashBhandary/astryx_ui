@@ -11,7 +11,6 @@ import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
-import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
 import 'package:astryx_ui/src/theme/engine/engine.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
@@ -358,12 +357,12 @@ class _ToastCardState extends State<_ToastCard> {
     // action the caller passed in. Upstream does this by wrapping the toast in
     // `MediaTheme`; here the same token set is re-resolved for the flipped
     // mode, which is exactly what that does.
-    final inverted = AstryxThemeData(
-      tokens: theme.tokens,
+    // `copyWith` rather than a fresh build, so the app's component themes
+    // carry into the toast — an "Undo" button keeps the app's button theme.
+    final inverted = theme.copyWith(
       mode: theme.mode == AstryxThemeMode.light
           ? AstryxThemeMode.dark
           : AstryxThemeMode.light,
-      platform: theme.platform,
     );
 
     Widget card = Container(
