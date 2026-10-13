@@ -26,18 +26,18 @@ class AstryxOverlaySurface extends StatelessWidget {
     required this.child,
     super.key,
     this.background,
+    this.backgroundColor,
     this.foreground,
     this.shadow = AstryxShadowToken.low,
+    this.shadows,
     this.radius = AstryxRadiusToken.container,
+    this.borderRadius,
     this.padding,
     this.showBorder = true,
+    this.border,
     this.arrow,
     this.anchor,
     this.position,
-    this.backgroundColor,
-    this.border,
-    this.borderRadius,
-    this.shadows,
   });
 
   /// The panel's content.
@@ -46,14 +46,23 @@ class AstryxOverlaySurface extends StatelessWidget {
   /// The fill. Defaults to `--color-background-popover`.
   final AstryxColorToken? background;
 
+  /// A concrete fill, winning over [background].
+  final Color? backgroundColor;
+
   /// The default text colour. Defaults to `--color-text-primary`.
   final AstryxColorToken? foreground;
 
   /// The elevation token.
   final AstryxShadowToken shadow;
 
+  /// Concrete shadow layers, winning over [shadow]. Inset layers are dropped.
+  final List<AstryxShadow>? shadows;
+
   /// The corner radius token.
   final AstryxRadiusToken radius;
+
+  /// A concrete corner radius, winning over [radius].
+  final BorderRadiusGeometry? borderRadius;
 
   /// Inner padding. Null leaves the content flush, for a menu whose own rows
   /// carry the padding.
@@ -65,6 +74,13 @@ class AstryxOverlaySurface extends StatelessWidget {
   /// and in dark mode it barely registers at all.
   final bool showBorder;
 
+  /// A literal border, from a component theme. Wins over [showBorder];
+  /// [BorderSide.none] draws none.
+  ///
+  /// Null draws `--color-border` at `--border-width` when [showBorder] is
+  /// true.
+  final BorderSide? border;
+
   /// Whether to draw a pointer at the anchor.
   final bool? arrow;
 
@@ -73,21 +89,6 @@ class AstryxOverlaySurface extends StatelessWidget {
 
   /// The resolved position, needed to know which side the arrow is on.
   final AstryxOverlayPosition? position;
-
-  /// A literal fill, from a component theme. Wins over [background].
-  final Color? backgroundColor;
-
-  /// A literal border, from a component theme. Wins over [showBorder];
-  /// [BorderSide.none] draws none.
-  final BorderSide? border;
-
-  /// A literal corner radius, from a component theme. Wins over [radius].
-  final BorderRadiusGeometry? borderRadius;
-
-  /// Literal shadow layers, from a component theme. Win over [shadow].
-  ///
-  /// Inset layers are dropped, as they are for the token.
-  final List<AstryxShadow>? shadows;
 
   @override
   Widget build(BuildContext context) {

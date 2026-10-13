@@ -5,6 +5,9 @@ import 'package:astryx_ui/src/components/overlay/anchored_overlay.dart';
 import 'package:astryx_ui/src/components/overlay/bottom_sheet.dart';
 import 'package:astryx_ui/src/components/overlay/overlay_layer.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
+import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/bottom_sheet.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
 
@@ -26,7 +29,7 @@ class AstryxBottomSheetPage {
     this.initialSnapPoint,
     this.showHandle = true,
     this.dragDismissible = true,
-    this.padding = AstryxSpacingToken.spacing4,
+    this.padding,
   });
 
   /// What names this sheet in `activeSheetId`. Unique within one switcher.
@@ -61,7 +64,10 @@ class AstryxBottomSheetPage {
   final bool dragDismissible;
 
   /// The inset around the body.
-  final AstryxSpacingToken padding;
+  ///
+  /// Null falls through to [AstryxBottomSheetTheme.padding], then
+  /// `--spacing-4`.
+  final AstryxSpacingToken? padding;
 }
 
 /// A flow of bottom sheets sharing one scrim.
@@ -114,6 +120,7 @@ class AstryxBottomSheetSwitcher extends StatefulWidget {
     this.showScrim = true,
     this.barrierDismissible = true,
     this.escapeDismissible = true,
+    this.theme,
   });
 
   /// The id of the step on screen, or null when the flow is closed.
@@ -136,6 +143,10 @@ class AstryxBottomSheetSwitcher extends StatefulWidget {
 
   /// Whether Escape closes the flow.
   final bool escapeDismissible;
+
+  /// Visual overrides for every sheet in the flow, merged over
+  /// [AstryxThemeData.bottomSheet].
+  final AstryxBottomSheetTheme? theme;
 
   @override
   State<AstryxBottomSheetSwitcher> createState() =>
@@ -203,6 +214,9 @@ class _AstryxBottomSheetSwitcherState extends State<AstryxBottomSheetSwitcher> {
       alignment: AlignmentDirectional.bottomCenter,
       padding: EdgeInsets.zero,
       showScrim: widget.showScrim,
+      scrimFill: AstryxTheme.of(
+        context,
+      ).bottomSheet.merge(widget.theme).scrimColor,
       barrierDismissible: widget.barrierDismissible,
       escapeDismissible: widget.escapeDismissible,
       onDismiss: _close,
@@ -237,6 +251,7 @@ class _AstryxBottomSheetSwitcherState extends State<AstryxBottomSheetSwitcher> {
                 showHandle: page.showHandle,
                 dragDismissible: page.dragDismissible,
                 padding: page.padding,
+                theme: widget.theme,
                 onDismiss: _close,
                 child: page.child,
               ),

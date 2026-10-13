@@ -7,6 +7,8 @@ import 'package:astryx_ui/src/components/layout/text.dart';
 import 'package:astryx_ui/src/components/overlay/dialog.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/dialog.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
 
@@ -53,11 +55,12 @@ class AstryxAlertDialog extends StatelessWidget {
     this.cancelLabel,
     this.onCancel,
     this.destructive = false,
-    this.width = 420,
+    this.width,
     this.showCancel = true,
     this.barrierDismissible = false,
     this.escapeDismissible = true,
     this.child,
+    this.theme,
   });
 
   /// The open/closed state.
@@ -98,7 +101,9 @@ class AstryxAlertDialog extends StatelessWidget {
   final bool destructive;
 
   /// The dialog's width. Narrower than a dialog's: there is less in it.
-  final double width;
+  ///
+  /// Null falls through to [AstryxDialogTheme.maxWidth], then 420.
+  final double? width;
 
   /// Whether to offer a cancelling button at all.
   ///
@@ -118,6 +123,9 @@ class AstryxAlertDialog extends StatelessWidget {
   /// checkbox for "don't ask again".
   final Widget? child;
 
+  /// Visual overrides for this dialog, merged over [AstryxThemeData.dialog].
+  final AstryxDialogTheme? theme;
+
   void _confirm() {
     // Close first, then act. The callback may open another overlay or push a
     // route, and a confirmation still on screen behind it reads as ignored.
@@ -134,18 +142,21 @@ class AstryxAlertDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
     final l10n = AstryxLocalizations.of(context);
+    final resolved = theme.dialog.merge(this.theme);
 
     return AstryxDialog(
       controller: controller,
       title: title,
-      width: width,
+      width: width ?? resolved.maxWidth ?? 420,
+      theme: this.theme,
       showCloseButton: false,
       barrierDismissible: barrierDismissible,
       escapeDismissible: escapeDismissible,
       onDismiss: onCancel,
       footer: Row(
         mainAxisSize: MainAxisSize.min,
-        spacing: theme.spacing(AstryxSpacingToken.spacing2),
+        spacing:
+            resolved.actionsGap ?? theme.spacing(AstryxSpacingToken.spacing2),
         children: <Widget>[
           if (showCancel)
             AstryxButton(
@@ -169,7 +180,7 @@ class AstryxAlertDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          AstryxText(description),
+          AstryxText(description, style: resolved.descriptionTextStyle),
           if (child != null)
             Padding(
               padding: EdgeInsets.only(
