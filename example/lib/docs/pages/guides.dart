@@ -24,6 +24,7 @@ final List<DocPage> guidePages = <DocPage>[
   _core,
   _platformSupport,
   _density,
+  _routes,
   _rtl,
   _accessibility,
   _migration,
@@ -1966,6 +1967,77 @@ const DocPage _platformSupport = DocPage(
       '[Density](density) — the pointer and touch difference, in detail.',
       '[Typography](typography) — the font stacks that resolve per platform.',
       '[The token engine](core) — where platform resolution happens.',
+    ]),
+  ],
+);
+
+const DocPage _routes = DocPage(
+  id: 'routes',
+  title: 'Routes & navigation',
+  group: _group,
+  description:
+      'Page transitions, dialogs and sheets that return a result, and the '
+      'back button.',
+  source: 'lib/src/app/page_route.dart',
+  blocks: <DocBlock>[
+    DocProse(
+      'Every route `AstryxApp` builds — `home`, `routes`, `initialRoute` — '
+      'is an `AstryxPageRoute`, the counterpart of `MaterialPageRoute`. It '
+      'paints the page on `--color-background-body` and animates with the '
+      'platform’s transition: a slide with a swipe back from the leading '
+      'edge on iOS and macOS, a short fade-and-rise everywhere else.',
+    ),
+    DocExample('page_route_demo', align: DocExampleAlign.start),
+    DocHeading('Choosing the transition'),
+    DocCode('''
+AstryxApp(
+  pageTransition: AstryxPageTransition.slide, // or fade, none; null = platform
+  home: const HomePage(),
+)
+
+// One route only:
+Navigator.of(context).push(
+  AstryxPageRoute<void>(
+    transition: AstryxPageTransition.none,
+    builder: (context) => const DetailPage(),
+  ),
+);'''),
+    DocProse(
+      'With `go_router` or `Navigator.pages`, use `AstryxPage` — the '
+      'counterpart of `MaterialPage`. Under reduced motion no transition '
+      'runs.',
+    ),
+    DocHeading('Results'),
+    DocTable(
+      headers: <String>['Function', 'Completes with'],
+      rows: <List<String>>[
+        <String>[
+          '`showAstryxDialog<T>`',
+          'The value it is popped with; null for close, barrier, Escape, back.',
+        ],
+        <String>[
+          '`showAstryxAlertDialog`',
+          '`true` for confirm; `false` for cancel, Escape and back.',
+        ],
+        <String>[
+          '`showAstryxBottomSheet<T>`',
+          'The value it is popped with; null for drag, barrier, Escape, back.',
+        ],
+      ],
+    ),
+    DocHeading('The back button'),
+    DocProse(
+      'A route-based dialog or sheet closes on the system back button like '
+      'any route. The widget-in-the-tree overlays — `AstryxDialog`, '
+      '`AstryxBottomSheet`, menus, popovers — do too: while one is open its '
+      'page will not pop, and back closes the top-most layer instead, exactly '
+      'as Escape does. A tooltip does not hold back up.',
+    ),
+    DocHeading('Related'),
+    DocList(<String>[
+      '[AstryxDialog](dialog), [AstryxAlertDialog](alert_dialog) and '
+          '[AstryxBottomSheet](bottom_sheet) — the panels these routes show.',
+      '[Motion](motion) — the durations the transitions use.',
     ]),
   ],
 );

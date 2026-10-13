@@ -592,6 +592,15 @@ AstryxDialog
       'that feel unskippable are not.',
     ),
     DocExample('dialog_blocking'),
+    DocHeading('As a route'),
+    DocProse(
+      '`showAstryxDialog` pushes the same panel as a route — the '
+      '`showDialog` shape. The result comes back as a `Future`: pop with '
+      '`Navigator.pop(context, value)` from `builder` or `footerBuilder`, and '
+      'every other way out — the close button, the barrier, Escape, the '
+      'system back button — completes with null.',
+    ),
+    DocExample('dialog_route'),
     DocCallout.accessibility(
       'Focus is trapped inside while the dialog is open and returns to the '
       'trigger when it closes. `title` is the accessible name, so a dialog '
@@ -1139,6 +1148,13 @@ AstryxAlertDialog(
       'one choice that travels with the answer.',
     ),
     DocExample('alert_dialog_extra'),
+    DocHeading('As a route'),
+    DocProse(
+      '`showAstryxAlertDialog` asks the same question and completes with the '
+      'answer: `true` for the confirming action, `false` for cancel, Escape '
+      'and back. The barrier still does not dismiss it.',
+    ),
+    DocExample('alert_dialog_route'),
     DocCallout.note(
       'Use a [dialog](dialog) whenever the user is *doing* something rather '
       'than confirming something. An alert dialog spent on ordinary work '
@@ -1628,6 +1644,13 @@ AstryxBottomSheet(
       'threw for it would take the screen down with it.',
     ),
     DocExample('bottom_sheet_snap'),
+    DocHeading('As a route'),
+    DocProse(
+      '`showAstryxBottomSheet` is the `showModalBottomSheet` shape: the same '
+      'sheet — handle, heights, snap points, drag to dismiss — pushed as a '
+      'route, so it returns a value and closes on the system back button.',
+    ),
+    DocExample('bottom_sheet_route'),
     DocCallout.accessibility(
       'A detent is a **convenience, never the only way to something**: a sheet '
       'with snap points still has to work for someone who cannot drag, so put '

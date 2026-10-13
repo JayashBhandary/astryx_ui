@@ -24,6 +24,7 @@ The same pages render as a live site: `cd example && flutter run -d chrome`.
 - [The token engine](guides/core.md) — How a theme definition becomes resolved tokens, and where the resolution happens.
 - [Platform support](guides/platform_support.md) — Which Flutter platforms are exercised, and where behaviour differs. The Flutter counterpart of upstream's browser-support page.
 - [Density](guides/density.md) — One widget set that is honest on a mouse and on a thumb.
+- [Routes & navigation](guides/routes.md) — Page transitions, dialogs and sheets that return a result, and the back button.
 - [Right-to-left](guides/rtl.md) — Logical throughout, so RTL is a `Directionality` and nothing more.
 - [Accessibility](guides/accessibility.md) — The rules the whole widget set is built to, in one place.
 - [Migration](guides/migration.md) — Coming from Material or Cupertino: what maps, what does not, and what to stop doing.

@@ -143,6 +143,9 @@ void main() {
       AstryxApp(
         theme: theme.theme,
         mode: mode,
+        // Each measurement re-pumps the app with another theme; read that
+        // theme, not the first frame of a cross-fade into it.
+        themeAnimationDuration: Duration.zero,
         home: Builder(
           builder: (context) {
             final resolved = AstryxTheme.of(context);

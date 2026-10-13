@@ -417,6 +417,7 @@ Open the reference before writing a component you have not written before. Each 
 | The token engine | How a theme definition becomes resolved tokens, and where the resolution happens. | `references/guides.md` |
 | Platform support | Which Flutter platforms are exercised, and where behaviour differs. The Flutter counterpart of upstream's browser-support page. | `references/guides.md` |
 | Density | One widget set that is honest on a mouse and on a thumb. | `references/guides.md` |
+| Routes & navigation | Page transitions, dialogs and sheets that return a result, and the back button. | `references/guides.md` |
 | Right-to-left | Logical throughout, so RTL is a `Directionality` and nothing more. | `references/guides.md` |
 | Accessibility | The rules the whole widget set is built to, in one place. | `references/guides.md` |
 | Migration | Coming from Material or Cupertino: what maps, what does not, and what to stop doing. | `references/guides.md` |

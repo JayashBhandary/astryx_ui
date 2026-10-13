@@ -195,6 +195,16 @@ class _AstryxAnchoredOverlayState extends State<AstryxAnchoredOverlay>
 
   bool _registered = false;
 
+  /// The route this layer's owner sits in, which a back press is routed
+  /// through while the layer is open.
+  ModalRoute<Object?>? _route;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _route = ModalRoute.of(context);
+  }
+
   /// Whether a frame is being waited on for the anchor to have a size.
   bool _awaitingAnchor = false;
 
@@ -268,7 +278,12 @@ class _AstryxAnchoredOverlayState extends State<AstryxAnchoredOverlay>
 
   void _register() {
     if (_registered || !widget.escapeDismissible) return;
-    AstryxOverlayStack.push(_dismissEntry);
+    AstryxOverlayStack.push(
+      _dismissEntry,
+      // A layer that takes no input — a tooltip — is a description, not
+      // something the user is in. Back should not stop to close it first.
+      route: widget.interactive ? _route : null,
+    );
     _registered = true;
   }
 

@@ -2,6 +2,7 @@
 library;
 
 import 'package:astryx_ui/src/app/astryx_theme_provider.dart';
+import 'package:astryx_ui/src/app/page_route.dart';
 import 'package:astryx_ui/src/foundation/density.dart';
 import 'package:astryx_ui/src/foundation/link_delegate.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
@@ -62,6 +63,9 @@ class AstryxApp extends StatelessWidget {
     this.shortcuts,
     this.actions,
     this.restorationScopeId,
+    this.themeAnimationDuration,
+    this.themeAnimationCurve,
+    this.pageTransition,
   }) : routerConfig = null;
 
   /// Creates an app driven by a [routerConfig], for `go_router` and friends.
@@ -88,6 +92,9 @@ class AstryxApp extends StatelessWidget {
     this.shortcuts,
     this.actions,
     this.restorationScopeId,
+    this.themeAnimationDuration,
+    this.themeAnimationCurve,
+    this.pageTransition,
   }) : home = null,
        routes = const <String, WidgetBuilder>{},
        initialRoute = null,
@@ -198,6 +205,18 @@ class AstryxApp extends StatelessWidget {
   /// An identifier for state restoration.
   final String? restorationScopeId;
 
+  /// {@macro AstryxThemeProvider.themeAnimationDuration}
+  final Duration? themeAnimationDuration;
+
+  /// {@macro AstryxThemeProvider.themeAnimationCurve}
+  final Curve? themeAnimationCurve;
+
+  /// {@macro AstryxThemeProvider.pageTransition}
+  ///
+  /// Every route built from [home], [routes] and [initialRoute] is an
+  /// `AstryxPageRoute`, so this sets the app's navigation motion in one place.
+  final AstryxPageTransition? pageTransition;
+
   /// Wraps [child] in the theme scope.
   ///
   /// `WidgetsApp` needs a `color`, and the theme has to exist before that can
@@ -213,6 +232,9 @@ class AstryxApp extends StatelessWidget {
     localizations: localizations,
     platform: platform,
     linkDelegate: linkDelegate,
+    themeAnimationDuration: themeAnimationDuration,
+    themeAnimationCurve: themeAnimationCurve,
+    pageTransition: pageTransition,
     child: Builder(
       builder: (context) {
         final wrapped = child ?? const SizedBox.shrink();
@@ -263,13 +285,13 @@ class AstryxApp extends StatelessWidget {
       onUnknownRoute: onUnknownRoute,
       navigatorKey: navigatorKey,
       navigatorObservers: navigatorObservers,
-      // `WidgetsApp` demands a route factory when there is no `onGenerateRoute`
-      // and no `home`; this keeps a bare `AstryxApp()` from asserting.
-      pageRouteBuilder: <T>(RouteSettings settings, WidgetBuilder builder) =>
-          PageRouteBuilder<T>(
-            settings: settings,
-            pageBuilder: (context, _, _) => builder(context),
-          ),
+      // Every named route and `home` is an `AstryxPageRoute`: the platform's
+      // transition, the back swipe on Apple platforms, and the theme's page
+      // background. It also keeps a bare `AstryxApp()` from asserting, since
+      // `WidgetsApp` demands a route factory when there is no
+      // `onGenerateRoute` and no `home`.
+      pageRouteBuilder: <T>(settings, builder) =>
+          AstryxPageRoute<T>(settings: settings, builder: builder),
       builder: _wrap,
       locale: locale,
       localizationsDelegates: localizationsDelegates,

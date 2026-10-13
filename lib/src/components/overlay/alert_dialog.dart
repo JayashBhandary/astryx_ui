@@ -11,6 +11,7 @@ import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
 import 'package:astryx_ui/src/theme/components/dialog.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 /// A modal that asks one question and takes one answer.
 ///
@@ -140,56 +141,97 @@ class AstryxAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = AstryxTheme.of(context);
-    final l10n = AstryxLocalizations.of(context);
-    final resolved = theme.dialog.merge(this.theme);
+    final resolved = AstryxTheme.of(context).dialog.merge(theme);
 
     return AstryxDialog(
       controller: controller,
       title: title,
       width: width ?? resolved.maxWidth ?? 420,
-      theme: this.theme,
+      theme: theme,
       showCloseButton: false,
       barrierDismissible: barrierDismissible,
       escapeDismissible: escapeDismissible,
       onDismiss: onCancel,
-      footer: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing:
-            resolved.actionsGap ?? theme.spacing(AstryxSpacingToken.spacing2),
-        children: <Widget>[
-          if (showCancel)
-            AstryxButton(
-              label: cancelLabel ?? l10n.alertDialogCancel,
-              // The safe answer holds focus when the dialog opens. Everything
-              // else about this component follows from that decision.
-              autofocus: true,
-              onPressed: _cancel,
-            ),
-          AstryxButton(
-            label: confirmLabel,
-            variant: destructive
-                ? AstryxButtonVariant.destructive
-                : AstryxButtonVariant.primary,
-            autofocus: !showCancel,
-            onPressed: _confirm,
-          ),
-        ],
+      footer: AstryxAlertDialogParts.footer(
+        context,
+        resolved: resolved,
+        confirmLabel: confirmLabel,
+        cancelLabel: cancelLabel,
+        showCancel: showCancel,
+        destructive: destructive,
+        onConfirm: _confirm,
+        onCancel: _cancel,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          AstryxText(description, style: resolved.descriptionTextStyle),
-          if (child != null)
-            Padding(
-              padding: EdgeInsets.only(
-                top: theme.spacing(AstryxSpacingToken.spacing3),
-              ),
-              child: child,
-            ),
-        ],
+      child: AstryxAlertDialogParts.body(
+        context,
+        resolved: resolved,
+        description: description,
+        child: child,
       ),
     );
   }
+}
+
+/// The footer and body an alert dialog is made of, shared by
+/// [AstryxAlertDialog] and `showAstryxAlertDialog` so the two cannot drift.
+@internal
+abstract final class AstryxAlertDialogParts {
+  /// Cancel, then the confirming action — with focus on cancel.
+  static Widget footer(
+    BuildContext context, {
+    required AstryxDialogTheme resolved,
+    required String confirmLabel,
+    required String? cancelLabel,
+    required bool showCancel,
+    required bool destructive,
+    required VoidCallback onConfirm,
+    required VoidCallback onCancel,
+  }) {
+    final theme = AstryxTheme.of(context);
+    final l10n = AstryxLocalizations.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing:
+          resolved.actionsGap ?? theme.spacing(AstryxSpacingToken.spacing2),
+      children: <Widget>[
+        if (showCancel)
+          AstryxButton(
+            label: cancelLabel ?? l10n.alertDialogCancel,
+            // The safe answer holds focus when the dialog opens. Everything
+            // else about this component follows from that decision.
+            autofocus: true,
+            onPressed: onCancel,
+          ),
+        AstryxButton(
+          label: confirmLabel,
+          variant: destructive
+              ? AstryxButtonVariant.destructive
+              : AstryxButtonVariant.primary,
+          autofocus: !showCancel,
+          onPressed: onConfirm,
+        ),
+      ],
+    );
+  }
+
+  /// The description, then any extra content.
+  static Widget body(
+    BuildContext context, {
+    required AstryxDialogTheme resolved,
+    required String description,
+    required Widget? child,
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      AstryxText(description, style: resolved.descriptionTextStyle),
+      if (child != null)
+        Padding(
+          padding: EdgeInsets.only(
+            top: AstryxTheme.of(context).spacing(AstryxSpacingToken.spacing3),
+          ),
+          child: child,
+        ),
+    ],
+  );
 }

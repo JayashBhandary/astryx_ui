@@ -141,3 +141,48 @@ class _AlertDialogExtraExampleState extends State<AlertDialogExtraExample> {
   }
 }
 // #end
+
+// #example alert_dialog_route -> AlertDialogRouteExample
+class AlertDialogRouteExample extends StatefulWidget {
+  const AlertDialogRouteExample({super.key});
+
+  @override
+  State<AlertDialogRouteExample> createState() =>
+      _AlertDialogRouteExampleState();
+}
+
+class _AlertDialogRouteExampleState extends State<AlertDialogRouteExample> {
+  bool? _deleted;
+
+  // True only for the confirming button; cancel, Escape and back are false.
+  Future<void> _delete() async {
+    final confirmed = await showAstryxAlertDialog(
+      context: context,
+      title: 'Delete Atlas?',
+      description:
+          'Atlas and its 4,102 requests will be removed. This '
+          'cannot be undone.',
+      confirmLabel: 'Delete project',
+      destructive: true,
+    );
+    if (!mounted) return;
+    setState(() => _deleted = confirmed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxButton(
+          label: 'Delete project',
+          variant: AstryxButtonVariant.destructive,
+          onPressed: _delete,
+        ),
+        if (_deleted != null) AstryxText(_deleted! ? 'Deleted' : 'Kept'),
+      ],
+    );
+  }
+}
+
+// #end

@@ -6,7 +6,7 @@
      Regenerate: cd example && dart run tool/gen_skill.dart
 -->
 
-Scraped from the package source, so this is what the analyser will accept. 97 public enums.
+Scraped from the package source, so this is what the analyser will accept. 98 public enums.
 
 | Enum | Values |
 | --- | --- |
@@ -60,6 +60,7 @@ Scraped from the package source, so this is what the analyser will accept. 97 pu
 | `AstryxOverlayAlign` | `start`, `center`, `end` |
 | `AstryxOverlaySide` | `top`, `bottom`, `left`, `right` |
 | `AstryxOverlayTransition` | `slide`, `fade`, `scale` |
+| `AstryxPageTransition` | `fade`, `slide`, `none` |
 | `AstryxPalette` | `blue`, `cyan`, `gray`, `green`, `orange`, `pink`, `purple`, `red`, `teal`, `yellow` |
 | `AstryxProgressVariant` | `accent`, `success`, `warning`, `error`, `neutral` |
 | `AstryxRadioListOrientation` | `vertical`, `horizontal` |

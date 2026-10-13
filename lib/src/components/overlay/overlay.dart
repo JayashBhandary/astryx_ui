@@ -7,17 +7,18 @@
 /// focus trap, the dismissal stack and the surface.
 library;
 
-export 'alert_dialog.dart';
+export 'alert_dialog.dart' hide AstryxAlertDialogParts;
 export 'anchored_overlay.dart' hide AstryxAnchoredOverlay;
 export 'bottom_sheet.dart' hide AstryxBottomSheetPanel;
 export 'bottom_sheet_switcher.dart';
 export 'collapsible.dart' hide AstryxCollapsibleGroupScope;
 export 'collapsible_group.dart';
 export 'context_menu.dart';
-export 'dialog.dart';
+export 'dialog.dart' hide AstryxDialogPanel;
 export 'dropdown_menu.dart';
 export 'hover_card.dart';
 export 'menu_entry.dart';
+export 'modal_routes.dart';
 export 'overlay_layer.dart';
 export 'popover.dart';
 export 'toast.dart';
