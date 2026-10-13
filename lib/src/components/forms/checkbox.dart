@@ -9,6 +9,7 @@ import 'package:astryx_ui/src/components/forms/toggle_row.dart';
 import 'package:astryx_ui/src/foundation/focus_ring.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/checkbox.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -77,6 +78,7 @@ class AstryxCheckbox extends StatefulWidget {
     this.labelHidden = false,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   }) : value = value
            ? AstryxCheckboxValue.checked
            : AstryxCheckboxValue.unchecked,
@@ -99,6 +101,7 @@ class AstryxCheckbox extends StatefulWidget {
     this.labelHidden = false,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   });
 
   /// The visible text, and the control's accessible name.
@@ -146,6 +149,10 @@ class AstryxCheckbox extends StatefulWidget {
   /// Whether to take focus when first built.
   final bool autofocus;
 
+  /// Visual overrides for this checkbox, merged over
+  /// [AstryxThemeData.checkbox].
+  final AstryxCheckboxTheme? theme;
+
   @override
   State<AstryxCheckbox> createState() => _AstryxCheckboxState();
 }
@@ -166,6 +173,7 @@ class _AstryxCheckboxState extends State<AstryxCheckbox>
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final resolved = theme.checkbox.merge(widget.theme);
     final scope = AstryxFieldScope.maybeOf(context);
     final enabled = widget.enabled && (scope?.enabled ?? true);
     final status = widget.status ?? scope?.status;
@@ -177,12 +185,15 @@ class _AstryxCheckboxState extends State<AstryxCheckbox>
       loading: widget.loading,
       hovered: hoverApplies(context) && _interactive,
       theme: theme,
+      resolved: resolved,
     );
 
     final row = AstryxToggleRow(
       control: AstryxFocusRing(
         focused: focusVisible(context),
-        borderRadius: theme.borderRadius(AstryxRadiusToken.inner),
+        borderRadius:
+            resolved.borderRadius ??
+            theme.borderRadius(AstryxRadiusToken.inner),
         child: box,
       ),
       label: widget.label,
@@ -253,6 +264,7 @@ class _CheckboxBox extends StatelessWidget {
     required this.loading,
     required this.hovered,
     required this.theme,
+    required this.resolved,
   });
 
   final AstryxCheckboxValue value;
@@ -261,28 +273,31 @@ class _CheckboxBox extends StatelessWidget {
   final bool loading;
   final bool hovered;
   final AstryxThemeData theme;
+  final AstryxCheckboxTheme resolved;
 
   @override
   Widget build(BuildContext context) {
     final filled = value.isFilled;
+    final onAccent =
+        resolved.checkColor ?? theme.color(AstryxColorToken.onAccent);
 
     final mark = loading
         ? AstryxSpinner(
             size: AstryxSpinnerSize.sm,
             color: filled
-                ? theme.color(AstryxColorToken.onAccent)
-                : theme.color(AstryxColorToken.accent),
+                ? onAccent
+                : resolved.fillColor ?? theme.color(AstryxColorToken.accent),
           )
         : switch (value) {
             AstryxCheckboxValue.checked => AstryxCheckmark(
               extent: size == AstryxToggleSize.sm ? 12 : 14,
-              color: theme.color(AstryxColorToken.onAccent),
+              color: onAccent,
             ),
             AstryxCheckboxValue.indeterminate => Container(
               width: size == AstryxToggleSize.sm ? 10 : 12,
               height: 2,
               decoration: BoxDecoration(
-                color: theme.color(AstryxColorToken.onAccent),
+                color: onAccent,
                 borderRadius: theme.borderRadius(AstryxRadiusToken.full),
               ),
             ),
@@ -292,10 +307,16 @@ class _CheckboxBox extends StatelessWidget {
     return AstryxSelectionIndicator(
       shape: AstryxSelectionIndicatorShape.square,
       filled: filled,
-      extent: AstryxToggleRow.extent(size),
+      extent: resolved.size ?? AstryxToggleRow.extent(size),
       enabled: enabled,
       hovered: hovered,
       theme: theme,
+      fillColor: resolved.fillColor,
+      backgroundColor: resolved.backgroundColor,
+      borderColor: resolved.borderColor,
+      borderRadius: resolved.borderRadius,
+      borderWidth: resolved.borderWidth,
+      disabledOpacity: resolved.disabledOpacity,
       child: mark,
     );
   }

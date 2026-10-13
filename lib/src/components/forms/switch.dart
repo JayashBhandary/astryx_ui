@@ -9,6 +9,7 @@ import 'package:astryx_ui/src/foundation/focus_ring.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/switch.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/utils/color_mix.dart';
 import 'package:flutter/services.dart';
@@ -49,6 +50,7 @@ class AstryxSwitch extends StatefulWidget {
     this.labelSpacing = AstryxToggleLabelSpacing.hug,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   });
 
   /// The visible text, and the control's accessible name.
@@ -92,6 +94,10 @@ class AstryxSwitch extends StatefulWidget {
 
   /// Whether to take focus when first built.
   final bool autofocus;
+
+  /// Visual overrides for this switch, merged over
+  /// [AstryxThemeData.switchTheme].
+  final AstryxSwitchTheme? theme;
 
   @override
   State<AstryxSwitch> createState() => _AstryxSwitchState();
@@ -148,6 +154,7 @@ class _AstryxSwitchState extends State<AstryxSwitch>
       loading: widget.loading,
       hovered: hoverApplies(context) && _interactive,
       theme: theme,
+      resolved: theme.switchTheme.merge(widget.theme),
     );
 
     final row = AstryxToggleRow(
@@ -204,6 +211,7 @@ class _SwitchTrack extends StatelessWidget {
     required this.loading,
     required this.hovered,
     required this.theme,
+    required this.resolved,
   });
 
   final bool value;
@@ -212,24 +220,33 @@ class _SwitchTrack extends StatelessWidget {
   final bool loading;
   final bool hovered;
   final AstryxThemeData theme;
+  final AstryxSwitchTheme resolved;
 
   /// The track's outer dimensions: 32×20 at `sm`, 40×24 at `md`.
-  Size get _trackSize =>
-      size == AstryxToggleSize.sm ? const Size(32, 20) : const Size(40, 24);
+  Size get _trackSize {
+    final sm = size == AstryxToggleSize.sm;
+    return Size(
+      resolved.trackWidth ?? (sm ? 32 : 40),
+      resolved.trackHeight ?? (sm ? 20 : 24),
+    );
+  }
 
   /// The inset between the track's edge and the thumb.
-  double get _padding => size == AstryxToggleSize.sm ? 2 : 4;
+  double get _padding =>
+      resolved.trackPadding ?? (size == AstryxToggleSize.sm ? 2 : 4);
 
   /// The thumb grows when the switch is on — 14→16 at `sm`, 16→20 at `md`.
   ///
   /// That growth is upstream's, and it is what makes the on state legible
   /// without relying on the track colour alone.
-  double get _thumbExtent => switch ((size, value)) {
-    (AstryxToggleSize.sm, false) => 14,
-    (AstryxToggleSize.sm, true) => 16,
-    (AstryxToggleSize.md, false) => 16,
-    (AstryxToggleSize.md, true) => 20,
-  };
+  double get _thumbExtent =>
+      (value ? resolved.activeThumbSize : resolved.thumbSize) ??
+      switch ((size, value)) {
+        (AstryxToggleSize.sm, false) => 14,
+        (AstryxToggleSize.sm, true) => 16,
+        (AstryxToggleSize.md, false) => 16,
+        (AstryxToggleSize.md, true) => 20,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -238,8 +255,10 @@ class _SwitchTrack extends StatelessWidget {
     final curve = motion.curve();
 
     final tint = theme.color(AstryxColorToken.tintHover);
-    final accent = theme.color(AstryxColorToken.accent);
-    final off = theme.color(AstryxColorToken.backgroundGray);
+    final accent =
+        resolved.activeTrackColor ?? theme.color(AstryxColorToken.accent);
+    final off =
+        resolved.trackColor ?? theme.color(AstryxColorToken.backgroundGray);
 
     final Color trackColor;
     if (!enabled) {
@@ -254,7 +273,7 @@ class _SwitchTrack extends StatelessWidget {
     final thumb = _thumbExtent;
 
     return Opacity(
-      opacity: enabled ? 1.0 : 0.5,
+      opacity: enabled ? 1.0 : (resolved.disabledOpacity ?? 0.5),
       child: AnimatedContainer(
         duration: duration,
         curve: curve,
@@ -281,13 +300,15 @@ class _SwitchTrack extends StatelessWidget {
           height: thumb,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: theme.color(AstryxColorToken.backgroundSurface),
+            color:
+                resolved.thumbColor ??
+                theme.color(AstryxColorToken.backgroundSurface),
             shape: BoxShape.circle,
           ),
           child: loading
               ? AstryxSpinner(
                   size: AstryxSpinnerSize.sm,
-                  color: theme.color(AstryxColorToken.accent),
+                  color: accent,
                 )
               : null,
         ),

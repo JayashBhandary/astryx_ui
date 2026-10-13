@@ -40,6 +40,12 @@ class AstryxSelectionIndicator extends StatelessWidget {
     required this.theme,
     super.key,
     this.child,
+    this.fillColor,
+    this.backgroundColor,
+    this.borderColor,
+    this.borderRadius,
+    this.borderWidth,
+    this.disabledOpacity,
   });
 
   /// Square for a checkbox, circle for a radio.
@@ -69,14 +75,36 @@ class AstryxSelectionIndicator extends StatelessWidget {
   /// The mark inside the box.
   final Widget? child;
 
+  /// The fill when [filled]. Defaults to `--color-accent`.
+  final Color? fillColor;
+
+  /// The fill when not [filled]. Defaults to `--color-background-surface`.
+  final Color? backgroundColor;
+
+  /// The outline when enabled and not [filled].
+  ///
+  /// Defaults to `--color-border-emphasized`.
+  final Color? borderColor;
+
+  /// The corner radius of a square box. Defaults to `--radius-inner`.
+  final BorderRadiusGeometry? borderRadius;
+
+  /// The outline width. Defaults to `--border-width`.
+  final double? borderWidth;
+
+  /// The opacity when disabled. Defaults to 0.5.
+  final double? disabledOpacity;
+
   @override
   Widget build(BuildContext context) {
     final motion = AstryxMotion.of(context);
 
     final tint = theme.color(AstryxColorToken.tintHover);
-    final accent = theme.color(AstryxColorToken.accent);
-    final surface = theme.color(AstryxColorToken.backgroundSurface);
-    final borderEmphasized = theme.color(AstryxColorToken.borderEmphasized);
+    final accent = fillColor ?? theme.color(AstryxColorToken.accent);
+    final surface =
+        backgroundColor ?? theme.color(AstryxColorToken.backgroundSurface);
+    final borderEmphasized =
+        borderColor ?? theme.color(AstryxColorToken.borderEmphasized);
 
     final Color background;
     final Color border;
@@ -100,7 +128,7 @@ class AstryxSelectionIndicator extends StatelessWidget {
     return Opacity(
       // Upstream dims the whole disabled control rather than recolouring each
       // part, so the same 0.5 lands here.
-      opacity: enabled ? 1.0 : 0.5,
+      opacity: enabled ? 1.0 : (disabledOpacity ?? 0.5),
       child: AnimatedContainer(
         duration: motion.duration(AstryxDurationToken.fast),
         curve: motion.curve(),
@@ -112,8 +140,11 @@ class AstryxSelectionIndicator extends StatelessWidget {
           shape: circle ? BoxShape.circle : BoxShape.rectangle,
           borderRadius: circle
               ? null
-              : theme.borderRadius(AstryxRadiusToken.inner),
-          border: Border.all(color: border, width: theme.borderWidth()),
+              : borderRadius ?? theme.borderRadius(AstryxRadiusToken.inner),
+          border: Border.all(
+            color: border,
+            width: borderWidth ?? theme.borderWidth(),
+          ),
         ),
         child: child,
       ),

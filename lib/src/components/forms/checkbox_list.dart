@@ -7,6 +7,8 @@ import 'package:astryx_ui/src/components/forms/field_status.dart';
 import 'package:astryx_ui/src/components/forms/toggle_row.dart';
 import 'package:astryx_ui/src/components/layout/divider.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/checkbox.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
 
@@ -110,6 +112,7 @@ class AstryxCheckboxList<T> extends StatelessWidget {
     this.optional = false,
     this.labelHidden = false,
     this.width,
+    this.theme,
   });
 
   /// The rows, in order.
@@ -163,6 +166,10 @@ class AstryxCheckboxList<T> extends StatelessWidget {
   /// A fixed width for the whole field, label and status included.
   final double? width;
 
+  /// Visual overrides for this list's checkboxes, merged over
+  /// [AstryxThemeData.checkbox].
+  final AstryxCheckboxTheme? theme;
+
   /// The selection after toggling [option].
   Set<T> _toggled(AstryxCheckboxOption<T> option) =>
       values.contains(option.value)
@@ -171,7 +178,7 @@ class AstryxCheckboxList<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = AstryxTheme.of(context);
+    final data = AstryxTheme.of(context);
     final scope = AstryxFieldScope.maybeOf(context);
     final groupEnabled = enabled && (scope?.enabled ?? true);
     final interactive = groupEnabled && !readOnly && onChanged != null;
@@ -185,6 +192,7 @@ class AstryxCheckboxList<T> extends StatelessWidget {
           density: density,
           enabled: groupEnabled && options[i].enabled,
           readOnly: readOnly,
+          checkboxTheme: theme,
           onChanged: interactive && options[i].enabled
               ? () => onChanged!(_toggled(options[i]))
               : null,
@@ -195,7 +203,7 @@ class AstryxCheckboxList<T> extends StatelessWidget {
     final group = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      spacing: theme.spacing(density.gap),
+      spacing: data.spacing(density.gap),
       children: rows,
     );
 
@@ -234,6 +242,7 @@ class _CheckboxRow<T> extends StatelessWidget {
     required this.density,
     required this.enabled,
     required this.readOnly,
+    this.checkboxTheme,
     this.onChanged,
   });
 
@@ -242,6 +251,7 @@ class _CheckboxRow<T> extends StatelessWidget {
   final AstryxCheckboxListDensity density;
   final bool enabled;
   final bool readOnly;
+  final AstryxCheckboxTheme? checkboxTheme;
   final VoidCallback? onChanged;
 
   @override
@@ -256,6 +266,7 @@ class _CheckboxRow<T> extends StatelessWidget {
       enabled: enabled,
       readOnly: readOnly,
       loading: option.loading,
+      theme: checkboxTheme,
       onChanged: onChanged == null ? null : (_) => onChanged!(),
     );
 

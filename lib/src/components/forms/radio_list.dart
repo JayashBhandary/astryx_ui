@@ -9,6 +9,7 @@ import 'package:astryx_ui/src/foundation/focus_ring.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/radio.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -89,6 +90,7 @@ class AstryxRadioList<T> extends StatefulWidget {
     this.labelHidden = false,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   });
 
   /// The options, in the order they are shown and traversed.
@@ -132,6 +134,10 @@ class AstryxRadioList<T> extends StatefulWidget {
 
   /// Whether to take focus when first built.
   final bool autofocus;
+
+  /// Visual overrides for this group's radios, merged over
+  /// [AstryxThemeData.radio].
+  final AstryxRadioTheme? theme;
 
   @override
   State<AstryxRadioList<T>> createState() => _AstryxRadioListState<T>();
@@ -238,9 +244,10 @@ class _AstryxRadioListState<T> extends State<AstryxRadioList<T>>
     final scope = AstryxFieldScope.maybeOf(context);
     final enabled = widget.enabled && (scope?.enabled ?? true);
 
+    final resolved = theme.radio.merge(widget.theme);
     final items = <Widget>[
       for (var i = 0; i < widget.options.length; i++)
-        _buildOption(context, theme, i, enabled),
+        _buildOption(context, theme, resolved, i, enabled),
     ];
 
     final gap = theme.spacing(AstryxSpacingToken.spacing2);
@@ -287,6 +294,7 @@ class _AstryxRadioListState<T> extends State<AstryxRadioList<T>>
   Widget _buildOption(
     BuildContext context,
     AstryxThemeData theme,
+    AstryxRadioTheme resolved,
     int index,
     bool groupEnabled,
   ) {
@@ -304,6 +312,7 @@ class _AstryxRadioListState<T> extends State<AstryxRadioList<T>>
           enabled &&
           AstryxTheme.densityOf(context).supportsHover,
       theme: theme,
+      resolved: resolved,
     );
 
     return Semantics(
@@ -326,7 +335,7 @@ class _AstryxRadioListState<T> extends State<AstryxRadioList<T>>
               // option would ring at once.
               focused: active && focusVisible(context),
               borderRadius: BorderRadius.circular(
-                AstryxToggleRow.extent(widget.size),
+                resolved.size ?? AstryxToggleRow.extent(widget.size),
               ),
               child: dot,
             ),
@@ -354,6 +363,7 @@ class _RadioDot extends StatelessWidget {
     required this.enabled,
     required this.hovered,
     required this.theme,
+    required this.resolved,
   });
 
   final bool selected;
@@ -361,19 +371,25 @@ class _RadioDot extends StatelessWidget {
   final bool enabled;
   final bool hovered;
   final AstryxThemeData theme;
+  final AstryxRadioTheme resolved;
 
   @override
   Widget build(BuildContext context) {
     final motion = AstryxMotion.of(context);
-    final dot = size == AstryxToggleSize.sm ? 8.0 : 10.0;
+    final dot = resolved.dotSize ?? (size == AstryxToggleSize.sm ? 8.0 : 10.0);
 
     return AstryxSelectionIndicator(
       shape: AstryxSelectionIndicatorShape.circle,
       filled: selected,
-      extent: AstryxToggleRow.extent(size),
+      extent: resolved.size ?? AstryxToggleRow.extent(size),
       enabled: enabled,
       hovered: hovered,
       theme: theme,
+      fillColor: resolved.selectedColor,
+      backgroundColor: resolved.backgroundColor,
+      borderColor: resolved.borderColor,
+      borderWidth: resolved.borderWidth,
+      disabledOpacity: resolved.disabledOpacity,
       child: AnimatedScale(
         // The dot grows in rather than appearing, which is the only motion
         // in the control and the only thing distinguishing the two states
@@ -385,7 +401,7 @@ class _RadioDot extends StatelessWidget {
           width: dot,
           height: dot,
           decoration: BoxDecoration(
-            color: theme.color(AstryxColorToken.onAccent),
+            color: resolved.dotColor ?? theme.color(AstryxColorToken.onAccent),
             shape: BoxShape.circle,
           ),
         ),
