@@ -9,6 +9,8 @@ import 'package:astryx_ui/src/foundation/focus_visible.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/foundation/tap_target.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/card.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/utils/color_mix.dart';
 import 'package:flutter/services.dart';
@@ -91,8 +93,8 @@ class AstryxCard extends StatefulWidget {
     this.header,
     this.footer,
     this.variant = AstryxCardVariant.standard,
-    this.elevation = AstryxElevation.none,
-    this.padding = AstryxSpacingToken.spacing4,
+    this.elevation,
+    this.padding,
     this.showBorder = true,
     this.onPressed,
     this.semanticsLabel,
@@ -103,6 +105,7 @@ class AstryxCard extends StatefulWidget {
     this.focusNode,
     this.autofocus = false,
     this.scrollable = false,
+    this.theme,
   });
 
   /// The body.
@@ -118,10 +121,15 @@ class AstryxCard extends StatefulWidget {
   final AstryxCardVariant variant;
 
   /// The resting shadow.
-  final AstryxElevation elevation;
+  ///
+  /// Null uses [AstryxCardTheme.shadows], then no shadow.
+  final AstryxElevation? elevation;
 
-  /// The inner padding, as a spacing token.
-  final AstryxSpacingToken padding;
+  /// The inner padding and the gap between the slots, as a spacing token.
+  ///
+  /// Null uses [AstryxCardTheme.padding] and [AstryxCardTheme.gap], then
+  /// [AstryxSpacingToken.spacing4].
+  final AstryxSpacingToken? padding;
 
   /// Whether to draw a hairline border.
   final bool showBorder;
@@ -160,6 +168,9 @@ class AstryxCard extends StatefulWidget {
   /// Only meaningful with a fixed [height]; without one the card grows instead.
   final bool scrollable;
 
+  /// Visual overrides for this card, merged over [AstryxThemeData.card].
+  final AstryxCardTheme? theme;
+
   @override
   State<AstryxCard> createState() => _AstryxCardState();
 }
@@ -192,12 +203,26 @@ class _AstryxCardState extends State<AstryxCard> {
     final motion = AstryxMotion.of(context);
     final density = AstryxTheme.densityOf(context);
 
-    final pad = theme.spacing(widget.padding);
-    final radius = theme.borderRadius(AstryxRadiusToken.container);
+    final resolved = theme.card.merge(widget.theme);
+
+    final tokenPad = widget.padding == null
+        ? null
+        : theme.spacing(widget.padding!);
+    final defaultPad = theme.spacing(AstryxSpacingToken.spacing4);
+    final gap = tokenPad ?? resolved.gap ?? defaultPad;
+    final padding = tokenPad != null
+        ? EdgeInsets.all(tokenPad)
+        : resolved.padding ?? EdgeInsets.all(defaultPad);
+    final radius =
+        resolved.borderRadius ??
+        theme.borderRadius(AstryxRadiusToken.container);
 
     final baseToken = widget.variant.backgroundToken;
     var background = baseToken == null
         ? const Color(0x00000000)
+        : widget.variant == AstryxCardVariant.standard &&
+              resolved.backgroundColor != null
+        ? resolved.backgroundColor!
         : theme.color(baseToken);
 
     // Hover and press tint the fill rather than swapping it, so a categorical
@@ -229,7 +254,7 @@ class _AstryxCardState extends State<AstryxCard> {
     Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
-      spacing: pad,
+      spacing: gap,
       children: <Widget>[
         ?widget.header,
         // `Flexible`, not `Expanded`: a card with no fixed height must still
@@ -242,7 +267,7 @@ class _AstryxCardState extends State<AstryxCard> {
       ],
     );
 
-    content = Padding(padding: EdgeInsets.all(pad), child: content);
+    content = Padding(padding: padding, child: content);
 
     // The `stretch` above hands the slots the card's full width, so the card
     // has to shrink-wrap when the width it is handed is unbounded. See
@@ -257,13 +282,13 @@ class _AstryxCardState extends State<AstryxCard> {
         borderRadius: radius,
         border: widget.showBorder
             ? Border.all(
-                color: theme.color(AstryxColorToken.border),
-                width: theme.borderWidth(),
+                color:
+                    resolved.borderColor ??
+                    theme.color(AstryxColorToken.border),
+                width: resolved.borderWidth ?? theme.borderWidth(),
               )
             : null,
-        boxShadow: widget.elevation.token == null
-            ? null
-            : theme.boxShadows(widget.elevation.token!),
+        boxShadow: _cardShadows(theme, widget.elevation, resolved),
       ),
       // Clipped so a full-bleed image or a coloured header respects the
       // corner radius — upstream's `overflow: clip`.
@@ -329,4 +354,22 @@ class _AstryxCardState extends State<AstryxCard> {
       child: AstryxTapTarget(expandHorizontally: false, child: card),
     );
   }
+}
+
+/// The resting shadow of a card: the widget's own [elevation] first, then the
+/// theme's shadows, then none.
+List<BoxShadow>? _cardShadows(
+  AstryxThemeData data,
+  AstryxElevation? elevation,
+  AstryxCardTheme resolved,
+) {
+  if (elevation != null) {
+    return elevation.token == null ? null : data.boxShadows(elevation.token!);
+  }
+  final shadows = resolved.shadows;
+  if (shadows == null) return null;
+  return <BoxShadow>[
+    for (final layer in shadows)
+      if (!layer.inset) layer.toBoxShadow(),
+  ];
 }
