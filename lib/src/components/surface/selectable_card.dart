@@ -12,6 +12,7 @@ import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/foundation/tap_target.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/card.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/utils/color_mix.dart';
 import 'package:flutter/services.dart';
@@ -83,8 +84,8 @@ class AstryxSelectableCard extends StatefulWidget {
     this.control = AstryxSelectableCardControl.checkbox,
     this.controlSize = AstryxToggleSize.md,
     this.variant = AstryxCardVariant.standard,
-    this.elevation = AstryxElevation.none,
-    this.padding = AstryxSpacingToken.spacing4,
+    this.elevation,
+    this.padding,
     this.enabled = true,
     this.semanticsHint,
     this.width,
@@ -92,6 +93,7 @@ class AstryxSelectableCard extends StatefulWidget {
     this.minHeight,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   });
 
   /// The content beside the control.
@@ -129,10 +131,15 @@ class AstryxSelectableCard extends StatefulWidget {
   final AstryxCardVariant variant;
 
   /// The resting shadow.
-  final AstryxElevation elevation;
+  ///
+  /// Null uses [AstryxCardTheme.shadows], then no shadow.
+  final AstryxElevation? elevation;
 
   /// The inner padding, and the gap between the control and the content.
-  final AstryxSpacingToken padding;
+  ///
+  /// Null uses [AstryxCardTheme.padding] and [AstryxCardTheme.gap], then
+  /// [AstryxSpacingToken.spacing4].
+  final AstryxSpacingToken? padding;
 
   /// Whether the card accepts input.
   final bool enabled;
@@ -155,6 +162,9 @@ class AstryxSelectableCard extends StatefulWidget {
 
   /// Whether to take focus when first built.
   final bool autofocus;
+
+  /// Visual overrides for this card, merged over [AstryxThemeData.card].
+  final AstryxCardTheme? theme;
 
   @override
   State<AstryxSelectableCard> createState() => _AstryxSelectableCardState();
@@ -204,8 +214,19 @@ class _AstryxSelectableCardState extends State<AstryxSelectableCard> {
     final motion = AstryxMotion.of(context);
     final density = AstryxTheme.densityOf(context);
 
-    final pad = theme.spacing(widget.padding);
-    final radius = theme.borderRadius(AstryxRadiusToken.container);
+    final resolved = theme.card.merge(widget.theme);
+
+    final tokenPad = widget.padding == null
+        ? null
+        : theme.spacing(widget.padding!);
+    final defaultPad = theme.spacing(AstryxSpacingToken.spacing4);
+    final gap = tokenPad ?? resolved.gap ?? defaultPad;
+    final padding = tokenPad != null
+        ? EdgeInsets.all(tokenPad)
+        : resolved.padding ?? EdgeInsets.all(defaultPad);
+    final radius =
+        resolved.borderRadius ??
+        theme.borderRadius(AstryxRadiusToken.container);
     final hovered = _hovered && density.supportsHover;
 
     // Upstream tints a selected row with `--color-accent-muted`, and not when
@@ -216,9 +237,13 @@ class _AstryxSelectableCardState extends State<AstryxSelectableCard> {
     final showsSelection = widget.selected && _interactive;
     final baseToken = widget.variant.backgroundToken;
     var background = showsSelection
-        ? theme.color(AstryxColorToken.accentMuted)
+        ? resolved.selectedBackgroundColor ??
+              theme.color(AstryxColorToken.accentMuted)
         : baseToken == null
         ? const Color(0x00000000)
+        : widget.variant == AstryxCardVariant.standard &&
+              resolved.backgroundColor != null
+        ? resolved.backgroundColor!
         : theme.color(baseToken);
 
     // Hover and press tint the fill rather than swapping it, so a selected card
@@ -236,8 +261,8 @@ class _AstryxSelectableCardState extends State<AstryxSelectableCard> {
     // never disagree — an accent border around an untinted card reads as a
     // rendering fault, not as a state.
     final border = showsSelection
-        ? theme.color(AstryxColorToken.accent)
-        : theme.color(AstryxColorToken.border);
+        ? resolved.selectedBorderColor ?? theme.color(AstryxColorToken.accent)
+        : resolved.borderColor ?? theme.color(AstryxColorToken.border);
 
     final indicator = AstryxSelectionIndicator(
       shape: widget.control == AstryxSelectableCardControl.radio
@@ -259,14 +284,14 @@ class _AstryxSelectableCardState extends State<AstryxSelectableCard> {
     // box in the middle, away from the heading it belongs to.
     Widget content = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: pad,
+      spacing: gap,
       children: <Widget>[
         indicator,
         Expanded(child: widget.child),
       ],
     );
 
-    content = Padding(padding: EdgeInsets.all(pad), child: content);
+    content = Padding(padding: padding, child: content);
     // The `Expanded` above fills the card's width, so the card has to
     // shrink-wrap when the width it is handed is unbounded.
     content = AstryxBlockWidth(child: content);
@@ -277,10 +302,11 @@ class _AstryxSelectableCardState extends State<AstryxSelectableCard> {
       decoration: BoxDecoration(
         color: background,
         borderRadius: radius,
-        border: Border.all(color: border, width: theme.borderWidth()),
-        boxShadow: widget.elevation.token == null
-            ? null
-            : theme.boxShadows(widget.elevation.token!),
+        border: Border.all(
+          color: border,
+          width: resolved.borderWidth ?? theme.borderWidth(),
+        ),
+        boxShadow: _shadows(theme, resolved),
       ),
       clipBehavior: Clip.antiAlias,
       child: content,
@@ -344,6 +370,21 @@ class _AstryxSelectableCardState extends State<AstryxSelectableCard> {
       onTap: _interactive ? _toggle : null,
       child: AstryxTapTarget(expandHorizontally: false, child: card),
     );
+  }
+
+  /// The resting shadow: the widget's own elevation first, then the theme's
+  /// shadows, then none.
+  List<BoxShadow>? _shadows(AstryxThemeData data, AstryxCardTheme resolved) {
+    final elevation = widget.elevation;
+    if (elevation != null) {
+      return elevation.token == null ? null : data.boxShadows(elevation.token!);
+    }
+    final shadows = resolved.shadows;
+    if (shadows == null) return null;
+    return <BoxShadow>[
+      for (final layer in shadows)
+        if (!layer.inset) layer.toBoxShadow(),
+    ];
   }
 
   /// The mark inside the control: a tick for a checkbox, a dot for a radio.

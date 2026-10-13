@@ -4,6 +4,8 @@ library;
 import 'package:astryx_ui/src/components/layout/icon.dart';
 import 'package:astryx_ui/src/components/surface/palette.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/badge.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/theme/type_role.dart';
 import 'package:flutter/widgets.dart';
@@ -118,6 +120,7 @@ class AstryxBadge extends StatelessWidget {
     this.variant = AstryxBadgeVariant.neutral,
     this.icon,
     this.semanticsLabel,
+    this.theme,
   });
 
   /// The text.
@@ -144,16 +147,21 @@ class AstryxBadge extends StatelessWidget {
   /// spoken aloud, "3 unread" is not.
   final String? semanticsLabel;
 
+  /// Visual overrides for this badge, merged over [AstryxThemeData.badge].
+  final AstryxBadgeTheme? theme;
+
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final resolved = theme.badge.merge(this.theme);
 
     final style = theme
         .textStyle(AstryxTypeRole.supporting)
         .copyWith(
           color: theme.color(variant.foregroundToken),
           fontWeight: theme.fontWeight(AstryxFontWeightToken.medium),
-        );
+        )
+        .merge(resolved.textStyle);
 
     return Semantics(
       container: true,
@@ -164,18 +172,27 @@ class AstryxBadge extends StatelessWidget {
           // `--spacing-5`, which is right at 100% and clips the label at 200%
           // — the height is a token, the text is not (ADR-042).
           constraints: BoxConstraints(
-            minHeight: theme.spacing(AstryxSpacingToken.spacing5),
+            minHeight:
+                resolved.minHeight ??
+                theme.spacing(AstryxSpacingToken.spacing5),
           ),
-          padding: EdgeInsets.symmetric(
-            horizontal: theme.spacing(AstryxSpacingToken.spacing2),
-          ),
+          padding:
+              resolved.padding ??
+              EdgeInsets.symmetric(
+                horizontal: theme.spacing(AstryxSpacingToken.spacing2),
+              ),
           decoration: BoxDecoration(
             color: theme.color(variant.backgroundToken),
-            borderRadius: theme.borderRadius(AstryxRadiusToken.full),
+            borderRadius:
+                resolved.borderRadius ??
+                theme.borderRadius(AstryxRadiusToken.full),
+            border: resolved.border == null
+                ? null
+                : Border.fromBorderSide(resolved.border!),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            spacing: theme.spacing(AstryxSpacingToken.spacing1),
+            spacing: resolved.gap ?? theme.spacing(AstryxSpacingToken.spacing1),
             children: <Widget>[
               if (icon != null)
                 // The *text* token, not `--color-icon-*`. Upstream's badge
@@ -184,7 +201,7 @@ class AstryxBadge extends StatelessWidget {
                 // badge in light mode they land at 1.4:1 (ADR-040).
                 IconTheme.merge(
                   data: IconThemeData(
-                    size: AstryxIconSize.xsm.pixels,
+                    size: resolved.iconSize ?? AstryxIconSize.xsm.pixels,
                     color: theme.color(variant.foregroundToken),
                   ),
                   child: icon!,

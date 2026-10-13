@@ -8,6 +8,9 @@ import 'package:astryx_ui/src/components/layout/text.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/banner.dart';
+import 'package:astryx_ui/src/theme/components/icon.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
@@ -107,6 +110,7 @@ class AstryxBanner extends StatefulWidget {
     this.showIcon = true,
     this.content,
     this.announce = true,
+    this.theme,
   });
 
   /// The headline. Short and specific.
@@ -149,6 +153,9 @@ class AstryxBanner extends StatefulWidget {
   /// Set false for a banner that is part of the page's initial state — a
   /// permanent notice at the top of a settings screen has nothing to announce.
   final bool announce;
+
+  /// Visual overrides for this banner, merged over [AstryxThemeData.banner].
+  final AstryxBannerTheme? theme;
 
   @override
   State<AstryxBanner> createState() => _AstryxBannerState();
@@ -193,7 +200,19 @@ class _AstryxBannerState extends State<AstryxBanner> {
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
     final l10n = AstryxLocalizations.of(context);
-    final radius = theme.borderRadius(AstryxRadiusToken.container);
+    final resolved = theme.banner.merge(widget.theme);
+    final radius =
+        (resolved.borderRadius ??
+                theme.borderRadius(AstryxRadiusToken.container))
+            .resolve(Directionality.of(context));
+    final gap = resolved.gap ?? theme.spacing(AstryxSpacingToken.spacing2);
+    final iconSize = resolved.iconSize;
+    final contentBorder =
+        resolved.contentBorder ??
+        BorderSide(
+          color: theme.color(AstryxColorToken.border),
+          width: theme.borderWidth(),
+        );
 
     final hasContent = widget.content != null;
 
@@ -202,10 +221,12 @@ class _AstryxBannerState extends State<AstryxBanner> {
     final centred = widget.description == null;
 
     final header = Container(
-      padding: EdgeInsets.symmetric(
-        vertical: theme.spacing(AstryxSpacingToken.spacing3),
-        horizontal: theme.spacing(AstryxSpacingToken.spacing4),
-      ),
+      padding:
+          resolved.padding ??
+          EdgeInsets.symmetric(
+            vertical: theme.spacing(AstryxSpacingToken.spacing3),
+            horizontal: theme.spacing(AstryxSpacingToken.spacing4),
+          ),
       decoration: BoxDecoration(
         color: theme.color(widget.status.background),
         borderRadius: hasContent
@@ -219,17 +240,22 @@ class _AstryxBannerState extends State<AstryxBanner> {
         crossAxisAlignment: centred
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
-        spacing: theme.spacing(AstryxSpacingToken.spacing2),
+        spacing: gap,
         children: <Widget>[
           if (widget.showIcon)
             IconTheme.merge(
-              data: IconThemeData(size: AstryxIconSize.sm.pixels),
+              data: IconThemeData(size: iconSize ?? AstryxIconSize.sm.pixels),
               child:
                   widget.icon ??
                   AstryxIcon(
                     widget.status.icon,
-                    size: AstryxIconSize.sm,
+                    // An explicit step beats every theme, so a themed size
+                    // has to travel through the icon's own theme instead.
+                    size: iconSize == null ? AstryxIconSize.sm : null,
                     color: widget.status.iconColor,
+                    theme: iconSize == null
+                        ? null
+                        : AstryxIconTheme(size: iconSize),
                   ),
             ),
           Expanded(
@@ -237,12 +263,17 @@ class _AstryxBannerState extends State<AstryxBanner> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                AstryxText(widget.title, type: AstryxTextType.label),
+                AstryxText(
+                  widget.title,
+                  type: AstryxTextType.label,
+                  style: resolved.titleStyle,
+                ),
                 if (widget.description != null)
                   AstryxText(
                     widget.description!,
                     type: AstryxTextType.supporting,
                     color: AstryxTextColor.secondary,
+                    style: resolved.descriptionStyle,
                   ),
               ],
             ),
@@ -250,7 +281,7 @@ class _AstryxBannerState extends State<AstryxBanner> {
           if (widget.actions.isNotEmpty)
             Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: theme.spacing(AstryxSpacingToken.spacing2),
+              spacing: gap,
               children: widget.actions,
             ),
           if (widget.onDismiss != null)
@@ -273,31 +304,26 @@ class _AstryxBannerState extends State<AstryxBanner> {
               header,
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: theme.color(AstryxColorToken.backgroundCard),
+                  color:
+                      resolved.contentBackgroundColor ??
+                      theme.color(AstryxColorToken.backgroundCard),
                   borderRadius: BorderRadius.only(
                     bottomLeft: radius.bottomLeft,
                     bottomRight: radius.bottomRight,
                   ),
                   border: Border(
-                    left: BorderSide(
-                      color: theme.color(AstryxColorToken.border),
-                      width: theme.borderWidth(),
-                    ),
-                    right: BorderSide(
-                      color: theme.color(AstryxColorToken.border),
-                      width: theme.borderWidth(),
-                    ),
-                    bottom: BorderSide(
-                      color: theme.color(AstryxColorToken.border),
-                      width: theme.borderWidth(),
-                    ),
+                    left: contentBorder,
+                    right: contentBorder,
+                    bottom: contentBorder,
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: theme.spacing(AstryxSpacingToken.spacing3),
-                    horizontal: theme.spacing(AstryxSpacingToken.spacing4),
-                  ),
+                  padding:
+                      resolved.contentPadding ??
+                      EdgeInsets.symmetric(
+                        vertical: theme.spacing(AstryxSpacingToken.spacing3),
+                        horizontal: theme.spacing(AstryxSpacingToken.spacing4),
+                      ),
                   child: widget.content,
                 ),
               ),
