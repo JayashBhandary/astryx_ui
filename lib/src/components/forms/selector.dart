@@ -15,6 +15,7 @@ import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/input.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/theme/type_role.dart';
 import 'package:flutter/services.dart';
@@ -132,6 +133,7 @@ class AstryxSelector<T> extends StatefulWidget {
     this.width,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   });
 
   /// The entries to show, in order.
@@ -202,6 +204,11 @@ class AstryxSelector<T> extends StatefulWidget {
 
   /// Whether to take focus when first built.
   final bool autofocus;
+
+  /// Visual overrides for this input, merged over [AstryxThemeData.input].
+  ///
+  /// Styles the trigger. The open list is a menu surface, not an input.
+  final AstryxInputTheme? theme;
 
   @override
   State<AstryxSelector<T>> createState() => _AstryxSelectorState<T>();
@@ -511,6 +518,20 @@ class _AstryxSelectorState<T> extends State<AstryxSelector<T>> {
     final size = resolveAstryxInputSize(context, widget.size);
     final enabled = widget.enabled && (scope?.enabled ?? true);
     final selected = _selectedOption;
+    final resolved = theme.input.merge(widget.theme);
+
+    // The chosen value reads as entered text and the empty trigger as a
+    // placeholder, so they take the theme's text and placeholder styles. A
+    // disabled trigger keeps the disabled colour whatever the theme says.
+    final baseStyle = theme
+        .textStyle(AstryxTypeRole.body)
+        .merge(resolved.textStyle);
+    final labelStyle = selected == null
+        ? baseStyle.merge(resolved.placeholderStyle)
+        : baseStyle;
+    final themedColor = selected == null
+        ? resolved.placeholderStyle?.color
+        : resolved.textStyle?.color;
 
     final trigger = AstryxInputContainer(
       key: _triggerKey,
@@ -518,6 +539,7 @@ class _AstryxSelectorState<T> extends State<AstryxSelector<T>> {
       size: size,
       status: status,
       enabled: enabled,
+      theme: widget.theme,
       onTap: _toggleList,
       leading: widget.leading,
       trailing: _buildTriggerTrailing(theme, status, enabled, l10n),
@@ -525,17 +547,16 @@ class _AstryxSelectorState<T> extends State<AstryxSelector<T>> {
         selected?.label ?? widget.placeholder ?? l10n.selectorPlaceholder,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: theme
-            .textStyle(AstryxTypeRole.body)
-            .copyWith(
-              color: theme.color(
-                !enabled
-                    ? AstryxColorToken.textDisabled
-                    : (selected == null
+        style: labelStyle.copyWith(
+          color: !enabled
+              ? theme.color(AstryxColorToken.textDisabled)
+              : themedColor ??
+                    theme.color(
+                      selected == null
                           ? AstryxColorToken.textSecondary
-                          : AstryxColorToken.textPrimary),
-              ),
-            ),
+                          : AstryxColorToken.textPrimary,
+                    ),
+        ),
       ),
     );
 

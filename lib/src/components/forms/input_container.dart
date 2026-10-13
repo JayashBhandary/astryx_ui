@@ -13,6 +13,8 @@ import 'package:astryx_ui/src/foundation/density.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/foundation/size_scope.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/input.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
@@ -51,6 +53,9 @@ enum AstryxInputSize {
 /// click-to-focus behaviour — a port of upstream's `useInputContainer`, where
 /// a press anywhere on the container focuses the control inside it. A user who
 /// clicks the padding of a text field expects a caret, not nothing.
+///
+/// Reads [AstryxThemeData.input] itself, so every control built on it picks up
+/// an app-wide input theme without threading anything through.
 @internal
 class AstryxInputContainer extends StatelessWidget {
   /// Creates an input container.
@@ -67,6 +72,7 @@ class AstryxInputContainer extends StatelessWidget {
     this.onTap,
     this.multiline = false,
     this.minHeight,
+    this.theme,
   });
 
   /// The control itself.
@@ -102,9 +108,13 @@ class AstryxInputContainer extends StatelessWidget {
   /// A minimum height, for a multiline control.
   final double? minHeight;
 
+  /// Visual overrides for this input, merged over [AstryxThemeData.input].
+  final AstryxInputTheme? theme;
+
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final resolved = theme.input.merge(this.theme);
     final motion = AstryxMotion.of(context);
     final density = AstryxTheme.densityOf(context);
 
@@ -124,13 +134,19 @@ class AstryxInputContainer extends StatelessWidget {
     // element radius, as before.
     final group = AstryxInputGroupScope.maybeOf(context);
     final effectiveStatus = status ?? group?.status;
-    final corner = Radius.circular(theme.radius(AstryxRadiusToken.element));
+    final corner =
+        resolved.borderRadius ??
+        Radius.circular(theme.radius(AstryxRadiusToken.element));
     final borderRadius =
         group?.position.radius(corner) ?? BorderRadius.all(corner);
 
     final borderColor = switch (effectiveStatus?.type) {
-      null when focused => theme.color(AstryxColorToken.accent),
-      null => theme.color(AstryxColorToken.borderEmphasized),
+      null when focused =>
+        resolved.focusBorderColor ?? theme.color(AstryxColorToken.accent),
+      null =>
+        resolved.borderColor ?? theme.color(AstryxColorToken.borderEmphasized),
+      AstryxFieldStatusType.error when resolved.errorBorderColor != null =>
+        resolved.errorBorderColor!,
       final type => theme.color(type.color),
     };
 
@@ -150,23 +166,27 @@ class AstryxInputContainer extends StatelessWidget {
       constraints: multiline && minHeight != null
           ? BoxConstraints(minHeight: minHeight!)
           : null,
-      padding: EdgeInsetsDirectional.symmetric(
-        horizontal: theme.spacing(AstryxSpacingToken.spacing2),
-        vertical: multiline ? theme.spacing(AstryxSpacingToken.spacing2) : 0,
-      ),
+      padding:
+          resolved.contentPadding ??
+          EdgeInsetsDirectional.symmetric(
+            horizontal: theme.spacing(AstryxSpacingToken.spacing2),
+            vertical: multiline
+                ? theme.spacing(AstryxSpacingToken.spacing2)
+                : 0,
+          ),
       decoration: BoxDecoration(
-        color: theme.color(
-          enabled && !readOnly
-              ? AstryxColorToken.backgroundSurface
-              : AstryxColorToken.backgroundMuted,
-        ),
+        color: enabled && !readOnly
+            ? resolved.backgroundColor ??
+                  theme.color(AstryxColorToken.backgroundSurface)
+            : resolved.disabledBackgroundColor ??
+                  theme.color(AstryxColorToken.backgroundMuted),
         borderRadius: borderRadius,
         border: Border.all(
           color: borderColor,
           // Doubled when focused or in a status state, which is how the ring
           // reads as a ring rather than as a slightly darker border.
           width:
-              theme.borderWidth() *
+              (resolved.borderWidth ?? theme.borderWidth()) *
               (focused || effectiveStatus != null ? 2 : 1),
         ),
         boxShadow: shadows.isEmpty ? null : shadows,
@@ -175,7 +195,7 @@ class AstryxInputContainer extends StatelessWidget {
         crossAxisAlignment: multiline
             ? CrossAxisAlignment.start
             : CrossAxisAlignment.center,
-        spacing: theme.spacing(AstryxSpacingToken.spacing2),
+        spacing: resolved.gap ?? theme.spacing(AstryxSpacingToken.spacing2),
         children: <Widget>[
           ?leading,
           Expanded(child: child),
