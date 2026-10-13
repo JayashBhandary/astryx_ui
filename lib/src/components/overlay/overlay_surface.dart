@@ -2,6 +2,7 @@
 library;
 
 import 'package:astryx_ui/src/foundation/overlay_positioner.dart';
+import 'package:astryx_ui/src/theme/astryx_shadow.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
@@ -25,11 +26,15 @@ class AstryxOverlaySurface extends StatelessWidget {
     required this.child,
     super.key,
     this.background,
+    this.backgroundColor,
     this.foreground,
     this.shadow = AstryxShadowToken.low,
+    this.shadows,
     this.radius = AstryxRadiusToken.container,
+    this.borderRadius,
     this.padding,
     this.showBorder = true,
+    this.border,
     this.arrow,
     this.anchor,
     this.position,
@@ -41,14 +46,23 @@ class AstryxOverlaySurface extends StatelessWidget {
   /// The fill. Defaults to `--color-background-popover`.
   final AstryxColorToken? background;
 
+  /// A concrete fill, winning over [background].
+  final Color? backgroundColor;
+
   /// The default text colour. Defaults to `--color-text-primary`.
   final AstryxColorToken? foreground;
 
   /// The elevation token.
   final AstryxShadowToken shadow;
 
+  /// Concrete shadow layers, winning over [shadow]. Inset layers are dropped.
+  final List<AstryxShadow>? shadows;
+
   /// The corner radius token.
   final AstryxRadiusToken radius;
+
+  /// A concrete corner radius, winning over [radius].
+  final BorderRadiusGeometry? borderRadius;
 
   /// Inner padding. Null leaves the content flush, for a menu whose own rows
   /// carry the padding.
@@ -59,6 +73,11 @@ class AstryxOverlaySurface extends StatelessWidget {
   /// A shadow alone does not separate a panel from a busy surface behind it,
   /// and in dark mode it barely registers at all.
   final bool showBorder;
+
+  /// The hairline when [showBorder] is true.
+  ///
+  /// Defaults to `--color-border` at `--border-width`.
+  final BorderSide? border;
 
   /// Whether to draw a pointer at the anchor.
   final bool? arrow;
@@ -73,19 +92,28 @@ class AstryxOverlaySurface extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
 
-    final fill = theme.color(background ?? AstryxColorToken.backgroundPopover);
+    final fill =
+        backgroundColor ??
+        theme.color(background ?? AstryxColorToken.backgroundPopover);
+    final side =
+        border ??
+        BorderSide(
+          color: theme.color(AstryxColorToken.border),
+          width: theme.borderWidth(),
+        );
+    final shadows = this.shadows;
 
     Widget surface = DecoratedBox(
       decoration: BoxDecoration(
         color: fill,
-        borderRadius: theme.borderRadius(radius),
-        border: showBorder
-            ? Border.all(
-                color: theme.color(AstryxColorToken.border),
-                width: theme.borderWidth(),
-              )
-            : null,
-        boxShadow: theme.boxShadows(shadow),
+        borderRadius: borderRadius ?? theme.borderRadius(radius),
+        border: showBorder ? Border.fromBorderSide(side) : null,
+        boxShadow: shadows == null
+            ? theme.boxShadows(shadow)
+            : <BoxShadow>[
+                for (final layer in shadows)
+                  if (!layer.inset) layer.toBoxShadow(),
+              ],
       ),
       child: padding == null ? child : Padding(padding: padding!, child: child),
     );
@@ -106,8 +134,10 @@ class AstryxOverlaySurface extends StatelessWidget {
       // painting it over the content would clip whatever sits at that edge.
       painter: _ArrowPainter(
         color: fill,
-        borderColor: showBorder ? theme.color(AstryxColorToken.border) : null,
-        borderWidth: theme.borderWidth(),
+        borderColor: showBorder && side.style != BorderStyle.none
+            ? side.color
+            : null,
+        borderWidth: side.width,
         side: position.side,
         offset: resolveAstryxOverlayArrowOffset(
           anchor: anchor,

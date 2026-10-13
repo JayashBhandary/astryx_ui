@@ -11,6 +11,8 @@ import 'package:astryx_ui/src/components/overlay/overlay_surface.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/dialog.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
 
@@ -61,11 +63,12 @@ class AstryxDialog extends StatelessWidget {
     this.title,
     this.description,
     this.footer,
-    this.width = 480,
+    this.width,
     this.showCloseButton = true,
     this.barrierDismissible = true,
     this.escapeDismissible = true,
     this.onDismiss,
+    this.theme,
   });
 
   /// The open/closed state.
@@ -84,7 +87,9 @@ class AstryxDialog extends StatelessWidget {
   final Widget? footer;
 
   /// The dialog's width. It never exceeds the viewport minus its padding.
-  final double width;
+  ///
+  /// Null falls through to [AstryxDialogTheme.maxWidth], then 480.
+  final double? width;
 
   /// Whether to show a close button in the header.
   final bool showCloseButton;
@@ -100,31 +105,42 @@ class AstryxDialog extends StatelessWidget {
   /// Called when the dialog dismisses itself.
   final VoidCallback? onDismiss;
 
+  /// Visual overrides for this dialog, merged over [AstryxThemeData.dialog].
+  final AstryxDialogTheme? theme;
+
   void _dismiss() {
     controller.hide();
     onDismiss?.call();
   }
 
   @override
-  Widget build(BuildContext context) => AstryxOverlay(
-    controller: controller,
-    label: title,
-    debugLabel: 'AstryxDialog',
-    barrierDismissible: barrierDismissible,
-    escapeDismissible: escapeDismissible,
-    onDismiss: onDismiss,
-    child: ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: width),
-      child: _DialogPanel(
-        title: title,
-        description: description,
-        footer: footer,
-        showCloseButton: showCloseButton,
-        onClose: _dismiss,
-        child: child,
+  Widget build(BuildContext context) {
+    final resolved = AstryxTheme.of(context).dialog.merge(theme);
+
+    return AstryxOverlay(
+      controller: controller,
+      label: title,
+      debugLabel: 'AstryxDialog',
+      scrimFill: resolved.scrimColor,
+      barrierDismissible: barrierDismissible,
+      escapeDismissible: escapeDismissible,
+      onDismiss: onDismiss,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: width ?? resolved.maxWidth ?? 480,
+        ),
+        child: _DialogPanel(
+          title: title,
+          description: description,
+          footer: footer,
+          showCloseButton: showCloseButton,
+          onClose: _dismiss,
+          resolved: resolved,
+          child: child,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// Drives an [AstryxDialog].
@@ -141,6 +157,7 @@ class _DialogPanel extends StatelessWidget {
     required this.footer,
     required this.showCloseButton,
     required this.onClose,
+    required this.resolved,
     required this.child,
   });
 
@@ -149,18 +166,21 @@ class _DialogPanel extends StatelessWidget {
   final Widget? footer;
   final bool showCloseButton;
   final VoidCallback onClose;
+  final AstryxDialogTheme resolved;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
     final l10n = AstryxLocalizations.of(context);
-    final pad = theme.spacing(AstryxSpacingToken.spacing4);
+    final pad =
+        resolved.padding?.resolve(Directionality.of(context)) ??
+        EdgeInsets.all(theme.spacing(AstryxSpacingToken.spacing4));
 
     final header = title == null && !showCloseButton
         ? null
         : Padding(
-            padding: EdgeInsets.fromLTRB(pad, pad, pad, 0),
+            padding: pad.copyWith(bottom: 0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -177,17 +197,21 @@ class _DialogPanel extends StatelessWidget {
                           child: AstryxHeading(
                             title!,
                             type: AstryxHeadingType.display3,
+                            style: resolved.titleTextStyle,
                           ),
                         ),
                       if (description != null)
                         Padding(
                           padding: EdgeInsets.only(
-                            top: theme.spacing(AstryxSpacingToken.spacing1),
+                            top:
+                                resolved.titleGap ??
+                                theme.spacing(AstryxSpacingToken.spacing1),
                           ),
                           child: AstryxText(
                             description!,
                             type: AstryxTextType.supporting,
                             color: AstryxTextColor.secondary,
+                            style: resolved.descriptionTextStyle,
                           ),
                         ),
                     ],
@@ -208,6 +232,10 @@ class _DialogPanel extends StatelessWidget {
     return AstryxOverlaySurface(
       shadow: AstryxShadowToken.high,
       background: AstryxColorToken.backgroundSurface,
+      backgroundColor: resolved.backgroundColor,
+      shadows: resolved.shadows,
+      borderRadius: resolved.borderRadius,
+      border: resolved.border,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -218,13 +246,13 @@ class _DialogPanel extends StatelessWidget {
           Flexible(
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
-              padding: EdgeInsets.all(pad),
+              padding: pad,
               child: child,
             ),
           ),
           if (footer != null)
             Padding(
-              padding: EdgeInsets.fromLTRB(pad, 0, pad, pad),
+              padding: pad.copyWith(top: 0),
               child: Align(
                 alignment: AlignmentDirectional.centerEnd,
                 child: footer,

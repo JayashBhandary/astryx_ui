@@ -49,6 +49,7 @@ class AstryxOverlay extends StatefulWidget {
     this.padding,
     this.showScrim = true,
     this.scrimColor,
+    this.scrimFill,
     this.barrierDismissible = true,
     this.escapeDismissible = true,
     this.trapFocus = true,
@@ -86,6 +87,12 @@ class AstryxOverlay extends StatefulWidget {
 
   /// The scrim's colour. Defaults to `--color-overlay`.
   final AstryxColorToken? scrimColor;
+
+  /// A concrete scrim colour, winning over [scrimColor].
+  ///
+  /// For a component that resolves its scrim from a component theme rather
+  /// than from a token.
+  final Color? scrimFill;
 
   /// Whether a press on the scrim closes it.
   final bool barrierDismissible;
@@ -306,7 +313,9 @@ class _AstryxOverlayState extends State<AstryxOverlay>
     );
 
     final scrim = ColoredBox(
-      color: theme.color(widget.scrimColor ?? AstryxColorToken.overlay),
+      color:
+          widget.scrimFill ??
+          theme.color(widget.scrimColor ?? AstryxColorToken.overlay),
     );
 
     return Focus(

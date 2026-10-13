@@ -6,6 +6,8 @@ import 'package:astryx_ui/src/components/overlay/overlay_layer.dart';
 import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/bottom_sheet.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
@@ -105,8 +107,9 @@ class AstryxBottomSheet extends StatelessWidget {
     this.barrierDismissible = true,
     this.escapeDismissible = true,
     this.dragDismissible = true,
-    this.padding = AstryxSpacingToken.spacing4,
+    this.padding,
     this.onDismiss,
+    this.theme,
   });
 
   /// The open/closed state.
@@ -156,10 +159,17 @@ class AstryxBottomSheet extends StatelessWidget {
   final bool dragDismissible;
 
   /// The inset between the sheet's edges and its content.
-  final AstryxSpacingToken padding;
+  ///
+  /// Null falls through to [AstryxBottomSheetTheme.padding], then
+  /// `--spacing-4`.
+  final AstryxSpacingToken? padding;
 
   /// Called when the sheet dismisses itself.
   final VoidCallback? onDismiss;
+
+  /// Visual overrides for this sheet, merged over
+  /// [AstryxThemeData.bottomSheet].
+  final AstryxBottomSheetTheme? theme;
 
   void _dismiss() {
     controller.hide();
@@ -174,6 +184,7 @@ class AstryxBottomSheet extends StatelessWidget {
     alignment: AlignmentDirectional.bottomCenter,
     padding: EdgeInsets.zero,
     showScrim: showScrim,
+    scrimFill: AstryxTheme.of(context).bottomSheet.merge(theme).scrimColor,
     barrierDismissible: barrierDismissible,
     escapeDismissible: escapeDismissible,
     onDismiss: onDismiss,
@@ -195,6 +206,7 @@ class AstryxBottomSheet extends StatelessWidget {
       showHandle: showHandle,
       dragDismissible: dragDismissible,
       padding: padding,
+      theme: theme,
       onDismiss: _dismiss,
       child: child,
     ),
@@ -219,6 +231,7 @@ class AstryxBottomSheetPanel extends StatefulWidget {
     required this.child,
     super.key,
     this.initialSnapPoint,
+    this.theme,
   });
 
   /// The sheet's accessible name, which the handle reports as what it moves.
@@ -239,8 +252,11 @@ class AstryxBottomSheetPanel extends StatefulWidget {
   /// Whether dragging past the shortest detent dismisses.
   final bool dragDismissible;
 
-  /// The inset around the body.
-  final AstryxSpacingToken padding;
+  /// The inset around the body. Null defers to the theme.
+  final AstryxSpacingToken? padding;
+
+  /// Visual overrides, merged over [AstryxThemeData.bottomSheet].
+  final AstryxBottomSheetTheme? theme;
 
   /// Dismisses the sheet.
   final VoidCallback onDismiss;
@@ -298,9 +314,7 @@ class _AstryxBottomSheetPanelState extends State<AstryxBottomSheetPanel> {
     if (detents.isNotEmpty) {
       return available * detents[_detent].clamp(0.0, widget.height.fraction);
     }
-    return widget.height.hugContent
-        ? null
-        : available * widget.height.fraction;
+    return widget.height.hugContent ? null : available * widget.height.fraction;
   }
 
   void _onDragUpdate(DragUpdateDetails details) {
@@ -360,8 +374,29 @@ class _AstryxBottomSheetPanelState extends State<AstryxBottomSheetPanel> {
     final theme = AstryxTheme.of(context);
     final motion = AstryxMotion.of(context);
     final l10n = AstryxLocalizations.of(context);
+    final resolved = theme.bottomSheet.merge(widget.theme);
     final radius = theme.borderRadius(AstryxRadiusToken.container);
-    final border = theme.color(AstryxColorToken.border);
+    final side =
+        resolved.border ??
+        BorderSide(
+          color: theme.color(AstryxColorToken.border),
+          width: theme.borderWidth(),
+        );
+    final shadows = resolved.shadows ?? theme.shadow(AstryxShadowToken.high);
+    final padding = widget.padding;
+    // A square sheet is given no radius at all: Flutter asserts on a zero
+    // radius beside the open bottom edge, though it paints none either way.
+    final themedRadius = resolved.borderRadius;
+    final sheetRadius =
+        themedRadius != null &&
+            themedRadius.resolve(Directionality.of(context)) ==
+                BorderRadius.zero
+        ? null
+        : themedRadius ??
+              BorderRadiusDirectional.only(
+                topStart: radius.topLeft,
+                topEnd: radius.topRight,
+              );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -381,27 +416,25 @@ class _AstryxBottomSheetPanelState extends State<AstryxBottomSheetPanel> {
 
         Widget panel = Container(
           constraints: BoxConstraints(
-            maxWidth: _maxSheetWidth,
+            maxWidth: resolved.maxWidth ?? _maxSheetWidth,
             maxHeight: budget,
           ),
           height: height,
           decoration: BoxDecoration(
-            color: theme.color(AstryxColorToken.backgroundSurface),
-            borderRadius: BorderRadiusDirectional.only(
-              topStart: radius.topLeft,
-              topEnd: radius.topRight,
-            ),
+            color:
+                resolved.backgroundColor ??
+                theme.color(AstryxColorToken.backgroundSurface),
+            borderRadius: sheetRadius,
             // A hairline on the three edges facing the scrim. The surface fill
             // separates sheet from scrim in light mode but not in dark, where
             // the two sit within a few steps of each other and the shadow is
             // black on near-black. The bottom edge is deliberately bare: it is
             // off the viewport.
-            border: BorderDirectional(
-              top: BorderSide(color: border, width: theme.borderWidth()),
-              start: BorderSide(color: border, width: theme.borderWidth()),
-              end: BorderSide(color: border, width: theme.borderWidth()),
-            ),
-            boxShadow: theme.boxShadows(AstryxShadowToken.high),
+            border: BorderDirectional(top: side, start: side, end: side),
+            boxShadow: <BoxShadow>[
+              for (final layer in shadows)
+                if (!layer.inset) layer.toBoxShadow(),
+            ],
           ),
           clipBehavior: Clip.antiAlias,
           child: Column(
@@ -410,6 +443,9 @@ class _AstryxBottomSheetPanelState extends State<AstryxBottomSheetPanel> {
             children: <Widget>[
               if (widget.showHandle)
                 _Handle(
+                  color: resolved.handleColor,
+                  width: resolved.handleWidth,
+                  height: resolved.handleHeight,
                   label: l10n.bottomSheetHandle,
                   sheetLabel: widget.label,
                   onDragUpdate: _onDragUpdate,
@@ -418,7 +454,12 @@ class _AstryxBottomSheetPanelState extends State<AstryxBottomSheetPanel> {
               Flexible(
                 child: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(),
-                  padding: EdgeInsets.all(theme.spacing(widget.padding)),
+                  padding: padding != null
+                      ? EdgeInsets.all(theme.spacing(padding))
+                      : resolved.padding ??
+                            EdgeInsets.all(
+                              theme.spacing(AstryxSpacingToken.spacing4),
+                            ),
                   child: widget.child,
                 ),
               ),
@@ -455,12 +496,18 @@ class _AstryxBottomSheetPanelState extends State<AstryxBottomSheetPanel> {
 /// The grab handle: the pill, and the drag target around it.
 class _Handle extends StatelessWidget {
   const _Handle({
+    required this.color,
+    required this.width,
+    required this.height,
     required this.label,
     required this.sheetLabel,
     required this.onDragUpdate,
     required this.onDragEnd,
   });
 
+  final Color? color;
+  final double? width;
+  final double? height;
   final String label;
   final String sheetLabel;
   final ValueChanged<DragUpdateDetails> onDragUpdate;
@@ -484,10 +531,10 @@ class _Handle extends StatelessWidget {
             height: theme.spacing(AstryxSpacingToken.spacing6),
             child: Center(
               child: Container(
-                width: theme.size(AstryxSizeToken.elementLg),
-                height: theme.spacing(AstryxSpacingToken.spacing1),
+                width: width ?? theme.size(AstryxSizeToken.elementLg),
+                height: height ?? theme.spacing(AstryxSpacingToken.spacing1),
                 decoration: BoxDecoration(
-                  color: theme.color(AstryxColorToken.border),
+                  color: color ?? theme.color(AstryxColorToken.border),
                   borderRadius: theme.borderRadius(AstryxRadiusToken.full),
                 ),
               ),
