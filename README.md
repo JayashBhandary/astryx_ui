@@ -151,6 +151,25 @@ final acmeTheme = defineTheme(
 Give it a hex accent and the engine derives the full palette, including the
 `--color-on-*` foregrounds that guarantee contrast.
 
+### Component themes, app-wide
+
+The per-widget themes — buttons, text, headings, dividers, icons — go on the
+app, in the same place Material takes `ThemeData`:
+
+```dart
+AstryxApp(
+  theme: matchaTheme,
+  componentThemes: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+  ),
+  home: const HomePage(),
+)
+```
+
+`darkComponentThemes` overrides them in dark mode. For one subtree, wrap it in
+`AstryxComponentTheme`, which merges over the themes above it rather than
+replacing them.
+
 ### Reaching a token directly
 
 For a chart library or a non-Astryx widget that needs to match:

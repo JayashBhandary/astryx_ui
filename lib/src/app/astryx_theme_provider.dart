@@ -9,7 +9,9 @@ import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/component_themes.dart';
 import 'package:astryx_ui/src/theme/engine/define_theme.dart';
+import 'package:astryx_ui/src/theme/engine/token_resolver.dart';
 import 'package:astryx_ui/src/theme/resolved_token_set.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -44,6 +46,8 @@ class AstryxThemeProvider extends StatefulWidget {
     super.key,
     this.theme,
     this.mode = AstryxColorMode.system,
+    this.componentThemes = const AstryxComponentThemes(),
+    this.darkComponentThemes,
     this.density,
     this.icons,
     this.localizations = const AstryxLocalizations(),
@@ -68,6 +72,20 @@ class AstryxThemeProvider extends StatefulWidget {
   /// `MediaQuery.platformBrightnessOf`, so the theme tracks a change without
   /// the app rebuilding anything itself.
   final AstryxColorMode mode;
+
+  /// The per-widget themes for every Astryx widget below this provider.
+  ///
+  /// The component half of what Material's `ThemeData` carries: button,
+  /// text, heading, divider and icon overrides, applied app-wide. To change
+  /// them for one subtree instead, use `AstryxComponentTheme`.
+  final AstryxComponentThemes componentThemes;
+
+  /// The per-widget themes to use instead of [componentThemes] when the
+  /// resolved mode is dark.
+  ///
+  /// Null uses [componentThemes] in both modes, which is right unless it names
+  /// a literal colour — token-backed defaults already follow the mode.
+  final AstryxComponentThemes? darkComponentThemes;
 
   /// Overrides the resolved interaction density.
   ///
@@ -121,6 +139,20 @@ class AstryxThemeProvider extends StatefulWidget {
       )
       ..add(EnumProperty<AstryxColorMode>('mode', mode))
       ..add(
+        DiagnosticsProperty<AstryxComponentThemes>(
+          'componentThemes',
+          componentThemes,
+          defaultValue: const AstryxComponentThemes(),
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<AstryxComponentThemes>(
+          'darkComponentThemes',
+          darkComponentThemes,
+          defaultValue: null,
+        ),
+      )
+      ..add(
         EnumProperty<AstryxDensity>('density', density, defaultValue: null),
       )
       ..add(
@@ -149,12 +181,24 @@ class _AstryxThemeProviderState extends State<AstryxThemeProvider> {
     final media = MediaQuery.maybeOf(context);
     final target = widget.platform ?? defaultTargetPlatform;
 
+    final mode = widget.mode.resolve(
+      media?.platformBrightness ?? Brightness.light,
+    );
+    final components = mode == AstryxThemeMode.dark
+        ? widget.darkComponentThemes ?? widget.componentThemes
+        : widget.componentThemes;
+
     final themeData = AstryxThemeData(
       tokens: widget.theme == null
           ? AstryxResolvedTokenSet.defaults
           : AstryxResolvedTokenSet.resolve(widget.theme),
-      mode: widget.mode.resolve(media?.platformBrightness ?? Brightness.light),
+      mode: mode,
       platform: target,
+      text: components.text,
+      heading: components.heading,
+      divider: components.divider,
+      icon: components.icon,
+      button: components.button,
     );
 
     return AstryxTheme(

@@ -14,6 +14,7 @@ library;
 // Layer 0 — colour primitives and design tokens.
 // Layer 1 — the theme generation engine.
 // Layer 2 — the runtime: resolved tokens as Flutter values, and the themes.
+export 'src/theme/astryx_component_theme.dart';
 export 'src/theme/astryx_shadow.dart';
 export 'src/theme/astryx_theme.dart';
 export 'src/theme/astryx_theme_data.dart';

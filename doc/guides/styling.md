@@ -15,7 +15,8 @@ Four ways to change how something looks, in the order you should reach for them.
 | --- | --- |
 | A widget parameter | Almost always. `variant`, `size`, `padding`, `gap` — the axes the component already has. |
 | `theme:` on the widget | One instance genuinely differs. Takes that widget’s theme class. |
-| `AstryxTheme` with `copyWith` | Every instance in a subtree, or in the whole app. |
+| `componentThemes:` on `AstryxApp` | Every instance in the whole app. |
+| `AstryxComponentTheme` | Every instance in one subtree. |
 | `tokens:` on the theme | The value itself is wrong for your product — a tighter radius, a different spacing step. Changes everything at once. |
 
 ```dart
@@ -57,13 +58,11 @@ class StylingScopesExample extends StatelessWidget {
         ),
         // Everything below inherits it — including a button three widgets deep
         // that knows nothing about this.
-        AstryxTheme(
-          data: AstryxTheme.of(context).copyWith(button: _squared),
-          density: AstryxTheme.densityOf(context),
-          icons: AstryxTheme.iconsOf(context),
+        AstryxComponentTheme(
+          data: const AstryxComponentThemes(button: _squared),
           child: _Scope(
             title: 'a subtree',
-            note: '`AstryxTheme` with `copyWith`.',
+            note: '`AstryxComponentTheme`.',
             child: AstryxHStack(
               gap: AstryxSpacingToken.spacing2,
               children: <Widget>[
@@ -125,27 +124,39 @@ A component theme is a small immutable class carrying only that widget’s visua
 
 Those four are what exist today. Everything else is styled through its own parameters and the tokens beneath them.
 
-## For a subtree, or the whole app
+## For the whole app
+
+`AstryxComponentThemes` bundles every component theme into one value, and `AstryxApp` and `AstryxThemeProvider` take it as `componentThemes` — the same place Material takes `ThemeData`. Every Astryx widget in the app reads it.
 
 ```dart
-Builder(
-  builder: (context) => AstryxTheme(
-    data: AstryxTheme.of(context).copyWith(
-      button: const AstryxButtonTheme(borderRadius: BorderRadius.zero),
-    ),
-    // Inherited scopes are not automatic — carry them across.
-    density: AstryxTheme.densityOf(context),
-    icons: AstryxTheme.iconsOf(context),
-    child: const HomePage(),
+AstryxApp(
+  theme: matchaTheme,
+  componentThemes: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+    divider: AstryxDividerTheme(thickness: 2),
   ),
+  home: const HomePage(),
 )
 ```
 
-The `Builder` is there so the `context` is *below* the provider that installed the theme. Put this immediately under `AstryxApp` or `AstryxThemeProvider` for an application-wide change, or around a single pane for a local one.
+Token-backed defaults already follow the colour mode, so one bundle is usually enough. If yours names a literal colour, give dark mode its own with `darkComponentThemes`; null falls back to `componentThemes`.
+
+## For a subtree
+
+`AstryxComponentTheme` applies a bundle over whatever is in effect, for its child only. It **merges** rather than replaces — a bundle that sets only a radius keeps the colours an outer scope set — and it carries the tokens, colour mode, density and icon registry through untouched. Nest them freely.
+
+```dart
+AstryxComponentTheme(
+  data: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+  ),
+  child: const Toolbar(),
+)
+```
 
 > **Note**
 >
-> `AstryxTheme` replaces the density and icon registry rather than inheriting them, so pass both through as above. Forget them and a custom icon set quietly reverts to Lucide, and a touch device loses its 48px targets.
+> Building an `AstryxTheme` by hand with `copyWith` still works, but it replaces the density and icon registry unless you pass both through. `AstryxComponentTheme` does that for you.
 
 ## When the value itself is wrong
 

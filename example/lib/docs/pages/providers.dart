@@ -121,6 +121,20 @@ AstryxLocalizations.of(context).dialogClose;'''),
         defaultValue: 'AstryxColorMode.system',
       ),
       DocProp(
+        'componentThemes',
+        'AstryxComponentThemes',
+        'Per-widget themes — button, text, heading, divider, icon — for every '
+            'Astryx widget below. The counterpart of the component slots on '
+            'Material’s `ThemeData`.',
+        defaultValue: 'AstryxComponentThemes()',
+      ),
+      DocProp(
+        'darkComponentThemes',
+        'AstryxComponentThemes?',
+        'Used instead of `componentThemes` when the resolved mode is dark. '
+            'Null uses `componentThemes` in both modes.',
+      ),
+      DocProp(
         'density',
         'AstryxDensity?',
         'Overrides the resolved interaction density. Null derives it from the '
@@ -189,6 +203,21 @@ AstryxLocalizations.of(context).dialogClose;'''),
       description:
           'The scope itself. Install it through `AstryxThemeProvider`; reach '
           'for these statics to read it.',
+    ),
+    DocApi(
+      'AstryxComponentTheme',
+      <DocProp>[
+        DocProp(
+          'data',
+          'AstryxComponentThemes',
+          'Merged over the component themes in effect, field by field.',
+          required: true,
+        ),
+        DocProp('child', 'Widget', 'The subtree to re-style.', required: true),
+      ],
+      description:
+          'Re-styles the components of one subtree. Tokens, colour mode, '
+          'density and icons carry through; only component themes change.',
     ),
     DocHeading('Related'),
     DocList(<String>[

@@ -7,6 +7,7 @@ import 'package:astryx_ui/src/foundation/link_delegate.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/components/component_themes.dart';
 import 'package:astryx_ui/src/theme/engine/define_theme.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/theme/type_role.dart';
@@ -37,6 +38,8 @@ class AstryxApp extends StatelessWidget {
     this.home,
     this.theme,
     this.mode = AstryxColorMode.system,
+    this.componentThemes = const AstryxComponentThemes(),
+    this.darkComponentThemes,
     this.density,
     this.icons,
     this.localizations = const AstryxLocalizations(),
@@ -67,6 +70,8 @@ class AstryxApp extends StatelessWidget {
     super.key,
     this.theme,
     this.mode = AstryxColorMode.system,
+    this.componentThemes = const AstryxComponentThemes(),
+    this.darkComponentThemes,
     this.density,
     this.icons,
     this.localizations = const AstryxLocalizations(),
@@ -103,6 +108,16 @@ class AstryxApp extends StatelessWidget {
   /// Which colour mode to resolve. Defaults to following the platform.
   /// {@endtemplate}
   final AstryxColorMode mode;
+
+  /// The per-widget themes for every Astryx widget in the app.
+  ///
+  /// See [AstryxThemeProvider.componentThemes].
+  final AstryxComponentThemes componentThemes;
+
+  /// The per-widget themes for dark mode. Null uses [componentThemes].
+  ///
+  /// See [AstryxThemeProvider.darkComponentThemes].
+  final AstryxComponentThemes? darkComponentThemes;
 
   /// {@template AstryxApp.density}
   /// Overrides the resolved interaction density.
@@ -191,6 +206,8 @@ class AstryxApp extends StatelessWidget {
   Widget _wrap(BuildContext context, Widget? child) => AstryxThemeProvider(
     theme: theme,
     mode: mode,
+    componentThemes: componentThemes,
+    darkComponentThemes: darkComponentThemes,
     density: density,
     icons: icons,
     localizations: localizations,

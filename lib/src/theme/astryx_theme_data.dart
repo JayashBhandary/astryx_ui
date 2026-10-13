@@ -3,6 +3,7 @@ library;
 
 import 'package:astryx_ui/src/theme/astryx_shadow.dart';
 import 'package:astryx_ui/src/theme/components/button.dart';
+import 'package:astryx_ui/src/theme/components/component_themes.dart';
 import 'package:astryx_ui/src/theme/components/divider.dart';
 import 'package:astryx_ui/src/theme/components/icon.dart';
 import 'package:astryx_ui/src/theme/components/text.dart';
@@ -334,28 +335,87 @@ class AstryxThemeData {
           if (_colors[token.cssName] != null) token: _colors[token.cssName]!,
       });
 
-  /// Returns a copy resolved for a different mode, platform or token set.
+  /// Every per-widget theme this data carries, as one bundle.
+  AstryxComponentThemes get components => AstryxComponentThemes(
+    button: button,
+    text: text,
+    heading: heading,
+    divider: divider,
+    icon: icon,
+  );
+
+  /// Returns a copy with the given values replaced.
   ///
-  /// Every value is reconverted, because all three inputs feed the conversion.
+  /// [components] replaces every component slot at once; a slot named on its
+  /// own — [button], say — wins over the same slot in [components].
+  ///
+  /// Changing [tokens], [mode] or [platform] reconverts every value, because
+  /// all three feed the conversion. Changing only component themes reuses the
+  /// converted values, so a subtree override costs nothing to build.
   AstryxThemeData copyWith({
     AstryxResolvedTokenSet? tokens,
     AstryxThemeMode? mode,
     TargetPlatform? platform,
+    AstryxComponentThemes? components,
     AstryxTextTheme? text,
     AstryxTextTheme? heading,
     AstryxDividerTheme? divider,
     AstryxIconTheme? icon,
     AstryxButtonTheme? button,
-  }) => AstryxThemeData(
-    tokens: tokens ?? this.tokens,
-    mode: mode ?? this.mode,
-    platform: platform ?? this.platform,
-    text: text ?? this.text,
-    heading: heading ?? this.heading,
-    divider: divider ?? this.divider,
-    icon: icon ?? this.icon,
-    button: button ?? this.button,
-  );
+  }) {
+    final nextText = text ?? components?.text ?? this.text;
+    final nextHeading = heading ?? components?.heading ?? this.heading;
+    final nextDivider = divider ?? components?.divider ?? this.divider;
+    final nextIcon = icon ?? components?.icon ?? this.icon;
+    final nextButton = button ?? components?.button ?? this.button;
+
+    final reconvert =
+        (tokens != null && tokens != this.tokens) ||
+        (mode != null && mode != this.mode) ||
+        (platform != null && platform != this.platform);
+
+    if (reconvert) {
+      return AstryxThemeData(
+        tokens: tokens ?? this.tokens,
+        mode: mode ?? this.mode,
+        platform: platform ?? this.platform,
+        text: nextText,
+        heading: nextHeading,
+        divider: nextDivider,
+        icon: nextIcon,
+        button: nextButton,
+      );
+    }
+
+    return AstryxThemeData._(
+      tokens: this.tokens,
+      mode: this.mode,
+      platform: this.platform,
+      text: nextText,
+      heading: nextHeading,
+      divider: nextDivider,
+      icon: nextIcon,
+      button: nextButton,
+      colors: _colors,
+      lengths: _lengths,
+      shadows: _shadows,
+      durations: _durations,
+      curves: _curves,
+      weights: _weights,
+      families: _families,
+      textStyles: _textStyles,
+    );
+  }
+
+  /// Returns a copy with [other] merged over the component themes, slot by
+  /// slot and field by field.
+  ///
+  /// Unlike [copyWith], which replaces a slot, this keeps every field [other]
+  /// leaves null. It is what `AstryxComponentTheme` does for its subtree.
+  AstryxThemeData mergeComponents(AstryxComponentThemes? other) {
+    if (other == null) return this;
+    return copyWith(components: components.merge(other));
+  }
 
   static T _require<T>(T? value, AstryxToken token) {
     if (value == null) {

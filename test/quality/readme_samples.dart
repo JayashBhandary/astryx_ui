@@ -27,6 +27,21 @@ Widget dense() => const AstryxThemeProvider(
   child: HomePage(),
 );
 
+Widget componentThemed() => AstryxApp(
+  theme: matchaTheme,
+  componentThemes: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+  ),
+  home: const HomePage(),
+);
+
+Widget subtreeThemed() => const AstryxComponentTheme(
+  data: AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+  ),
+  child: HomePage(),
+);
+
 void tokens(BuildContext context) {
   final theme = AstryxTheme.of(context);
   theme.color(AstryxColorToken.accent);

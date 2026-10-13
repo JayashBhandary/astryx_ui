@@ -40,13 +40,11 @@ class StylingScopesExample extends StatelessWidget {
         ),
         // Everything below inherits it — including a button three widgets deep
         // that knows nothing about this.
-        AstryxTheme(
-          data: AstryxTheme.of(context).copyWith(button: _squared),
-          density: AstryxTheme.densityOf(context),
-          icons: AstryxTheme.iconsOf(context),
+        AstryxComponentTheme(
+          data: const AstryxComponentThemes(button: _squared),
           child: _Scope(
             title: 'a subtree',
-            note: '`AstryxTheme` with `copyWith`.',
+            note: '`AstryxComponentTheme`.',
             child: AstryxHStack(
               gap: AstryxSpacingToken.spacing2,
               children: <Widget>[
@@ -92,4 +90,5 @@ class _Scope extends StatelessWidget {
     );
   }
 }
+
 // #end

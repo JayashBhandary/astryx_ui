@@ -92,6 +92,16 @@ void main() => runApp(
   ),
 );''', language: 'dart'),
     DocProse('Give it a hex accent and the engine derives the full palette, including the `--color-on-*` foregrounds that guarantee contrast.'),
+    DocHeading('Component themes, app-wide', level: 3),
+    DocProse('The per-widget themes — buttons, text, headings, dividers, icons — go on the app, in the same place Material takes `ThemeData`:'),
+    DocCode('''AstryxApp(
+  theme: matchaTheme,
+  componentThemes: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+  ),
+  home: const HomePage(),
+)''', language: 'dart'),
+    DocProse('`darkComponentThemes` overrides them in dark mode. For one subtree, wrap it in `AstryxComponentTheme`, which merges over the themes above it rather than replacing them.'),
     DocHeading('Reaching a token directly', level: 3),
     DocProse('For a chart library or a non-Astryx widget that needs to match:'),
     DocCode('''final theme = AstryxTheme.of(context);
@@ -108,6 +118,17 @@ final gap = theme.spacing(AstryxSpacingToken.spacing3);''', language: 'dart'),
   ),
 );''', language: 'dart'),
     DocProse('Give it a hex accent and the engine derives the full palette, including the `--color-on-*` foregrounds that guarantee contrast.'),
+  ],
+  'Component themes, app-wide': <DocBlock>[
+    DocProse('The per-widget themes — buttons, text, headings, dividers, icons — go on the app, in the same place Material takes `ThemeData`:'),
+    DocCode('''AstryxApp(
+  theme: matchaTheme,
+  componentThemes: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+  ),
+  home: const HomePage(),
+)''', language: 'dart'),
+    DocProse('`darkComponentThemes` overrides them in dark mode. For one subtree, wrap it in `AstryxComponentTheme`, which merges over the themes above it rather than replacing them.'),
   ],
   'Reaching a token directly': <DocBlock>[
     DocProse('For a chart library or a non-Astryx widget that needs to match:'),

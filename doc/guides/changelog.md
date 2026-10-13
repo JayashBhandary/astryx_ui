@@ -21,6 +21,18 @@ The format is [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the 
 
 ## Unreleased
 
+### Added
+
+- **Component themes on the app, the way Material takes `ThemeData`.** `AstryxApp` and `AstryxThemeProvider` take `componentThemes:` — an `AstryxComponentThemes` bundling the button, text, heading, divider and icon themes — and every Astryx widget in the app reads it. Until now the only way to set a button theme app-wide was to build an `AstryxTheme` by hand under the provider and remember to carry the density and icon registry across. `darkComponentThemes:` replaces the bundle in dark mode, for themes that name a literal colour; null uses `componentThemes` in both.
+
+- **`AstryxComponentTheme` — re-style one subtree.** Merges a bundle over the themes in effect rather than replacing them, so an inner scope that sets a radius keeps the colours an outer one set. Tokens, mode, density and icons carry through untouched, and scopes nest.
+
+- `AstryxThemeData.components`, `copyWith(components:)` and `mergeComponents()`.
+
+### Changed
+
+- `AstryxThemeData.copyWith` no longer reconverts every token when only component themes change. It reuses the resolved values, so a subtree override costs a handful of allocations rather than a full theme build.
+
 ### Fixed
 
 - **The browser's own context menu no longer opens on top of `AstryxContextMenu`.** On the web a secondary click is the browser's before it is the application's: Flutter reported it and the menu opened, and then the browser raised its Back / Reload / Inspect menu over the top — two menus for one click, with the wanted one underneath. Suppressing it was documented as the app's job, which made a broken right-click the default for anyone who had not read that paragraph.

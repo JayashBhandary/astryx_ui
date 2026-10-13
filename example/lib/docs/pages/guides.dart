@@ -1569,8 +1569,12 @@ const DocPage _styling = DocPage(
           'One instance genuinely differs. Takes that widget’s theme class.',
         ],
         <String>[
-          '`AstryxTheme` with `copyWith`',
-          'Every instance in a subtree, or in the whole app.',
+          '`componentThemes:` on `AstryxApp`',
+          'Every instance in the whole app.',
+        ],
+        <String>[
+          '`AstryxComponentTheme`',
+          'Every instance in one subtree.',
         ],
         <String>[
           '`tokens:` on the theme',
@@ -1615,30 +1619,46 @@ const DocPage _styling = DocPage(
       'Those four are what exist today. Everything else is styled through its '
       'own parameters and the tokens beneath them.',
     ),
-    DocHeading('For a subtree, or the whole app'),
-    DocCode('''
-Builder(
-  builder: (context) => AstryxTheme(
-    data: AstryxTheme.of(context).copyWith(
-      button: const AstryxButtonTheme(borderRadius: BorderRadius.zero),
+    DocHeading('For the whole app'),
+    DocProse(
+      '`AstryxComponentThemes` bundles every component theme into one value, '
+      'and `AstryxApp` and `AstryxThemeProvider` take it as `componentThemes` '
+      '— the same place Material takes `ThemeData`. Every Astryx widget in the '
+      'app reads it.',
     ),
-    // Inherited scopes are not automatic — carry them across.
-    density: AstryxTheme.densityOf(context),
-    icons: AstryxTheme.iconsOf(context),
-    child: const HomePage(),
+    DocCode('''
+AstryxApp(
+  theme: matchaTheme,
+  componentThemes: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+    divider: AstryxDividerTheme(thickness: 2),
   ),
+  home: const HomePage(),
 )'''),
     DocProse(
-      'The `Builder` is there so the `context` is *below* the provider that '
-      'installed the theme. Put this immediately under `AstryxApp` or '
-      '`AstryxThemeProvider` for an application-wide change, or around a '
-      'single pane for a local one.',
+      'Token-backed defaults already follow the colour mode, so one bundle is '
+      'usually enough. If yours names a literal colour, give dark mode its own '
+      'with `darkComponentThemes`; null falls back to `componentThemes`.',
     ),
+    DocHeading('For a subtree'),
+    DocProse(
+      '`AstryxComponentTheme` applies a bundle over whatever is in effect, for '
+      'its child only. It **merges** rather than replaces — a bundle that sets '
+      'only a radius keeps the colours an outer scope set — and it carries the '
+      'tokens, colour mode, density and icon registry through untouched. Nest '
+      'them freely.',
+    ),
+    DocCode('''
+AstryxComponentTheme(
+  data: const AstryxComponentThemes(
+    button: AstryxButtonTheme(borderRadius: BorderRadius.zero),
+  ),
+  child: const Toolbar(),
+)'''),
     DocCallout.note(
-      '`AstryxTheme` replaces the density and icon registry rather than '
-      'inheriting them, so pass both through as above. Forget them and a '
-      'custom icon set quietly reverts to Lucide, and a touch device loses its '
-      '48px targets.',
+      'Building an `AstryxTheme` by hand with `copyWith` still works, but it '
+      'replaces the density and icon registry unless you pass both through. '
+      '`AstryxComponentTheme` does that for you.',
     ),
     DocHeading('When the value itself is wrong'),
     DocProse(

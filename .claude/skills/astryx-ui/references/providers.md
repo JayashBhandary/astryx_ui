@@ -36,6 +36,8 @@ AstryxApp(
 | `child` **(required)** | `Widget` | — | The subtree to theme. |
 | `theme` | `AstryxDefinedTheme?` | — | The theme to resolve. Null uses the Astryx defaults, which are a complete and usable theme rather than a placeholder. |
 | `mode` | `AstryxColorMode` | `AstryxColorMode.system` | Which colour mode to resolve. |
+| `componentThemes` | `AstryxComponentThemes` | `AstryxComponentThemes()` | Per-widget themes — button, text, heading, divider, icon — for every Astryx widget below. The counterpart of the component slots on Material’s `ThemeData`. |
+| `darkComponentThemes` | `AstryxComponentThemes?` | — | Used instead of `componentThemes` when the resolved mode is dark. Null uses `componentThemes` in both modes. |
 | `density` | `AstryxDensity?` | — | Overrides the resolved interaction density. Null derives it from the platform and the pointer precision `MediaQuery` reports. |
 | `icons` | `AstryxIconRegistry?` | — | The icon registry for this subtree. Null uses the Lucide-backed defaults. |
 | `localizations` | `AstryxLocalizations` | `AstryxLocalizations()` | The strings the widgets use. |
@@ -52,6 +54,13 @@ AstryxApp(
 | `maybeOf(context)` | `AstryxThemeData?` | — | The resolved theme, or null — for a widget where a theme is genuinely optional. |
 | `densityOf(context)` | `AstryxDensity` | — | The density in effect, falling back to the platform. |
 | `iconsOf(context)` | `AstryxIconRegistry` | — | The icon registry in effect. |
+
+### AstryxComponentTheme
+
+| Property | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `data` **(required)** | `AstryxComponentThemes` | — | Merged over the component themes in effect, field by field. |
+| `child` **(required)** | `Widget` | — | The subtree to re-style. |
 
 ---
 

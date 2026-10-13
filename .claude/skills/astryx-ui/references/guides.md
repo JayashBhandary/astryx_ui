@@ -956,13 +956,11 @@ class StylingScopesExample extends StatelessWidget {
         ),
         // Everything below inherits it — including a button three widgets deep
         // that knows nothing about this.
-        AstryxTheme(
-          data: AstryxTheme.of(context).copyWith(button: _squared),
-          density: AstryxTheme.densityOf(context),
-          icons: AstryxTheme.iconsOf(context),
+        AstryxComponentTheme(
+          data: const AstryxComponentThemes(button: _squared),
           child: _Scope(
             title: 'a subtree',
-            note: '`AstryxTheme` with `copyWith`.',
+            note: '`AstryxComponentTheme`.',
             child: AstryxHStack(
               gap: AstryxSpacingToken.spacing2,
               children: <Widget>[
@@ -1012,14 +1010,15 @@ class _Scope extends StatelessWidget {
 
 **Rules**
 
-- **Note:** `AstryxTheme` replaces the density and icon registry rather than inheriting them, so pass both through as above. Forget them and a custom icon set quietly reverts to Lucide, and a touch device loses its 48px targets.
+- **Note:** Building an `AstryxTheme` by hand with `copyWith` still works, but it replaces the density and icon registry unless you pass both through. `AstryxComponentTheme` does that for you.
 - **Careful:** The one thing not to do is reach past the system: a `Color(0xFF…)`, a `TextStyle(fontSize: 14)`, an `EdgeInsets.all(16)`. Each compiles, looks right in the theme you are using, and is wrong in the other seven — and in dark mode, and at the next density.
 
 | Reach for | When |
 | --- | --- |
 | A widget parameter | Almost always. `variant`, `size`, `padding`, `gap` — the axes the component already has. |
 | `theme:` on the widget | One instance genuinely differs. Takes that widget’s theme class. |
-| `AstryxTheme` with `copyWith` | Every instance in a subtree, or in the whole app. |
+| `componentThemes:` on `AstryxApp` | Every instance in the whole app. |
+| `AstryxComponentTheme` | Every instance in one subtree. |
 | `tokens:` on the theme | The value itself is wrong for your product — a tighter radius, a different spacing step. Changes everything at once. |
 
 | Class | Applies to | Carries |

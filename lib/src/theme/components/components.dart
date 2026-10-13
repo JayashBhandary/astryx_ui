@@ -8,6 +8,7 @@ library;
 
 export 'button.dart';
 export 'component_theme.dart';
+export 'component_themes.dart';
 export 'divider.dart';
 export 'icon.dart';
 export 'text.dart';
