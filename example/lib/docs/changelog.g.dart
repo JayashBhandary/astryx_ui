@@ -29,7 +29,25 @@ const List<DocBlock> changelogBlocks = <DocBlock>[
   DocList(<String>[
     '`AstryxThemeData.components`, `copyWith(components:)` and `mergeComponents()`.',
   ]),
+  DocList(<String>[
+    '**Routes with real transitions — `AstryxPageRoute` and `AstryxPage`.** The counterparts of `MaterialPageRoute` and `MaterialPage`. Every route `AstryxApp` builds is one now, where it used to be a transition-less `PageRouteBuilder`: a slide with a swipe back from the leading edge on iOS and macOS, a short fade-and-rise elsewhere, the page painted on `--color-background-body`. `AstryxApp(pageTransition:)` and `AstryxThemeProvider(pageTransition:)` pick one for the app; `AstryxPageTransitions` exposes the motion for a router\'s own page class.',
+  ]),
+  DocList(<String>[
+    '**`showAstryxDialog`, `showAstryxAlertDialog` and `showAstryxBottomSheet` return a result.** The `showDialog` shape alongside the widget-in-the-tree overlays: each pushes the same panel as a route (`AstryxDialogRoute`, `AstryxBottomSheetRoute`) and completes with the value it is popped with — a `bool` for the alert. The dialog keeps the caller\'s theme, including an `AstryxComponentTheme` above it, on the root navigator.',
+  ]),
+  DocList(<String>[
+    '**The system back button closes the top-most overlay.** An open `AstryxDialog`, `AstryxBottomSheet`, menu or popover now stops its page from popping, and Android\'s back button or gesture closes it instead — one layer per press, as Escape does. A tooltip does not hold back up.',
+  ]),
+  DocList(<String>[
+    '**Theme changes cross-fade.** `AstryxThemeData.lerp`, `AstryxThemeDataTween` and `AstryxAnimatedTheme` — the counterparts of `ThemeData.lerp` and `AnimatedTheme`. `AstryxThemeProvider` and `AstryxApp` install one, so flipping `mode:`, swapping `theme:`, or the platform turning dark blends every colour, shadow and length over `themeAnimationDuration` (`--duration-fast-max` by default) instead of snapping. Reduced motion, or `Duration.zero`, switches instantly.',
+  ]),
   DocHeading('Changed', level: 3),
+  DocList(<String>[
+    '`AstryxTheme` is an `InheritedTheme`, so `InheritedTheme.capture` carries it into a route pushed elsewhere.',
+  ]),
+  DocList(<String>[
+    'A theme change from `AstryxThemeProvider` no longer lands in the next frame: read the theme after `pumpAndSettle` in a widget test, or pass `themeAnimationDuration: Duration.zero`.',
+  ]),
   DocList(<String>[
     '`AstryxThemeData.copyWith` no longer reconverts every token when only component themes change. It reuses the resolved values, so a subtree override costs a handful of allocations rather than a full theme build.',
   ]),

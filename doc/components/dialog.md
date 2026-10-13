@@ -186,8 +186,7 @@ class DialogScrollingExample extends StatefulWidget {
   const DialogScrollingExample({super.key});
 
   @override
-  State<DialogScrollingExample> createState() =>
-      _DialogScrollingExampleState();
+  State<DialogScrollingExample> createState() => _DialogScrollingExampleState();
 }
 
 class _DialogScrollingExampleState extends State<DialogScrollingExample> {
@@ -299,6 +298,74 @@ class _DialogBlockingExampleState extends State<DialogBlockingExample> {
             'The migration cannot run twice, so this decision is final.',
           ),
         ),
+      ],
+    );
+  }
+}
+```
+
+
+## As a route
+
+`showAstryxDialog` pushes the same panel as a route — the `showDialog` shape. The result comes back as a `Future`: pop with `Navigator.pop(context, value)` from `builder` or `footerBuilder`, and every other way out — the close button, the barrier, Escape, the system back button — completes with null.
+
+```dart
+class DialogRouteExample extends StatefulWidget {
+  const DialogRouteExample({super.key});
+
+  @override
+  State<DialogRouteExample> createState() => _DialogRouteExampleState();
+}
+
+class _DialogRouteExampleState extends State<DialogRouteExample> {
+  final TextEditingController _name = TextEditingController(text: 'Atlas');
+  String? _renamed;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  // A route, so the answer comes back as a value — and back closes it.
+  Future<void> _rename() async {
+    final name = await showAstryxDialog<String>(
+      context: context,
+      title: 'Rename project',
+      width: 420,
+      builder: (context) => AstryxTextInput(
+        label: 'Name',
+        controller: _name,
+        autofocus: true,
+      ),
+      footerBuilder: (context) => AstryxHStack(
+        gap: AstryxSpacingToken.spacing2,
+        justify: AstryxStackJustify.end,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          AstryxButton(
+            label: 'Cancel',
+            onPressed: () => Navigator.pop(context),
+          ),
+          AstryxButton(
+            label: 'Rename',
+            variant: AstryxButtonVariant.primary,
+            onPressed: () => Navigator.pop(context, _name.text),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || name == null) return;
+    setState(() => _renamed = name);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxButton(label: 'Rename project', onPressed: _rename),
+        if (_renamed != null) AstryxText('Renamed to $_renamed'),
       ],
     );
   }

@@ -190,6 +190,55 @@ class _AlertDialogExtraExampleState extends State<AlertDialogExtraExample> {
 ```
 
 
+## As a route
+
+`showAstryxAlertDialog` asks the same question and completes with the answer: `true` for the confirming action, `false` for cancel, Escape and back. The barrier still does not dismiss it.
+
+```dart
+class AlertDialogRouteExample extends StatefulWidget {
+  const AlertDialogRouteExample({super.key});
+
+  @override
+  State<AlertDialogRouteExample> createState() =>
+      _AlertDialogRouteExampleState();
+}
+
+class _AlertDialogRouteExampleState extends State<AlertDialogRouteExample> {
+  bool? _deleted;
+
+  // True only for the confirming button; cancel, Escape and back are false.
+  Future<void> _delete() async {
+    final confirmed = await showAstryxAlertDialog(
+      context: context,
+      title: 'Delete Atlas?',
+      description:
+          'Atlas and its 4,102 requests will be removed. This '
+          'cannot be undone.',
+      confirmLabel: 'Delete project',
+      destructive: true,
+    );
+    if (!mounted) return;
+    setState(() => _deleted = confirmed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxButton(
+          label: 'Delete project',
+          variant: AstryxButtonVariant.destructive,
+          onPressed: _delete,
+        ),
+        if (_deleted != null) AstryxText(_deleted! ? 'Deleted' : 'Kept'),
+      ],
+    );
+  }
+}
+```
+
+
 > **Note**
 >
 > Use a [dialog](dialog.md) whenever the user is *doing* something rather than confirming something. An alert dialog spent on ordinary work trains people to dismiss the one that matters.

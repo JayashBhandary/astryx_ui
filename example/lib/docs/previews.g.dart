@@ -58,6 +58,7 @@ import 'package:example/examples/metadata_list_examples.dart';
 import 'package:example/examples/motion_examples.dart';
 import 'package:example/examples/navigation_controls_examples.dart';
 import 'package:example/examples/navigation_examples.dart';
+import 'package:example/examples/navigation_route_examples.dart';
 import 'package:example/examples/overflow_list_examples.dart';
 import 'package:example/examples/overlay_examples.dart';
 import 'package:example/examples/platform_examples.dart';
@@ -119,6 +120,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'alert_dialog_demo': (_) => const AlertDialogDemoExample(),
   'alert_dialog_acknowledge': (_) => const AlertDialogAcknowledgeExample(),
   'alert_dialog_extra': (_) => const AlertDialogExtraExample(),
+  'alert_dialog_route': (_) => const AlertDialogRouteExample(),
   'app_shell_demo': (_) => const AppShellDemoExample(),
   'layout_demo': (_) => const LayoutDemoExample(),
   'layout_panel': (_) => const LayoutPanelExample(),
@@ -140,6 +142,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'bottom_sheet_heights': (_) => const BottomSheetHeightsExample(),
   'bottom_sheet_snap': (_) => const BottomSheetSnapExample(),
   'bottom_sheet_switcher': (_) => const BottomSheetSwitcherExample(),
+  'bottom_sheet_route': (_) => const BottomSheetRouteExample(),
   'button_demo': (_) => const ButtonDemoExample(),
   'button_variants': (_) => const ButtonVariantsExample(),
   'button_sizes': (_) => const ButtonSizesExample(),
@@ -213,6 +216,7 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'dialog_form': (_) => const DialogFormExample(),
   'dialog_scrolling': (_) => const DialogScrollingExample(),
   'dialog_blocking': (_) => const DialogBlockingExample(),
+  'dialog_route': (_) => const DialogRouteExample(),
   'divider_demo': (_) => const DividerDemoExample(),
   'divider_variants': (_) => const DividerVariantsExample(),
   'divider_labelled': (_) => const DividerLabelledExample(),
@@ -313,6 +317,8 @@ final Map<String, WidgetBuilder> docPreviews = <String, WidgetBuilder>{
   'top_nav_demo': (_) => const TopNavDemoExample(),
   'mobile_nav_demo': (_) => const MobileNavDemoExample(),
   'breadcrumbs_demo': (_) => const BreadcrumbsDemoExample(),
+  'page_route_demo': (_) => const PageRouteDemoExample(),
+  'theme_animation': (_) => const ThemeAnimationExample(),
   'overflow_list_demo': (_) => const OverflowListDemoExample(),
   'overflow_list_widths': (_) => const OverflowListWidthsExample(),
   'overlay_demo': (_) => const OverlayDemoExample(),

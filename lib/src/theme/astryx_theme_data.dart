@@ -2,7 +2,8 @@
 library;
 
 import 'package:astryx_ui/src/theme/astryx_shadow.dart';
-import 'package:astryx_ui/src/theme/components/components.dart';
+import 'package:astryx_ui/src/theme/components/components.dart'
+    hide lerpDuration;
 import 'package:astryx_ui/src/theme/engine/define_theme.dart';
 import 'package:astryx_ui/src/theme/engine/syntax_theme.dart';
 import 'package:astryx_ui/src/theme/engine/token_resolver.dart';
@@ -162,6 +163,7 @@ class AstryxThemeData {
     required Map<String, FontWeight> weights,
     required Map<String, AstryxFontStack> families,
     required Map<AstryxTypeRole, TextStyle> textStyles,
+    Object? lerpKey,
   }) : _colors = colors,
        _lengths = lengths,
        _shadows = shadows,
@@ -169,7 +171,8 @@ class AstryxThemeData {
        _curves = curves,
        _weights = weights,
        _families = families,
-       _textStyles = textStyles;
+       _textStyles = textStyles,
+       _lerpKey = lerpKey;
 
   /// Runs the engine over [theme] and resolves it for [mode].
   ///
@@ -281,6 +284,13 @@ class AstryxThemeData {
   final Map<String, FontWeight> _weights;
   final Map<String, AstryxFontStack> _families;
   final Map<AstryxTypeRole, TextStyle> _textStyles;
+
+  /// What this data was interpolated from, or null for data built from
+  /// tokens.
+  ///
+  /// Equality is over the inputs, and an interpolated theme's inputs are the
+  /// two ends and the fraction — its maps match neither end's tokens.
+  final Object? _lerpKey;
 
   /// The [Brightness] matching [mode].
   Brightness get brightness =>
@@ -431,6 +441,80 @@ class AstryxThemeData {
       weights: _weights,
       families: _families,
       textStyles: _textStyles,
+      lerpKey: _lerpKey,
+    );
+  }
+
+  /// Linearly interpolates between two themes.
+  ///
+  /// The Material equivalent is `ThemeData.lerp`, and it exists for the same
+  /// reason: so a light/dark or brand switch can cross-fade through
+  /// `AstryxAnimatedTheme` instead of snapping.
+  ///
+  /// Colours, lengths, shadows, durations, font weights and text styles
+  /// blend; the token set, the mode, the platform, curves and font stacks
+  /// cannot, and switch at the midpoint. A token only one side defines also
+  /// switches at the midpoint rather than fading from nothing.
+  ///
+  /// Returns [a] at `t == 0` and [b] at `t == 1`, so an animation that has
+  /// settled hands back the very data it was given.
+  // A static, like `ThemeData.lerp`: it is a function of two themes, not a way
+  // of making one, and `Tween.lerp` wants exactly this shape.
+  // ignore: prefer_constructors_over_static_methods
+  static AstryxThemeData lerp(AstryxThemeData a, AstryxThemeData b, double t) {
+    if (identical(a, b) || t == 0) return a;
+    if (t == 1) return b;
+    final near = t < 0.5 ? a : b;
+
+    // Keys come from the nearer side, so a token only one theme defines
+    // appears or disappears at the midpoint, like every other discrete value.
+    Map<K, V> blend<K, V extends Object>(
+      Map<K, V> from,
+      Map<K, V> to,
+      V? Function(V a, V b) mix,
+    ) {
+      final keys = t < 0.5 ? from.keys : to.keys;
+      return <K, V>{
+        for (final key in keys)
+          key: switch ((from[key], to[key])) {
+            (final V x?, final V y?) => mix(x, y) ?? (t < 0.5 ? x : y),
+            (final V x?, _) => x,
+            (_, final V y?) => y,
+            _ => throw StateError('No value for $key on either side.'),
+          },
+      };
+    }
+
+    T pick<T>(T x, T y) => t < 0.5 ? x : y;
+
+    return AstryxThemeData._(
+      tokens: near.tokens,
+      mode: near.mode,
+      platform: near.platform,
+      components:
+          AstryxComponentThemes.lerp(a.components, b.components, t) ??
+          near.components,
+      colors: blend(a._colors, b._colors, (x, y) => Color.lerp(x, y, t)),
+      lengths: blend(a._lengths, b._lengths, (x, y) => x + (y - x) * t),
+      shadows: blend(a._shadows, b._shadows, (x, y) => lerpShadows(x, y, t)),
+      durations: blend(
+        a._durations,
+        b._durations,
+        (x, y) => lerpDuration(x, y, t),
+      ),
+      curves: blend(a._curves, b._curves, pick),
+      weights: blend(
+        a._weights,
+        b._weights,
+        (x, y) => FontWeight.lerp(x, y, t),
+      ),
+      families: blend(a._families, b._families, pick),
+      textStyles: blend(
+        a._textStyles,
+        b._textStyles,
+        (x, y) => TextStyle.lerp(x, y, t),
+      ),
+      lerpKey: (a, b, t),
     );
   }
 
@@ -464,10 +548,11 @@ class AstryxThemeData {
           other.mode == mode &&
           other.platform == platform &&
           other.tokens == tokens &&
-          other.components == components;
+          other.components == components &&
+          other._lerpKey == _lerpKey;
 
   @override
-  int get hashCode => Object.hash(tokens, mode, platform, components);
+  int get hashCode => Object.hash(tokens, mode, platform, components, _lerpKey);
 
   @override
   String toString() => 'AstryxThemeData(${mode.name}, $platform)';

@@ -1,18 +1,21 @@
 /// The theme scope installer.
 library;
 
+import 'package:astryx_ui/src/app/page_route.dart';
 import 'package:astryx_ui/src/components/overlay/toast.dart';
 import 'package:astryx_ui/src/foundation/density.dart';
 import 'package:astryx_ui/src/foundation/focus_visible.dart';
 import 'package:astryx_ui/src/foundation/link_delegate.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
+import 'package:astryx_ui/src/theme/astryx_animated_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
 import 'package:astryx_ui/src/theme/components/component_themes.dart';
 import 'package:astryx_ui/src/theme/engine/define_theme.dart';
 import 'package:astryx_ui/src/theme/engine/token_resolver.dart';
 import 'package:astryx_ui/src/theme/resolved_token_set.dart';
+import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -55,6 +58,9 @@ class AstryxThemeProvider extends StatefulWidget {
     this.linkDelegate,
     this.toastController,
     this.toastPosition,
+    this.themeAnimationDuration,
+    this.themeAnimationCurve,
+    this.pageTransition,
   });
 
   /// The widget below this in the tree.
@@ -125,6 +131,31 @@ class AstryxThemeProvider extends StatefulWidget {
   /// When null it follows the resolved density: a corner on pointer, the
   /// bottom leading edge on touch.
   final AstryxToastPosition? toastPosition;
+
+  /// {@template AstryxThemeProvider.themeAnimationDuration}
+  /// How long a theme change takes to cross-fade.
+  ///
+  /// Changing [theme], [mode], [componentThemes] — or the platform's own
+  /// light/dark setting under [AstryxColorMode.system] — blends from the old
+  /// theme to the new one instead of repainting in a single frame. The
+  /// Material equivalent is `MaterialApp.themeAnimationDuration`.
+  ///
+  /// Defaults to `--duration-fast-max`. [Duration.zero] switches instantly,
+  /// which is also what happens under reduced motion.
+  /// {@endtemplate}
+  final Duration? themeAnimationDuration;
+
+  /// {@template AstryxThemeProvider.themeAnimationCurve}
+  /// The easing of a theme cross-fade. Defaults to `--ease-standard`.
+  /// {@endtemplate}
+  final Curve? themeAnimationCurve;
+
+  /// {@template AstryxThemeProvider.pageTransition}
+  /// The transition every `AstryxPageRoute` below uses, unless it names its
+  /// own. Null follows the platform: a slide on iOS and macOS, a fade
+  /// elsewhere.
+  /// {@endtemplate}
+  final AstryxPageTransition? pageTransition;
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -197,8 +228,15 @@ class _AstryxThemeProviderState extends State<AstryxThemeProvider> {
       components: components,
     );
 
-    return AstryxTheme(
+    final reduced = media?.disableAnimations ?? false;
+
+    return AstryxAnimatedTheme(
       data: themeData,
+      duration: reduced
+          ? Duration.zero
+          : widget.themeAnimationDuration ??
+                themeData.duration(AstryxDurationToken.fastMax),
+      curve: widget.themeAnimationCurve ?? themeData.ease(),
       density: widget.density ?? AstryxDensity.resolve(target),
       icons: widget.icons ?? AstryxIconRegistry.defaults,
       child: AstryxLocalizationsScope(
@@ -216,7 +254,10 @@ class _AstryxThemeProviderState extends State<AstryxThemeProvider> {
                 builder: (context) => AstryxToastHost(
                   controller: _toasts,
                   position: widget.toastPosition,
-                  child: widget.child,
+                  child: AstryxPageTransitionScope(
+                    transition: widget.pageTransition,
+                    child: widget.child,
+                  ),
                 ),
               ),
             ),

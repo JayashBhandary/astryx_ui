@@ -139,6 +139,62 @@ A provider can be nested, and the inner one wins for its own subtree — a previ
 | `light` | Always light. |
 | `dark` | Always dark. |
 
+## Animated changes
+
+Changing `theme`, `mode` or `componentThemes` — or the platform flipping light and dark under `system` — cross-fades every colour, shadow and length instead of repainting in one frame, as `MaterialApp` does. `themeAnimationDuration` sets the length (`--duration-fast-max` by default; `Duration.zero` switches instantly) and `themeAnimationCurve` the easing. Under reduced motion the switch is always instant. `AstryxAnimatedTheme` does the same for one subtree, through `AstryxThemeData.lerp`.
+
+```dart
+class ThemeAnimationExample extends StatefulWidget {
+  const ThemeAnimationExample({super.key});
+
+  @override
+  State<ThemeAnimationExample> createState() => _ThemeAnimationExampleState();
+}
+
+class _ThemeAnimationExampleState extends State<ThemeAnimationExample> {
+  bool _dark = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+
+    // In an app, flipping `AstryxApp(mode:)` cross-fades the same way: the
+    // provider installs an AstryxAnimatedTheme. This one animates a subtree.
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxSwitch(
+          label: 'Dark preview',
+          value: _dark,
+          onChanged: (value) => setState(() => _dark = value),
+        ),
+        AstryxAnimatedTheme(
+          data: theme.copyWith(
+            mode: _dark ? AstryxThemeMode.dark : AstryxThemeMode.light,
+          ),
+          duration: theme.duration(AstryxDurationToken.medium),
+          curve: theme.ease(),
+          child: const SizedBox(
+            width: 320,
+            child: AstryxCard(
+              child: AstryxVStack(
+                gap: AstryxSpacingToken.spacing2,
+                children: <Widget>[
+                  AstryxHeading('Atlas'),
+                  AstryxText('4,102 requests this week.'),
+                  AstryxBadge('Healthy'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+
 ## Reading what it installed
 
 ```dart

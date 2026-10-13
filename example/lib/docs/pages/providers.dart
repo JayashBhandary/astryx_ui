@@ -92,6 +92,18 @@ AstryxThemeProvider
         <String>['`dark`', 'Always dark.'],
       ],
     ),
+    DocHeading('Animated changes'),
+    DocProse(
+      'Changing `theme`, `mode` or `componentThemes` — or the platform '
+      'flipping light and dark under `system` — cross-fades every colour, '
+      'shadow and length instead of repainting in one frame, as '
+      '`MaterialApp` does. `themeAnimationDuration` sets the length '
+      '(`--duration-fast-max` by default; `Duration.zero` switches '
+      'instantly) and `themeAnimationCurve` the easing. Under reduced motion '
+      'the switch is always instant. `AstryxAnimatedTheme` does the same for '
+      'one subtree, through `AstryxThemeData.lerp`.',
+    ),
+    DocExample('theme_animation', align: DocExampleAlign.start),
     DocHeading('Reading what it installed'),
     DocCode('''
 final theme = AstryxTheme.of(context);

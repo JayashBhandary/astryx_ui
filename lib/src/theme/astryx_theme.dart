@@ -53,7 +53,7 @@ enum AstryxColorMode {
 ///
 ///  * `AstryxThemeProvider`, which resolves a theme from a definition and
 ///    installs this along with the icon registry and localisations.
-class AstryxTheme extends InheritedWidget {
+class AstryxTheme extends InheritedTheme {
   /// Creates a theme scope.
   AstryxTheme({
     required this.data,
@@ -143,6 +143,16 @@ class AstryxTheme extends InheritedWidget {
   static AstryxIconRegistry iconsOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<AstryxTheme>()?.icons ??
       AstryxIconRegistry.defaults;
+
+  /// Re-installs this scope around [child].
+  ///
+  /// An [InheritedTheme], like Material's `Theme`, so a route pushed onto the
+  /// root navigator — a dialog, a sheet, a menu — keeps a subtree's theme
+  /// overrides through `InheritedTheme.capture` instead of jumping back to
+  /// the app-wide theme.
+  @override
+  Widget wrap(BuildContext context, Widget child) =>
+      AstryxTheme(data: data, density: density, icons: icons, child: child);
 
   @override
   bool updateShouldNotify(AstryxTheme oldWidget) =>

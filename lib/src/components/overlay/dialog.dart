@@ -15,6 +15,7 @@ import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
 import 'package:astryx_ui/src/theme/components/dialog.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 /// A modal panel.
 ///
@@ -129,7 +130,7 @@ class AstryxDialog extends StatelessWidget {
         constraints: BoxConstraints(
           maxWidth: width ?? resolved.maxWidth ?? 480,
         ),
-        child: _DialogPanel(
+        child: AstryxDialogPanel(
           title: title,
           description: description,
           footer: footer,
@@ -150,8 +151,12 @@ class AstryxDialog extends StatelessWidget {
 class AstryxDialogController extends AstryxOverlayController {}
 
 /// The panel: header, scrolling body, pinned footer.
-class _DialogPanel extends StatelessWidget {
-  const _DialogPanel({
+///
+/// Shared by [AstryxDialog] and the route `showAstryxDialog` pushes.
+@internal
+class AstryxDialogPanel extends StatelessWidget {
+  /// Creates a dialog panel.
+  const AstryxDialogPanel({
     required this.title,
     required this.description,
     required this.footer,
@@ -159,14 +164,28 @@ class _DialogPanel extends StatelessWidget {
     required this.onClose,
     required this.resolved,
     required this.child,
+    super.key,
   });
 
+  /// The heading.
   final String? title;
+
+  /// Supporting text below the title.
   final String? description;
+
+  /// The action row, pinned below the scrolling body.
   final Widget? footer;
+
+  /// Whether to show a close button in the header.
   final bool showCloseButton;
+
+  /// Called by the close button.
   final VoidCallback onClose;
+
+  /// The dialog theme, already merged.
   final AstryxDialogTheme resolved;
+
+  /// The body.
   final Widget child;
 
   @override

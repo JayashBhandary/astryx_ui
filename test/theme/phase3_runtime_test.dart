@@ -228,6 +228,8 @@ void main() {
             ),
           ),
         );
+        // The platform flipping cross-fades the theme; read where it lands.
+        await tester.pumpAndSettle();
         return mode;
       }
 

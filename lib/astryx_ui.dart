@@ -15,6 +15,7 @@ library;
 // The theme layer is part of the full surface too.
 export 'src/app/astryx_app.dart';
 export 'src/app/astryx_theme_provider.dart';
+export 'src/app/page_route.dart';
 export 'src/components/action/action.dart';
 export 'src/components/chat/chat.dart';
 export 'src/components/data/data.dart';

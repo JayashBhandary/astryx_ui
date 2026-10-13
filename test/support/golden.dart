@@ -217,6 +217,10 @@ class _AstryxTestHarness extends StatelessWidget {
         density: density,
         platform: platform,
         toastController: toastController,
+        // Each matrix cell re-pumps the same tree with a new brightness, and
+        // a golden is a picture of a theme, not of the cross-fade between
+        // two. Cells are fresh trees in intent; this makes them so in paint.
+        themeAnimationDuration: Duration.zero,
         child: Builder(
           builder: (context) {
             final data = AstryxTheme.of(context);

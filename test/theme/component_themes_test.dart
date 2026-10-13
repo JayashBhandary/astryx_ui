@@ -41,6 +41,8 @@ void main() {
         ),
       ),
     );
+    // A mode change between calls cross-fades; read the settled theme.
+    await tester.pumpAndSettle();
     return seen;
   }
 

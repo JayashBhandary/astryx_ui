@@ -279,3 +279,50 @@ class _BottomSheetSwitcherExampleState
   }
 }
 // #end
+
+// #example bottom_sheet_route -> BottomSheetRouteExample
+class BottomSheetRouteExample extends StatefulWidget {
+  const BottomSheetRouteExample({super.key});
+
+  @override
+  State<BottomSheetRouteExample> createState() =>
+      _BottomSheetRouteExampleState();
+}
+
+class _BottomSheetRouteExampleState extends State<BottomSheetRouteExample> {
+  String? _choice;
+
+  Future<void> _share() async {
+    final choice = await showAstryxBottomSheet<String>(
+      context: context,
+      label: 'Share',
+      height: AstryxBottomSheetHeight.hug,
+      builder: (context) => AstryxVStack(
+        gap: AstryxSpacingToken.spacing2,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          for (final option in <String>['Copy link', 'Email', 'Message'])
+            AstryxButton(
+              label: option,
+              onPressed: () => Navigator.pop(context, option),
+            ),
+        ],
+      ),
+    );
+    if (!mounted || choice == null) return;
+    setState(() => _choice = choice);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxButton(label: 'Share', onPressed: _share),
+        if (_choice != null) AstryxText('Picked: $_choice'),
+      ],
+    );
+  }
+}
+
+// #end

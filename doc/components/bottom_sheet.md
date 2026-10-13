@@ -215,6 +215,57 @@ class _BottomSheetSnapExampleState extends State<BottomSheetSnapExample> {
 ```
 
 
+## As a route
+
+`showAstryxBottomSheet` is the `showModalBottomSheet` shape: the same sheet — handle, heights, snap points, drag to dismiss — pushed as a route, so it returns a value and closes on the system back button.
+
+```dart
+class BottomSheetRouteExample extends StatefulWidget {
+  const BottomSheetRouteExample({super.key});
+
+  @override
+  State<BottomSheetRouteExample> createState() =>
+      _BottomSheetRouteExampleState();
+}
+
+class _BottomSheetRouteExampleState extends State<BottomSheetRouteExample> {
+  String? _choice;
+
+  Future<void> _share() async {
+    final choice = await showAstryxBottomSheet<String>(
+      context: context,
+      label: 'Share',
+      height: AstryxBottomSheetHeight.hug,
+      builder: (context) => AstryxVStack(
+        gap: AstryxSpacingToken.spacing2,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          for (final option in <String>['Copy link', 'Email', 'Message'])
+            AstryxButton(
+              label: option,
+              onPressed: () => Navigator.pop(context, option),
+            ),
+        ],
+      ),
+    );
+    if (!mounted || choice == null) return;
+    setState(() => _choice = choice);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AstryxHStack(
+      gap: AstryxSpacingToken.spacing3,
+      children: <Widget>[
+        AstryxButton(label: 'Share', onPressed: _share),
+        if (_choice != null) AstryxText('Picked: $_choice'),
+      ],
+    );
+  }
+}
+```
+
+
 > **Accessibility**
 >
 > A detent is a **convenience, never the only way to something**: a sheet with snap points still has to work for someone who cannot drag, so put nothing behind a stop that the sheet does not also reach by scrolling. The handle is a drag target and is named as one; `label` is required because a sheet has no header of its own to derive a name from.

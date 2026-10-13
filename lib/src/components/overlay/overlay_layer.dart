@@ -163,6 +163,16 @@ class _AstryxOverlayState extends State<AstryxOverlay>
 
   bool _registered = false;
 
+  /// The route this layer's owner sits in, which a back press is routed
+  /// through while the layer is open.
+  ModalRoute<Object?>? _route;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _route = ModalRoute.of(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -210,7 +220,11 @@ class _AstryxOverlayState extends State<AstryxOverlay>
     if (widget.escapeDismissible && !_registered) {
       // Modal when it dims the page: the scrim is the claim that everything
       // behind it is inert, and that claim is what a scroll lock keys off.
-      AstryxOverlayStack.push(_dismissEntry, modal: widget.showScrim);
+      AstryxOverlayStack.push(
+        _dismissEntry,
+        modal: widget.showScrim,
+        route: _route,
+      );
       _registered = true;
     }
     _animation
