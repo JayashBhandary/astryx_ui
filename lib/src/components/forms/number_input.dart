@@ -10,6 +10,8 @@ import 'package:astryx_ui/src/components/layout/text.dart';
 import 'package:astryx_ui/src/foundation/semantics.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/input.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -69,6 +71,7 @@ class AstryxNumberInput extends StatefulWidget {
     this.width,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   }) : assert(
          min == null || max == null || min <= max,
          'min must not be greater than max',
@@ -155,6 +158,9 @@ class AstryxNumberInput extends StatefulWidget {
 
   /// {@macro AstryxButton.autofocus}
   final bool autofocus;
+
+  /// Visual overrides for this input, merged over [AstryxThemeData.input].
+  final AstryxInputTheme? theme;
 
   @override
   State<AstryxNumberInput> createState() => _AstryxNumberInputState();
@@ -344,6 +350,7 @@ class _AstryxNumberInputState extends State<AstryxNumberInput> {
       showClear: widget.showClear,
       width: widget.width,
       autofocus: widget.autofocus,
+      theme: widget.theme,
       leading: widget.leading,
       trailing: _buildTrailing(context, l10n),
       // A numeric keyboard on a phone, signed only where a negative value is

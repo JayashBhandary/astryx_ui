@@ -11,6 +11,8 @@ import 'package:astryx_ui/src/components/layout/icon.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/input.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/theme/type_role.dart';
 import 'package:flutter/semantics.dart';
@@ -67,6 +69,7 @@ class AstryxTextInput extends StatefulWidget {
     this.autofillHints,
     this.maxLength,
     this.width,
+    this.theme,
   }) : minLines = 1,
        maxLines = 1,
        _multiline = false;
@@ -97,6 +100,7 @@ class AstryxTextInput extends StatefulWidget {
     this.width,
     this.minLines = 3,
     this.maxLines = 6,
+    this.theme,
   }) : obscureText = false,
        showClear = false,
        keyboardType = TextInputType.multiline,
@@ -190,6 +194,9 @@ class AstryxTextInput extends StatefulWidget {
   /// The maximum number of visible lines before scrolling.
   final int maxLines;
 
+  /// Visual overrides for this input, merged over [AstryxThemeData.input].
+  final AstryxInputTheme? theme;
+
   final bool _multiline;
 
   @override
@@ -268,30 +275,34 @@ class _AstryxTextInputState extends State<AstryxTextInput> {
     final status = widget.status ?? scope?.status;
     final size = resolveAstryxInputSize(context, widget.size);
     final enabled = widget.enabled && (scope?.enabled ?? true);
+    final resolved = theme.input.merge(widget.theme);
 
+    // The theme's style merges over the body role, but a disabled control
+    // keeps the disabled colour whatever the theme says.
+    final themedStyle = resolved.textStyle;
     final style = theme
         .textStyle(AstryxTypeRole.body)
+        .merge(themedStyle)
         .copyWith(
-          color: theme.color(
-            enabled
-                ? AstryxColorToken.textPrimary
-                : AstryxColorToken.textDisabled,
-          ),
+          color: enabled
+              ? themedStyle?.color ?? theme.color(AstryxColorToken.textPrimary)
+              : theme.color(AstryxColorToken.textDisabled),
         );
+    final cursorColor =
+        resolved.cursorColor ?? theme.color(AstryxColorToken.accent);
 
     final editable = EditableText(
       controller: _controller,
       focusNode: _focusNode,
       style: style,
-      cursorColor: theme.color(AstryxColorToken.accent),
+      cursorColor: cursorColor,
       backgroundCursorColor: theme.color(AstryxColorToken.textDisabled),
-      selectionColor: theme.color(AstryxColorToken.accentMuted),
+      selectionColor:
+          resolved.selectionColor ?? theme.color(AstryxColorToken.accentMuted),
       // Without a delegate there are no selection handles on mobile and no
       // context menu anywhere — two of the platform behaviours this widget is
       // required to keep working.
-      selectionControls: AstryxTextSelectionControls(
-        color: theme.color(AstryxColorToken.accent),
-      ),
+      selectionControls: AstryxTextSelectionControls(color: cursorColor),
       contextMenuBuilder: AstryxTextSelectionToolbar.forEditableText,
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
@@ -332,9 +343,13 @@ class _AstryxTextInputState extends State<AstryxTextInput> {
                 ExcludeSemantics(
                   child: Text(
                     placeholder,
-                    style: style.copyWith(
-                      color: theme.color(AstryxColorToken.textSecondary),
-                    ),
+                    style: style
+                        .merge(resolved.placeholderStyle)
+                        .copyWith(
+                          color:
+                              resolved.placeholderStyle?.color ??
+                              theme.color(AstryxColorToken.textSecondary),
+                        ),
                     maxLines: widget._multiline ? null : 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -352,6 +367,7 @@ class _AstryxTextInputState extends State<AstryxTextInput> {
       multiline: widget._multiline,
       minHeight: widget._multiline ? theme.size(size.token) * 2 : null,
       onTap: () => _focusNode.requestFocus(),
+      theme: widget.theme,
       leading: widget.leading,
       trailing: _buildTrailing(context, status, enabled, l10n),
       // Only the editable is excluded, not the whole container. Excluding the
@@ -484,6 +500,7 @@ class AstryxTextArea extends StatelessWidget {
     this.width,
     this.minLines = 3,
     this.maxLines = 6,
+    this.theme,
   });
 
   /// {@macro AstryxField.label}
@@ -540,6 +557,9 @@ class AstryxTextArea extends StatelessWidget {
   /// The maximum number of visible lines before the field scrolls.
   final int maxLines;
 
+  /// Visual overrides for this input, merged over [AstryxThemeData.input].
+  final AstryxInputTheme? theme;
+
   @override
   Widget build(BuildContext context) => AstryxTextInput.multiline(
     label: label,
@@ -560,5 +580,6 @@ class AstryxTextArea extends StatelessWidget {
     width: width,
     minLines: minLines,
     maxLines: maxLines,
+    theme: theme,
   );
 }
