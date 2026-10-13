@@ -11,6 +11,8 @@ import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/toast.dart';
 import 'package:astryx_ui/src/theme/engine/engine.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
@@ -72,8 +74,9 @@ class AstryxToast {
     required this.message,
     this.type = AstryxToastType.neutral,
     this.action,
-    this.duration = const Duration(seconds: 5),
+    this.duration,
     this.dismissible = true,
+    this.theme,
   });
 
   /// What to tell the user.
@@ -86,10 +89,18 @@ class AstryxToast {
   final Widget? action;
 
   /// How long it stays. [Duration.zero] keeps it until dismissed.
-  final Duration duration;
+  ///
+  /// Null falls back to [AstryxToastTheme.duration], then five seconds.
+  final Duration? duration;
 
   /// Whether to show a dismiss button.
   final bool dismissible;
+
+  /// Visual overrides for this toast, merged over [AstryxThemeData.toast].
+  ///
+  /// The stack-wide fields, [AstryxToastTheme.margin] and
+  /// [AstryxToastTheme.spacing], are read from the app-wide theme only.
+  final AstryxToastTheme? theme;
 }
 
 /// Shows and dismisses toasts.
@@ -216,6 +227,7 @@ class AstryxToastHost extends StatelessWidget {
       if (toasts.isEmpty) return child;
 
       final theme = AstryxTheme.of(context);
+      final toastTheme = theme.toast;
       final l10n = AstryxLocalizations.of(context);
       final resolved =
           position ??
@@ -232,9 +244,11 @@ class AstryxToastHost extends StatelessWidget {
           Positioned.fill(
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.all(
-                  theme.spacing(AstryxSpacingToken.spacing4),
-                ),
+                padding:
+                    toastTheme.margin ??
+                    EdgeInsets.all(
+                      theme.spacing(AstryxSpacingToken.spacing4),
+                    ),
                 child: Align(
                   alignment: switch (resolved) {
                     AstryxToastPosition.bottomEnd =>
@@ -267,7 +281,9 @@ class AstryxToastHost extends StatelessWidget {
                         crossAxisAlignment: resolved.isEnd
                             ? CrossAxisAlignment.end
                             : CrossAxisAlignment.start,
-                        spacing: theme.spacing(AstryxSpacingToken.spacing3),
+                        spacing:
+                            toastTheme.spacing ??
+                            theme.spacing(AstryxSpacingToken.spacing3),
                         children: <Widget>[
                           // Newest nearest the screen edge the stack grows
                           // from, so a new toast never pushes an older one
@@ -315,10 +331,23 @@ class _ToastCard extends StatefulWidget {
 class _ToastCardState extends State<_ToastCard> {
   Timer? _timer;
   bool _paused = false;
+  bool _started = false;
+
+  /// The effective timeout: the toast's own, the theme's, or five seconds.
+  ///
+  /// Resolved in [didChangeDependencies] because the theme is inherited and
+  /// cannot be read from `initState`.
+  Duration _duration = const Duration(seconds: 5);
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _duration =
+        widget.toast.duration ??
+        AstryxTheme.of(context).toast.merge(widget.toast.theme).duration ??
+        const Duration(seconds: 5);
+    if (_started) return;
+    _started = true;
     _restart();
   }
 
@@ -330,8 +359,8 @@ class _ToastCardState extends State<_ToastCard> {
 
   void _restart() {
     _timer?.cancel();
-    if (_paused || widget.toast.duration == Duration.zero) return;
-    _timer = Timer(widget.toast.duration, () {
+    if (_paused || _duration == Duration.zero) return;
+    _timer = Timer(_duration, () {
       if (mounted) widget.onDismiss();
     });
   }
@@ -351,6 +380,12 @@ class _ToastCardState extends State<_ToastCard> {
     final theme = AstryxTheme.of(context);
     final l10n = AstryxLocalizations.of(context);
     final density = AstryxTheme.densityOf(context);
+    final resolved = theme.toast.merge(widget.toast.theme);
+    final shadows = resolved.shadows;
+    final background = switch (widget.toast.type) {
+      AstryxToastType.neutral => resolved.backgroundColor,
+      AstryxToastType.error => resolved.errorBackgroundColor,
+    };
 
     // The surface is inverted, so *everything inside it* has to resolve its
     // tokens for the opposite mode — the text, the dismiss button, an "Undo"
@@ -366,12 +401,21 @@ class _ToastCardState extends State<_ToastCard> {
     );
 
     Widget card = Container(
-      constraints: const BoxConstraints(maxWidth: 400),
-      padding: EdgeInsets.all(theme.spacing(AstryxSpacingToken.spacing4)),
+      constraints: BoxConstraints(maxWidth: resolved.maxWidth ?? 400),
+      padding:
+          resolved.padding ??
+          EdgeInsets.all(theme.spacing(AstryxSpacingToken.spacing4)),
       decoration: BoxDecoration(
-        color: theme.color(widget.toast.type.background),
-        borderRadius: theme.borderRadius(AstryxRadiusToken.container),
-        boxShadow: theme.boxShadows(AstryxShadowToken.med),
+        color: background ?? theme.color(widget.toast.type.background),
+        borderRadius:
+            resolved.borderRadius ??
+            theme.borderRadius(AstryxRadiusToken.container),
+        boxShadow: shadows == null
+            ? theme.boxShadows(AstryxShadowToken.med)
+            : <BoxShadow>[
+                for (final layer in shadows)
+                  if (!layer.inset) layer.toBoxShadow(),
+              ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -379,7 +423,10 @@ class _ToastCardState extends State<_ToastCard> {
         spacing: theme.spacing(AstryxSpacingToken.spacing3),
         children: <Widget>[
           Flexible(
-            child: AstryxText(widget.toast.message),
+            child: AstryxText(
+              widget.toast.message,
+              style: resolved.textStyle,
+            ),
           ),
           ?widget.toast.action,
           if (widget.toast.dismissible)

@@ -8,6 +8,8 @@ import 'package:astryx_ui/src/components/overlay/overlay_surface.dart';
 import 'package:astryx_ui/src/foundation/focus_visible.dart';
 import 'package:astryx_ui/src/foundation/overlay_positioner.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/tooltip.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/theme/type_role.dart';
 import 'package:flutter/widgets.dart';
@@ -47,13 +49,14 @@ class AstryxTooltip extends StatefulWidget {
     super.key,
     this.side = AstryxOverlaySide.top,
     this.align = AstryxOverlayAlign.center,
-    this.waitDuration = const Duration(milliseconds: 200),
-    this.exitDuration = Duration.zero,
-    this.showDuration = const Duration(milliseconds: 1500),
+    this.waitDuration,
+    this.exitDuration,
+    this.showDuration,
     this.showArrow = false,
-    this.maxWidth = 300,
+    this.maxWidth,
     this.enabled = true,
     this.excludeFromSemantics = false,
+    this.theme,
   });
 
   /// The text to show. Keep it short.
@@ -72,10 +75,15 @@ class AstryxTooltip extends StatefulWidget {
   ///
   /// The delay is what stops a tooltip firing at everything a mouse crosses on
   /// its way somewhere else.
-  final Duration waitDuration;
+  ///
+  /// Null falls back to [AstryxTooltipTheme.waitDuration], then 200ms.
+  final Duration? waitDuration;
 
   /// How long after the pointer leaves before the tooltip hides.
-  final Duration exitDuration;
+  ///
+  /// Null falls back to [AstryxTooltipTheme.exitDuration], then
+  /// [Duration.zero].
+  final Duration? exitDuration;
 
   /// How long a long-press tooltip stays after the finger lifts.
   ///
@@ -83,13 +91,17 @@ class AstryxTooltip extends StatefulWidget {
   /// describes, and letting go is how you get out of the way to read it. So it
   /// lingers instead. Hover has no such problem, which is why this applies only
   /// to the touch path.
-  final Duration showDuration;
+  ///
+  /// Null falls back to [AstryxTooltipTheme.showDuration], then 1500ms.
+  final Duration? showDuration;
 
   /// Whether to draw a pointer at the trigger.
   final bool showArrow;
 
   /// The widest the tooltip may be before its text wraps.
-  final double maxWidth;
+  ///
+  /// Null falls back to [AstryxTooltipTheme.maxWidth], then 300.
+  final double? maxWidth;
 
   /// Whether the tooltip responds at all.
   final bool enabled;
@@ -100,6 +112,12 @@ class AstryxTooltip extends StatefulWidget {
   /// `AstryxIconButton` labelled "Archive" with the tooltip "Archive". Hearing
   /// it twice is worse than not hearing it.
   final bool excludeFromSemantics;
+
+  /// Visual overrides for this tooltip, merged over
+  /// [AstryxThemeData.tooltip].
+  ///
+  /// The explicit duration and width arguments above win over it.
+  final AstryxTooltipTheme? theme;
 
   @override
   State<AstryxTooltip> createState() => _AstryxTooltipState();
@@ -114,6 +132,22 @@ class _AstryxTooltipState extends State<AstryxTooltip> {
   Timer? _hideTimer;
 
   bool _focused = false;
+
+  /// The theme as of the last build, for the timers to read.
+  AstryxTooltipTheme _theme = const AstryxTooltipTheme();
+
+  Duration get _waitDuration =>
+      widget.waitDuration ??
+      _theme.waitDuration ??
+      const Duration(milliseconds: 200);
+
+  Duration get _exitDuration =>
+      widget.exitDuration ?? _theme.exitDuration ?? Duration.zero;
+
+  Duration get _showDuration =>
+      widget.showDuration ??
+      _theme.showDuration ??
+      const Duration(milliseconds: 1500);
 
   @override
   void dispose() {
@@ -141,12 +175,13 @@ class _AstryxTooltipState extends State<AstryxTooltip> {
     // Focus outranks hover: a tooltip shown because the trigger is focused
     // must not vanish when the mouse wanders off it.
     if (_focused) return;
-    if (widget.exitDuration == Duration.zero) {
+    final exitDuration = _exitDuration;
+    if (exitDuration == Duration.zero) {
       _controller.hide();
       return;
     }
     _hideTimer?.cancel();
-    _hideTimer = Timer(widget.exitDuration, () {
+    _hideTimer = Timer(exitDuration, () {
       if (mounted) _controller.hide();
     });
   }
@@ -155,7 +190,7 @@ class _AstryxTooltipState extends State<AstryxTooltip> {
   void _showForTouch() {
     _scheduleShow(Duration.zero);
     _hideTimer?.cancel();
-    _hideTimer = Timer(widget.showDuration, () {
+    _hideTimer = Timer(_showDuration, () {
       if (mounted) _controller.hide();
     });
   }
@@ -170,12 +205,14 @@ class _AstryxTooltipState extends State<AstryxTooltip> {
   @override
   Widget build(BuildContext context) {
     final density = AstryxTheme.densityOf(context);
+    final data = AstryxTheme.of(context);
+    final resolved = _theme = data.tooltip.merge(widget.theme);
 
     var trigger = widget.child;
 
     if (density.supportsHover) {
       trigger = MouseRegion(
-        onEnter: (_) => _scheduleShow(widget.waitDuration),
+        onEnter: (_) => _scheduleShow(_waitDuration),
         onExit: (_) => _scheduleHide(),
         child: trigger,
       );
@@ -215,10 +252,11 @@ class _AstryxTooltipState extends State<AstryxTooltip> {
       // wrong: it is a description, not a control.
       interactive: false,
       barrierDismissible: false,
-      gap: AstryxTheme.of(context).spacing(AstryxSpacingToken.spacing1),
+      gap: resolved.gap ?? data.spacing(AstryxSpacingToken.spacing1),
       overlayBuilder: (context, position) => _TooltipBubble(
         message: widget.message,
-        maxWidth: widget.maxWidth,
+        maxWidth: widget.maxWidth ?? resolved.maxWidth ?? 300,
+        theme: resolved,
         showArrow: widget.showArrow,
         position: position,
         anchor: _anchorRect(),
@@ -242,17 +280,23 @@ class _TooltipBubble extends StatelessWidget {
     required this.showArrow,
     required this.position,
     required this.anchor,
+    required this.theme,
   });
 
   final String message;
   final double maxWidth;
+  final AstryxTooltipTheme theme;
   final bool showArrow;
   final AstryxOverlayPosition position;
   final Rect? anchor;
 
   @override
   Widget build(BuildContext context) {
+    final resolved = this.theme;
     final theme = AstryxTheme.of(context);
+    final style = theme
+        .textStyle(AstryxTypeRole.body)
+        .copyWith(color: theme.color(AstryxColorToken.backgroundSurface));
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
@@ -262,22 +306,20 @@ class _TooltipBubble extends StatelessWidget {
         // surface it floats over reads as part of it.
         background: AstryxColorToken.textPrimary,
         foreground: AstryxColorToken.backgroundSurface,
+        backgroundColor: resolved.backgroundColor,
+        borderRadius: resolved.borderRadius,
+        shadows: resolved.shadows,
         showBorder: false,
         arrow: showArrow,
         anchor: anchor,
         position: position,
-        padding: EdgeInsets.symmetric(
-          horizontal: theme.spacing(AstryxSpacingToken.spacing2),
-          vertical: theme.spacing(AstryxSpacingToken.spacing1),
-        ),
-        child: Text(
-          message,
-          style: theme
-              .textStyle(AstryxTypeRole.body)
-              .copyWith(
-                color: theme.color(AstryxColorToken.backgroundSurface),
-              ),
-        ),
+        padding:
+            resolved.padding ??
+            EdgeInsets.symmetric(
+              horizontal: theme.spacing(AstryxSpacingToken.spacing2),
+              vertical: theme.spacing(AstryxSpacingToken.spacing1),
+            ),
+        child: Text(message, style: style.merge(resolved.textStyle)),
       ),
     );
   }
