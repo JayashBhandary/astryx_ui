@@ -5,6 +5,8 @@ import 'package:astryx_ui/src/components/overlay/anchored_overlay.dart';
 import 'package:astryx_ui/src/components/overlay/menu_entry.dart';
 import 'package:astryx_ui/src/components/overlay/menu_surface.dart';
 import 'package:astryx_ui/src/foundation/overlay_positioner.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/menu.dart';
 import 'package:flutter/widgets.dart';
 
 /// A menu of actions anchored to a trigger.
@@ -50,6 +52,7 @@ class AstryxDropdownMenu extends StatefulWidget {
     this.matchTriggerWidth = true,
     this.maxHeight = 300,
     this.onOpenChange,
+    this.theme,
   });
 
   /// The rows, in order.
@@ -88,6 +91,9 @@ class AstryxDropdownMenu extends StatefulWidget {
 
   /// Called whenever the menu opens or closes.
   final ValueChanged<bool>? onOpenChange;
+
+  /// Visual overrides for this menu, merged over [AstryxThemeData.menu].
+  final AstryxMenuTheme? theme;
 
   @override
   State<AstryxDropdownMenu> createState() => _AstryxDropdownMenuState();
@@ -146,6 +152,7 @@ class _AstryxDropdownMenuState extends State<AstryxDropdownMenu> {
       width: widget.width,
       maxHeight: widget.maxHeight,
       onClose: _controller.hide,
+      theme: widget.theme,
     ),
     child: Builder(
       builder: (context) => widget.triggerBuilder(context, _controller),

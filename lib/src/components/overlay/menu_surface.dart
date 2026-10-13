@@ -18,6 +18,9 @@ import 'package:astryx_ui/src/components/overlay/overlay_surface.dart';
 import 'package:astryx_ui/src/foundation/overlay_positioner.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/divider.dart';
+import 'package:astryx_ui/src/theme/components/menu.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -41,6 +44,7 @@ class AstryxMenuSurface extends StatefulWidget {
     this.width,
     this.maxWidth = double.infinity,
     this.autofocus = true,
+    this.theme,
   });
 
   /// The rows, in order.
@@ -69,6 +73,11 @@ class AstryxMenuSurface extends StatefulWidget {
   ///
   /// False for a submenu, whose parent keeps the arrows.
   final bool autofocus;
+
+  /// Visual overrides for this menu, merged over [AstryxThemeData.menu].
+  ///
+  /// Carried into submenus, so a flyout matches the menu it came from.
+  final AstryxMenuTheme? theme;
 
   @override
   State<AstryxMenuSurface> createState() => _AstryxMenuSurfaceState();
@@ -281,7 +290,9 @@ class _AstryxMenuSurfaceState extends State<AstryxMenuSurface> {
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final resolved = theme.menu.merge(widget.theme);
     final padding = theme.spacing(AstryxSpacingToken.spacing1);
+    final dividerColor = resolved.dividerColor;
 
     // One gutter for the whole menu, decided once: a menu with no selectable
     // row keeps the tight layout it has always had, and a menu with one gives
@@ -315,13 +326,19 @@ class _AstryxMenuSurfaceState extends State<AstryxMenuSurface> {
               },
               onClose: widget.onClose,
               maxHeight: widget.maxHeight,
+              menuTheme: resolved,
+              overrides: widget.theme,
             ),
           );
         case AstryxMenuDivider():
           rows.add(
             Padding(
               padding: EdgeInsets.symmetric(vertical: padding / 2),
-              child: const AstryxDivider(),
+              child: dividerColor == null
+                  ? const AstryxDivider()
+                  : AstryxDivider(
+                      theme: AstryxDividerTheme(color: dividerColor),
+                    ),
             ),
           );
         case AstryxMenuSection():
@@ -342,7 +359,11 @@ class _AstryxMenuSurfaceState extends State<AstryxMenuSurface> {
     }
 
     Widget surface = AstryxOverlaySurface(
-      padding: EdgeInsets.all(padding),
+      backgroundColor: resolved.backgroundColor,
+      border: resolved.border,
+      borderRadius: resolved.borderRadius,
+      shadows: resolved.shadows,
+      padding: resolved.padding ?? EdgeInsets.all(padding),
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: widget.maxHeight),
         child: rows.isEmpty
@@ -395,6 +416,8 @@ class _MenuRow extends StatelessWidget {
     required this.onHover,
     required this.onClose,
     required this.maxHeight,
+    required this.menuTheme,
+    required this.overrides,
   });
 
   final AstryxMenuItem item;
@@ -406,8 +429,15 @@ class _MenuRow extends StatelessWidget {
   final VoidCallback onClose;
   final double maxHeight;
 
+  /// The resolved menu theme.
+  final AstryxMenuTheme menuTheme;
+
+  /// The widget-level overrides, handed on to a submenu.
+  final AstryxMenuTheme? overrides;
+
   @override
   Widget build(BuildContext context) {
+    final resolved = menuTheme;
     final theme = AstryxTheme.of(context);
 
     final labelColor = !item.enabled
@@ -416,18 +446,33 @@ class _MenuRow extends StatelessWidget {
               ? AstryxTextColor.inherit
               : AstryxTextColor.primary);
 
+    // A themed label style must not paint over the disabled or destructive
+    // colour: those are the row telling the user something.
+    final itemStyle = resolved.itemTextStyle;
+    final labelStyle = !item.enabled
+        ? itemStyle?.copyWith(color: theme.color(AstryxColorToken.textDisabled))
+        : item.destructive
+        ? (itemStyle?.copyWith(color: theme.color(AstryxColorToken.error)) ??
+              TextStyle(color: theme.color(AstryxColorToken.error)))
+        : itemStyle;
+
     Widget row = Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: theme.spacing(AstryxSpacingToken.spacing2),
-        vertical: theme.spacing(AstryxSpacingToken.spacing1_5),
-      ),
+      padding:
+          resolved.itemPadding ??
+          EdgeInsets.symmetric(
+            horizontal: theme.spacing(AstryxSpacingToken.spacing2),
+            vertical: theme.spacing(AstryxSpacingToken.spacing1_5),
+          ),
       decoration: BoxDecoration(
         color: highlighted
-            ? theme.color(AstryxColorToken.overlayHover)
+            ? resolved.itemHighlightColor ??
+                  theme.color(AstryxColorToken.overlayHover)
             : const Color(0x00000000),
         // The inner radius, so a highlighted row's corners sit inside the
         // menu's own — upstream computes the same thing with a `calc()`.
-        borderRadius: theme.borderRadius(AstryxRadiusToken.inner),
+        borderRadius:
+            resolved.itemBorderRadius ??
+            theme.borderRadius(AstryxRadiusToken.inner),
       ),
       child: Row(
         spacing: theme.spacing(AstryxSpacingToken.spacing2),
@@ -463,14 +508,13 @@ class _MenuRow extends StatelessWidget {
           if (item.icon != null)
             IconTheme.merge(
               data: IconThemeData(
-                size: AstryxIconSize.sm.pixels,
-                color: theme.color(
-                  !item.enabled
-                      ? AstryxColorToken.iconDisabled
-                      : (item.destructive
-                            ? AstryxColorToken.error
-                            : AstryxColorToken.iconSecondary),
-                ),
+                size: resolved.iconSize ?? AstryxIconSize.sm.pixels,
+                color: !item.enabled
+                    ? theme.color(AstryxColorToken.iconDisabled)
+                    : (item.destructive
+                          ? theme.color(AstryxColorToken.error)
+                          : resolved.iconColor ??
+                                theme.color(AstryxColorToken.iconSecondary)),
               ),
               child: item.icon!,
             ),
@@ -484,11 +528,7 @@ class _MenuRow extends StatelessWidget {
                   type: AstryxTextType.label,
                   color: labelColor,
                   maxLines: 1,
-                  style: item.destructive && item.enabled
-                      ? TextStyle(
-                          color: theme.color(AstryxColorToken.error),
-                        )
-                      : null,
+                  style: labelStyle,
                 ),
                 if (item.description != null)
                   AstryxText(
@@ -552,6 +592,7 @@ class _MenuRow extends StatelessWidget {
       open: submenuOpen,
       onClose: onClose,
       maxHeight: maxHeight,
+      theme: overrides,
       child: row,
     );
   }
@@ -564,6 +605,7 @@ class _Submenu extends StatefulWidget {
     required this.open,
     required this.onClose,
     required this.maxHeight,
+    required this.theme,
     required this.child,
   });
 
@@ -571,6 +613,7 @@ class _Submenu extends StatefulWidget {
   final bool open;
   final VoidCallback onClose;
   final double maxHeight;
+  final AstryxMenuTheme? theme;
   final Widget child;
 
   @override
@@ -615,6 +658,7 @@ class _SubmenuState extends State<_Submenu> {
       focusNode: _focus,
       maxHeight: widget.maxHeight,
       onClose: widget.onClose,
+      theme: widget.theme,
       // Focus stays with the parent menu, whose key handler owns the arrows;
       // taking it here would break Left-to-go-back.
       autofocus: false,

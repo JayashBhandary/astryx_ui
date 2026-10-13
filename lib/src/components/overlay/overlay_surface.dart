@@ -2,6 +2,7 @@
 library;
 
 import 'package:astryx_ui/src/foundation/overlay_positioner.dart';
+import 'package:astryx_ui/src/theme/astryx_shadow.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:flutter/widgets.dart';
@@ -33,6 +34,10 @@ class AstryxOverlaySurface extends StatelessWidget {
     this.arrow,
     this.anchor,
     this.position,
+    this.backgroundColor,
+    this.border,
+    this.borderRadius,
+    this.shadows,
   });
 
   /// The panel's content.
@@ -69,23 +74,50 @@ class AstryxOverlaySurface extends StatelessWidget {
   /// The resolved position, needed to know which side the arrow is on.
   final AstryxOverlayPosition? position;
 
+  /// A literal fill, from a component theme. Wins over [background].
+  final Color? backgroundColor;
+
+  /// A literal border, from a component theme. Wins over [showBorder];
+  /// [BorderSide.none] draws none.
+  final BorderSide? border;
+
+  /// A literal corner radius, from a component theme. Wins over [radius].
+  final BorderRadiusGeometry? borderRadius;
+
+  /// Literal shadow layers, from a component theme. Win over [shadow].
+  ///
+  /// Inset layers are dropped, as they are for the token.
+  final List<AstryxShadow>? shadows;
+
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
 
-    final fill = theme.color(background ?? AstryxColorToken.backgroundPopover);
+    final fill =
+        backgroundColor ??
+        theme.color(background ?? AstryxColorToken.backgroundPopover);
+    final side =
+        border ??
+        (showBorder
+            ? BorderSide(
+                color: theme.color(AstryxColorToken.border),
+                width: theme.borderWidth(),
+              )
+            : BorderSide.none);
+    final hasBorder = side.style != BorderStyle.none;
+    final shadows = this.shadows;
 
     Widget surface = DecoratedBox(
       decoration: BoxDecoration(
         color: fill,
-        borderRadius: theme.borderRadius(radius),
-        border: showBorder
-            ? Border.all(
-                color: theme.color(AstryxColorToken.border),
-                width: theme.borderWidth(),
-              )
-            : null,
-        boxShadow: theme.boxShadows(shadow),
+        borderRadius: borderRadius ?? theme.borderRadius(radius),
+        border: hasBorder ? Border.fromBorderSide(side) : null,
+        boxShadow: shadows == null
+            ? theme.boxShadows(shadow)
+            : <BoxShadow>[
+                for (final layer in shadows)
+                  if (!layer.inset) layer.toBoxShadow(),
+              ],
       ),
       child: padding == null ? child : Padding(padding: padding!, child: child),
     );
@@ -106,8 +138,8 @@ class AstryxOverlaySurface extends StatelessWidget {
       // painting it over the content would clip whatever sits at that edge.
       painter: _ArrowPainter(
         color: fill,
-        borderColor: showBorder ? theme.color(AstryxColorToken.border) : null,
-        borderWidth: theme.borderWidth(),
+        borderColor: hasBorder ? side.color : null,
+        borderWidth: hasBorder ? side.width : theme.borderWidth(),
         side: position.side,
         offset: resolveAstryxOverlayArrowOffset(
           anchor: anchor,

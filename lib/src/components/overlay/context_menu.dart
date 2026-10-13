@@ -7,6 +7,8 @@ import 'package:astryx_ui/src/components/overlay/menu_surface.dart';
 import 'package:astryx_ui/src/foundation/browser_context_menu.dart';
 import 'package:astryx_ui/src/foundation/overlay_positioner.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/menu.dart';
 import 'package:flutter/widgets.dart';
 
 /// The actions for the thing under the pointer, raised where the pointer is.
@@ -70,6 +72,7 @@ class AstryxContextMenu extends StatefulWidget {
     this.longPressOnTouch = true,
     this.suppressBrowserMenu = true,
     this.onOpenChange,
+    this.theme,
   });
 
   /// The rows, in order.
@@ -113,6 +116,9 @@ class AstryxContextMenu extends StatefulWidget {
 
   /// Called whenever the menu opens or closes.
   final ValueChanged<bool>? onOpenChange;
+
+  /// Visual overrides for this menu, merged over [AstryxThemeData.menu].
+  final AstryxMenuTheme? theme;
 
   @override
   State<AstryxContextMenu> createState() => _AstryxContextMenuState();
@@ -216,6 +222,7 @@ class _AstryxContextMenuState extends State<AstryxContextMenu> {
         maxWidth: widget.maxWidth,
         maxHeight: widget.maxHeight,
         onClose: _controller.hide,
+        theme: widget.theme,
       ),
       child: GestureDetector(
         // Translucent, not opaque: the child's own taps, drags and hovers all
