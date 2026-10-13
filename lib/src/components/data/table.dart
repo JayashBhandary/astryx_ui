@@ -12,6 +12,8 @@ import 'package:astryx_ui/src/foundation/motion.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/table.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/theme/type_role.dart';
 import 'package:flutter/rendering.dart';
@@ -84,6 +86,7 @@ class AstryxTable<T> extends StatefulWidget {
     this.maxHeight,
     this.rowActionsWidth = 96,
     this.rowLabelOf,
+    this.theme,
   });
 
   /// The columns, in display order.
@@ -163,6 +166,9 @@ class AstryxTable<T> extends StatefulWidget {
   /// Without one the checkbox is announced as "Select row", which is true of
   /// every row and therefore useless in a list of them.
   final String Function(T row)? rowLabelOf;
+
+  /// Visual overrides for this table, merged over [AstryxThemeData.table].
+  final AstryxTableTheme? theme;
 
   @override
   State<AstryxTable<T>> createState() => _AstryxTableState<T>();
@@ -373,6 +379,7 @@ class _AstryxTableState<T> extends State<AstryxTable<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final resolved = theme.table.merge(widget.theme);
     final l10n = AstryxLocalizations.of(context);
     final cols = _columns;
     final rows = _sortedRows;
@@ -425,6 +432,7 @@ class _AstryxTableState<T> extends State<AstryxTable<T>> {
                       columns: cols,
                       widths: widths,
                       density: widget.density,
+                      resolved: resolved,
                       striped: widget.striped,
                       showDivider:
                           widget.showRowDividers && i < rows.length - 1,
@@ -465,6 +473,7 @@ class _AstryxTableState<T> extends State<AstryxTable<T>> {
                 columns: cols,
                 widths: widths,
                 density: widget.density,
+                resolved: resolved,
                 sort: widget.sort,
                 onSortPressed: widget.onSortChanged == null ? null : _cycleSort,
                 selectable: selectable,
@@ -501,21 +510,29 @@ class _AstryxTableState<T> extends State<AstryxTable<T>> {
           );
         }
 
+        final radius =
+            resolved.borderRadius ??
+            theme.borderRadius(AstryxRadiusToken.container);
+
         return Semantics(
           container: true,
           explicitChildNodes: true,
           label: widget.label ?? l10n.tableLabel,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: theme.color(AstryxColorToken.backgroundCard),
-              borderRadius: theme.borderRadius(AstryxRadiusToken.container),
+              color:
+                  resolved.backgroundColor ??
+                  theme.color(AstryxColorToken.backgroundCard),
+              borderRadius: radius,
               border: Border.all(
-                color: theme.color(AstryxColorToken.border),
-                width: theme.borderWidth(),
+                color:
+                    resolved.borderColor ??
+                    theme.color(AstryxColorToken.border),
+                width: resolved.borderWidth ?? theme.borderWidth(),
               ),
             ),
             child: ClipRRect(
-              borderRadius: theme.borderRadius(AstryxRadiusToken.container),
+              borderRadius: radius,
               child: table,
             ),
           ),
@@ -531,6 +548,7 @@ class _HeaderRow<T> extends StatelessWidget {
     required this.columns,
     required this.widths,
     required this.density,
+    required this.resolved,
     required this.sort,
     required this.onSortPressed,
     required this.selectable,
@@ -544,6 +562,7 @@ class _HeaderRow<T> extends StatelessWidget {
   final List<AstryxTableColumn<T>> columns;
   final List<double> widths;
   final AstryxTableDensity density;
+  final AstryxTableTheme resolved;
   final AstryxTableSort? sort;
   final void Function(AstryxTableColumn<T> column)? onSortPressed;
   final bool selectable;
@@ -558,13 +577,16 @@ class _HeaderRow<T> extends StatelessWidget {
     final theme = AstryxTheme.of(context);
     final l10n = AstryxLocalizations.of(context);
 
-    return DecoratedBox(
+    Widget header = DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.color(AstryxColorToken.backgroundCard),
+        color:
+            resolved.headerBackgroundColor ??
+            theme.color(AstryxColorToken.backgroundCard),
         border: Border(
           bottom: BorderSide(
-            color: theme.color(AstryxColorToken.border),
-            width: theme.borderWidth(),
+            color:
+                resolved.dividerColor ?? theme.color(AstryxColorToken.border),
+            width: resolved.dividerThickness ?? theme.borderWidth(),
           ),
         ),
       ),
@@ -592,6 +614,7 @@ class _HeaderRow<T> extends StatelessWidget {
                 column: columns[i],
                 width: widths[i],
                 density: density,
+                resolved: resolved,
                 sort: sort?.columnId == columns[i].id ? sort : null,
                 onPressed: onSortPressed == null || !columns[i].sortable
                     ? null
@@ -603,6 +626,15 @@ class _HeaderRow<T> extends StatelessWidget {
         ),
       ),
     );
+
+    final minHeight = resolved.headerMinHeight;
+    if (minHeight != null) {
+      header = ConstrainedBox(
+        constraints: BoxConstraints(minHeight: minHeight),
+        child: header,
+      );
+    }
+    return header;
   }
 }
 
@@ -612,6 +644,7 @@ class _HeaderCell<T> extends StatefulWidget {
     required this.column,
     required this.width,
     required this.density,
+    required this.resolved,
     required this.sort,
     required this.onPressed,
     required this.onIntrinsicWidth,
@@ -620,6 +653,7 @@ class _HeaderCell<T> extends StatefulWidget {
   final AstryxTableColumn<T> column;
   final double width;
   final AstryxTableDensity density;
+  final AstryxTableTheme resolved;
   final AstryxTableSort? sort;
   final VoidCallback? onPressed;
   final void Function(String columnId, double width) onIntrinsicWidth;
@@ -672,7 +706,8 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
                   fontWeight: theme.fontWeight(
                     AstryxFontWeightToken.semibold,
                   ),
-                ),
+                )
+                .merge(widget.resolved.headerTextStyle),
           ),
         ),
         if (sortable)
@@ -698,10 +733,12 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
     );
 
     content = Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: theme.spacing(widget.density.vertical),
-        horizontal: theme.spacing(widget.density.horizontal),
-      ),
+      padding:
+          widget.resolved.cellPadding ??
+          EdgeInsets.symmetric(
+            vertical: theme.spacing(widget.density.vertical),
+            horizontal: theme.spacing(widget.density.horizontal),
+          ),
       child: content,
     );
 
@@ -767,6 +804,7 @@ class _TableRow<T> extends StatefulWidget {
     required this.columns,
     required this.widths,
     required this.density,
+    required this.resolved,
     required this.striped,
     required this.showDivider,
     required this.selectable,
@@ -787,6 +825,7 @@ class _TableRow<T> extends StatefulWidget {
   final List<AstryxTableColumn<T>> columns;
   final List<double> widths;
   final AstryxTableDensity density;
+  final AstryxTableTheme resolved;
   final bool striped;
   final bool showDivider;
   final bool selectable;
@@ -813,13 +852,19 @@ class _TableRowState<T> extends State<_TableRow<T>> {
     final l10n = AstryxLocalizations.of(context);
     final density = AstryxTheme.densityOf(context);
 
+    final resolved = widget.resolved;
+
     final Color background;
     if (widget.selected) {
-      background = theme.color(AstryxColorToken.accentMuted);
+      background =
+          resolved.selectedRowColor ??
+          theme.color(AstryxColorToken.accentMuted);
     } else if (_hovered && density.supportsHover) {
-      background = theme.color(AstryxColorToken.overlayHover);
+      background =
+          resolved.hoverRowColor ?? theme.color(AstryxColorToken.overlayHover);
     } else if (widget.striped && widget.index.isOdd) {
-      background = theme.color(AstryxColorToken.backgroundMuted);
+      background =
+          resolved.stripeColor ?? theme.color(AstryxColorToken.backgroundMuted);
     } else {
       background = const Color(0x00000000);
     }
@@ -850,6 +895,7 @@ class _TableRowState<T> extends State<_TableRow<T>> {
             row: widget.row,
             width: widget.widths[i],
             density: widget.density,
+            resolved: resolved,
             onIntrinsicWidth: widget.onIntrinsicWidth,
           ),
         if (widget.actions != null)
@@ -867,14 +913,24 @@ class _TableRowState<T> extends State<_TableRow<T>> {
 
     row = IntrinsicHeight(child: row);
 
+    final minHeight = resolved.rowMinHeight;
+    if (minHeight != null) {
+      row = ConstrainedBox(
+        constraints: BoxConstraints(minHeight: minHeight),
+        child: row,
+      );
+    }
+
     row = DecoratedBox(
       decoration: BoxDecoration(
         color: background,
         border: widget.showDivider
             ? Border(
                 bottom: BorderSide(
-                  color: theme.color(AstryxColorToken.border),
-                  width: theme.borderWidth(),
+                  color:
+                      resolved.dividerColor ??
+                      theme.color(AstryxColorToken.border),
+                  width: resolved.dividerThickness ?? theme.borderWidth(),
                 ),
               )
             : null,
@@ -913,6 +969,7 @@ class _BodyCell<T> extends StatelessWidget {
     required this.row,
     required this.width,
     required this.density,
+    required this.resolved,
     required this.onIntrinsicWidth,
   });
 
@@ -920,6 +977,7 @@ class _BodyCell<T> extends StatelessWidget {
   final T row;
   final double width;
   final AstryxTableDensity density;
+  final AstryxTableTheme resolved;
   final void Function(String columnId, double width) onIntrinsicWidth;
 
   @override
@@ -927,12 +985,16 @@ class _BodyCell<T> extends StatelessWidget {
     final theme = AstryxTheme.of(context);
 
     Widget content = Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: theme.spacing(density.vertical),
-        horizontal: theme.spacing(density.horizontal),
-      ),
+      padding:
+          resolved.cellPadding ??
+          EdgeInsets.symmetric(
+            vertical: theme.spacing(density.vertical),
+            horizontal: theme.spacing(density.horizontal),
+          ),
       child: DefaultTextStyle.merge(
-        style: theme.textStyle(AstryxTypeRole.body),
+        style: theme
+            .textStyle(AstryxTypeRole.body)
+            .merge(resolved.cellTextStyle),
         textAlign: column.alignment.textAlign,
         child: column.cellBuilder(context, row),
       ),

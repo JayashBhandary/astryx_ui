@@ -10,6 +10,8 @@ import 'package:astryx_ui/src/foundation/size_scope.dart';
 import 'package:astryx_ui/src/icons/icon_registry.dart';
 import 'package:astryx_ui/src/localizations/astryx_localizations.dart';
 import 'package:astryx_ui/src/theme/astryx_theme.dart';
+import 'package:astryx_ui/src/theme/astryx_theme_data.dart';
+import 'package:astryx_ui/src/theme/components/tabs.dart';
 import 'package:astryx_ui/src/theme/tokens/tokens.dart';
 import 'package:astryx_ui/src/theme/type_role.dart';
 import 'package:flutter/services.dart';
@@ -140,6 +142,7 @@ class AstryxTabList<T> extends StatefulWidget {
     this.label,
     this.focusNode,
     this.autofocus = false,
+    this.theme,
   });
 
   /// The tabs, in order.
@@ -168,6 +171,10 @@ class AstryxTabList<T> extends StatefulWidget {
 
   /// Whether to take focus when first built.
   final bool autofocus;
+
+  /// Visual overrides for this tab list, merged over
+  /// [AstryxThemeData.tabs].
+  final AstryxTabsTheme? theme;
 
   @override
   State<AstryxTabList<T>> createState() => _AstryxTabListState<T>();
@@ -326,6 +333,7 @@ class _AstryxTabListState<T> extends State<AstryxTabList<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final resolved = theme.tabs.merge(widget.theme);
     final l10n = AstryxLocalizations.of(context);
     final size =
         widget.size ??
@@ -341,6 +349,7 @@ class _AstryxTabListState<T> extends State<AstryxTabList<T>> {
               key: _tabKeys.putIfAbsent(i, GlobalKey.new),
               tab: tab,
               size: size,
+              resolved: resolved,
               selected: selected,
               // The strip is one tab stop, so exactly one indicator is drawn
               // and only when the strip itself is focused.
@@ -356,7 +365,7 @@ class _AstryxTabListState<T> extends State<AstryxTabList<T>> {
     Widget strip = Row(
       mainAxisSize: widget.fill ? MainAxisSize.max : MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: theme.spacing(AstryxSpacingToken.spacing0_5),
+      spacing: resolved.gap ?? theme.spacing(AstryxSpacingToken.spacing0_5),
       children: tabs,
     );
 
@@ -382,8 +391,9 @@ class _AstryxTabListState<T> extends State<AstryxTabList<T>> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: theme.color(AstryxColorToken.border),
-              width: theme.borderWidth(),
+              color:
+                  resolved.dividerColor ?? theme.color(AstryxColorToken.border),
+              width: resolved.dividerThickness ?? theme.borderWidth(),
             ),
           ),
         ),
@@ -401,7 +411,10 @@ class _AstryxTabListState<T> extends State<AstryxTabList<T>> {
         container: true,
         explicitChildNodes: true,
         label: widget.label ?? l10n.tabListLabel,
-        child: SizedBox(height: theme.size(size.token), child: strip),
+        child: SizedBox(
+          height: resolved.height ?? theme.size(size.token),
+          child: strip,
+        ),
       ),
     );
   }
@@ -412,6 +425,7 @@ class _Tab<T> extends StatefulWidget {
   const _Tab({
     required this.tab,
     required this.size,
+    required this.resolved,
     required this.selected,
     required this.showFocusRing,
     required this.onTap,
@@ -420,6 +434,9 @@ class _Tab<T> extends StatefulWidget {
 
   final AstryxTab<T> tab;
   final AstryxTabSize size;
+
+  /// The strip's resolved tabs theme.
+  final AstryxTabsTheme resolved;
   final bool selected;
   final bool showFocusRing;
   final VoidCallback onTap;
@@ -437,14 +454,21 @@ class _TabState<T> extends State<_Tab<T>> {
     final motion = AstryxMotion.of(context);
     final density = AstryxTheme.densityOf(context);
     final enabled = widget.tab.enabled;
+    final resolved = widget.resolved;
 
-    final color = theme.color(
-      !enabled
-          ? AstryxColorToken.textDisabled
-          : (widget.selected
-                ? AstryxColorToken.textPrimary
-                : AstryxColorToken.textSecondary),
-    );
+    final color = !enabled
+        ? resolved.disabledLabelColor ??
+              theme.color(AstryxColorToken.textDisabled)
+        : (widget.selected
+              ? resolved.selectedLabelColor ??
+                    theme.color(AstryxColorToken.textPrimary)
+              : resolved.labelColor ??
+                    theme.color(AstryxColorToken.textSecondary));
+
+    final labelStyle = theme
+        .textStyle(AstryxTypeRole.label)
+        .merge(resolved.labelStyle)
+        .merge(widget.selected ? resolved.selectedLabelStyle : null);
 
     final closable = widget.tab.onClose != null;
     // Hover raises the close button's contrast; it never brings it into being.
@@ -454,14 +478,19 @@ class _TabState<T> extends State<_Tab<T>> {
         !density.supportsHover;
 
     Widget content = Padding(
-      padding: EdgeInsetsDirectional.only(
-        start: theme.spacing(AstryxSpacingToken.spacing3),
-        // A closable tab spends its trailing gutter on the button instead, so
-        // the tab does not grow a lopsided amount of air on one side.
-        end: theme.spacing(
-          closable ? AstryxSpacingToken.spacing1 : AstryxSpacingToken.spacing3,
-        ),
-      ),
+      padding:
+          resolved.tabPadding ??
+          EdgeInsetsDirectional.only(
+            start: theme.spacing(AstryxSpacingToken.spacing3),
+            // A closable tab spends its trailing gutter on the button
+            // instead, so the tab does not grow a lopsided amount of air on
+            // one side.
+            end: theme.spacing(
+              closable
+                  ? AstryxSpacingToken.spacing1
+                  : AstryxSpacingToken.spacing3,
+            ),
+          ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -480,18 +509,16 @@ class _TabState<T> extends State<_Tab<T>> {
               widget.tab.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme
-                  .textStyle(AstryxTypeRole.label)
-                  .copyWith(
-                    color: color,
-                    // The selected tab is heavier as well as darker: weight
-                    // survives a colour-blind viewer and a monochrome print.
-                    fontWeight: theme.fontWeight(
-                      widget.selected
-                          ? AstryxFontWeightToken.semibold
-                          : AstryxFontWeightToken.normal,
-                    ),
-                  ),
+              style: labelStyle.copyWith(
+                color: color,
+                // The selected tab is heavier as well as darker: weight
+                // survives a colour-blind viewer and a monochrome print.
+                fontWeight: widget.selected
+                    ? resolved.selectedLabelStyle?.fontWeight ??
+                          theme.fontWeight(AstryxFontWeightToken.semibold)
+                    : resolved.labelStyle?.fontWeight ??
+                          theme.fontWeight(AstryxFontWeightToken.normal),
+              ),
             ),
           ),
           ?widget.tab.badge,
@@ -536,9 +563,12 @@ class _TabState<T> extends State<_Tab<T>> {
             curve: motion.curve(),
             decoration: BoxDecoration(
               color: _hovered && enabled && density.supportsHover
-                  ? theme.color(AstryxColorToken.overlayHover)
+                  ? resolved.hoverBackgroundColor ??
+                        theme.color(AstryxColorToken.overlayHover)
                   : const Color(0x00000000),
-              borderRadius: theme.borderRadius(AstryxRadiusToken.element),
+              borderRadius:
+                  resolved.borderRadius ??
+                  theme.borderRadius(AstryxRadiusToken.element),
             ),
           ),
         ),
@@ -555,9 +585,11 @@ class _TabState<T> extends State<_Tab<T>> {
             duration: motion.duration(AstryxDurationToken.fast),
             curve: motion.curve(),
             child: Container(
-              height: 2,
+              height: resolved.indicatorThickness ?? 2,
               decoration: BoxDecoration(
-                color: theme.color(AstryxColorToken.accent),
+                color:
+                    resolved.indicatorColor ??
+                    theme.color(AstryxColorToken.accent),
                 borderRadius: theme.borderRadius(AstryxRadiusToken.full),
               ),
             ),
@@ -568,7 +600,9 @@ class _TabState<T> extends State<_Tab<T>> {
 
     content = AstryxFocusRing(
       focused: widget.showFocusRing,
-      borderRadius: theme.borderRadius(AstryxRadiusToken.element),
+      borderRadius:
+          resolved.borderRadius ??
+          theme.borderRadius(AstryxRadiusToken.element),
       child: content,
     );
 
