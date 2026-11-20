@@ -53,6 +53,7 @@ class DocsTopNav extends StatelessWidget {
             // it has its own link: only one of the two lights up.
             selected:
                 !controller.onLanding &&
+                !controller.onPlayground &&
                 controller.section == section &&
                 (controller.onComponentsOverview ||
                     controller.pageId != 'themes'),
@@ -63,8 +64,14 @@ class DocsTopNav extends StatelessWidget {
           selected:
               !controller.onLanding &&
               !controller.onComponentsOverview &&
+              !controller.onPlayground &&
               controller.pageId == 'themes',
           onPressed: () => controller.pageId = 'themes',
+        ),
+        _SectionLink(
+          label: 'Playground',
+          selected: controller.onPlayground,
+          onPressed: controller.goPlayground,
         ),
       ],
     );

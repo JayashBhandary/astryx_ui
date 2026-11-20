@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs/pages.dart';
+import 'package:example/docs_ui/playground/playground_theme.dart';
 import 'package:example/examples/theming_examples.dart' show acmeTheme;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -69,6 +70,9 @@ enum DocsPreviewWidth {
   final double? width;
 }
 
+/// The example the playground opens on.
+const String playgroundDefaultExample = 'template_theme_showcase';
+
 /// The top-level sections of the site, as the top bar names them.
 enum DocsSection {
   /// The guides: installation, theming, tokens and the rest.
@@ -111,17 +115,79 @@ class DocsController extends ChangeNotifier {
   /// Somebody arriving from a search result or a package listing has one
   /// question first, and the sidebar is not an answer to it.
   bool get onLanding => _onLanding;
-  bool _onLanding = _pageIdFromUrl() == null && !_overviewInUrl();
+  bool _onLanding =
+      _pageIdFromUrl() == null &&
+      !_overviewInUrl() &&
+      !_segmentInUrl('playground');
 
   /// Whether the `/components` overview is showing: every component as a
   /// tile, by category.
   bool get onComponentsOverview => _onOverview;
   bool _onOverview = _pageIdFromUrl() == null && _overviewInUrl();
 
+  /// Whether the playground is showing.
+  bool get onPlayground => _onPlayground;
+  bool _onPlayground = _pageIdFromUrl() == null && _segmentInUrl('playground');
+
+  /// The theme the playground is editing. Seeded from the share link.
+  PlaygroundTheme get playgroundTheme => _playgroundTheme;
+  PlaygroundTheme _playgroundTheme =
+      PlaygroundTheme.decode(Uri.base.queryParameters['t']) ??
+      const PlaygroundTheme();
+  set playgroundTheme(PlaygroundTheme value) => _set(() {
+    _playgroundTheme = value;
+    _syncPlaygroundUrl();
+  }, false);
+
+  /// The example the playground previews: a region id from `lib/examples/`.
+  String get playgroundExample => _playgroundExample;
+  String _playgroundExample =
+      Uri.base.queryParameters['ex'] ?? playgroundDefaultExample;
+  set playgroundExample(String value) => _set(() {
+    _playgroundExample = value;
+    _syncPlaygroundUrl();
+  }, _playgroundExample == value);
+
+  /// The playground's own preview mode. Null follows the site.
+  AstryxColorMode? get playgroundMode => _playgroundMode;
+  AstryxColorMode? _playgroundMode;
+  set playgroundMode(AstryxColorMode? value) =>
+      _set(() => _playgroundMode = value, _playgroundMode == value);
+
+  /// The link that reproduces the playground as it is now.
+  Uri get playgroundUri => Uri(
+    path: '/playground',
+    queryParameters: <String, String>{
+      'ex': _playgroundExample,
+      if (_playgroundTheme.isEdited ||
+          _playgroundTheme.base != DocsTheme.neutral)
+        't': _playgroundTheme.encode(),
+    },
+  );
+
+  void _syncPlaygroundUrl() {
+    if (!_onPlayground) return;
+    unawaited(
+      SystemNavigator.routeInformationUpdated(
+        uri: playgroundUri,
+        replace: true,
+      ),
+    );
+  }
+
+  /// Opens the playground.
+  void goPlayground() => _set(() {
+    _onLanding = false;
+    _onOverview = false;
+    _onPlayground = true;
+    _syncPlaygroundUrl();
+  }, _onPlayground && !_onLanding);
+
   /// Goes back to the landing page.
   void goHome() => _set(() {
     _onLanding = true;
     _onOverview = false;
+    _onPlayground = false;
     _query = '';
     unawaited(
       SystemNavigator.routeInformationUpdated(
@@ -135,6 +201,7 @@ class DocsController extends ChangeNotifier {
   void goComponents() => _set(() {
     _onLanding = false;
     _onOverview = true;
+    _onPlayground = false;
     unawaited(
       SystemNavigator.routeInformationUpdated(
         uri: Uri(path: '/components'),
@@ -223,6 +290,7 @@ class DocsController extends ChangeNotifier {
     // Choosing a page leaves the front door, wherever the choice came from.
     _onLanding = false;
     _onOverview = false;
+    _onPlayground = false;
     // Navigating does not open anything. A group the reader closed stays
     // closed, whether they arrived by pressing an item, by the previous/next
     // footer, or by a link inside the prose — a sidebar that reopens a group
@@ -242,7 +310,7 @@ class DocsController extends ChangeNotifier {
         replace: true,
       ),
     );
-  }, _pageId == value && !_onLanding && !_onOverview);
+  }, _pageId == value && !_onLanding && !_onOverview && !_onPlayground);
 
   /// The page the current URL asks for, or the first page.
   ///
@@ -263,6 +331,13 @@ class DocsController extends ChangeNotifier {
     if (docPageOrNull(fragment) != null) return fragment;
 
     return null;
+  }
+
+  /// Whether the URL's last path segment, or its fragment, is [segment].
+  static bool _segmentInUrl(String segment) {
+    final segments = Uri.base.pathSegments.where((s) => s.isNotEmpty).toList();
+    if (segments.isNotEmpty && segments.last == segment) return true;
+    return Uri.base.fragment.replaceAll('/', '') == segment;
   }
 
   /// Whether the URL asks for the components overview: `/components`.
