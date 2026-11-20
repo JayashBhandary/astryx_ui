@@ -1,62 +1,48 @@
-/// The page the site opens on.
-///
-/// A documentation site is not only a reference — somebody arriving from a
-/// search result, a package page or a link in a pull request has one question
-/// first, and it is *what is this and should I use it*. The sidebar cannot
-/// answer that: it is two hundred rows of things you would only look up once
-/// you had already decided.
-///
-/// So the front door is its own screen, and it answers in this order: what it
-/// is, where to get it, how much of it there is, what it feels like, how to
-/// install it, what shipped lately, and what it will not do.
-///
-/// **Most of the words are not written here.** The claims, the install
-/// commands, the limitations and the agent section come from `README.md`
-/// through `readme.g.dart`, and the release summary comes from `CHANGELOG.md`
-/// through `changelog.g.dart`. A landing page that paraphrases those files is a
-/// third copy of them, and the third copy is the one nobody updates.
+/// The page the site opens on, laid out after upstream's front page
+/// (astryx.atmeta.com): a themed hero with the wordmark, a bento of what the
+/// package is, why it exists, what shipped lately, and one last call to act.
 ///
 /// Like everything else here it is built from `astryx_ui` and nothing else,
-/// which makes it the largest single specimen on the site: if the hero, the
-/// cards or the footer are awkward to build, that is a fact about the package
-/// rather than about this file.
+/// which makes it the largest single specimen on the site. Every number on it
+/// is counted from the page registry, the release notes come from
+/// `CHANGELOG.md` through `changelog.g.dart`, and the install command is built
+/// from the generated version — a landing page that types any of those is
+/// wrong by the next release.
 library;
+
+import 'dart:async';
 
 import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs/changelog.g.dart';
 import 'package:example/docs/issue_links.dart';
 import 'package:example/docs/pages.dart';
-import 'package:example/docs/readme.g.dart';
+import 'package:example/docs/previews.g.dart';
 import 'package:example/docs/version.g.dart';
 import 'package:example/docs_ui/code_block.dart';
-import 'package:example/docs_ui/doc_blocks.dart';
 import 'package:example/docs_ui/docs_controller.dart';
-import 'package:example/docs_ui/inline_markup.dart';
+import 'package:example/docs_ui/studio_showcase.dart';
+import 'package:example/docs_ui/svg_mark.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Where the package lives, for the header, the hero and the footer.
+/// Where the package lives, for the hero and the footer.
 const String pubUrl = 'https://pub.dev/packages/astryx_ui';
 
-/// The repository.
-///
-/// From `docs/issue_links.dart`, which builds the per-page issue links off the
-/// same value: two spellings of the repository is one typo away from a footer
-/// that points somewhere else than the pages do.
+/// The repository. From `docs/issue_links.dart`, which builds the per-page
+/// issue links off the same value.
 const String repoUrl = astryxRepoUrl;
 
 /// The design system this one tracks.
 const String upstreamUrl = astryxUpstreamUrl;
 
-/// The one line that installs it.
-///
-/// Built from the generated version rather than typed, because an install
-/// command quoting last release's version is worse than no install command:
-/// it resolves, and it resolves to the wrong thing.
+/// The agent skill that ships in the repository.
+const String agentSkillUrl = '$repoUrl/tree/main/.claude/skills/astryx-ui';
+
+/// The one line that installs it, built from the generated version.
 const String installCommand = 'flutter pub add astryx_ui:^$astryxVersion';
 
-/// The groups whose written pages are components rather than guides, templates
-/// or controllers.
+/// The groups whose written pages are components rather than guides,
+/// templates or controllers.
 const Set<String> _componentGroups = <String>{
   DocGroup.layout,
   DocGroup.actions,
@@ -78,19 +64,35 @@ int _written(bool Function(DocPage page) where) =>
     docPages.where((page) => page.isWritten && where(page)).length;
 
 /// How much of the package there is, counted rather than claimed.
-///
-/// Every number the page states comes from here, and every one of them is read
-/// out of the registry — a figure typed into a landing page is wrong by the
-/// next release, and nobody notices until somebody counts.
 final ({int components, int templates, int hooks, int themes}) landingCounts = (
   components: _written((page) => _componentGroups.contains(page.group)),
   templates: _written((page) => page.group == DocGroup.templates),
   hooks: _written((page) => page.group == DocGroup.hooks),
-  // The themes the *package* ships. The site's picker carries one more —
-  // `acme`, defined in `lib/examples/theming_examples.dart` to prove the engine
-  // works — and counting it here would promise an eighth theme on install.
+  // The themes the *package* ships; `acme` is the site's own engine demo.
   themes: DocsTheme.values.where((theme) => theme != DocsTheme.acme).length,
 );
+
+/// The themes the hero cycles through, with the product each slide shows.
+const List<(DocsTheme, int)> landingHeroSlides = <(DocsTheme, int)>[
+  (DocsTheme.matcha, 0),
+  (DocsTheme.butter, 1),
+  (DocsTheme.y2k, 2),
+  (DocsTheme.gothic, 3),
+  (DocsTheme.neutral, 4),
+];
+
+/// Template pages shown as thumbnails, in order of how well they read small.
+const List<String> landingTemplateIds = <String>[
+  'gallery_hero',
+  'table_page',
+  'login_split',
+  'settings_sidebar',
+  'ai_chat',
+  'product_detail',
+];
+
+/// The widest the page's sections grow.
+const double _pageWidth = 1200;
 
 /// The site's front page.
 class DocsLanding extends StatelessWidget {
@@ -100,1037 +102,1020 @@ class DocsLanding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final side = theme.spacing(AstryxSpacingToken.spacing6);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: theme.spacing(AstryxSpacingToken.spacing6),
-        vertical: theme.spacing(AstryxSpacingToken.spacing8),
-      ),
-      child: const _Measure(
-        maxWidth: 1080,
-        child: AstryxVStack(
-          gap: AstryxSpacingToken.spacing12,
-          align: AstryxStackAlign.stretch,
-          children: <Widget>[
-            _Hero(),
-            _Destinations(),
-            _Counts(),
-            _WhatYouGet(),
-            _Features(),
-            _WhyNotMaterial(),
-            _Install(),
-            _WhatsNew(),
-            _Limits(),
-            _ForAgents(),
-            _ClosingCall(),
-            _Footer(),
-          ],
-        ),
+    Widget section(Widget child) => Padding(
+      padding: EdgeInsets.symmetric(horizontal: side),
+      child: _Measure(maxWidth: _pageWidth, child: child),
+    );
+
+    return AstryxVStack(
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        const LandingHero(),
+        SizedBox(height: theme.spacing(AstryxSpacingToken.spacing12)),
+        section(const _Bento()),
+        const _Gap(),
+        section(const _Pillars()),
+        const _Gap(),
+        section(const _WhatsNew()),
+        const _Gap(),
+        section(const _ClosingCall()),
+        const _Gap(),
+        section(const _Footer()),
+        SizedBox(height: theme.spacing(AstryxSpacingToken.spacing6)),
+      ],
+    );
+  }
+}
+
+class _Gap extends StatelessWidget {
+  const _Gap();
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    height: AstryxTheme.of(context).spacing(AstryxSpacingToken.spacing12) * 2,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Hero
+// ---------------------------------------------------------------------------
+
+/// The wordmark, the promise, two actions — painted in a theme that changes
+/// every few seconds, with product cards floating either side.
+class LandingHero extends StatefulWidget {
+  /// Creates the hero.
+  const LandingHero({super.key});
+
+  /// How long each theme stays up.
+  static const Duration slideDuration = Duration(seconds: 6);
+
+  /// At and above this width the floating cards show.
+  static const double floatingWidth = 1180;
+
+  @override
+  State<LandingHero> createState() => _LandingHeroState();
+}
+
+class _LandingHeroState extends State<LandingHero> {
+  int _slide = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _restart();
+  }
+
+  void _restart() {
+    _timer?.cancel();
+    _timer = Timer.periodic(LandingHero.slideDuration, (_) {
+      if (mounted) {
+        setState(() => _slide = (_slide + 1) % landingHeroSlides.length);
+      }
+    });
+  }
+
+  void _go(int index) {
+    setState(() => _slide = index);
+    _restart();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final site = AstryxTheme.of(context);
+    final controller = DocsScope.of(context);
+    final dark = site.mode == AstryxThemeMode.dark;
+    final (docsTheme, product) = landingHeroSlides[_slide];
+
+    return AstryxThemeProvider(
+      theme: docsTheme.theme,
+      mode: dark ? AstryxColorMode.dark : AstryxColorMode.light,
+      density: controller.density,
+      child: Builder(
+        builder: (context) {
+          final theme = AstryxTheme.of(context);
+          final accent = theme.color(AstryxColorToken.accent);
+          final body = theme.color(AstryxColorToken.backgroundBody);
+
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeOut,
+            decoration: BoxDecoration(
+              color: body,
+              gradient: RadialGradient(
+                center: const Alignment(0.55, 1.1),
+                radius: 1.1,
+                colors: <Color>[
+                  accent.withValues(alpha: dark ? 0.28 : 0.22),
+                  body.withValues(alpha: 0),
+                ],
+              ),
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final floating =
+                    constraints.maxWidth >= LandingHero.floatingWidth;
+                final centre = Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: theme.spacing(AstryxSpacingToken.spacing6),
+                    vertical: theme.spacing(AstryxSpacingToken.spacing12) * 2,
+                  ),
+                  child: _HeroCopy(
+                    slide: _slide,
+                    onSlide: _go,
+                    wordmarkHeight: constraints.maxWidth < 600 ? 52 : 96,
+                  ),
+                );
+                if (!floating) return centre;
+
+                final item = studioProducts[product % studioProducts.length];
+                final next =
+                    studioProducts[(product + 1) % studioProducts.length];
+                // The copy sizes the hero; the cards float over its sides.
+                return Stack(
+                  alignment: AlignmentDirectional.topCenter,
+                  children: <Widget>[
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minWidth: constraints.maxWidth,
+                        minHeight: 820,
+                      ),
+                      child: centre,
+                    ),
+                    Positioned(
+                      left: 16,
+                      top: 340,
+                      child: _FadeSwap(
+                        id: _slide,
+                        child: _HeroLeftCards(product: item),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 380,
+                      child: _FadeSwap(
+                        id: _slide,
+                        child: _HeroRightCards(product: next),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-/// What this is, and the two things to do about it.
-class _Hero extends StatelessWidget {
-  const _Hero();
+/// Cross-fades a slide's cards when the theme changes.
+class _FadeSwap extends StatelessWidget {
+  const _FadeSwap({required this.id, required this.child});
 
-  /// The README's opening sentence, which is the same promise pub.dev shows.
-  ///
-  /// The line after it in the file points at this site, so it is dropped here:
-  /// the reader is already on it.
-  static final DocProse _tagline = readmeIntro.whereType<DocProse>().first;
+  final int id;
+  final Widget child;
 
-  /// The pre-alpha note, from the README's own block quote.
-  static final List<DocCallout> _status = readmeIntro
-      .whereType<DocCallout>()
-      .toList();
+  @override
+  Widget build(BuildContext context) => AnimatedSwitcher(
+    duration: const Duration(milliseconds: 500),
+    child: KeyedSubtree(key: ValueKey<int>(id), child: child),
+  );
+}
+
+class _HeroCopy extends StatelessWidget {
+  const _HeroCopy({
+    required this.slide,
+    required this.onSlide,
+    required this.wordmarkHeight,
+  });
+
+  final int slide;
+  final ValueChanged<int> onSlide;
+  final double wordmarkHeight;
 
   @override
   Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
     final controller = DocsScope.of(context);
+    final delegate = AstryxLinkDelegate.of(context);
+    final narrow = wordmarkHeight < 60;
 
-    return _Measure(
-      child: AstryxVStack(
-        gap: AstryxSpacingToken.spacing5,
-        align: AstryxStackAlign.center,
-        children: <Widget>[
-          const AstryxBadge(
-            'Pre-alpha · $astryxVersion',
-            variant: AstryxBadgeVariant.info,
-            icon: AstryxIcon(AstryxIconName.info),
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing6,
+      align: AstryxStackAlign.center,
+      children: <Widget>[
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: FittedBox(
+            key: ValueKey<int>(slide),
+            fit: BoxFit.scaleDown,
+            child: DocsSvgWordmark(
+              color: theme.color(AstryxColorToken.accent),
+              height: wordmarkHeight,
+              semanticsLabel: 'Astryx',
+            ),
           ),
-          // `display1` for the size and `level: 1` for the outline. They are
-          // two different jobs, and reaching for a bigger level to get a
-          // bigger size is how a page ends up with three h1s.
-          const AstryxHeading(
-            'astryx_ui',
-            level: 1,
-            type: AstryxHeadingType.display1,
-            justify: AstryxTextJustify.center,
-          ),
-          DocsInlineText(
-            _tagline.text,
-            type: AstryxTextType.large,
-            color: AstryxTextColor.secondary,
-            justify: AstryxTextJustify.center,
-          ),
-          // One primary action. Two primaries side by side is a question, not
-          // a recommendation.
-          AstryxHStack(
-            gap: AstryxSpacingToken.spacing3,
-            wrap: true,
-            runGap: AstryxSpacingToken.spacing2,
-            justify: AstryxStackJustify.center,
+        ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 760),
+          child: AstryxVStack(
+            align: AstryxStackAlign.center,
             children: <Widget>[
-              AstryxButton(
+              AstryxText(
+                "A Flutter design system that's",
+                type: narrow
+                    ? AstryxTextType.display3
+                    : AstryxTextType.display2,
+                weight: AstryxTextWeight.normal,
+                justify: AstryxTextJustify.center,
+              ),
+              AstryxHeading(
+                'fully customizable and agent ready',
+                level: 1,
+                type: narrow
+                    ? AstryxHeadingType.display3
+                    : AstryxHeadingType.display2,
+                justify: AstryxTextJustify.center,
+              ),
+            ],
+          ),
+        ),
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing3,
+          wrap: true,
+          runGap: AstryxSpacingToken.spacing2,
+          justify: AstryxStackJustify.center,
+          children: <Widget>[
+            SizedBox(
+              width: 200,
+              child: AstryxButton(
                 label: 'Get started',
                 variant: AstryxButtonVariant.primary,
                 size: AstryxButtonSize.lg,
                 onPressed: () => controller.pageId = 'installation',
               ),
-              AstryxButton(
-                label: 'Browse ${landingCounts.components} components',
+            ),
+            SizedBox(
+              width: 200,
+              child: AstryxButton(
+                label: 'Browse components',
                 size: AstryxButtonSize.lg,
-                onPressed: () => controller.pageId = 'button',
+                onPressed: controller.goComponents,
               ),
-            ],
-          ),
-          // The command, this high up, because the question under "should I
-          // use it" is "how much work is finding out". It is one line, and it
-          // copies itself.
-          const _InstallLine(),
-          for (final status in _status)
-            docsBlock(context, status, (target) => docsFollow(context, target)),
-        ],
-      ),
-    );
-  }
-}
-
-/// The install command, with the copy button the docs' code blocks carry.
-class _InstallLine extends StatelessWidget {
-  const _InstallLine();
-
-  @override
-  Widget build(BuildContext context) => const SizedBox(
-    width: 480,
-    child: DocsCodeBlock(source: installCommand, language: 'sh'),
-  );
-}
-
-/// Where to get it: the three links that leave this site, at the size they are
-/// actually worth.
-///
-/// They used to be a row of supporting-sized links under the hero buttons —
-/// the two destinations a first-time reader most often wants, drawn at the size
-/// this page uses for footnotes. A card each: the glyph makes them findable
-/// while scrolling, the sentence says what is on the other side, and the whole
-/// card is the tap target rather than eleven characters of text.
-class _Destinations extends StatelessWidget {
-  const _Destinations();
-
-  @override
-  Widget build(BuildContext context) {
-    return const _CardRow(
-      children: <Widget>[
-        _DestinationCard(
-          glyph: LucideIcons.package,
-          title: 'Get it from pub.dev',
-          body:
-              'Version $astryxVersion · MIT · Dart 3.9 and Flutter 3.35 or '
-              'newer. One dependency, and no companion plugin.',
-          host: 'pub.dev/packages/astryx_ui',
-          url: pubUrl,
-          emphasis: true,
+            ),
+          ],
         ),
-        _DestinationCard(
-          glyph: LucideIcons.gitBranch,
-          title: 'Read the source on GitHub',
-          body:
-              'Every widget, the theme engine, the tests it is verified '
-              'against, and the issue tracker that decides what is built next.',
-          host: 'github.com/JayashBhandary/astryx_ui',
-          url: repoUrl,
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing1,
+          wrap: true,
+          runGap: AstryxSpacingToken.spacing1,
+          justify: AstryxStackJustify.center,
+          children: <Widget>[
+            const AstryxText(
+              'Pre-alpha · $astryxVersion · Built on',
+              type: AstryxTextType.supporting,
+            ),
+            AstryxLink(
+              'Flutter 3.35+',
+              type: AstryxTextType.supporting,
+              onPressed: () =>
+                  delegate.followLink(Uri.parse('https://flutter.dev')),
+            ),
+            const AstryxText('and', type: AstryxTextType.supporting),
+            AstryxLink(
+              'Dart 3.9',
+              type: AstryxTextType.supporting,
+              onPressed: () =>
+                  delegate.followLink(Uri.parse('https://dart.dev')),
+            ),
+          ],
         ),
-        _DestinationCard(
-          glyph: LucideIcons.blocks,
-          title: 'See upstream Astryx',
-          body:
-              'Meta’s React + StyleX design system, whose token values this '
-              'one reproduces in Dart.',
-          host: 'astryx.atmeta.com',
-          url: upstreamUrl,
-        ),
+        _Dots(count: landingHeroSlides.length, index: slide, onTap: onSlide),
       ],
     );
   }
 }
 
-/// One destination: a glyph, what it is, and where it goes.
-class _DestinationCard extends StatelessWidget {
-  const _DestinationCard({
-    required this.glyph,
-    required this.title,
-    required this.body,
-    required this.host,
-    required this.url,
-    this.emphasis = false,
-  });
+/// The slide indicator: the current one a pill, the rest rings.
+class _Dots extends StatelessWidget {
+  const _Dots({required this.count, required this.index, required this.onTap});
 
-  /// Lucide, reached directly rather than through `AstryxIconName`.
-  ///
-  /// That enum is a transcription of upstream's `IconName` union; widening it
-  /// so this page can draw a parcel and a branch would make the package's icon
-  /// set a catalogue of whatever the documentation site needed. The same
-  /// decision, and the same reasoning, as the width switch in `example_block`.
-  final IconData glyph;
-
-  final String title;
-  final String body;
-
-  /// The host, shown so the reader knows where the card goes before pressing.
-  final String host;
-
-  final String url;
-
-  /// Whether this is the one the page would rather you pressed.
-  final bool emphasis;
+  final int count;
+  final int index;
+  final ValueChanged<int> onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
-    final delegate = AstryxLinkDelegate.of(context);
+    final ink = theme.color(AstryxColorToken.textPrimary);
 
-    return AstryxCard(
-      variant: emphasis
-          ? AstryxCardVariant.standard
-          : AstryxCardVariant.transparent,
-      elevation: emphasis ? AstryxElevation.low : AstryxElevation.none,
-      padding: AstryxSpacingToken.spacing5,
-      minHeight: 200,
-      // The card is the button, so the name has to carry what a sighted reader
-      // gets from the glyph and the host line — including that it leaves.
-      semanticsLabel: '$title. Opens $host in a new tab.',
-      onPressed: () => delegate.followLink(Uri.parse(url)),
-      child: AstryxVStack(
-        gap: AstryxSpacingToken.spacing3,
+    return Semantics(
+      container: true,
+      label: 'Hero themes',
+      child: AstryxHStack(
+        gap: AstryxSpacingToken.spacing1,
         children: <Widget>[
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: theme.color(
-                emphasis
-                    ? AstryxColorToken.accentMuted
-                    : AstryxColorToken.backgroundMuted,
-              ),
-              borderRadius: theme.borderRadius(AstryxRadiusToken.inner),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(
-                theme.spacing(AstryxSpacingToken.spacing3),
-              ),
-              child: Icon(
-                glyph,
-                size: 24,
-                color: theme.color(
-                  emphasis
-                      ? AstryxColorToken.textAccent
-                      : AstryxColorToken.textPrimary,
+          for (var i = 0; i < count; i++)
+            Semantics(
+              button: true,
+              selected: i == index,
+              label: 'Show ${landingHeroSlides[i].$1.label}',
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => onTap(i),
+                child: Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    width: i == index ? 28 : 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: i == index ? ink : null,
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: ink.withValues(alpha: 0.7)),
+                    ),
+                  ),
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A floating panel, painted from the slide's theme.
+class _Float extends StatelessWidget {
+  const _Float({required this.child, this.width, this.padding = 20});
+
+  final Widget child;
+  final double? width;
+  final double padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+    return Container(
+      width: width,
+      padding: EdgeInsets.all(padding),
+      decoration: BoxDecoration(
+        color: theme.color(AstryxColorToken.backgroundCard),
+        borderRadius: theme.borderRadius(AstryxRadiusToken.container),
+        border: Border.all(color: theme.color(AstryxColorToken.border)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: const Color(0xFF000000).withValues(alpha: 0.18),
+            blurRadius: 32,
+            offset: const Offset(0, 12),
           ),
-          AstryxHeading(title, level: 3),
-          DocsInlineText(
-            body,
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-          ),
-          AstryxHStack(
-            gap: AstryxSpacingToken.spacing2,
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+class _HeroLeftCards extends StatelessWidget {
+  const _HeroLeftCards({required this.product});
+
+  final StudioProduct product;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+    return IgnorePointer(
+      child: ExcludeSemantics(
+        child: SizedBox(
+          width: 380,
+          height: 400,
+          child: Stack(
             children: <Widget>[
-              Flexible(
-                child: AstryxText(
-                  host,
-                  type: AstryxTextType.supporting,
-                  color: AstryxTextColor.accent,
-                  maxLines: 1,
+              const Positioned(
+                left: 0,
+                top: 0,
+                child: AstryxBadge(
+                  'Limited time',
+                  variant: AstryxBadgeVariant.success,
                 ),
               ),
-              const AstryxIcon(
-                AstryxIconName.externalLink,
-                size: AstryxIconSize.sm,
-                color: AstryxIconColor.accent,
+              Positioned(
+                left: 0,
+                top: 36,
+                child: _Float(
+                  width: 264,
+                  child: AstryxVStack(
+                    gap: AstryxSpacingToken.spacing2,
+                    align: AstryxStackAlign.stretch,
+                    children: <Widget>[
+                      AstryxHeading(product.name, level: 3),
+                      AstryxText(
+                        product.blurb,
+                        type: AstryxTextType.supporting,
+                        color: AstryxTextColor.secondary,
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 4),
+                      ClipRRect(
+                        borderRadius: theme.borderRadius(
+                          AstryxRadiusToken.element,
+                        ),
+                        child: StudioProductArt(
+                          icon: product.icon,
+                          size: 72,
+                          height: 190,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 92,
+                top: 262,
+                child: _Float(
+                  width: 280,
+                  padding: 16,
+                  child: AstryxVStack(
+                    gap: AstryxSpacingToken.spacing3,
+                    align: AstryxStackAlign.stretch,
+                    children: <Widget>[
+                      const AstryxText(
+                        'How can I help?',
+                        color: AstryxTextColor.secondary,
+                      ),
+                      AstryxHStack(
+                        justify: AstryxStackJustify.between,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          AstryxIconButton.custom(
+                            label: 'Add attachment',
+                            size: AstryxButtonSize.sm,
+                            onPressed: () {},
+                            child: const Icon(LucideIcons.plus, size: 16),
+                          ),
+                          AstryxIconButton.custom(
+                            label: 'Send',
+                            variant: AstryxButtonVariant.primary,
+                            size: AstryxButtonSize.sm,
+                            onPressed: () {},
+                            child: const Icon(LucideIcons.arrowUp, size: 16),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-/// How much of it there is, counted from the registry rather than typed here.
-///
-/// A landing page that claims a component count is a landing page that is
-/// wrong by the next release. These come from `docPages`, so the only way for
-/// them to be out of date is for the site itself to be.
-class _Counts extends StatelessWidget {
-  const _Counts();
+class _HeroRightCards extends StatelessWidget {
+  const _HeroRightCards({required this.product});
+
+  final StudioProduct product;
 
   @override
   Widget build(BuildContext context) {
-    final counts = <({String figure, String label})>[
-      (figure: '${landingCounts.components}', label: 'components'),
-      (figure: '${landingCounts.templates}', label: 'whole screens'),
-      (figure: '${landingCounts.hooks}', label: 'controllers and mixins'),
-      (figure: '${landingCounts.themes}', label: 'themes, light and dark'),
-      (figure: '0', label: 'Material widgets'),
-    ];
+    final theme = AstryxTheme.of(context);
+    final radius = theme.borderRadius(AstryxRadiusToken.container);
 
-    // A grid is right here and wrong for the feature cards below: these cells
-    // are text and figures, and a grid gives every cell in a row the height of
-    // the tallest — which needs an intrinsic measurement no interactive widget
-    // can answer in touch density.
-    return AstryxGrid(
-      minWidth: 180,
-      gap: AstryxSpacingToken.spacing3,
-      children: <Widget>[
-        for (final count in counts)
-          AstryxCard(
-            child: AstryxVStack(
-              gap: AstryxSpacingToken.spacing1,
-              children: <Widget>[
-                AstryxText(
-                  count.figure,
-                  type: AstryxTextType.display3,
-                  tabularNumbers: true,
+    return IgnorePointer(
+      child: ExcludeSemantics(
+        child: SizedBox(
+          width: 380,
+          height: 400,
+          child: Stack(
+            children: <Widget>[
+              const Positioned(
+                right: 16,
+                top: 0,
+                child: AstryxBadge(
+                  'Free shipping',
+                  variant: AstryxBadgeVariant.info,
                 ),
-                AstryxText(
-                  count.label,
-                  type: AstryxTextType.supporting,
-                  color: AstryxTextColor.secondary,
+              ),
+              Positioned(
+                right: 0,
+                top: 40,
+                child: Container(
+                  width: 256,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: theme.color(AstryxColorToken.backgroundCard),
+                    borderRadius: radius,
+                    border: Border.all(
+                      color: theme.color(AstryxColorToken.border),
+                    ),
+                  ),
+                  child: AstryxVStack(
+                    align: AstryxStackAlign.stretch,
+                    children: <Widget>[
+                      StudioProductArt(
+                        icon: product.icon,
+                        size: 96,
+                        height: 250,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: AstryxVStack(
+                          gap: AstryxSpacingToken.spacing3,
+                          align: AstryxStackAlign.stretch,
+                          children: <Widget>[
+                            AstryxHStack(
+                              justify: AstryxStackJustify.between,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                AstryxText(
+                                  'Points',
+                                  weight: AstryxTextWeight.semibold,
+                                ),
+                                AstryxText(
+                                  '6/8',
+                                  type: AstryxTextType.supporting,
+                                  color: AstryxTextColor.accent,
+                                ),
+                              ],
+                            ),
+                            AstryxProgressBar(
+                              label: 'Points',
+                              showLabel: false,
+                              value: 0.75,
+                            ),
+                            AstryxHStack(
+                              gap: AstryxSpacingToken.spacing2,
+                              children: <Widget>[
+                                AstryxAvatar(
+                                  name: 'Ami Pena',
+                                  size: AstryxAvatarSize.xs,
+                                ),
+                                AstryxText(
+                                  'Ami Pena',
+                                  type: AstryxTextType.supporting,
+                                  color: AstryxTextColor.secondary,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+                left: 0,
+                top: 140,
+                child: _Float(
+                  width: 210,
+                  padding: 14,
+                  child: AstryxVStack(
+                    gap: AstryxSpacingToken.spacing3,
+                    align: AstryxStackAlign.stretch,
+                    children: <Widget>[
+                      AstryxHStack(
+                        gap: AstryxSpacingToken.spacing3,
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: theme.borderRadius(
+                              AstryxRadiusToken.element,
+                            ),
+                            child: SizedBox(
+                              width: 56,
+                              child: StudioProductArt(
+                                icon: product.icon,
+                                size: 24,
+                                height: 56,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: AstryxVStack(
+                              children: <Widget>[
+                                AstryxText(
+                                  product.name,
+                                  weight: AstryxTextWeight.semibold,
+                                  maxLines: 2,
+                                ),
+                                AstryxText(
+                                  product.detail,
+                                  type: AstryxTextType.supporting,
+                                  color: AstryxTextColor.secondary,
+                                  maxLines: 1,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      AstryxButton(
+                        label: 'Add to cart',
+                        variant: AstryxButtonVariant.primary,
+                        size: AstryxButtonSize.sm,
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-      ],
-    );
-  }
-}
-
-/// The claim, and the cards that back it up.
-class _Features extends StatelessWidget {
-  const _Features();
-
-  @override
-  Widget build(BuildContext context) {
-    return _Section(
-      title: 'Start anywhere. Change anything. Ship faster.',
-      blurb:
-          'Adopt it a subtree at a time inside the app you already have. '
-          'Nothing here asks you to start again.',
-      centred: true,
-      child: _CardRow(
-        children: <Widget>[
-          for (final card in _cards) _FeatureCard(card: card),
-        ],
-      ),
-    );
-  }
-
-  static const List<_Feature> _cards = <_Feature>[
-    _Feature(
-      title: 'One of everything',
-      body:
-          'Buttons, fields, tables, menus, overlays, chat surfaces. Each one '
-          'ships with its keyboard map, its focus behaviour and a required '
-          'accessible name.',
-      target: 'button',
-      specimen: _ControlsSpecimen(),
-    ),
-    _Feature(
-      title: 'Whole screens, not fragments',
-      body:
-          'Sign-in, settings, dashboards, boards, editors, galleries — each '
-          'extracted from a widget that compiles, so the snippet cannot drift '
-          'from the screen beside it.',
-      target: 'table_template',
-      specimen: _TemplateSpecimen(),
-    ),
-    _Feature(
-      title: 'Themes that fit your brand',
-      body:
-          'Seven built in and an engine for your own. Change the theme in the '
-          'bar above and every page on this site moves with it — including '
-          'this one.',
-      target: 'theming',
-      specimen: _ThemeSpecimen(),
-    ),
-    _Feature(
-      title: 'Never a raw colour or a magic number',
-      body:
-          'Every value resolves through the token layer, so a theme swap is a '
-          'theme swap rather than a search-and-replace across your codebase.',
-      target: 'tokens',
-      specimen: _TokenSpecimen(),
-    ),
-    _Feature(
-      title: 'Honest on a mouse and on a thumb',
-      body:
-          'Touch grows every tap target to 48 logical pixels and suppresses '
-          'hover styling, because hover does not exist there. Nothing is ever '
-          'behind it.',
-      target: 'density',
-      specimen: _DensitySpecimen(),
-    ),
-    _Feature(
-      title: 'A design system your agent can use',
-      body:
-          'A generated skill ships in the repository: every component, every '
-          'enum, and the rules that are not guessable from the API.',
-      target: 'working_with_ai',
-      specimen: _AgentSpecimen(),
-    ),
-  ];
-}
-
-/// One feature: what it is, why, a way in, and something to look at.
-class _Feature {
-  const _Feature({
-    required this.title,
-    required this.body,
-    required this.target,
-    required this.specimen,
-  });
-
-  final String title;
-  final String body;
-
-  /// The page id **Explore** opens.
-  final String target;
-
-  /// A live piece of the package, built from the theme in force.
-  final Widget specimen;
-}
-
-class _FeatureCard extends StatelessWidget {
-  const _FeatureCard({required this.card});
-
-  final _Feature card;
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = DocsScope.of(context);
-
-    // Not a pressable card. It holds controls, and a button inside a button is
-    // a tap target nobody can predict — so the way in is one explicit link.
-    return AstryxCard(
-      header: AstryxVStack(
-        gap: AstryxSpacingToken.spacing2,
-        children: <Widget>[
-          AstryxHeading(card.title, level: 3),
-          AstryxText(
-            card.body,
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-          ),
-          AstryxButton(
-            label: 'Explore',
-            variant: AstryxButtonVariant.ghost,
-            size: AstryxButtonSize.sm,
-            trailing: const AstryxIcon(
-              AstryxIconName.chevronRight,
-              size: AstryxIconSize.sm,
-            ),
-            onPressed: () => controller.pageId = card.target,
-          ),
-        ],
-      ),
-      child: card.specimen,
-    );
-  }
-}
-
-/// What arrives with the dependency, in the README's own words.
-class _WhatYouGet extends StatelessWidget {
-  const _WhatYouGet();
-
-  @override
-  Widget build(BuildContext context) => const _ReadmeSection(
-    section: 'What you get',
-    title: 'What arrives with the dependency',
-    blurb:
-        'One package. No companion plugin, no code generation step, no theme '
-        'you have to build before the first screen.',
-  );
-}
-
-/// The objection this package exists to answer.
-class _WhyNotMaterial extends StatelessWidget {
-  const _WhyNotMaterial();
-
-  @override
-  Widget build(BuildContext context) => const _ReadmeSection(
-    section: 'Why not Material',
-    title: 'Why not just use Material?',
-  );
-}
-
-/// How to install it, and the whole of the setup.
-class _Install extends StatelessWidget {
-  const _Install();
-
-  @override
-  Widget build(BuildContext context) {
-    return _Section(
-      title: 'Two blocks of code to the first screen',
-      blurb:
-          'Add the dependency, wrap the app once. Toasts, tooltips, dialogs '
-          'and focus rings all work from there with nothing else to wire.',
-      child: _Measure(
-        centred: false,
-        child: AstryxVStack(
-          gap: AstryxSpacingToken.spacing5,
-          align: AstryxStackAlign.stretch,
-          children: <Widget>[
-            _Blocks(blocks: readmeSections['Install'] ?? const <DocBlock>[]),
-            _Blocks(blocks: readmeSections['Setup'] ?? const <DocBlock>[]),
-            const _GuideLinks(),
-          ],
         ),
       ),
-    );
-  }
-}
-
-/// The three guides somebody who has just installed it reads next.
-class _GuideLinks extends StatelessWidget {
-  const _GuideLinks();
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = DocsScope.of(context);
-
-    return AstryxHStack(
-      gap: AstryxSpacingToken.spacing2,
-      wrap: true,
-      runGap: AstryxSpacingToken.spacing2,
-      children: <Widget>[
-        for (final guide in const <({String label, String id})>[
-          (label: 'Installation', id: 'installation'),
-          (label: 'Theming', id: 'theming'),
-          (label: 'Tokens', id: 'tokens'),
-          (label: 'Density', id: 'density'),
-          (label: 'Accessibility', id: 'accessibility'),
-        ])
-          if (docPageOrNull(guide.id) != null)
-            AstryxButton(
-              label: guide.label,
-              size: AstryxButtonSize.sm,
-              trailing: const AstryxIcon(
-                AstryxIconName.chevronRight,
-                size: AstryxIconSize.sm,
-              ),
-              onPressed: () => controller.pageId = guide.id,
-            ),
-      ],
-    );
-  }
-}
-
-/// What shipped lately, read out of the changelog rather than announced here.
-class _WhatsNew extends StatelessWidget {
-  const _WhatsNew();
-
-  /// The newest release's name, its summary, and the first few entries.
-  ///
-  /// `changelogBlocks` is the parsed `CHANGELOG.md`, newest first, so this is
-  /// a walk from the top rather than a search: the first heading is the
-  /// release, the prose under it is the summary, and the first list is what
-  /// was added.
-  static ({String release, String? summary, List<String> items}) get _latest {
-    String? release;
-    String? summary;
-    var items = const <String>[];
-
-    for (final block in changelogBlocks) {
-      switch (block) {
-        case DocHeading(:final text, level: 2) when release == null:
-          release = text;
-        case DocHeading(level: 2):
-          return (release: release!, summary: summary, items: items);
-        case DocProse(:final text) when summary == null:
-          summary = text;
-        case DocList(items: final entries) when items.isEmpty:
-          items = entries.take(3).toList();
-        case _:
-          break;
-      }
-    }
-
-    return (release: release ?? 'Unreleased', summary: summary, items: items);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = DocsScope.of(context);
-    final latest = _latest;
-
-    return _Section(
-      title: 'What shipped lately',
-      blurb:
-          'Read out of `CHANGELOG.md`, so the front page cannot be a release '
-          'behind the package.',
-      child: AstryxCard(
-        header: AstryxHStack(
-          gap: AstryxSpacingToken.spacing3,
-          justify: AstryxStackJustify.between,
-          mainAxisSize: MainAxisSize.max,
-          wrap: true,
-          runGap: AstryxSpacingToken.spacing2,
-          children: <Widget>[
-            AstryxBadge(
-              latest.release,
-              // A version number is something that shipped; `Unreleased` is
-              // what is on `main` and not on pub yet, and a green tick over it
-              // would say otherwise.
-              variant: latest.release.toLowerCase() == 'unreleased'
-                  ? AstryxBadgeVariant.info
-                  : AstryxBadgeVariant.success,
-              icon: AstryxIcon(
-                latest.release.toLowerCase() == 'unreleased'
-                    ? AstryxIconName.info
-                    : AstryxIconName.success,
-              ),
-            ),
-            AstryxButton(
-              label: 'Read the changelog',
-              variant: AstryxButtonVariant.ghost,
-              size: AstryxButtonSize.sm,
-              trailing: const AstryxIcon(
-                AstryxIconName.chevronRight,
-                size: AstryxIconSize.sm,
-              ),
-              onPressed: () => controller.pageId = 'changelog',
-            ),
-          ],
-        ),
-        child: AstryxVStack(
-          gap: AstryxSpacingToken.spacing4,
-          align: AstryxStackAlign.stretch,
-          children: <Widget>[
-            if (latest.summary case final String summary)
-              DocsInlineText(summary, color: AstryxTextColor.secondary),
-            if (latest.items.isNotEmpty)
-              _Blocks(
-                blocks: <DocBlock>[DocList(latest.items)],
-                gap: AstryxSpacingToken.spacing3,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// The limitations, stated where somebody deciding can still act on them.
-class _Limits extends StatelessWidget {
-  const _Limits();
-
-  @override
-  Widget build(BuildContext context) => const _ReadmeSection(
-    section: 'What is not in 1.0',
-    title: 'What it will not do',
-    blurb:
-        'The list worth reading before you adopt anything. It is the same '
-        'list the README carries, and every widget repeats its own in its doc '
-        'comment.',
-  );
-}
-
-/// The agent skill, which is a reason to install this one over another.
-class _ForAgents extends StatelessWidget {
-  const _ForAgents();
-
-  @override
-  Widget build(BuildContext context) => const _ReadmeSection(
-    section: 'For AI coding agents',
-    title: 'Your coding agent gets the manual too',
-    blurb:
-        'A design system an agent guesses at is a design system that produces '
-        'plausible code which does not compile.',
-  );
-}
-
-/// The last thing on the page, and the one thing to do about it.
-class _ClosingCall extends StatelessWidget {
-  const _ClosingCall();
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = DocsScope.of(context);
-    final delegate = AstryxLinkDelegate.of(context);
-
-    // The page's second `primary`, and the only other one. It is a screen and
-    // a half below the hero's, which is the case the one-primary rule is not
-    // about: a reader who has scrolled this far has left the first one behind.
-    return AstryxCard(
-      variant: AstryxCardVariant.muted,
-      padding: AstryxSpacingToken.spacing8,
-      child: _Measure(
-        maxWidth: 640,
-        child: AstryxVStack(
-          gap: AstryxSpacingToken.spacing5,
-          align: AstryxStackAlign.center,
-          children: <Widget>[
-            const AstryxHeading(
-              'Install it and see',
-              type: AstryxHeadingType.display3,
-              justify: AstryxTextJustify.center,
-            ),
-            const AstryxText(
-              'One dependency and one wrapper widget, and the screen you were '
-              'going to spend a week styling is already designed — in seven '
-              'themes, light and dark, on a mouse and on a thumb.',
-              color: AstryxTextColor.secondary,
-              justify: AstryxTextJustify.center,
-            ),
-            const _InstallLine(),
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing3,
-              wrap: true,
-              runGap: AstryxSpacingToken.spacing2,
-              justify: AstryxStackJustify.center,
-              children: <Widget>[
-                AstryxButton(
-                  label: 'Get it on pub.dev',
-                  variant: AstryxButtonVariant.primary,
-                  size: AstryxButtonSize.lg,
-                  trailing: const AstryxIcon(AstryxIconName.externalLink),
-                  onPressed: () => delegate.followLink(Uri.parse(pubUrl)),
-                ),
-                AstryxButton(
-                  label: 'Star it on GitHub',
-                  size: AstryxButtonSize.lg,
-                  trailing: const AstryxIcon(AstryxIconName.externalLink),
-                  onPressed: () => delegate.followLink(Uri.parse(repoUrl)),
-                ),
-                AstryxButton(
-                  label: 'Read the installation guide',
-                  variant: AstryxButtonVariant.ghost,
-                  size: AstryxButtonSize.lg,
-                  onPressed: () => controller.pageId = 'installation',
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// The way out: where the package lives, and what it is not.
-class _Footer extends StatelessWidget {
-  const _Footer();
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = DocsScope.of(context);
-    final delegate = AstryxLinkDelegate.of(context);
-
-    return AstryxVStack(
-      gap: AstryxSpacingToken.spacing4,
-      align: AstryxStackAlign.stretch,
-      children: <Widget>[
-        const AstryxDivider(),
-        AstryxHStack(
-          gap: AstryxSpacingToken.spacing4,
-          justify: AstryxStackJustify.between,
-          mainAxisSize: MainAxisSize.max,
-          wrap: true,
-          runGap: AstryxSpacingToken.spacing3,
-          children: <Widget>[
-            AstryxHStack(
-              gap: AstryxSpacingToken.spacing3,
-              wrap: true,
-              runGap: AstryxSpacingToken.spacing2,
-              children: <Widget>[
-                AstryxLink(
-                  'pub.dev',
-                  external: true,
-                  type: AstryxTextType.supporting,
-                  onPressed: () => delegate.followLink(Uri.parse(pubUrl)),
-                ),
-                AstryxLink(
-                  'GitHub',
-                  external: true,
-                  type: AstryxTextType.supporting,
-                  onPressed: () => delegate.followLink(Uri.parse(repoUrl)),
-                ),
-                AstryxLink(
-                  'Upstream Astryx',
-                  external: true,
-                  type: AstryxTextType.supporting,
-                  onPressed: () => delegate.followLink(Uri.parse(upstreamUrl)),
-                ),
-                AstryxButton(
-                  label: 'Changelog',
-                  variant: AstryxButtonVariant.ghost,
-                  size: AstryxButtonSize.sm,
-                  onPressed: () => controller.pageId = 'changelog',
-                ),
-              ],
-            ),
-            // No `Flexible` here: the row wraps, and a `Wrap` takes different
-            // parent data — a flex child inside one is an error rather than a
-            // layout.
-            const AstryxText(
-              'An independent implementation. MIT licensed.',
-              type: AstryxTextType.supporting,
-              color: AstryxTextColor.secondary,
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
 
 // ---------------------------------------------------------------------------
-// The furniture the sections are built from
+// Bento: what it is
 // ---------------------------------------------------------------------------
 
-/// A titled section of the page.
-class _Section extends StatelessWidget {
-  const _Section({
-    required this.title,
-    required this.child,
-    this.blurb,
-    this.centred = false,
-  });
-
-  final String title;
-
-  /// A line under the title. Inline markup is understood.
-  final String? blurb;
-
-  final Widget child;
-
-  /// Whether the heading and blurb are centred over the content.
-  final bool centred;
+class _Bento extends StatelessWidget {
+  const _Bento();
 
   @override
   Widget build(BuildContext context) {
-    final heading = AstryxVStack(
-      gap: AstryxSpacingToken.spacing3,
-      align: centred ? AstryxStackAlign.center : AstryxStackAlign.stretch,
-      children: <Widget>[
-        AstryxHeading(
-          title,
-          type: AstryxHeadingType.display3,
-          justify: centred ? AstryxTextJustify.center : null,
-        ),
-        if (blurb case final String blurb)
-          DocsInlineText(
-            blurb,
-            color: AstryxTextColor.secondary,
-            justify: centred ? AstryxTextJustify.center : null,
-          ),
-      ],
-    );
+    final theme = AstryxTheme.of(context);
+    final gap = theme.spacing(AstryxSpacingToken.spacing6);
 
-    return AstryxVStack(
-      gap: AstryxSpacingToken.spacing6,
-      align: AstryxStackAlign.stretch,
-      children: <Widget>[
-        _Measure(
-          maxWidth: centred ? 620 : 760,
-          centred: centred,
-          child: heading,
-        ),
-        child,
-      ],
-    );
-  }
-}
-
-/// Centres [child] and holds it to a readable measure.
-///
-/// Not `AstryxCenter(maxWidth:)`, which cannot do this job here: it puts its
-/// `ConstrainedBox` *outside* the `Align`, and a `ConstrainedBox` handed tight
-/// constraints — which is exactly what a scroll view's cross axis hands down —
-/// is enforced away to the parent's width. The `Align` has to come first, so
-/// that what it gives the box below is loose.
-class _Measure extends StatelessWidget {
-  const _Measure({
-    required this.child,
-    this.maxWidth = 760,
-    this.centred = true,
-  });
-
-  final Widget child;
-  final double maxWidth;
-
-  /// Whether the measured column sits in the middle of the page.
-  ///
-  /// False for a section that sits above full-width cards: a column centred
-  /// over a wider one below it reads as an indent nobody asked for, and the
-  /// eye follows the left edge rather than the middle.
-  final bool centred;
-
-  @override
-  Widget build(BuildContext context) => Align(
-    alignment: centred
-        ? AlignmentDirectional.topCenter
-        : AlignmentDirectional.topStart,
-    child: ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: maxWidth),
-      child: child,
-    ),
-  );
-}
-
-/// A section of the page whose body is a section of the README.
-class _ReadmeSection extends StatelessWidget {
-  const _ReadmeSection({
-    required this.section,
-    required this.title,
-    this.blurb,
-  });
-
-  /// The README heading to render under it.
-  final String section;
-
-  final String title;
-  final String? blurb;
-
-  @override
-  Widget build(BuildContext context) {
-    final blocks = readmeSections[section] ?? const <DocBlock>[];
-    if (blocks.isEmpty) return const SizedBox.shrink();
-
-    return _Section(
-      title: title,
-      blurb: blurb,
-      // The measure prose is comfortable at. Wider than this and a reader
-      // loses the start of the next line; the cards above take the full 1080,
-      // because a card is not a paragraph.
-      child: _Measure(centred: false, child: _Blocks(blocks: blocks)),
-    );
-  }
-}
-
-/// Documentation blocks, wired to this page's navigation.
-class _Blocks extends StatelessWidget {
-  const _Blocks({
-    required this.blocks,
-    this.gap = AstryxSpacingToken.spacing4,
-  });
-
-  final List<DocBlock> blocks;
-  final AstryxSpacingToken gap;
-
-  @override
-  Widget build(BuildContext context) => DocsBlocks(
-    blocks: blocks,
-    gap: gap,
-    onNavigate: (target) => docsFollow(context, target),
-  );
-}
-
-/// A wrapping row of equal-width cards.
-///
-/// Not an `AstryxGrid`: the feature cards hold interactive specimens, and a
-/// grid measures its cells intrinsically — which no interactive widget can
-/// answer in touch density.
-class _CardRow extends StatelessWidget {
-  const _CardRow({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final columns = constraints.maxWidth >= 940
-            ? 3
-            : constraints.maxWidth >= 640
-            ? 2
-            : 1;
-        final gap = AstryxTheme.of(
-          context,
-        ).spacing(AstryxSpacingToken.spacing4);
-        final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
+        const intro = _BentoIntro();
+        const themes = _ThemesCard();
+        const components = _ComponentsCard();
+        const agent = _AgentCard();
+        const templates = _TemplatesCard();
 
-        return AstryxHStack(
-          gap: AstryxSpacingToken.spacing4,
-          wrap: true,
-          runGap: AstryxSpacingToken.spacing4,
-          align: AstryxStackAlign.start,
-          children: <Widget>[
-            for (final child in children) SizedBox(width: width, child: child),
-          ],
+        if (constraints.maxWidth >= 1080) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[intro, SizedBox(height: 40), themes],
+                ),
+              ),
+              SizedBox(width: gap),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    components,
+                    SizedBox(height: gap),
+                    agent,
+                  ],
+                ),
+              ),
+              SizedBox(width: gap),
+              const Expanded(child: templates),
+            ],
+          );
+        }
+        if (constraints.maxWidth >= 720) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              intro,
+              SizedBox(height: gap),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Expanded(child: themes),
+                  SizedBox(width: gap),
+                  const Expanded(child: components),
+                ],
+              ),
+              SizedBox(height: gap),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Expanded(child: agent),
+                  SizedBox(width: gap),
+                  const Expanded(child: templates),
+                ],
+              ),
+            ],
+          );
+        }
+        return const AstryxVStack(
+          gap: AstryxSpacingToken.spacing6,
+          align: AstryxStackAlign.stretch,
+          children: <Widget>[intro, themes, components, agent, templates],
         );
       },
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// The specimens
-// ---------------------------------------------------------------------------
+class _BentoIntro extends StatelessWidget {
+  const _BentoIntro();
 
-/// A specimen sits on the muted ground, so it reads as an exhibit rather than
-/// as part of the card's own content.
-class _Exhibit extends StatelessWidget {
-  const _Exhibit({required this.child});
+  @override
+  Widget build(BuildContext context) => const AstryxVStack(
+    gap: AstryxSpacingToken.spacing5,
+    align: AstryxStackAlign.stretch,
+    children: <Widget>[
+      AstryxHeading(
+        'Start anywhere.\nChange anything.\nShip faster.',
+        type: AstryxHeadingType.display2,
+      ),
+      AstryxText(
+        'A design system that adapts to your app, not the other way around. '
+        'Adopt it one subtree at a time — no Material underneath, no code '
+        'generation, no theme file to keep in step.',
+        type: AstryxTextType.large,
+        color: AstryxTextColor.secondary,
+      ),
+    ],
+  );
+}
 
-  final Widget child;
+/// The bento's panel: the page colour pulled toward the accent, so the tiles
+/// read as one family in every theme.
+Color landingPanelColor(AstryxThemeData theme) => Color.lerp(
+  theme.color(AstryxColorToken.backgroundBody),
+  theme.color(AstryxColorToken.accent),
+  theme.mode == AstryxThemeMode.dark ? 0.12 : 0.07,
+)!;
+
+/// A bento tile: a tinted panel, a title, a line, an "Explore" link, then a
+/// specimen.
+class _BentoCard extends StatelessWidget {
+  const _BentoCard({
+    required this.title,
+    required this.body,
+    required this.onExplore,
+    required this.specimen,
+    this.bleed = false,
+  });
+
+  final String title;
+  final String body;
+  final VoidCallback onExplore;
+  final Widget specimen;
+
+  /// Whether the specimen runs to the card's end edge.
+  final bool bleed;
 
   @override
   Widget build(BuildContext context) {
-    return AstryxCard(
-      variant: AstryxCardVariant.muted,
-      padding: AstryxSpacingToken.spacing3,
-      minHeight: 132,
-      child: child,
+    final theme = AstryxTheme.of(context);
+    const pad = 36.0;
+
+    final copy = Padding(
+      padding: const EdgeInsets.fromLTRB(pad, pad, pad, 0),
+      child: AstryxVStack(
+        gap: AstryxSpacingToken.spacing3,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          AstryxHeading(title, level: 3, type: AstryxHeadingType.display3),
+          AstryxText(body, color: AstryxTextColor.secondary),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: _ArrowLink(label: 'Explore', onPressed: onExplore),
+          ),
+        ],
+      ),
+    );
+
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: landingPanelColor(theme),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: AstryxVStack(
+        gap: AstryxSpacingToken.spacing8,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          copy,
+          Padding(
+            padding: bleed
+                ? const EdgeInsetsDirectional.only(start: pad, bottom: pad)
+                : const EdgeInsets.fromLTRB(pad, 0, pad, pad),
+            child: specimen,
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _ControlsSpecimen extends StatefulWidget {
-  const _ControlsSpecimen();
+/// "Label →", the way upstream ends every tile.
+class _ArrowLink extends StatelessWidget {
+  const _ArrowLink({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
 
   @override
-  State<_ControlsSpecimen> createState() => _ControlsSpecimenState();
+  Widget build(BuildContext context) => AstryxButton(
+    label: label,
+    variant: AstryxButtonVariant.ghost,
+    size: AstryxButtonSize.sm,
+    trailing: const Icon(LucideIcons.arrowRight),
+    onPressed: onPressed,
+  );
 }
 
-class _ControlsSpecimenState extends State<_ControlsSpecimen> {
+class _ThemesCard extends StatelessWidget {
+  const _ThemesCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = DocsScope.of(context);
+    return _BentoCard(
+      title: 'Themes that fit your brand',
+      body:
+          '${landingCounts.themes} themes ready to use, and defineTheme for '
+          'yours. Make it yours without starting from scratch.',
+      onExplore: () => controller.pageId = 'themes',
+      bleed: true,
+      specimen: const _MiniStore(),
+    );
+  }
+}
+
+/// A storefront in Butter, shrunk: the theme tile's specimen.
+class _MiniStore extends StatelessWidget {
+  const _MiniStore();
+
+  @override
+  Widget build(BuildContext context) {
+    final site = AstryxTheme.of(context);
+    final dark = site.mode == AstryxThemeMode.dark;
+
+    return IgnorePointer(
+      child: ExcludeSemantics(
+        child: AstryxThemeProvider(
+          theme: DocsTheme.butter.theme,
+          mode: dark ? AstryxColorMode.dark : AstryxColorMode.light,
+          child: Builder(
+            builder: (context) {
+              final theme = AstryxTheme.of(context);
+              final swatches = <Color>[
+                theme.color(AstryxColorToken.accent),
+                theme.color(AstryxColorToken.accentMuted),
+                theme.color(AstryxColorToken.textPrimary),
+              ];
+              final store = SizedBox(
+                width: 640,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: AstryxVStack(
+                    gap: AstryxSpacingToken.spacing4,
+                    align: AstryxStackAlign.stretch,
+                    children: <Widget>[
+                      const AstryxHeading(
+                        'Little joys, everywhere you go',
+                        type: AstryxHeadingType.display3,
+                        justify: AstryxTextJustify.center,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          for (final p in studioProducts.take(3))
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                ),
+                                child: _MiniProduct(product: p),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        color: theme.color(AstryxColorToken.backgroundBody),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          bottomLeft: Radius.circular(12),
+                        ),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        alignment: Alignment.topLeft,
+                        child: store,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20, top: 8),
+                    child: Column(
+                      children: <Widget>[
+                        for (final c in swatches)
+                          Container(
+                            width: 22,
+                            height: 22,
+                            margin: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                              color: c,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        AstryxText(
+                          'Aa',
+                          type: AstryxTextType.display3,
+                          style: TextStyle(color: swatches.first),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniProduct extends StatelessWidget {
+  const _MiniProduct({required this.product});
+
+  final StudioProduct product;
+
+  @override
+  Widget build(BuildContext context) => AstryxCard(
+    padding: AstryxSpacingToken.spacing2,
+    child: AstryxVStack(
+      gap: AstryxSpacingToken.spacing2,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        StudioProductArt(icon: product.icon, size: 40),
+        AstryxText(
+          product.name,
+          weight: AstryxTextWeight.semibold,
+          maxLines: 1,
+        ),
+        AstryxButton(
+          label: 'Add to cart',
+          size: AstryxButtonSize.sm,
+          variant: AstryxButtonVariant.primary,
+          onPressed: () {},
+        ),
+      ],
+    ),
+  );
+}
+
+class _ComponentsCard extends StatefulWidget {
+  const _ComponentsCard();
+
+  @override
+  State<_ComponentsCard> createState() => _ComponentsCardState();
+}
+
+class _ComponentsCardState extends State<_ComponentsCard> {
   bool _on = true;
   bool _ticked = true;
 
   @override
   Widget build(BuildContext context) {
-    // Real controls, not a picture of them. Every one of these is reachable by
-    // keyboard from this page.
-    return _Exhibit(
-      child: AstryxVStack(
+    final controller = DocsScope.of(context);
+    return _BentoCard(
+      title: 'Over ${(landingCounts.components ~/ 10) * 10} components',
+      body:
+          'Accessible, themeable Flutter widgets with built-in spacing, dark '
+          'mode and touch density.',
+      onExplore: controller.goComponents,
+      specimen: AstryxVStack(
         gap: AstryxSpacingToken.spacing3,
         align: AstryxStackAlign.stretch,
         children: <Widget>[
           AstryxHStack(
-            gap: AstryxSpacingToken.spacing2,
+            gap: AstryxSpacingToken.spacing3,
             wrap: true,
             runGap: AstryxSpacingToken.spacing2,
+            justify: AstryxStackJustify.center,
             children: <Widget>[
-              const AstryxBadge(
-                'Shipped',
-                variant: AstryxBadgeVariant.success,
-                icon: AstryxIcon(AstryxIconName.success),
-              ),
-              const AstryxBadge('Draft'),
+              const AstryxBadge('Badge', variant: AstryxBadgeVariant.warning),
+              const AstryxBadge('Badge', variant: AstryxBadgeVariant.info),
               AstryxCheckbox(
                 label: 'Checkbox',
                 labelHidden: true,
@@ -1140,27 +1125,23 @@ class _ControlsSpecimenState extends State<_ControlsSpecimen> {
               AstryxSwitch(
                 label: 'Switch',
                 labelHidden: true,
-                size: AstryxToggleSize.sm,
                 value: _on,
                 onChanged: (value) => setState(() => _on = value),
               ),
             ],
           ),
-          AstryxHStack(
-            gap: AstryxSpacingToken.spacing2,
-            wrap: true,
-            runGap: AstryxSpacingToken.spacing2,
+          Row(
             children: <Widget>[
-              AstryxButton(
-                label: 'Secondary',
-                size: AstryxButtonSize.sm,
-                onPressed: () {},
+              Expanded(
+                child: AstryxButton(label: 'Secondary', onPressed: () {}),
               ),
-              AstryxButton(
-                label: 'Primary',
-                variant: AstryxButtonVariant.primary,
-                size: AstryxButtonSize.sm,
-                onPressed: () {},
+              const SizedBox(width: 12),
+              Expanded(
+                child: AstryxButton(
+                  label: 'Primary',
+                  variant: AstryxButtonVariant.primary,
+                  onPressed: () {},
+                ),
               ),
             ],
           ),
@@ -1168,7 +1149,6 @@ class _ControlsSpecimenState extends State<_ControlsSpecimen> {
             label: 'Search',
             labelHidden: true,
             placeholder: 'Search…',
-            size: AstryxInputSize.sm,
             leading: AstryxIcon(
               AstryxIconName.search,
               size: AstryxIconSize.sm,
@@ -1181,29 +1161,50 @@ class _ControlsSpecimenState extends State<_ControlsSpecimen> {
   }
 }
 
-class _TemplateSpecimen extends StatelessWidget {
-  const _TemplateSpecimen();
+class _AgentCard extends StatefulWidget {
+  const _AgentCard();
+
+  @override
+  State<_AgentCard> createState() => _AgentCardState();
+}
+
+class _AgentCardState extends State<_AgentCard> {
+  final TextEditingController _draft = TextEditingController(
+    text: 'Can you create me a table page',
+  );
+
+  @override
+  void dispose() {
+    _draft.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return _Exhibit(
-      child: AstryxList(
-        label: 'A few of the templates',
-        density: AstryxItemDensity.compact,
-        showDividers: true,
+    final delegate = AstryxLinkDelegate.of(context);
+    return _BentoCard(
+      title: 'A design system that your agent can use',
+      body:
+          'A Claude Code skill ships in the repository: every component, '
+          'every enum, and the mistakes a generator makes without them.',
+      onExplore: () => delegate.followLink(Uri.parse(agentSkillUrl)),
+      specimen: AstryxVStack(
+        gap: AstryxSpacingToken.spacing3,
+        align: AstryxStackAlign.stretch,
         children: <Widget>[
-          AstryxItem(
-            label: 'Table page',
-            description: 'Filters pinned above, pagination below',
-            trailing: AstryxBadge('${landingCounts.templates} in all'),
+          const Padding(
+            padding: EdgeInsetsDirectional.only(start: 12),
+            child: AstryxText(
+              'How can I help you today?',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+            ),
           ),
-          const AstryxItem(
-            label: 'AI chat',
-            description: 'Transcript, tool calls, citations',
-          ),
-          const AstryxItem(
-            label: 'Kanban board',
-            description: 'Drag, and a move menu that works without one',
+          AstryxChatComposer(
+            controller: _draft,
+            label: 'Message',
+            placeholder: 'Ask for a screen…',
+            onSubmit: (_) {},
           ),
         ],
       ),
@@ -1211,129 +1212,885 @@ class _TemplateSpecimen extends StatelessWidget {
   }
 }
 
-class _ThemeSpecimen extends StatelessWidget {
-  const _ThemeSpecimen();
+class _TemplatesCard extends StatelessWidget {
+  const _TemplatesCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = DocsScope.of(context);
+    return _BentoCard(
+      title: 'Ready to ship templates',
+      body:
+          '${landingCounts.templates} production-ready screens for common '
+          'pages, just plug in your content.',
+      onExplore: () => controller.goSection(DocsSection.templates),
+      bleed: true,
+      specimen: const _TemplateGrid(),
+    );
+  }
+}
+
+/// Two columns of template thumbnails.
+class _TemplateGrid extends StatelessWidget {
+  const _TemplateGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    final ids = landingTemplateIds
+        .where((id) => landingTemplateSnippet(id) != null)
+        .toList();
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: 16),
+      child: AstryxVStack(
+        gap: AstryxSpacingToken.spacing3,
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          for (var i = 0; i < ids.length; i += 2)
+            Row(
+              children: <Widget>[
+                Expanded(child: LandingTemplateThumb(pageId: ids[i])),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: i + 1 < ids.length
+                      ? LandingTemplateThumb(pageId: ids[i + 1])
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The first example on a template page, if it has a preview.
+String? landingTemplateSnippet(String pageId) {
+  final page = docPageOrNull(pageId);
+  if (page == null) return null;
+  for (final block in page.blocks.whereType<DocExample>()) {
+    if (docPreviews.containsKey(block.snippetId)) return block.snippetId;
+  }
+  return null;
+}
+
+/// A template, rendered at desktop size and scaled to a thumbnail. Inert,
+/// apart from the tap that opens its page.
+class LandingTemplateThumb extends StatelessWidget {
+  /// Creates a thumbnail of [pageId]'s first example.
+  const LandingTemplateThumb({
+    required this.pageId,
+    super.key,
+    this.canvas = const Size(1200, 800),
+  });
+
+  final String pageId;
+  final Size canvas;
 
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
+    final controller = DocsScope.of(context);
+    final id = landingTemplateSnippet(pageId);
+    final builder = id == null ? null : docPreviews[id];
 
-    const swatches = <AstryxColorToken>[
-      AstryxColorToken.accent,
-      AstryxColorToken.success,
-      AstryxColorToken.warning,
-      AstryxColorToken.error,
-      AstryxColorToken.backgroundCard,
-      AstryxColorToken.border,
-    ];
-
-    return _Exhibit(
-      child: AstryxVStack(
-        gap: AstryxSpacingToken.spacing3,
-        align: AstryxStackAlign.stretch,
-        children: <Widget>[
-          AstryxHStack(
-            gap: AstryxSpacingToken.spacing2,
-            wrap: true,
-            runGap: AstryxSpacingToken.spacing2,
-            children: <Widget>[
-              for (final token in swatches)
-                // The colour *is* the content here, so nothing sits between
-                // the token and the reader's eye — and it still comes from
-                // `theme.color`, which is why this specimen is correct in all
-                // eight themes and both brightnesses.
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: theme.color(token),
-                    borderRadius: theme.borderRadius(AstryxRadiusToken.inner),
-                    border: Border.all(
-                      color: theme.color(AstryxColorToken.border),
+    final thumb = Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: theme.color(AstryxColorToken.backgroundBody),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: theme.color(AstryxColorToken.border)),
+      ),
+      child: AspectRatio(
+        aspectRatio: canvas.aspectRatio,
+        child: builder == null
+            ? const SizedBox.shrink()
+            : IgnorePointer(
+                child: ExcludeFocus(
+                  child: ExcludeSemantics(
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                      child: SizedBox.fromSize(
+                        size: canvas,
+                        child: ClipRect(
+                          child: OverflowBox(
+                            alignment: Alignment.topCenter,
+                            minHeight: 0,
+                            maxHeight: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Builder(builder: builder),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  child: const SizedBox(width: 40, height: 32),
                 ),
-            ],
-          ),
-          const AstryxText(
-            'Neutral · Matcha · Stone · Gothic · Chocolate · Y2K · Butter, '
-            'and defineTheme for yours.',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-          ),
-        ],
+              ),
+      ),
+    );
+
+    final page = docPageOrNull(pageId);
+    return Semantics(
+      button: true,
+      label: 'Open the ${page?.title ?? pageId} template',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => controller.pageId = pageId,
+        child: MouseRegion(cursor: SystemMouseCursors.click, child: thumb),
       ),
     );
   }
 }
 
-class _TokenSpecimen extends StatelessWidget {
-  const _TokenSpecimen();
+// ---------------------------------------------------------------------------
+// Pillars: why it exists
+// ---------------------------------------------------------------------------
+
+class _Pillars extends StatelessWidget {
+  const _Pillars();
 
   @override
   Widget build(BuildContext context) {
-    return const _Exhibit(
-      child: AstryxCodeBlock('''
-final theme = AstryxTheme.of(context);
+    final controller = DocsScope.of(context);
+    final delegate = AstryxLinkDelegate.of(context);
 
-theme.color(AstryxColorToken.accent);
-theme.spacing(AstryxSpacingToken.spacing3);
-theme.borderRadius(AstryxRadiusToken.container);''', language: 'dart'),
+    const lead = AstryxVStack(
+      gap: AstryxSpacingToken.spacing4,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        AstryxHeading(
+          'Astryx, rebuilt for Flutter',
+          type: AstryxHeadingType.display2,
+        ),
+        AstryxText(
+          'The tokens, themes and component names of Meta’s Astryx, written '
+          'in Dart from the ground up. Nothing from Material underneath, and '
+          'nothing to keep in step by hand.',
+          type: AstryxTextType.large,
+          color: AstryxTextColor.secondary,
+        ),
+      ],
+    );
+
+    final pillars = <Widget>[
+      _Pillar(
+        shape: _Shape.flower,
+        title: 'Design for speed',
+        body:
+            'One dependency and one wrapper widget. Toasts, tooltips, dialogs '
+            'and the theme arrive with it, so the first screen is minutes '
+            'away.',
+        link: 'Get started in minutes',
+        onPressed: () => controller.pageId = 'installation',
+      ),
+      _Pillar(
+        shape: _Shape.stack,
+        title: 'Built in the open',
+        body:
+            'MIT licensed. Every widget, the theme engine and the tests it is '
+            'held to are on GitHub, and the issue tracker decides what is '
+            'built next.',
+        link: 'Learn how to contribute',
+        semanticsLabel:
+            'Learn how to contribute. Opens '
+            'github.com/JayashBhandary/astryx_ui in a new tab.',
+        onPressed: () => delegate.followLink(Uri.parse(repoUrl)),
+      ),
+      _Pillar(
+        shape: _Shape.diamond,
+        title: 'Ready for what’s next',
+        body:
+            '${landingCounts.components} components, '
+            '${landingCounts.templates} templates, ${landingCounts.hooks} '
+            'controllers and ${landingCounts.themes} themes — counted from '
+            'this site, not claimed.',
+        link: 'See what’s new',
+        onPressed: () => controller.pageId = 'changelog',
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 1000) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Expanded(flex: 4, child: lead),
+              const SizedBox(width: 48),
+              for (final (i, p) in pillars.indexed) ...<Widget>[
+                if (i > 0) const SizedBox(width: 32),
+                Expanded(flex: 3, child: p),
+              ],
+            ],
+          );
+        }
+        return AstryxVStack(
+          gap: AstryxSpacingToken.spacing8,
+          align: AstryxStackAlign.stretch,
+          children: <Widget>[lead, ...pillars],
+        );
+      },
     );
   }
 }
 
-class _DensitySpecimen extends StatelessWidget {
-  const _DensitySpecimen();
+enum _Shape { flower, stack, diamond }
+
+class _Pillar extends StatelessWidget {
+  const _Pillar({
+    required this.shape,
+    required this.title,
+    required this.body,
+    required this.link,
+    required this.onPressed,
+    this.semanticsLabel,
+  });
+
+  final _Shape shape;
+  final String title;
+  final String body;
+  final String link;
+  final VoidCallback onPressed;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
-    final density = AstryxTheme.densityOf(context);
+    final linkButton = _ArrowLink(label: link, onPressed: onPressed);
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing4,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        _ShapeMark(shape: shape),
+        AstryxHeading(title, level: 3),
+        AstryxText(body, color: AstryxTextColor.secondary),
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: semanticsLabel == null
+              ? linkButton
+              : Semantics(
+                  label: semanticsLabel,
+                  excludeSemantics: true,
+                  button: true,
+                  child: linkButton,
+                ),
+        ),
+      ],
+    );
+  }
+}
 
-    return _Exhibit(
-      child: AstryxVStack(
-        gap: AstryxSpacingToken.spacing3,
-        align: AstryxStackAlign.stretch,
-        children: <Widget>[
-          AstryxHStack(
-            gap: AstryxSpacingToken.spacing2,
-            children: <Widget>[
-              AstryxBadge(
-                density.supportsHover ? 'Pointer' : 'Touch',
-                variant: AstryxBadgeVariant.info,
-                icon: const AstryxIcon(AstryxIconName.info),
+/// The small abstract marks over each pillar.
+class _ShapeMark extends StatelessWidget {
+  const _ShapeMark({required this.shape});
+
+  final _Shape shape;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+    final accent = theme.color(AstryxColorToken.accent);
+    final colour = switch (shape) {
+      _Shape.flower => Color.lerp(accent, const Color(0xFFE0457B), 0.6)!,
+      _Shape.stack => Color.lerp(accent, const Color(0xFF6C4CF1), 0.6)!,
+      _Shape.diamond => Color.lerp(accent, const Color(0xFFD9A21B), 0.6)!,
+    };
+    final fill = colour.withValues(alpha: 0.55);
+
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: switch (shape) {
+        _Shape.flower => Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            for (var i = 0; i < 4; i++)
+              Transform.rotate(
+                angle: i * 0.3927,
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: fill.withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
               ),
-              const Flexible(
-                child: AstryxText(
-                  'Right now, on this device',
+          ],
+        ),
+        _Shape.stack => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            for (var i = 0; i < 3; i++)
+              Container(
+                width: 40,
+                height: 12,
+                margin: const EdgeInsets.only(bottom: 1),
+                decoration: BoxDecoration(
+                  color: fill,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+          ],
+        ),
+        _Shape.diamond => Center(
+          child: Transform.rotate(
+            angle: 0.7854,
+            child: Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: fill,
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+          ),
+        ),
+      },
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// What's new
+// ---------------------------------------------------------------------------
+
+/// One release note, cut down to what fits a card.
+typedef LandingNote = ({String title, String body});
+
+/// The newest release's name and its first few entries, from the changelog.
+({String release, List<LandingNote> notes}) get landingLatest {
+  String? release;
+  final notes = <LandingNote>[];
+  for (final block in changelogBlocks) {
+    switch (block) {
+      case DocHeading(:final text, level: 2) when release == null:
+        release = text;
+      case DocHeading(level: 2):
+        return (release: release!, notes: notes);
+      case DocList(items: final entries) when notes.length < 3:
+        for (final entry in entries) {
+          if (notes.length == 3) break;
+          notes.add(landingNote(entry));
+        }
+      case _:
+        break;
+    }
+  }
+  return (release: release ?? 'Unreleased', notes: notes);
+}
+
+/// `**Title.** Body…` → (title, body), with the inline markup stripped.
+LandingNote landingNote(String entry) {
+  String plain(String s) => s
+      .replaceAll(RegExp(r'\*\*|`|\[|\]\([^)]*\)'), '')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+  final bold = RegExp(
+    r'^\*\*(.+?)\*\*\s*(.*)$',
+    dotAll: true,
+  ).firstMatch(entry);
+  if (bold != null) {
+    final title = plain(bold.group(1)!).replaceAll(RegExp(r'[.:]$'), '');
+    return (title: title, body: plain(bold.group(2)!));
+  }
+  final text = plain(entry);
+  final cut = text.indexOf('. ');
+  return cut > 0 && cut < 120
+      ? (title: text.substring(0, cut), body: text.substring(cut + 2))
+      : (title: text, body: '');
+}
+
+class _WhatsNew extends StatelessWidget {
+  const _WhatsNew();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = DocsScope.of(context);
+    final latest = landingLatest;
+    if (latest.notes.isEmpty) return const SizedBox.shrink();
+
+    void open() => controller.pageId = 'changelog';
+    final notes = latest.notes;
+
+    final header = AstryxHStack(
+      justify: AstryxStackJustify.between,
+      mainAxisSize: MainAxisSize.max,
+      wrap: true,
+      runGap: AstryxSpacingToken.spacing2,
+      children: <Widget>[
+        const AstryxHeading(
+          'Stay in the know',
+          type: AstryxHeadingType.display2,
+        ),
+        _ArrowLink(label: 'Read the changelog', onPressed: open),
+      ],
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wide = constraints.maxWidth >= 900;
+        final lead = _NoteCard(
+          note: notes.first,
+          release: latest.release,
+          large: true,
+          onPressed: open,
+        );
+        final rest = <Widget>[
+          for (final note in notes.skip(1))
+            _NoteCard(note: note, release: latest.release, onPressed: open),
+        ];
+
+        return AstryxVStack(
+          gap: AstryxSpacingToken.spacing8,
+          align: AstryxStackAlign.stretch,
+          children: <Widget>[
+            header,
+            if (wide)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(flex: 7, child: lead),
+                  const SizedBox(width: 32),
+                  Expanded(
+                    flex: 3,
+                    child: AstryxVStack(
+                      gap: AstryxSpacingToken.spacing8,
+                      align: AstryxStackAlign.stretch,
+                      children: rest,
+                    ),
+                  ),
+                ],
+              )
+            else ...<Widget>[lead, ...rest],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _NoteCard extends StatelessWidget {
+  const _NoteCard({
+    required this.note,
+    required this.release,
+    required this.onPressed,
+    this.large = false,
+  });
+
+  final LandingNote note;
+  final String release;
+  final VoidCallback onPressed;
+  final bool large;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+    final accent = theme.color(AstryxColorToken.accent);
+    final onAccent = theme.color(AstryxColorToken.onAccent);
+    const white = Color(0xFFFFFFFF);
+
+    final art = Container(
+      height: large ? 400 : 190,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: large ? const Color(0xFF000000) : accent,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: large
+          ? const Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    DocsSvgWordmark(color: white, height: 54),
+                    SizedBox(width: 28),
+                    Icon(LucideIcons.plus, color: white, size: 40),
+                    SizedBox(width: 28),
+                    DocsSvgMark(
+                      path: astryxLogoPath,
+                      viewBox: 96,
+                      color: astryxLogoColor,
+                      size: 84,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Align(
+              alignment: AlignmentDirectional.topStart,
+              child: AstryxText(
+                'New in\n$release',
+                type: AstryxTextType.display2,
+                maxLines: 2,
+                style: TextStyle(color: onAccent),
+              ),
+            ),
+    );
+
+    return Semantics(
+      button: true,
+      label: '${note.title}. Read the changelog.',
+      excludeSemantics: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onPressed,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: AstryxVStack(
+            gap: AstryxSpacingToken.spacing3,
+            align: AstryxStackAlign.stretch,
+            children: <Widget>[
+              art,
+              AstryxHeading(
+                note.title,
+                level: 3,
+                type: large ? AstryxHeadingType.display3 : null,
+                maxLines: 3,
+              ),
+              if (note.body.isNotEmpty)
+                AstryxText(
+                  note.body,
                   type: AstryxTextType.supporting,
                   color: AstryxTextColor.secondary,
-                  maxLines: 1,
+                  maxLines: large ? 3 : 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
+              AstryxHStack(
+                gap: AstryxSpacingToken.spacing2,
+                children: <Widget>[
+                  const DocsSvgMark(
+                    path: astryxLogoPath,
+                    viewBox: 96,
+                    color: astryxLogoColor,
+                    size: 18,
+                  ),
+                  const AstryxText(
+                    'astryx_ui',
+                    type: AstryxTextType.supporting,
+                    color: AstryxTextColor.secondary,
+                  ),
+                  const AstryxText(
+                    '·',
+                    type: AstryxTextType.supporting,
+                    color: AstryxTextColor.secondary,
+                  ),
+                  Flexible(
+                    child: AstryxText(
+                      release,
+                      type: AstryxTextType.supporting,
+                      color: AstryxTextColor.secondary,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const AstryxText(
-            'Switch the density in the bar above and every tap target on the '
-            'site grows or shrinks. Nothing moves that was not meant to.',
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _AgentSpecimen extends StatelessWidget {
-  const _AgentSpecimen();
+// ---------------------------------------------------------------------------
+// Closing call and footer
+// ---------------------------------------------------------------------------
+
+/// A dark panel with tilted template thumbnails in the corners.
+class _ClosingCall extends StatelessWidget {
+  const _ClosingCall();
 
   @override
   Widget build(BuildContext context) {
-    return const _Exhibit(
-      child: AstryxCodeBlock('''
-.claude/skills/astryx-ui/
-├── SKILL.md          # the rules, and which widget to reach for
-└── references/       # every component, every enum''', showCopy: false),
+    final controller = DocsScope.of(context);
+
+    return AstryxThemeProvider(
+      theme: DocsTheme.neutral.theme,
+      mode: AstryxColorMode.dark,
+      density: controller.density,
+      child: Builder(
+        builder: (context) {
+          final theme = AstryxTheme.of(context);
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final wide = constraints.maxWidth >= 900;
+              final copy = Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: wide ? 220 : 24,
+                  vertical: wide ? 110 : 48,
+                ),
+                child: AstryxVStack(
+                  gap: AstryxSpacingToken.spacing5,
+                  align: AstryxStackAlign.center,
+                  children: <Widget>[
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 16,
+                      runSpacing: 8,
+                      children: <Widget>[
+                        const AstryxHeading(
+                          'Discover the full',
+                          type: AstryxHeadingType.display2,
+                        ),
+                        DocsSvgWordmark(
+                          color: astryxLogoColor,
+                          height: wide ? 34 : 26,
+                          semanticsLabel: 'Astryx',
+                        ),
+                        const AstryxHeading(
+                          'design system',
+                          type: AstryxHeadingType.display2,
+                        ),
+                      ],
+                    ),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 480),
+                      child: AstryxText(
+                        'Browse ${landingCounts.components} components, '
+                        'explore production-ready templates, and tune themes '
+                        'to match your brand; pick a starting point and go.',
+                        color: AstryxTextColor.secondary,
+                        justify: AstryxTextJustify.center,
+                      ),
+                    ),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 420),
+                      child: const DocsCodeBlock(
+                        source: installCommand,
+                        language: 'sh',
+                      ),
+                    ),
+                    AstryxHStack(
+                      gap: AstryxSpacingToken.spacing3,
+                      wrap: true,
+                      runGap: AstryxSpacingToken.spacing2,
+                      justify: AstryxStackJustify.center,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 174,
+                          child: AstryxButton(
+                            label: 'Get started',
+                            variant: AstryxButtonVariant.primary,
+                            onPressed: () => controller.pageId = 'installation',
+                          ),
+                        ),
+                        SizedBox(
+                          width: 174,
+                          child: AstryxButton(
+                            label: 'Browse components',
+                            onPressed: controller.goComponents,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+
+              Widget tilt(String id, double angle) => SizedBox(
+                width: 240,
+                child: Transform.rotate(
+                  angle: angle,
+                  child: AstryxThemeProvider(
+                    theme: DocsTheme.neutral.theme,
+                    mode: AstryxColorMode.light,
+                    child: LandingTemplateThumb(
+                      pageId: id,
+                      canvas: const Size(1200, 760),
+                    ),
+                  ),
+                ),
+              );
+
+              return Container(
+                width: double.infinity,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  // Darker than any page body, so the panel reads as one in
+                  // both site modes.
+                  color: Color.lerp(
+                    theme.color(AstryxColorToken.backgroundBody),
+                    const Color(0xFF000000),
+                    0.55,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: wide
+                    ? Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Positioned(
+                            left: -14,
+                            top: -30,
+                            child: tilt('settings', -0.09),
+                          ),
+                          Positioned(
+                            right: -10,
+                            top: -50,
+                            child: tilt('login_split', 0.07),
+                          ),
+                          Positioned(
+                            left: -10,
+                            bottom: -50,
+                            child: tilt('contact_form', 0.06),
+                          ),
+                          Positioned(
+                            right: -24,
+                            bottom: -40,
+                            child: tilt('gallery_hero', -0.11),
+                          ),
+                          copy,
+                        ],
+                      )
+                    : copy,
+              );
+            },
+          );
+        },
+      ),
     );
   }
+}
+
+/// The way out: the wordmark, every section, and where the package lives.
+class _Footer extends StatelessWidget {
+  const _Footer();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+    final controller = DocsScope.of(context);
+    final delegate = AstryxLinkDelegate.of(context);
+    final ink = theme.color(AstryxColorToken.textPrimary);
+
+    Widget link(String label, VoidCallback onPressed) => AstryxButton(
+      label: label,
+      variant: AstryxButtonVariant.ghost,
+      size: AstryxButtonSize.sm,
+      onPressed: onPressed,
+    );
+
+    Widget out(String label, String host, String url, Widget glyph) =>
+        Semantics(
+          button: true,
+          excludeSemantics: true,
+          label: '$label. Opens $host in a new tab.',
+          child: AstryxIconButton.custom(
+            label: label,
+            tooltip: host,
+            onPressed: () => delegate.followLink(Uri.parse(url)),
+            child: glyph,
+          ),
+        );
+
+    return AstryxVStack(
+      gap: AstryxSpacingToken.spacing5,
+      align: AstryxStackAlign.stretch,
+      children: <Widget>[
+        AstryxHStack(
+          gap: AstryxSpacingToken.spacing4,
+          justify: AstryxStackJustify.between,
+          mainAxisSize: MainAxisSize.max,
+          wrap: true,
+          runGap: AstryxSpacingToken.spacing3,
+          children: <Widget>[
+            DocsSvgWordmark(color: ink, height: 20, semanticsLabel: 'Astryx'),
+            Wrap(
+              spacing: 2,
+              runSpacing: 2,
+              children: <Widget>[
+                link('Docs', () => controller.goSection(DocsSection.docs)),
+                link('Components', controller.goComponents),
+                link(
+                  'Templates',
+                  () => controller.goSection(DocsSection.templates),
+                ),
+                link('Themes', () => controller.pageId = 'themes'),
+                link('Playground', controller.goPlayground),
+                link('Changelog', () => controller.pageId = 'changelog'),
+              ],
+            ),
+            AstryxHStack(
+              gap: AstryxSpacingToken.spacing2,
+              children: <Widget>[
+                out(
+                  'GitHub',
+                  'github.com/JayashBhandary/astryx_ui',
+                  repoUrl,
+                  DocsSvgMark(
+                    path: githubMarkPath,
+                    viewBox: 24,
+                    color: ink,
+                    size: 18,
+                  ),
+                ),
+                out(
+                  'pub.dev',
+                  'pub.dev/packages/astryx_ui',
+                  pubUrl,
+                  const Icon(LucideIcons.package, size: 18),
+                ),
+                out(
+                  'Upstream Astryx',
+                  'astryx.atmeta.com',
+                  upstreamUrl,
+                  DocsSvgMark(
+                    path: astryxLogoPath,
+                    viewBox: 96,
+                    color: ink,
+                    size: 18,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const AstryxDivider(),
+        const AstryxHStack(
+          justify: AstryxStackJustify.between,
+          mainAxisSize: MainAxisSize.max,
+          wrap: true,
+          runGap: AstryxSpacingToken.spacing2,
+          children: <Widget>[
+            AstryxText(
+              'astryx_ui · $astryxVersion',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+            ),
+            AstryxText(
+              'An independent Flutter implementation of Astryx. MIT licensed.',
+              type: AstryxTextType.supporting,
+              color: AstryxTextColor.secondary,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Centres [child] and holds it to [maxWidth].
+///
+/// The `Align` comes first so that what it hands the box below is loose: a
+/// `ConstrainedBox` under a scroll view's tight cross axis is otherwise
+/// enforced away to the full width.
+class _Measure extends StatelessWidget {
+  const _Measure({required this.child, this.maxWidth = 760});
+
+  final Widget child;
+  final double maxWidth;
+
+  @override
+  Widget build(BuildContext context) => Align(
+    alignment: AlignmentDirectional.topCenter,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      child: child,
+    ),
+  );
 }

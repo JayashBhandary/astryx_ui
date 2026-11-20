@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs/pages.dart';
+import 'package:example/docs_ui/playground/playground_theme.dart';
 import 'package:example/examples/theming_examples.dart' show acmeTheme;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -69,6 +70,33 @@ enum DocsPreviewWidth {
   final double? width;
 }
 
+/// The example the playground opens on.
+const String playgroundDefaultExample = 'template_theme_showcase';
+
+/// The top-level sections of the site, as the top bar names them.
+enum DocsSection {
+  /// The guides: installation, theming, tokens and the rest.
+  docs('Docs'),
+
+  /// Every component, the overview first.
+  components('Components'),
+
+  /// Whole screens built from the components.
+  templates('Templates');
+
+  const DocsSection(this.label);
+
+  /// The top-bar label.
+  final String label;
+}
+
+/// The section [page] belongs to.
+DocsSection docsSectionOf(DocPage page) => switch (page.group) {
+  DocGroup.gettingStarted => DocsSection.docs,
+  DocGroup.templates => DocsSection.templates,
+  _ => DocsSection.components,
+};
+
 /// Everything the docs chrome can change about how the pages render, plus which
 /// page is showing.
 ///
@@ -87,11 +115,80 @@ class DocsController extends ChangeNotifier {
   /// Somebody arriving from a search result or a package listing has one
   /// question first, and the sidebar is not an answer to it.
   bool get onLanding => _onLanding;
-  bool _onLanding = _pageIdFromUrl() == null;
+  bool _onLanding =
+      _pageIdFromUrl() == null &&
+      !_overviewInUrl() &&
+      !_segmentInUrl('playground');
+
+  /// Whether the `/components` overview is showing: every component as a
+  /// tile, by category.
+  bool get onComponentsOverview => _onOverview;
+  bool _onOverview = _pageIdFromUrl() == null && _overviewInUrl();
+
+  /// Whether the playground is showing.
+  bool get onPlayground => _onPlayground;
+  bool _onPlayground = _pageIdFromUrl() == null && _segmentInUrl('playground');
+
+  /// The theme the playground is editing. Seeded from the share link.
+  PlaygroundTheme get playgroundTheme => _playgroundTheme;
+  PlaygroundTheme _playgroundTheme =
+      PlaygroundTheme.decode(Uri.base.queryParameters['t']) ??
+      const PlaygroundTheme();
+  set playgroundTheme(PlaygroundTheme value) => _set(() {
+    _playgroundTheme = value;
+    _syncPlaygroundUrl();
+  }, false);
+
+  /// The example the playground previews: a region id from `lib/examples/`.
+  String get playgroundExample => _playgroundExample;
+  String _playgroundExample =
+      Uri.base.queryParameters['ex'] ?? playgroundDefaultExample;
+  set playgroundExample(String value) => _set(() {
+    _playgroundExample = value;
+    _syncPlaygroundUrl();
+  }, _playgroundExample == value);
+
+  /// The playground's own preview mode. Null follows the site.
+  AstryxColorMode? get playgroundMode => _playgroundMode;
+  AstryxColorMode? _playgroundMode;
+  set playgroundMode(AstryxColorMode? value) =>
+      _set(() => _playgroundMode = value, _playgroundMode == value);
+
+  /// The link that reproduces the playground as it is now.
+  Uri get playgroundUri => Uri(
+    path: '/playground',
+    queryParameters: <String, String>{
+      'ex': _playgroundExample,
+      if (_playgroundTheme.isEdited ||
+          _playgroundTheme.base != DocsTheme.neutral)
+        't': _playgroundTheme.encode(),
+    },
+  );
+
+  void _syncPlaygroundUrl() {
+    if (!_onPlayground) return;
+    unawaited(
+      SystemNavigator.routeInformationUpdated(
+        uri: playgroundUri,
+        replace: true,
+      ),
+    );
+  }
+
+  /// Opens the playground.
+  void goPlayground() => _set(() {
+    _onLanding = false;
+    _onOverview = false;
+    _onPlayground = true;
+    _syncPlaygroundUrl();
+  }, _onPlayground && !_onLanding);
 
   /// Goes back to the landing page.
   void goHome() => _set(() {
     _onLanding = true;
+    _onOverview = false;
+    _onPlayground = false;
+    _query = '';
     unawaited(
       SystemNavigator.routeInformationUpdated(
         uri: Uri(path: '/'),
@@ -99,6 +196,42 @@ class DocsController extends ChangeNotifier {
       ),
     );
   }, _onLanding);
+
+  /// Opens the components overview.
+  void goComponents() => _set(() {
+    _onLanding = false;
+    _onOverview = true;
+    _onPlayground = false;
+    unawaited(
+      SystemNavigator.routeInformationUpdated(
+        uri: Uri(path: '/components'),
+        replace: true,
+      ),
+    );
+  }, _onOverview && !_onLanding);
+
+  /// The top-level section the reader is in — what the top bar highlights and
+  /// what the sidebar lists.
+  DocsSection get section {
+    if (_onOverview) return DocsSection.components;
+    return docsSectionOf(page.page);
+  }
+
+  /// Opens [section]: the overview for components, the first page otherwise.
+  void goSection(DocsSection section) {
+    // A filter typed for one section means nothing in another.
+    _query = '';
+    switch (section) {
+      case DocsSection.components:
+        goComponents();
+      case DocsSection.docs:
+      case DocsSection.templates:
+        final first = docPages.firstWhere(
+          (page) => docsSectionOf(page) == section,
+        );
+        pageId = first.id;
+    }
+  }
 
   DocsTheme get theme => _theme;
   DocsTheme _theme = DocsTheme.neutral;
@@ -119,6 +252,21 @@ class DocsController extends ChangeNotifier {
   TextDirection _textDirection = TextDirection.ltr;
   set textDirection(TextDirection value) =>
       _set(() => _textDirection = value, _textDirection == value);
+
+  /// The theme the Themes page previews.
+  ///
+  /// Separate from [theme]: picking a card on that page restyles the preview,
+  /// not the site around it.
+  DocsTheme get previewTheme => _previewTheme;
+  DocsTheme _previewTheme = DocsTheme.neutral;
+  set previewTheme(DocsTheme value) =>
+      _set(() => _previewTheme = value, _previewTheme == value);
+
+  /// The colour mode of the Themes page preview. Null follows the site.
+  AstryxColorMode? get previewMode => _previewMode;
+  AstryxColorMode? _previewMode;
+  set previewMode(AstryxColorMode? value) =>
+      _set(() => _previewMode = value, _previewMode == value);
 
   /// The width every example previews at.
   ///
@@ -141,6 +289,8 @@ class DocsController extends ChangeNotifier {
     _pageId = value;
     // Choosing a page leaves the front door, wherever the choice came from.
     _onLanding = false;
+    _onOverview = false;
+    _onPlayground = false;
     // Navigating does not open anything. A group the reader closed stays
     // closed, whether they arrived by pressing an item, by the previous/next
     // footer, or by a link inside the prose — a sidebar that reopens a group
@@ -160,7 +310,7 @@ class DocsController extends ChangeNotifier {
         replace: true,
       ),
     );
-  }, _pageId == value && !_onLanding);
+  }, _pageId == value && !_onLanding && !_onOverview && !_onPlayground);
 
   /// The page the current URL asks for, or the first page.
   ///
@@ -183,34 +333,35 @@ class DocsController extends ChangeNotifier {
     return null;
   }
 
+  /// Whether the URL's last path segment, or its fragment, is [segment].
+  static bool _segmentInUrl(String segment) {
+    final segments = Uri.base.pathSegments.where((s) => s.isNotEmpty).toList();
+    if (segments.isNotEmpty && segments.last == segment) return true;
+    return Uri.base.fragment.replaceAll('/', '') == segment;
+  }
+
+  /// Whether the URL asks for the components overview: `/components`.
+  static bool _overviewInUrl() {
+    final segments = Uri.base.pathSegments.where((s) => s.isNotEmpty).toList();
+    if (segments.isNotEmpty && segments.last == 'components') return true;
+    return Uri.base.fragment.replaceAll('/', '') == 'components';
+  }
+
   /// The sidebar filter.
   String get query => _query;
   String _query = '';
   set query(String value) => _set(() => _query = value, _query == value);
 
-  /// Whether the sidebar hides the pages that are only placeholders.
+  /// The sidebar entries that are expanded — a component family such as
+  /// `Button`, or a section such as `Hooks & controllers`.
   ///
-  /// Most of the site is a placeholder — the registry mirrors every component
-  /// upstream ships, and most are not written up. Someone looking for
-  /// documentation wants this on; someone auditing the port against upstream
-  /// wants it off.
-  bool get writtenOnly => _writtenOnly;
-  bool _writtenOnly = false;
-  set writtenOnly(bool value) =>
-      _set(() => _writtenOnly = value, _writtenOnly == value);
-
-  /// The sidebar groups that are expanded.
-  ///
-  /// Empty until somebody presses a heading. Seventeen groups of two hundred
-  /// pages is not a list anyone reads, so **every group is collapsed** — on
-  /// first load, and after every navigation. Nothing but a press opens one.
-  ///
-  /// The one exception is not here: a non-empty filter query forces every group
-  /// open in the sidebar itself, because a search whose matches stay hidden has
-  /// not searched anything.
+  /// Empty until somebody presses a chevron. Navigating never adds to it: the
+  /// family holding the current page is drawn open by the sidebar itself, so
+  /// the reader can see where they are without the sidebar rewriting what they
+  /// chose to keep open.
   final Set<String> _openGroups = <String>{};
 
-  /// Whether [group] is expanded.
+  /// Whether [group] has been expanded by the reader.
   bool isGroupOpen(String group) => _openGroups.contains(group);
 
   /// Expands [group] if it is collapsed, and the reverse.

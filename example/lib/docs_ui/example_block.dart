@@ -6,7 +6,9 @@ import 'package:example/docs_ui/code_block.dart';
 import 'package:example/docs_ui/docs_controller.dart';
 import 'package:example/docs_ui/inline_markup.dart';
 import 'package:example/docs_ui/segmented.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Below this, the preview area is already about phone-width and the width
 /// picker has nothing to offer — so it is not drawn.
@@ -18,11 +20,12 @@ const double docsDevicePickerMinWidth = 460;
 /// Identifies the box that constrains a preview, so a test can measure it.
 const Key docsPreviewFrameKey = Key('docs-preview-frame');
 
-/// A live example: the rendered widget under a `Preview` tab, and the source
-/// that produced it under `Code`.
+/// A live example, as upstream frames one: a card with the example's title
+/// at the top, the rendered widget in the middle, and a strip along the bottom
+/// with the description and the code that produced it.
 ///
-/// Both come from one region in `lib/examples/`, so the code cannot describe
-/// something other than what is on screen.
+/// Preview and code both come from one region in `lib/examples/`, so the code
+/// cannot describe something other than what is on screen.
 class DocsExampleBlock extends StatefulWidget {
   const DocsExampleBlock(this.example, {super.key});
 
@@ -32,10 +35,13 @@ class DocsExampleBlock extends StatefulWidget {
   State<DocsExampleBlock> createState() => _DocsExampleBlockState();
 }
 
-enum _Tab { preview, code }
+/// What the strip under the preview shows.
+enum _Tab { description, code }
 
 class _DocsExampleBlockState extends State<DocsExampleBlock> {
-  _Tab _tab = _Tab.preview;
+  /// Null when the strip is closed — the default for an example with no
+  /// description, whose only tab is the code.
+  late _Tab? _tab = widget.example.note == null ? null : _Tab.description;
 
   /// The fallback for an example lifted out of the site, where there is no
   /// chrome to remember anything.
@@ -61,73 +67,125 @@ class _DocsExampleBlockState extends State<DocsExampleBlock> {
   @override
   Widget build(BuildContext context) {
     final theme = AstryxTheme.of(context);
-    final id = widget.example.snippetId;
+    final example = widget.example;
+    final id = example.snippetId;
     final builder = docPreviews[id];
     final source = docSnippets[id];
+    final hasNote = example.note != null;
 
-    return AstryxVStack(
+    final strip = AstryxHStack(
       gap: AstryxSpacingToken.spacing2,
-      align: AstryxStackAlign.stretch,
+      justify: AstryxStackJustify.between,
+      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        if (widget.example.title != null)
-          DocsInlineText(widget.example.title!, type: AstryxTextType.label),
-        AstryxCard(
-          padding: AstryxSpacingToken.spacing0,
-          header: Padding(
-            padding: EdgeInsetsDirectional.only(
-              start: theme.spacing(AstryxSpacingToken.spacing2),
-              end: theme.spacing(AstryxSpacingToken.spacing2),
-              top: theme.spacing(AstryxSpacingToken.spacing1),
+        if (hasNote)
+          AstryxTabList<_Tab>(
+            label: 'Example details',
+            size: AstryxTabSize.sm,
+            value: _tab,
+            showDivider: false,
+            onChanged: (value) => setState(() => _tab = value),
+            tabs: const <AstryxTab<_Tab>>[
+              AstryxTab(value: _Tab.description, label: 'Description'),
+              AstryxTab(value: _Tab.code, label: 'Code'),
+            ],
+          )
+        else
+          AstryxButton(
+            label: _tab == _Tab.code ? 'Hide code' : 'Code',
+            variant: AstryxButtonVariant.ghost,
+            size: AstryxButtonSize.sm,
+            leading: const Icon(LucideIcons.code),
+            onPressed: () => setState(
+              () => _tab = _tab == _Tab.code ? null : _Tab.code,
             ),
-            // The device picker belongs to the preview, so it appears only on
-            // that tab — and only where the preview area is wide enough for the
-            // two widths to differ.
-            child: LayoutBuilder(
-              builder: (context, constraints) => AstryxHStack(
-                gap: AstryxSpacingToken.spacing3,
-                justify: AstryxStackJustify.between,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  AstryxTabList<_Tab>(
-                    label: 'Example view',
-                    size: AstryxTabSize.sm,
-                    value: _tab,
-                    onChanged: (value) => setState(() => _tab = value),
-                    tabs: const <AstryxTab<_Tab>>[
-                      AstryxTab(value: _Tab.preview, label: 'Preview'),
-                      AstryxTab(value: _Tab.code, label: 'Code'),
-                    ],
-                  ),
-                  if (_tab == _Tab.preview &&
-                      constraints.maxWidth >= docsDevicePickerMinWidth)
-                    DocsSegmented<DocsPreviewWidth>(
+          ),
+        AstryxIconButton(
+          icon: AstryxIconName.copy,
+          label: 'Copy code',
+          tooltip: 'Copy code',
+          variant: AstryxButtonVariant.ghost,
+          size: AstryxButtonSize.sm,
+          enabled: source != null,
+          onPressed: source == null
+              ? null
+              : () => Clipboard.setData(ClipboardData(text: source)),
+        ),
+      ],
+    );
+
+    return AstryxCard(
+      padding: AstryxSpacingToken.spacing0,
+      child: AstryxVStack(
+        align: AstryxStackAlign.stretch,
+        children: <Widget>[
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final picker = constraints.maxWidth >= docsDevicePickerMinWidth
+                  ? DocsSegmented<DocsPreviewWidth>(
                       label: 'Preview width',
                       values: DocsPreviewWidth.values,
                       selected: _width,
                       labelOf: (value) => value.label,
                       iconOf: (value) => Icon(value.icon),
                       onSelected: _chooseWidth,
+                    )
+                  : null;
+              if (example.title == null && picker == null) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding: EdgeInsetsDirectional.only(
+                  start: theme.spacing(AstryxSpacingToken.spacing4),
+                  end: theme.spacing(AstryxSpacingToken.spacing2),
+                  top: theme.spacing(AstryxSpacingToken.spacing2),
+                ),
+                child: AstryxHStack(
+                  gap: AstryxSpacingToken.spacing3,
+                  justify: AstryxStackJustify.between,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Expanded(
+                      child: example.title == null
+                          ? const SizedBox.shrink()
+                          : DocsInlineText(
+                              example.title!,
+                              type: AstryxTextType.label,
+                            ),
                     ),
-                ],
+                    ?picker,
+                  ],
+                ),
+              );
+            },
+          ),
+          _Preview(example: example, builder: builder, width: _width),
+          const AstryxDivider(),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: theme.spacing(AstryxSpacingToken.spacing2),
+              vertical: theme.spacing(AstryxSpacingToken.spacing1),
+            ),
+            child: strip,
+          ),
+          if (_tab == _Tab.description && hasNote)
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: theme.spacing(AstryxSpacingToken.spacing4),
+                end: theme.spacing(AstryxSpacingToken.spacing4),
+                bottom: theme.spacing(AstryxSpacingToken.spacing4),
+              ),
+              child: DocsInlineText(
+                example.note!,
+                color: AstryxTextColor.secondary,
               ),
             ),
-          ),
-          child: switch (_tab) {
-            _Tab.preview => _Preview(
-              example: widget.example,
-              builder: builder,
-              width: _width,
-            ),
-            _Tab.code => _Code(id: id, source: source),
-          },
-        ),
-        if (widget.example.note != null)
-          DocsInlineText(
-            widget.example.note!,
-            type: AstryxTextType.supporting,
-            color: AstryxTextColor.secondary,
-          ),
-      ],
+          if (_tab == _Tab.code) ...<Widget>[
+            const AstryxDivider(),
+            _Code(id: id, source: source),
+          ],
+        ],
+      ),
     );
   }
 }
