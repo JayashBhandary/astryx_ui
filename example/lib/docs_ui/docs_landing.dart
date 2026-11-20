@@ -192,7 +192,7 @@ class _Hero extends StatelessWidget {
               AstryxButton(
                 label: 'Browse ${landingCounts.components} components',
                 size: AstryxButtonSize.lg,
-                onPressed: () => controller.pageId = 'button',
+                onPressed: controller.goComponents,
               ),
             ],
           ),

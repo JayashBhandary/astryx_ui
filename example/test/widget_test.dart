@@ -1,3 +1,4 @@
+import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs/pages.dart';
 import 'package:example/docs/previews.g.dart';
 import 'package:example/docs/snippets.g.dart';
@@ -41,7 +42,11 @@ void main() {
     expect(controller.pageId, 'installation');
 
     // The brand in the bar is the way home, which is where every site puts it.
-    await tester.tap(find.text('astryx_ui').first);
+    await tester.tap(
+      find.byWidgetPredicate(
+        (w) => w is AstryxIconButton && w.label == 'astryx_ui home',
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(controller.onLanding, isTrue);

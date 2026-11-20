@@ -8,6 +8,7 @@
 library;
 
 import 'package:example/docs/pages.dart';
+import 'package:example/docs_ui/code_block.dart';
 import 'package:example/docs_ui/docs_controller.dart';
 import 'package:example/docs_ui/docs_shell.dart';
 import 'package:example/docs_ui/example_block.dart';
@@ -62,19 +63,27 @@ void main() {
     expect(frameWidth(tester), mobileWidth);
   });
 
-  testWidgets('the picker belongs to the preview, not to the code', (
+  testWidgets('the code opens under the preview, which stays', (
     tester,
   ) async {
     await pumpPage(tester, 'card');
-    expect(mobile, findsWidgets);
+    final frames = find.byKey(docsPreviewFrameKey).evaluate().length;
+    // The page's own usage snippets are code blocks too; count, don't assume.
+    final codeBlocks = find.byType(DocsCodeBlock).evaluate().length;
 
-    // Every example on the page has a Code tab; switching the first one is
-    // enough for its own picker to go, and the rest keep theirs.
-    final before = mobile.evaluate().length;
-    await tester.tap(find.text('Code').first);
+    // Every example has a Code control in its strip; opening one shows its
+    // source and leaves every preview where it was.
+    final codeButton = find.descendant(
+      of: find.byType(DocsExampleBlock).first,
+      matching: find.text('Code'),
+    );
+    await tester.ensureVisible(codeButton);
+    await tester.pumpAndSettle();
+    await tester.tap(codeButton);
     await tester.pumpAndSettle();
 
-    expect(mobile.evaluate().length, before - 1);
+    expect(find.byType(DocsCodeBlock).evaluate().length, codeBlocks + 1);
+    expect(find.byKey(docsPreviewFrameKey).evaluate().length, frames);
   });
 
   testWidgets('a viewport already at phone width is not offered the picker', (
