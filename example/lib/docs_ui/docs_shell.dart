@@ -5,6 +5,7 @@ import 'package:example/docs_ui/docs_controller.dart';
 import 'package:example/docs_ui/docs_landing.dart';
 import 'package:example/docs_ui/docs_sidebar.dart';
 import 'package:example/docs_ui/docs_top_nav.dart';
+import 'package:example/docs_ui/themes_page.dart';
 import 'package:flutter/widgets.dart';
 
 /// The chrome around the documentation: the top bar, the sidebar, and the
@@ -36,6 +37,10 @@ class DocsShell extends StatelessWidget {
           final Widget body;
           if (controller.onLanding) {
             body = const _LandingContent();
+          } else if (!controller.onComponentsOverview &&
+              controller.pageId == docsThemesPageId) {
+            // The Themes page brings its own panel instead of the sidebar.
+            body = const DocsThemesPage();
           } else {
             body = AstryxHStack(
               align: AstryxStackAlign.stretch,

@@ -49,7 +49,13 @@ class DocsTopNav extends StatelessWidget {
         for (final section in DocsSection.values)
           _SectionLink(
             label: section.label,
-            selected: !controller.onLanding && controller.section == section,
+            // The Themes page sits in the Docs section in the registry, but
+            // it has its own link: only one of the two lights up.
+            selected:
+                !controller.onLanding &&
+                controller.section == section &&
+                (controller.onComponentsOverview ||
+                    controller.pageId != 'themes'),
             onPressed: () => controller.goSection(section),
           ),
         _SectionLink(

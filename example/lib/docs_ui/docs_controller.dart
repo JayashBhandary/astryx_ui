@@ -186,6 +186,21 @@ class DocsController extends ChangeNotifier {
   set textDirection(TextDirection value) =>
       _set(() => _textDirection = value, _textDirection == value);
 
+  /// The theme the Themes page previews.
+  ///
+  /// Separate from [theme]: picking a card on that page restyles the preview,
+  /// not the site around it.
+  DocsTheme get previewTheme => _previewTheme;
+  DocsTheme _previewTheme = DocsTheme.neutral;
+  set previewTheme(DocsTheme value) =>
+      _set(() => _previewTheme = value, _previewTheme == value);
+
+  /// The colour mode of the Themes page preview. Null follows the site.
+  AstryxColorMode? get previewMode => _previewMode;
+  AstryxColorMode? _previewMode;
+  set previewMode(AstryxColorMode? value) =>
+      _set(() => _previewMode = value, _previewMode == value);
+
   /// The width every example previews at.
   ///
   /// On the controller rather than on each example block, so the choice is made
