@@ -6,6 +6,7 @@
 /// phone's width.
 library;
 
+import 'package:astryx_ui/astryx_ui.dart';
 import 'package:example/docs/version.g.dart';
 import 'package:example/docs_ui/docs_landing.dart';
 import 'package:example/main.dart';
@@ -38,18 +39,67 @@ void main() {
     await tester.pumpWidget(const DocsApp());
     await tester.pumpAndSettle();
 
-    // The cards are the tap target, so the semantics are the whole of what a
-    // screen-reader user gets: the destination, and that it leaves the site.
+    // The footer's buttons are glyphs, so the semantics are the whole of
+    // what a screen-reader user gets: the destination, and that it leaves.
     for (final host in const <String>[
       'pub.dev/packages/astryx_ui',
       'github.com/JayashBhandary/astryx_ui',
     ]) {
-      expect(find.text(host), findsOneWidget, reason: host);
       expect(
         find.bySemanticsLabel(RegExp('Opens $host in a new tab')),
-        findsOneWidget,
+        findsWidgets,
         reason: host,
       );
+    }
+  });
+
+  testWidgets('the hero cycles themes and the dots pick one', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(const DocsApp());
+    await tester.pumpAndSettle();
+
+    String accent() => tester
+        .widget<AstryxThemeProvider>(
+          find
+              .descendant(
+                of: find.byType(LandingHero),
+                matching: find.byType(AstryxThemeProvider),
+              )
+              .first,
+        )
+        .theme!
+        .name;
+
+    expect(accent(), landingHeroSlides.first.$1.theme.name);
+    await tester.pump(LandingHero.slideDuration);
+    await tester.pumpAndSettle();
+    expect(accent(), landingHeroSlides[1].$1.theme.name);
+
+    final last = landingHeroSlides.last.$1;
+    await tester.tap(find.bySemanticsLabel('Show ${last.label}'));
+    await tester.pumpAndSettle();
+    expect(accent(), last.theme.name);
+    expect(tester.takeException(), isNull);
+  });
+
+  test('release notes are cut from the changelog', () {
+    final latest = landingLatest;
+    expect(latest.notes, isNotEmpty);
+    for (final note in latest.notes) {
+      expect(note.title, isNot(contains('**')));
+      expect(note.title, isNotEmpty);
+    }
+    expect(
+      landingNote('**Bold title.** And the rest.'),
+      (title: 'Bold title', body: 'And the rest.'),
+    );
+  });
+
+  test('every landing template has a preview', () {
+    for (final id in landingTemplateIds) {
+      expect(landingTemplateSnippet(id), isNotNull, reason: id);
     }
   });
 
@@ -64,6 +114,17 @@ void main() {
     expect(landingCounts.hooks, greaterThan(0));
     expect(landingCounts.themes, greaterThan(0));
   });
+
+  for (final width in const <double>[820, 1100, 1440]) {
+    testWidgets('the landing page lays out at $width', (tester) async {
+      await tester.binding.setSurfaceSize(Size(width, 4000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(const DocsApp());
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   testWidgets('the landing page survives a phone', (tester) async {
     // Tall, because the check is for an overflowing row rather than for what
