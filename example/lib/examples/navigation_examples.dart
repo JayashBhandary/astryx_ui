@@ -118,16 +118,14 @@ class _TopNavDemoExampleState extends State<TopNavDemoExample> {
             AstryxNavItem(
               id: 'docs',
               label: 'Docs',
-              panel: AstryxCard(
-                child: AstryxVStack(
-                  gap: AstryxSpacingToken.spacing2,
-                  align: AstryxStackAlign.stretch,
-                  children: <Widget>[
-                    const AstryxHeading('Guides', level: 3),
-                    AstryxItem(label: 'Getting started', onPressed: () {}),
-                    AstryxItem(label: 'Theming', onPressed: () {}),
-                  ],
-                ),
+              panel: AstryxVStack(
+                gap: AstryxSpacingToken.spacing2,
+                align: AstryxStackAlign.stretch,
+                children: <Widget>[
+                  const AstryxHeading('Guides', level: 3),
+                  AstryxItem(label: 'Getting started', onPressed: () {}),
+                  AstryxItem(label: 'Theming', onPressed: () {}),
+                ],
               ),
             ),
           ],

@@ -196,7 +196,12 @@ class _TopNavItem extends StatelessWidget {
     if (panel != null) {
       return AstryxPopover(
         label: item.label,
-        content: panel,
+        // The popover hands its content the whole window's width, which a
+        // stretching panel takes all of; the cap keeps it a dropdown.
+        content: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: item.panelMaxWidth),
+          child: panel,
+        ),
         align: AstryxOverlayAlign.start,
         triggerBuilder: (context, controller) => IntrinsicWidth(
           child: _row(

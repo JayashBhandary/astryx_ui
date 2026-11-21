@@ -230,17 +230,15 @@ class _ShellBar extends StatelessWidget {
         AstryxNavItem(
           id: 'docs',
           label: 'Docs',
-          panel: AstryxCard(
-            child: AstryxVStack(
-              gap: AstryxSpacingToken.spacing2,
-              align: AstryxStackAlign.stretch,
-              children: <Widget>[
-                const AstryxHeading('Guides', level: 3),
-                AstryxItem(label: 'Getting started', onPressed: () {}),
-                AstryxItem(label: 'Deploy pipelines', onPressed: () {}),
-                AstryxItem(label: 'On-call rotations', onPressed: () {}),
-              ],
-            ),
+          panel: AstryxVStack(
+            gap: AstryxSpacingToken.spacing2,
+            align: AstryxStackAlign.stretch,
+            children: <Widget>[
+              const AstryxHeading('Guides', level: 3),
+              AstryxItem(label: 'Getting started', onPressed: () {}),
+              AstryxItem(label: 'Deploy pipelines', onPressed: () {}),
+              AstryxItem(label: 'On-call rotations', onPressed: () {}),
+            ],
           ),
         ),
         const AstryxNavItem(id: 'status', label: 'Status'),

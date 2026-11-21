@@ -28,7 +28,11 @@ class AstryxNavItem extends AstryxNavEntry {
     this.enabled = true,
     this.children = const <AstryxNavItem>[],
     this.panel,
+    this.panelMaxWidth = defaultPanelMaxWidth,
   });
+
+  /// The widest a [panel] grows unless told otherwise.
+  static const double defaultPanelMaxWidth = 320;
 
   /// This destination's identity, unique across the navigation.
   ///
@@ -69,6 +73,13 @@ class AstryxNavItem extends AstryxNavEntry {
   /// links and a rail does not, so `AstryxSideNav` ignores it and shows
   /// [children] instead.
   final Widget? panel;
+
+  /// The widest [panel] grows.
+  ///
+  /// A cap, not a size: a panel that hugs its content stays narrow, and one
+  /// that stretches — a card, a stack aligned to `stretch` — stops here
+  /// instead of filling the window. Raise it for a mega menu of columns.
+  final double panelMaxWidth;
 
   /// Whether this row leads anywhere below itself.
   bool get hasChildren => children.isNotEmpty;

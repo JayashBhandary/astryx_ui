@@ -255,6 +255,49 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Featured guides'), findsOneWidget);
     });
+
+    // A stretch-aligned stack takes every pixel it is offered; the popover
+    // offers the whole window, which once made this a full-width bar.
+    Future<double> openPanelWidth(
+      WidgetTester tester, {
+      double? maxWidth,
+    }) async {
+      await pumpAstryxWidget(
+        tester,
+        AstryxTopNav(
+          entries: <AstryxNavEntry>[
+            AstryxNavItem(
+              id: 'docs',
+              label: 'Docs',
+              panelMaxWidth:
+                  maxWidth ?? AstryxNavItem.defaultPanelMaxWidth,
+              panel: const AstryxVStack(
+                align: AstryxStackAlign.stretch,
+                children: <Widget>[AstryxText('Guides')],
+              ),
+            ),
+          ],
+        ),
+        surfaceSize: const Size(1400, 600),
+      );
+      await tester.tap(find.text('Docs'));
+      await tester.pumpAndSettle();
+      return tester.getSize(find.text('Guides')).width;
+    }
+
+    testWidgets('a stretching panel stops at the default width', (
+      tester,
+    ) async {
+      final width = await openPanelWidth(tester);
+      expect(width, lessThanOrEqualTo(AstryxNavItem.defaultPanelMaxWidth));
+      expect(width, greaterThan(AstryxNavItem.defaultPanelMaxWidth / 2));
+    });
+
+    testWidgets('panelMaxWidth widens the panel', (tester) async {
+      final width = await openPanelWidth(tester, maxWidth: 640);
+      expect(width, lessThanOrEqualTo(640));
+      expect(width, greaterThan(AstryxNavItem.defaultPanelMaxWidth));
+    });
   });
 
   group('AstryxNavHeadingMenu', () {

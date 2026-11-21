@@ -154,6 +154,15 @@ class LandingHero extends StatefulWidget {
   /// At and above this width the floating cards show.
   static const double floatingWidth = 1180;
 
+  /// At and above this width the corner cards show as well.
+  static const double cornersWidth = 1480;
+
+  /// The site's top nav, which the full-screen hero sits under.
+  static const double navHeight = 56;
+
+  /// The shortest the hero gets once the cards float.
+  static const double minFloatingHeight = 820;
+
   @override
   State<LandingHero> createState() => _LandingHeroState();
 }
@@ -221,52 +230,86 @@ class _LandingHeroState extends State<LandingHero> {
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final floating =
-                    constraints.maxWidth >= LandingHero.floatingWidth;
+                final width = constraints.maxWidth;
+                final floating = width >= LandingHero.floatingWidth;
                 final centre = Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: theme.spacing(AstryxSpacingToken.spacing6),
-                    vertical: theme.spacing(AstryxSpacingToken.spacing12) * 2,
+                    // A full-screen hero centres the copy itself.
+                    vertical: floating
+                        ? theme.spacing(AstryxSpacingToken.spacing6)
+                        : theme.spacing(AstryxSpacingToken.spacing12) * 2,
                   ),
                   child: _HeroCopy(
                     slide: _slide,
                     onSlide: _go,
-                    wordmarkHeight: constraints.maxWidth < 600 ? 52 : 96,
+                    wordmarkHeight: width < 600 ? 52 : 96,
                   ),
                 );
                 if (!floating) return centre;
 
+                // Fill the window below the top nav, never less than the
+                // floating cards need.
+                final height = (MediaQuery.sizeOf(context).height -
+                        LandingHero.navHeight)
+                    .clamp(LandingHero.minFloatingHeight, double.infinity);
+                // The corner cards only fit once the copy has room beside them.
+                final corners = width >= LandingHero.cornersWidth;
+                // The low cards sit under the copy, between the side columns.
+                final low = corners && height >= 860;
+
                 final item = studioProducts[product % studioProducts.length];
                 final next =
                     studioProducts[(product + 1) % studioProducts.length];
-                // The copy sizes the hero; the cards float over its sides.
-                return Stack(
-                  alignment: AlignmentDirectional.topCenter,
-                  children: <Widget>[
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: constraints.maxWidth,
-                        minHeight: 820,
+                Widget swap(Widget child) =>
+                    _FadeSwap(id: _slide, child: child);
+
+                return SizedBox(
+                  width: width,
+                  height: height,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment(0, low ? -0.45 : -0.3),
+                        child: centre,
                       ),
-                      child: centre,
-                    ),
-                    Positioned(
-                      left: 16,
-                      top: 340,
-                      child: _FadeSwap(
-                        id: _slide,
-                        child: _HeroLeftCards(product: item),
+                      if (corners) ...<Widget>[
+                        Positioned(
+                          left: 32,
+                          top: 40,
+                          child: swap(const _HeroSettingsCard()),
+                        ),
+                        Positioned(
+                          right: 32,
+                          top: 40,
+                          child: swap(const _HeroTeamCard()),
+                        ),
+                      ],
+                      Positioned(
+                        left: 24,
+                        bottom: 24,
+                        child: swap(_HeroLeftCards(product: item)),
                       ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      top: 380,
-                      child: _FadeSwap(
-                        id: _slide,
-                        child: _HeroRightCards(product: next),
+                      Positioned(
+                        right: 24,
+                        bottom: 24,
+                        child: swap(_HeroRightCards(product: next)),
                       ),
-                    ),
-                  ],
+                      if (low) ...<Widget>[
+                        Positioned(
+                          left: width * 0.5 - 340,
+                          bottom: 48,
+                          child: swap(const _HeroControlsCard()),
+                        ),
+                        Positioned(
+                          right: width * 0.5 - 340,
+                          bottom: 72,
+                          child: swap(_HeroToastCard(product: item)),
+                        ),
+                      ],
+                    ],
+                  ),
                 );
               },
             ),
@@ -597,7 +640,7 @@ class _HeroRightCards extends StatelessWidget {
       child: ExcludeSemantics(
         child: SizedBox(
           width: 380,
-          height: 400,
+          height: 460,
           child: Stack(
             children: <Widget>[
               const Positioned(
@@ -733,6 +776,238 @@ class _HeroRightCards extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Decorative hero specimens: shown, never focused or announced.
+class _Specimen extends StatelessWidget {
+  const _Specimen({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) =>
+      IgnorePointer(child: ExcludeSemantics(child: child));
+}
+
+/// Top left: a settings panel of switches.
+class _HeroSettingsCard extends StatelessWidget {
+  const _HeroSettingsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _Specimen(
+      child: _Float(
+        width: 320,
+        padding: 18,
+        child: AstryxVStack(
+          gap: AstryxSpacingToken.spacing3,
+          align: AstryxStackAlign.stretch,
+          children: <Widget>[
+            const AstryxHStack(
+              gap: AstryxSpacingToken.spacing2,
+              justify: AstryxStackJustify.between,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Flexible(
+                  child: AstryxText(
+                    'Notifications',
+                    weight: AstryxTextWeight.semibold,
+                    maxLines: 1,
+                  ),
+                ),
+                AstryxBadge('New', variant: AstryxBadgeVariant.info),
+              ],
+            ),
+            AstryxSwitch(
+              label: 'Order updates',
+              value: true,
+              onChanged: (_) {},
+              labelPosition: AstryxToggleLabelPosition.start,
+              labelSpacing: AstryxToggleLabelSpacing.spread,
+            ),
+            AstryxSwitch(
+              label: 'Price drops',
+              value: false,
+              onChanged: (_) {},
+              labelPosition: AstryxToggleLabelPosition.start,
+              labelSpacing: AstryxToggleLabelSpacing.spread,
+            ),
+            AstryxSwitch(
+              label: 'Weekly digest',
+              value: true,
+              onChanged: (_) {},
+              labelPosition: AstryxToggleLabelPosition.start,
+              labelSpacing: AstryxToggleLabelSpacing.spread,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Top right: who is around, with a range picker.
+class _HeroTeamCard extends StatelessWidget {
+  const _HeroTeamCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _Specimen(
+      child: _Float(
+        width: 320,
+        padding: 18,
+        child: AstryxVStack(
+          gap: AstryxSpacingToken.spacing3,
+          align: AstryxStackAlign.stretch,
+          children: <Widget>[
+            const AstryxHStack(
+              gap: AstryxSpacingToken.spacing2,
+              justify: AstryxStackJustify.between,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Flexible(
+                  child: AstryxText(
+                    'Design team',
+                    weight: AstryxTextWeight.semibold,
+                    maxLines: 1,
+                  ),
+                ),
+                AstryxHStack(
+                  gap: AstryxSpacingToken.spacing1,
+                  children: <Widget>[
+                    AstryxStatusDot(
+                      AstryxStatusDotVariant.success,
+                      label: 'Online',
+                    ),
+                    AstryxText(
+                      '4 online',
+                      type: AstryxTextType.supporting,
+                      color: AstryxTextColor.secondary,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const AstryxAvatarGroup(
+              label: 'Design team',
+              max: 4,
+              size: AstryxAvatarSize.sm,
+              avatars: <AstryxAvatar>[
+                AstryxAvatar(name: 'Ami Pena'),
+                AstryxAvatar(name: 'Jun Park'),
+                AstryxAvatar(name: 'Lena Ortiz'),
+                AstryxAvatar(name: 'Sam Rivers'),
+                AstryxAvatar(name: 'Noor Haddad'),
+                AstryxAvatar(name: 'Theo Grant'),
+              ],
+            ),
+            AstryxSegmentedControl<int>(
+              label: 'Range',
+              value: 1,
+              size: AstryxButtonSize.sm,
+              expand: true,
+              onChanged: (_) {},
+              segments: const <AstryxSegment<int>>[
+                AstryxSegment(value: 0, label: 'Day'),
+                AstryxSegment(value: 1, label: 'Week'),
+                AstryxSegment(value: 2, label: 'Month'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom, left of centre: a slider and a sync status.
+class _HeroControlsCard extends StatelessWidget {
+  const _HeroControlsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _Specimen(
+      child: _Float(
+        width: 280,
+        padding: 18,
+        child: AstryxVStack(
+          gap: AstryxSpacingToken.spacing3,
+          align: AstryxStackAlign.stretch,
+          children: <Widget>[
+            AstryxSlider(
+              label: 'Volume',
+              value: 64,
+              length: 244,
+              valueDisplay: AstryxSliderValueDisplay.text,
+              onChanged: (_) {},
+            ),
+            const AstryxDivider(),
+            const AstryxHStack(
+              gap: AstryxSpacingToken.spacing2,
+              children: <Widget>[
+                AstryxSpinner(label: 'Syncing', size: AstryxSpinnerSize.sm),
+                AstryxText(
+                  'Syncing library…',
+                  type: AstryxTextType.supporting,
+                  color: AstryxTextColor.secondary,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom, right of centre: a toast confirming an order.
+class _HeroToastCard extends StatelessWidget {
+  const _HeroToastCard({required this.product});
+
+  final StudioProduct product;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AstryxTheme.of(context);
+    return _Specimen(
+      child: _Float(
+        width: 300,
+        padding: 14,
+        child: AstryxHStack(
+          gap: AstryxSpacingToken.spacing3,
+          children: <Widget>[
+            Icon(
+              LucideIcons.circleCheck,
+              size: 20,
+              color: theme.color(AstryxColorToken.success),
+            ),
+            Expanded(
+              child: AstryxVStack(
+                children: <Widget>[
+                  const AstryxText(
+                    'Added to cart',
+                    weight: AstryxTextWeight.semibold,
+                  ),
+                  AstryxText(
+                    product.name,
+                    type: AstryxTextType.supporting,
+                    color: AstryxTextColor.secondary,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+            ),
+            AstryxButton(
+              label: 'Undo',
+              variant: AstryxButtonVariant.ghost,
+              size: AstryxButtonSize.sm,
+              onPressed: () {},
+            ),
+          ],
         ),
       ),
     );
